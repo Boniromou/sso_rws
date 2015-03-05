@@ -1,0 +1,96 @@
+          <!--form-->
+          <%= form_tag(search_audit_logs_path, :remote => true, :id => "search_form") do %>
+            <fieldset>
+              <div class="row">
+                  <%= render "shared/date_range_picker" %>
+              </div>
+              
+              <div class="row">
+                <div class="col-sm-4">
+                  <section class="smart-form">
+                    <label class="label"><%= t("auditlog.audit_action_by") %></label>
+                    <label class="input">
+                      <%= text_field_tag(:action_by) %>
+                    </label>
+                  </section>
+                </div>
+                
+                <div class="col-sm-4">
+                  <section class="smart-form">
+                    <label class="label"><%= t("auditlog.target") %></label>
+                    <label class="select">
+                      <select class="input-sm" name="target_name" id="target_name">
+                        <option value="all"><%= t("general.all") %></option>
+                        <option value="system_user"><%= t("user.system_user") %></option>
+                        <option value="maintenance"><%= t("maintenance.title") %></option>
+                        <option value="propagation"><%= t("propagation.title") %></option>
+                      </select>
+                    </label>
+                  </section>
+                </div>
+                
+                <div class="col-sm-4">
+                  <section class="smart-form">
+                    <label class="label"><%= t("auditlog.audit_action") %></label>
+                    <label class="select">
+                      <select class="input-sm" name="action_list" id="action_list">
+                        <option value="all"><%= t("general.all") %></option>
+                      </select>
+                    </label>
+                  </section>
+                </div>
+              </div>
+              
+            </fieldset>
+              
+            <div class="form-actions">
+              <div class="row">
+                <div class="col-md-12">
+                  <%= submit_tag t("general.search"), :class => "btn btn-primary", :remote => true  %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+          <!--/form-->
+          
+          <script type="text/javascript">
+            $(document).ready(function(){
+              $("select#target_name").change(function() {
+                var target = $(this).val();
+                $.get("action_list/" + target);
+              });
+            });
+            /*
+            $.getJSON("action_list/" + target + ".json", function(actions) { 
+              //console.log(actions);
+              $("select#action").empty();
+              $.each(actions, function(val, text) {
+                //console.log(val);
+                //console.log(text);
+                $("select#action").append( $('<option></option>').val(val).html(text) );
+              });
+            });
+            */
+            /*
+            var maintenance_actions = ["Create", "Cancel", "Complete", "Extend", "Reschedule", "Expire"];
+            var system_user_actions = ["Lock", "Unlock", "Edit Role"];
+            
+            $(document).ready(function(){
+              $("select#target_name").change(function() {
+                var target = $(this).val();
+                if ( target == "all" ) {
+                  $("select#action").empty();
+                  $("select#action").append( $('<option></option>').val("all").html("All") );
+                } else {
+                  var actions;
+                  if ( target == "maintenance" ) { actions = maintenance_actions; }
+                  if ( target == "system_user" ) { actions = system_user_actions; }
+                  $("select#action").empty();
+                  $.each(actions, function(val, text) {
+                    $("select#action").append( $('<option></option>').val(val).html(text) );
+                  });
+                }
+              });
+            });
+            */
+          </script>

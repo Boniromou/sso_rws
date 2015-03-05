@@ -1,0 +1,39 @@
+development:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_development
+  username: rigi
+  password: rigi
+  host: mo-int-generic-db01.rnd.laxino.com
+  port: 3306
+
+test:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_test
+  username: rigi
+  password: rigi
+  host: mo-int-generic-db01.rnd.laxino.com
+  port: 3306
+
+integration0:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_integration
+  username: rigi
+  password: rigi
+  host: mo-int-generic-db01.rnd.laxino.com
+  port: 3306
+
+staging0:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_staging
+  username: rigi
+  password: rigi
+  host: mo-stg-generic-db01.rnd.laxino.com
+  port: 3306

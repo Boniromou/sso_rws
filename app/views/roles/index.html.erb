@@ -1,0 +1,15 @@
+<h1>Listing roles</h1>
+
+<%=t("alert.invalid_login") %>
+ 
+<table>
+  <tr>
+    <th>name</th>
+  </tr>
+ 
+  <% @roles.each do |r| %>
+    <tr>
+      <td><%=t("role.#{r.name}") %></td>
+    </tr>
+  <% end %>
+</table>

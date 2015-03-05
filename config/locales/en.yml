@@ -1,0 +1,147 @@
+---
+en:
+  locale_category:
+    locale_key: English
+  alert:
+    invalid_login: Invalid user name or password
+    inactive_account: The account is inactive, please contact User Manager for account
+      activation
+    registered_account: The account has been registered
+    signup_completed: Sign up completed, please contact User Manager for account activation
+    unauthenticated: you need to sign in or sign up before continuing
+    invalid_time_range: Invalid time range
+    time_conflict: The schedule conflicts with previous schedule [Maintenance id =%{maintenance_id}]
+    invalid_property: property can not be null
+  title:
+    title: Admin Portal
+    login_title: Admin Portal - Login
+    signup_title: Admin Portal - Registration
+  general:
+    login: Login
+    logout: logout
+    edit: Edit
+    back: Back
+    confirm: Confirm
+    cancel: Cancel
+    status: Status
+    on_state: 'ON'
+    off_state: 'OFF'
+    no_result_found: No Record Found
+    error_message: Error Message
+    sign_up: Sign Up
+    na: N/A
+    operation: Operation
+    start_time: Start Time
+    end_time: End Time
+    search: Search
+    result: Result
+    success: Success
+    fail: Fail
+    all: All
+  user:
+    user_name: User Name
+    password: Password
+    list_users: List System Users
+    system_user: System User
+    name: Name
+    status: Status
+    active: Active
+    inactive: Inactive
+    lock: lock
+    unlock: un-lock
+    preferred_language: Preferred Language
+    edit_role: Edit Role
+  header:
+    user_management: User Management
+    property_management: Property Management
+    administration: Administration
+    home: Home
+    audit_log: Audit Log
+  role:
+    role: Role
+    root_user: Root user
+    system_operator: System Operator
+    property_operator: Property Operator
+    helpdesk: Helpdesk
+    user_manager: User Manager
+    auditor: Auditor
+  auditlog:
+    search_audit: Search Audit Log
+    audit_time: Time
+    audit_action: Action
+    audit_action_by: Action by
+    audit_status: Status
+    audit_session_id: Session ID
+    audit_ip: IP
+    audit_object: Object
+    audit_action_type: Action Type
+    audit_error: Error
+    audit_description: Description
+    audit_target: Target
+    create_type: Create
+    remove_type: Remove
+    update_type: Update
+    delete_type: Delete
+  maintenance:
+    title: Maintenance
+    maintenance_time: Maintenance Time
+    days: Days
+    hours: Hours
+    neverend: Never End
+    on_going: On Going
+    reschedule: Reschedule
+    extend: Extend
+    maintenance_id: Maintenance ID
+    property: Property
+    duration: Duration
+    allow_test: Allow Test
+    propagation_id: Propagation ID
+    time_stamp: Time Stamp
+    allow_test_account_value: Enabled
+    disallow_test_account_value: Disabled
+    scheduled_at: Scheduled at
+    period: Period
+    test_account: Test Acc.
+  maintenance_action:
+    create: Create
+    cancel: Cancel
+    complete: Complete
+    reschedule: Reschedule
+    expire: Expire
+    extend: Extend
+  maintenance_status:
+    scheduled: Scheduled
+    activating: Activating
+    activated: Activated
+    completing: Completing
+    completed: Completed
+    cancelling: Cancelling
+    cancelled: Cancelled
+    expired: Expired
+  propagation:
+    action: Action
+    created_at: Created at
+    resume: Resume
+  propagation_action:
+    activate: activate
+    extend: extend
+    complete: complete
+    propagating: propagating
+    propagated: propagated
+    broken: broken
+    cancelled: cancelled
+  tree_view:
+    create_maintenance: Create Maintenance
+    search_maintenance: Search Maintenance
+  login_page:
+    username_tooltip: please enter username
+    password_tooltip: Enter your password
+  logout_page:
+    action_yes: 'Yes'
+    action_no: 'No'
+  flash_message:
+    success: Update Success.
+    fail: Update Fail.
+    lock_error: Page has been updated, please try again.
+    time_invalid: Time invalid.
+    not_allow_propagation: Another propagation job is running, please wait.

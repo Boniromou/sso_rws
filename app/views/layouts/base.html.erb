@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%= render "shared/head" %>
+</head>
+<body>
+  <%= render "shared/header" %>
+  <!--
+  <% unless controller_layout=="dashboard" %>
+    <%= render "layouts/#{controller_layout}/left_panel" %>
+  <% end %>
+  -->
+  <%= render "shared/main_panel" %>
+  <!-- %= render "shared/footer" % -->
+  <%= javascript_include_tag "application" %>
+</body>
+</html>

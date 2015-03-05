@@ -1,0 +1,13 @@
+    <!-- MAIN PANEL -->
+		<div id="main" role="main">
+			<!-- MAIN CONTENT -->
+			<div id="content">
+        <%= yield %>
+			</div>
+			<!-- END MAIN CONTENT -->
+		</div>
+		<!-- END MAIN PANEL -->
+
+		<div id="flash_message" style="display: none;" data-message-type="">
+		  <%= render partial: "shared/flash_message", flash: flash %>
+		</div>

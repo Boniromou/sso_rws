@@ -1,0 +1,43 @@
+<table class="table table-bordered" style="border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th class="col-md-1"><%= t("maintenance.maintenance_id") %></th>
+      <th class="col-md-1"><%= t("maintenance.property") %></th>
+      <th class="col-md-1"><%= t("maintenance.scheduled_at") %></th>
+      <th class="col-md-2"><%= t("maintenance.period") %></th>
+      <th class="col-md-1"><%= t("maintenance.duration") %></th>
+      <th class="col-md-1"><%= t("general.status") %></th>
+      <th class="col-md-1"><%= t("maintenance.test_account") %></th>
+      <th class="col-md-3"><%= t("general.operation") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% unless @maintenances.blank? %>
+      <% @maintenances.each do |maint| %>
+        <tr bgcolor=<%= cycle("#F9F9F9", "", name: "row_class") -%>>
+          <td><%= maint.id %></td>
+          <td><%= maint.property_id %></td>
+          <td><%= format_time(maint.created_at) %></td>
+            
+          <td><%= time_format_for(maint.start_time) %> ~ <%= time_format_for(maint.end_time) %></td>
+          <td><%= show_duration(maint.duration) %></td>
+          <td><%= t(display_status(maint.status)) %>
+          </td>
+          <td><%= t(display_allow_test_acc_val(maint.allow_test_account)) %></td>
+          <td>
+            <% if maint.is_reschedulable? %>
+              <%= link_to(reschedule_maintenance_path(maint), :title => t("maintenance.reschedule"), :class => "btn btn-primary", :remote => true, :id => "reschedule_#{maint.id}") do %>
+                <i class="glyphicon glyphicon-calendar"></i>
+              <% end %>
+            <% end %>
+            <% if maint.is_cancellable? %>
+              <%= link_to(cancel_maintenance_path(maint), :title => "Cancel", :class => "btn btn-primary", :remote => true, :id => "cancel_#{maint.id}", :method => :post) do %>
+                <i class="glyphicon glyphicon-remove"></i>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

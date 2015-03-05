@@ -1,0 +1,27 @@
+      <!-- #PROJECTS: projects dropdown -->
+			<div class="project-context hidden-xs">
+        <span class="label"></span>
+				<span class="project-selector dropdown-toggle" data-toggle="dropdown">
+          Dashboard
+          <i class="fa fa-angle-down"></i>
+        </span>
+
+				<!-- Suggestion: populate this list with fetch and push technique -->
+				<ul class="dropdown-menu">
+					<li class="active">
+            <%= link_to "Dashboard", dashboard_path %>
+					</li>
+					<li>
+						<%= link_to "Administration", administration_path %>
+					</li>
+					<li>
+						<%= link_to "Property Control", property_control_path %>
+					</li>
+					<li>
+						<%= link_to "Audit Log", audit_logs_path %>
+					</li>
+				</ul>
+				<!-- end dropdown-menu-->
+
+			</div>
+			<!-- end projects dropdown -->

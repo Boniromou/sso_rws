@@ -1,0 +1,3 @@
+<% if @action_list %>
+    $("select#action_list").html("<%= escape_javascript options_for_select(@action_list) %>");
+<% end %>

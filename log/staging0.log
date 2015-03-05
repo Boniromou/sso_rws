@@ -1,0 +1,168 @@
+Connecting to database specified by database.yml
+  [1m[36m (7.9ms)[0m  [1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (20.7ms)[0m  CREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)
+  [1m[36m (1.8ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+Migrating to DeviseCreateSystemUsers (20140728023314)
+  [1m[35m (9.8ms)[0m  CREATE TABLE `system_users` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `sign_in_count` int(11) DEFAULT 0 NOT NULL, `current_sign_in_at` datetime, `last_sign_in_at` datetime, `current_sign_in_ip` varchar(255), `last_sign_in_ip` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (1.1ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728023314')[0m
+Migrating to AddUsernameToSystemUsers (20140728023525)
+  [1m[35m (5.1ms)[0m  ALTER TABLE `system_users` ADD `username` varchar(255)
+  [1m[36m (0.8ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728023525')[0m
+Migrating to AddStatusToSystemUsers (20140728023603)
+  [1m[35m (6.4ms)[0m  ALTER TABLE `system_users` ADD `status` tinyint(1) DEFAULT 0 NOT NULL
+  [1m[36m (1.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728023603')[0m
+Migrating to AddAdminToSystemUsers (20140728023824)
+  [1m[35m (8.0ms)[0m  ALTER TABLE `system_users` ADD `admin` tinyint(1) DEFAULT 0 NOT NULL
+  [1m[36m (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728023824')[0m
+Migrating to CreateAuthSources (20140728023924)
+  [1m[35m (10.2ms)[0m  CREATE TABLE `auth_sources` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `auth_type` varchar(30) DEFAULT '' NOT NULL, `name` varchar(60) DEFAULT '' NOT NULL, `host` varchar(60), `port` int(11), `account` varchar(60), `account_password` varchar(60), `base_dn` varchar(255), `attr_login` varchar(30), `attr_firstname` varchar(30), `attr_lastname` varchar(60), `attr_mail` varchar(30), `onthefly_register` tinyint(1) DEFAULT 0 NOT NULL) ENGINE=InnoDB
+  [1m[36m (1.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  INSERT INTO `auth_sources` (`account`, `account_password`, `attr_firstname`, `attr_lastname`, `attr_login`, `attr_mail`, `auth_type`, `base_dn`, `host`, `name`, `onthefly_register`, `port`) VALUES ('mo\\svc.linux', 'Ccc1234%', 'givenName', 'sN', 'sAMAccountName', 'mail', 'AuthSourceLdap', 'DC=mo,DC=laxino,DC=com', '10.10.28.91', 'Laxino LDAP', 1, 389)
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35m (1.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140728023924')
+Migrating to AddAuthSourceIdToSystemUsers (20140728035555)
+  [1m[36m (6.0ms)[0m  [1mALTER TABLE `system_users` ADD `auth_source_id` int(11)[0m
+  [1m[35m (11.1ms)[0m  ALTER TABLE system_users ADD FOREIGN KEY (auth_source_id) REFERENCES auth_sources(id);
+  [1m[36mAddAuthSourceIdToSystemUsers::AuthSource Load (1.2ms)[0m  [1mSELECT `auth_sources`.* FROM `auth_sources` WHERE `auth_sources`.`name` = 'Laxino LDAP' LIMIT 1[0m
+  [1m[35m (1.0ms)[0m  BEGIN
+  [1m[36mSQL (1.0ms)[0m  [1mINSERT INTO `system_users` (`admin`, `auth_source_id`, `created_at`, `current_sign_in_at`, `current_sign_in_ip`, `last_sign_in_at`, `last_sign_in_ip`, `sign_in_count`, `status`, `updated_at`, `username`) VALUES (1, 1, '2014-08-01 02:21:12', NULL, NULL, NULL, NULL, 0, 1, '2014-08-01 02:21:12', 'mo\\portal.admin')[0m
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (1.1ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728035555')[0m
+Migrating to CreateRoles (20140728041241)
+  [1m[35m (11.6ms)[0m  CREATE TABLE `roles` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (0.7ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.9ms)[0m  INSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-01 02:21:12', 'user_manager', '2014-08-01 02:21:12')
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.8ms)[0m  BEGIN
+  [1m[36mSQL (1.3ms)[0m  [1mINSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-01 02:21:12', 'system_operator', '2014-08-01 02:21:12')[0m
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.6ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.9ms)[0m  INSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-01 02:21:12', 'helpdesk', '2014-08-01 02:21:12')
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.8ms)[0m  BEGIN
+  [1m[36mSQL (1.1ms)[0m  [1mINSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-01 02:21:12', 'property_operator', '2014-08-01 02:21:12')[0m
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (1.1ms)[0m  INSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-01 02:21:12', 'auditor', '2014-08-01 02:21:12')
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.7ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140728041241')
+Migrating to CreateRoleAssignments (20140728041814)
+  [1m[36m (18.8ms)[0m  [1mCREATE TABLE `role_assignments` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `user_type` varchar(60) NOT NULL, `user_id` int(11) NOT NULL, `role_id` int(11) NOT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (2.1ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140728041814')
+Migrating to AddDomainToAuthSources (20140731033558)
+  [1m[36m (11.3ms)[0m  [1mALTER TABLE `auth_sources` ADD `domain` varchar(255) DEFAULT '' NOT NULL[0m
+  [1m[35mSQL (1.9ms)[0m  UPDATE `auth_sources` SET `domain` = 'mo' WHERE `auth_sources`.`name` = 'Laxino LDAP' AND `auth_sources`.`host` = '10.10.28.91' AND `auth_sources`.`port` = 389
+  [1m[36m (1.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140731033558')[0m
+  [1m[35m (0.7ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Connecting to database specified by database.yml
+  [1m[36m (0.5ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+Migrating to DeviseCreateSystemUsers (20140728023314)
+Migrating to AddUsernameToSystemUsers (20140728023525)
+Migrating to AddStatusToSystemUsers (20140728023603)
+Migrating to AddAdminToSystemUsers (20140728023824)
+Migrating to CreateAuthSources (20140728023924)
+Migrating to AddAuthSourceIdToSystemUsers (20140728035555)
+Migrating to CreateRoles (20140728041241)
+Migrating to CreateRoleAssignments (20140728041814)
+Migrating to AddDomainToAuthSources (20140731033558)
+  [1m[35m (0.6ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Connecting to database specified by database.yml
+  [1m[36m (5.9ms)[0m  [1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (6.3ms)[0m  CREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)
+  [1m[36m (0.8ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+Migrating to DeviseCreateSystemUsers (20140728023314)
+  [1m[35m (2.9ms)[0m  CREATE TABLE `system_users` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `sign_in_count` int(11) DEFAULT 0 NOT NULL, `current_sign_in_at` datetime, `last_sign_in_at` datetime, `current_sign_in_ip` varchar(255), `last_sign_in_ip` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (1.1ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728023314')[0m
+Migrating to AddUsernameToSystemUsers (20140728023525)
+  [1m[35m (4.9ms)[0m  ALTER TABLE `system_users` ADD `username` varchar(255)
+  [1m[36m (0.7ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728023525')[0m
+Migrating to AddStatusToSystemUsers (20140728023603)
+  [1m[35m (5.8ms)[0m  ALTER TABLE `system_users` ADD `status` tinyint(1) DEFAULT 0 NOT NULL
+  [1m[36m (0.8ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728023603')[0m
+Migrating to AddAdminToSystemUsers (20140728023824)
+  [1m[35m (5.0ms)[0m  ALTER TABLE `system_users` ADD `admin` tinyint(1) DEFAULT 0 NOT NULL
+  [1m[36m (1.0ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728023824')[0m
+Migrating to CreateAuthSources (20140728023924)
+  [1m[35m (3.0ms)[0m  CREATE TABLE `auth_sources` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `auth_type` varchar(30) DEFAULT '' NOT NULL, `name` varchar(60) DEFAULT '' NOT NULL, `host` varchar(60), `port` int(11), `account` varchar(60), `account_password` varchar(60), `base_dn` varchar(255), `attr_login` varchar(30), `attr_firstname` varchar(30), `attr_lastname` varchar(60), `attr_mail` varchar(30), `onthefly_register` tinyint(1) DEFAULT 0 NOT NULL) ENGINE=InnoDB
+  [1m[36m (1.0ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (1.4ms)[0m  INSERT INTO `auth_sources` (`account`, `account_password`, `attr_firstname`, `attr_lastname`, `attr_login`, `attr_mail`, `auth_type`, `base_dn`, `host`, `name`, `onthefly_register`, `port`) VALUES ('mo\\svc.linux', 'Ccc1234%', 'givenName', 'sN', 'sAMAccountName', 'mail', 'AuthSourceLdap', 'DC=mo,DC=laxino,DC=com', '10.10.28.91', 'Laxino LDAP', 1, 389)
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.8ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140728023924')
+Migrating to AddAuthSourceIdToSystemUsers (20140728035555)
+  [1m[36m (10.3ms)[0m  [1mALTER TABLE `system_users` ADD `auth_source_id` int(11)[0m
+  [1m[35m (12.0ms)[0m  ALTER TABLE system_users ADD FOREIGN KEY (auth_source_id) REFERENCES auth_sources(id);
+  [1m[36mAddAuthSourceIdToSystemUsers::AuthSource Load (2.2ms)[0m  [1mSELECT `auth_sources`.* FROM `auth_sources` WHERE `auth_sources`.`name` = 'Laxino LDAP' LIMIT 1[0m
+  [1m[35m (0.6ms)[0m  BEGIN
+  [1m[36mSQL (2.3ms)[0m  [1mINSERT INTO `system_users` (`admin`, `auth_source_id`, `created_at`, `current_sign_in_at`, `current_sign_in_ip`, `last_sign_in_at`, `last_sign_in_ip`, `sign_in_count`, `status`, `updated_at`, `username`) VALUES (1, 1, '2014-08-05 01:44:23', NULL, NULL, NULL, NULL, 0, 1, '2014-08-05 01:44:23', 'portal.admin')[0m
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (1.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140728035555')[0m
+Migrating to CreateRoles (20140728041241)
+  [1m[35m (2.6ms)[0m  CREATE TABLE `roles` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (1.8ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  INSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-05 01:44:23', 'user_manager', '2014-08-05 01:44:23')
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-05 01:44:23', 'system_operator', '2014-08-05 01:44:23')[0m
+  [1m[35m (0.7ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.9ms)[0m  INSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-05 01:44:23', 'helpdesk', '2014-08-05 01:44:23')
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.6ms)[0m  BEGIN
+  [1m[36mSQL (1.5ms)[0m  [1mINSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-05 01:44:23', 'property_operator', '2014-08-05 01:44:23')[0m
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (1.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  INSERT INTO `roles` (`created_at`, `name`, `updated_at`) VALUES ('2014-08-05 01:44:23', 'auditor', '2014-08-05 01:44:23')
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35m (2.2ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140728041241')
+Migrating to CreateRoleAssignments (20140728041814)
+  [1m[36m (4.8ms)[0m  [1mCREATE TABLE `role_assignments` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `user_type` varchar(60) NOT NULL, `user_id` int(11) NOT NULL, `role_id` int(11) NOT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (1.2ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140728041814')
+Migrating to AddDomainToAuthSources (20140731033558)
+  [1m[36m (7.1ms)[0m  [1mALTER TABLE `auth_sources` ADD `domain` varchar(255) DEFAULT '' NOT NULL[0m
+  [1m[35mSQL (1.6ms)[0m  UPDATE `auth_sources` SET `domain` = 'mo' WHERE `auth_sources`.`name` = 'Laxino LDAP' AND `auth_sources`.`host` = '10.10.28.91' AND `auth_sources`.`port` = 389
+  [1m[36m (1.1ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140731033558')[0m
+  [1m[35m (0.9ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Connecting to database specified by database.yml
+  [1m[36m (0.4ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+Migrating to DeviseCreateSystemUsers (20140728023314)
+Migrating to AddUsernameToSystemUsers (20140728023525)
+Migrating to AddStatusToSystemUsers (20140728023603)
+Migrating to AddAdminToSystemUsers (20140728023824)
+Migrating to CreateAuthSources (20140728023924)
+Migrating to AddAuthSourceIdToSystemUsers (20140728035555)
+Migrating to CreateRoles (20140728041241)
+Migrating to CreateRoleAssignments (20140728041814)
+Migrating to AddDomainToAuthSources (20140731033558)
+Migrating to CreateProperties (20140915025251)
+  [1m[35m (6.3ms)[0m  CREATE TABLE `properties` (`id` int(11), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (15.0ms)[0m  [1mALTER TABLE properties ADD PRIMARY KEY (id);[0m
+  [1m[35m (1.1ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140915025251')
+Migrating to CreateMaintenanceTypes (20140915025625)
+  [1m[36m (3.1ms)[0m  [1mCREATE TABLE `maintenance_types` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.5ms)[0m  BEGIN
+  [1m[36mSQL (0.7ms)[0m  [1mINSERT INTO `maintenance_types` (`created_at`, `name`, `updated_at`) VALUES ('2014-09-30 03:01:17', 'per_property', '2014-09-30 03:01:17')[0m
+  [1m[35m (0.3ms)[0m  COMMIT
+  [1m[36m (0.5ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `maintenance_types` (`created_at`, `name`, `updated_at`) VALUES ('2014-09-30 03:01:17', 'per_game', '2014-09-30 03:01:17')
+  [1m[36m (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO `maintenance_types` (`created_at`, `name`, `updated_at`) VALUES ('2014-09-30 03:01:17', 'per_game_type', '2014-09-30 03:01:17')[0m
+  [1m[35m (0.3ms)[0m  COMMIT
+  [1m[36m (0.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140915025625')[0m
+Migrating to CreateMaintenances (20140915030038)
+  [1m[35m (50.7ms)[0m  CREATE TABLE `maintenances` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `property_id` int(11), `maintenance_type_id` int(11), `start_time` datetime NOT NULL, `end_time` datetime NOT NULL, `duration` int(11) NOT NULL, `allow_test_account` tinyint(1) NOT NULL, `status` varchar(255) NOT NULL, `cancelled_at` datetime, `completed_at` datetime, `expired_at` datetime, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (18.0ms)[0m  [1mALTER TABLE maintenances ADD CONSTRAINT fk_property_id FOREIGN KEY (property_id) REFERENCES properties(id);[0m
+  [1m[35m (7.9ms)[0m  ALTER TABLE maintenances ADD CONSTRAINT fk_maintenance_type_id FOREIGN KEY (maintenance_type_id) REFERENCES maintenance_types(id);
+  [1m[36m (0.9ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140915030038')[0m
+Migrating to CreateAuditLog (20140916083203)
+  [1m[35m (6.7ms)[0m  CREATE TABLE `audit_logs` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `audit_target` varchar(45) NOT NULL, `action_type` varchar(45) NOT NULL, `action` varchar(45) NOT NULL, `action_status` varchar(45) NOT NULL, `action_error` varchar(255), `session_id` varchar(255), `ip` varchar(45), `action_by` varchar(45) NOT NULL, `action_at` datetime NOT NULL, `description` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (1.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140916083203')[0m
+Migrating to CreatePropagations (20140922063645)
+  [1m[35m (36.0ms)[0m  CREATE TABLE `propagations` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `maintenance_id` int(11), `status` varchar(255) NOT NULL, `retry` int(11) DEFAULT 0 NOT NULL, `action` varchar(255) NOT NULL, `propagating_at` datetime, `propagated_at` datetime, `broken_at` datetime, `cancelled_at` datetime, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (13.4ms)[0m  [1mALTER TABLE propagations ADD CONSTRAINT fk_maintenance_id FOREIGN KEY (maintenance_id) REFERENCES maintenances(id);[0m
+  [1m[35m (0.8ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20140922063645')
+Migrating to AddNameAndDescriptionToProperties (20140929044736)
+  [1m[36m (4.4ms)[0m  [1mALTER TABLE `properties` ADD `name` varchar(255)[0m
+  [1m[35m (5.7ms)[0m  ALTER TABLE `properties` ADD `description` varchar(255)
+  [1m[36m (1.5ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140929044736')[0m
+  [1m[35m (0.6ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 

@@ -1,0 +1,10 @@
+<% if !@maintenance_error.blank? %>
+  <div class="alert alert-danger alert-block">
+    <h4 class="alert-heading">Error!</h4>
+    <% @maintenance_error.each do |errors| %>
+      <% errors[1].each do |error| %>
+        <%=error%><br/>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

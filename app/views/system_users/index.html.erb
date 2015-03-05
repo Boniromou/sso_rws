@@ -1,0 +1,83 @@
+        <!-- widget grid -->
+        <section id="widget-grid" class="">
+          <!-- row -->
+          <div class="row">
+
+            <!-- NEW WIDGET START -->
+            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+              <!-- Widget ID (each widget will need unique ID)-->
+              <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false">
+                <!-- widget options:
+                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                data-widget-colorbutton="false"
+                data-widget-editbutton="false"
+                data-widget-togglebutton="false"
+                data-widget-deletebutton="false"
+                data-widget-fullscreenbutton="false"
+                data-widget-custombutton="false"
+                data-widget-collapsed="true"
+                data-widget-sortable="false"
+
+                -->
+                <header>
+                  <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                  <h2><%= t("user.list_users") %></h2>
+
+                </header>
+
+                <!-- widget div-->
+                <div>
+
+                  <!-- widget edit box -->
+                  <div class="jarviswidget-editbox">
+                    <!-- This area used as dropdown edit box -->
+
+                  </div>
+                  <!-- end widget edit box -->
+
+                  <!-- widget content -->
+                  <div class="widget-body">
+                    
+                    <div class="table-responsive">
+                      <table class="table table-bordered table-striped">
+                        <thead>
+                          <th><%=t("user.user_name") %></th>
+                          <th><%=t("user.status") %></th>
+                          <th><%=t("general.operation") %></th>
+                        </thead>
+                        <tbody>
+                          <% @system_users.each do |su| %>
+                            <tr align="center">
+                              <td id="<%=su.id%>"><%=link_to "#{su.username}", system_user_path(su), :remote => true %></td>
+                              <td id="<%=su.id%>"><%=t("#{system_user_status_format(su.status)}") %></td>
+                              <td id="<%=su.id%>">
+                                <% if !disable_lock_button?(su) %>
+                            <%=button_to t(change_status_button_name(su.status)), {:controller => "system_users", :action => change_status_action_name(su.status), :id => su.id}, :class => "btn btn-danger", :remote => true %>
+                                <% end %>
+                              </td>
+                            </tr>
+                          <% end %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- end widget content -->
+
+                </div>
+                <!-- end widget div -->
+
+              </div>
+              <!-- end widget -->
+
+            </article>
+            <!-- WIDGET END -->
+          </div>
+
+          <!-- end row -->
+        </section>
+        <!-- end widget grid -->
+        
+        <%= render "shared/page_setup" %>
+        <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_system_users" } %>

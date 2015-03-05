@@ -1,0 +1,44 @@
+<header>
+  <%=t("maintenance.maintenance_time") %>
+</header>
+<fieldset>
+  <section>
+    <label class="label"><%=t("general.start_time") %></label>
+    <div class="form-group">
+      <div class="input-group">
+        <%= text_field_tag 'start_time', format_time(start_time_default_value), :class => "form-control", :readonly => true %>
+        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <label class="label"><%=t("general.end_time") %></label>
+    <div class="form-group">
+      <div class="input-group">
+        <%= text_field_tag 'end_time', format_time(end_time_default_value), :class => "form-control", :readonly => true %>
+        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <label class="label"><%=t("maintenance.extension") %></label>
+    <div class="inline-group">
+      <label class="select-inline"></label>
+      <%= select_tag "extension_day", options_for_select(duration_day_options, @params.blank? ? nil:@params[:extension_day]), :class => "input-sm", :disabled => duration_disabled? %>
+      <label class="label-inline"><%=t("maintenance.days") %></label>
+
+      <label class="select-inline"></label>
+      <%= select_tag "extension_hour", options_for_select(duration_hour_options, @params.blank? ? nil:@params[:extension_hour]), :class => "input-sm", :disabled => duration_disabled? %>
+      <label class="label-inline"><%=t("maintenance.hours") %></label>
+    </div>
+  </section>
+
+  <section>
+    <label class="checkbox">
+      <%= check_box_tag 'never_end', true, never_end_option, :onchange => "disable_duration();" %>
+      <i></i><%=t("maintenance.never_end") %>
+    </label>
+  </section>
+</fieldset>

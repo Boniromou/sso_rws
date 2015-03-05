@@ -1,0 +1,9 @@
+<%= render partial: "maintenances/search_panel_tab", locals: { selected_tab: "list_on_going" } %>
+
+<div id="myTabContent1" class="tab-content padding-10">
+  <div class="tab-pane fade in active" id="scheduled_content">
+    <%= render :partial => "maintenances/maintenance_table_for_on_going" %>
+  </div>
+</div>
+
+<%= render partial: "shared/nav_setup", locals: { tab_to_activate: "search_maintenance" } %>

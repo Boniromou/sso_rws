@@ -1,0 +1,30 @@
+<!-- Left panel : Navigation area -->
+    <!-- Note: This width of the aside area can be adjusted through LESS variables -->
+    <aside id="left-panel">
+
+      <!-- NAVIGATION : This navigation is also responsive
+
+      To make this navigation dynamic please make sure to link the node
+      (the reference to the nav > ul) after page load. Or the navigation
+      will not initialize.
+      -->
+      <nav>
+        <!-- NOTE: Notice the gaps after each icon usage <i></i>..
+        Please note that these links work a bit different than
+        traditional href="" links. See documentation for details.
+        -->
+
+        <ul>
+          <li id="nav_search_audit_logs">
+            <%= link_to search_audit_logs_path, :title => t("auditlog.search_audit"), :remote => true do %>
+              <i class="fa fa-lg fa-fw fa-list"></i> <span class="menu-item-parent"><%= t("auditlog.search_audit") %></span>
+            <% end %>
+          </li>
+        </ul>
+      </nav>
+      <span class="minifyme" data-action="minifyMenu"> 
+        <i class="fa fa-arrow-circle-left hit"></i> 
+      </span>
+
+    </aside>
+    <!-- END NAVIGATION -->

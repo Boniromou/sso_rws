@@ -1,0 +1,11 @@
+<ul id="myTab1" class="nav nav-tabs bordered">
+  <li <%= selected_tab=="list_scheduled" ? " class=active" : "" %>>
+    <%= link_to "Scheduled", scheduled_maintenance_path, :remote => true, "data-toggle" => "tab"  %>
+  </li>
+  <li <%= selected_tab=="list_on_going" ? " class=active" : "" %>>
+    <%= link_to "On Going", on_going_maintenance_path, :remote => true, "data-toggle" => "tab"  %>
+  </li>
+  <li <%= selected_tab=="search" ? " class=active" : "" %>>
+    <%= link_to "Search", search_maintenance_path, :remote => true, "data-toggle" => "tab" %>
+  </li>
+</ul>

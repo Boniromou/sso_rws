@@ -1,0 +1,58 @@
+          <%= form_tag(search_maintenance_path, :remote => true) do %>
+            
+            <div class="row">
+              <%= render "shared/date_range_picker" %>
+            </div>
+            
+            <fieldset class="smart-form">  
+              <section>
+                <label class="label"><%= t("general.status") %></label>
+                <div class="inline-group">
+                  <label class="checkbox">
+                    <%= check_box_tag("selected_status[]", "scheduled", true)%>
+                    <i></i><%= t("maintenance_status.scheduled")%>
+                  </label>
+                  <label class="checkbox">
+                    <%= check_box_tag("selected_status[]", "activated", true)%>
+                    <i></i><%= t("maintenance_status.activated")%>
+                  </label>
+                  <label class="checkbox">
+                    <%= check_box_tag("selected_status[]", "completed", true)%>
+                    <i></i><%= t("maintenance_status.completed")%>
+                  </label>
+                  <label class="checkbox">
+                    <%= check_box_tag("selected_status[]", "cancelled", true)%>
+                    <i></i><%= t("maintenance_status.cancelled")%>
+                  </label>
+                  <label class="checkbox">
+                    <%= check_box_tag("selected_status[]", "expired", true)%>
+                    <i></i><%= t("maintenance_status.expired")%>
+                  </label>
+                </div>
+              </section>
+              
+              <section>
+                <label class="label"><%=t("maintenance.property") %></label>
+                <label class="select select-multiple"> 
+                  <%= select_tag "selected_properties", options_for_select(Property.all.map{|x| x.id}, @params.blank? ? nil:@params[:properties]), :multiple => true, :class => "select2", :style => "width:100%" %>
+                </label>
+              </section>
+            </fieldset>
+              
+            <div class="form-actions">
+              <div class="row">
+                <div class="col-md-12">
+                  <%= submit_tag t("general.search"), :class => "btn btn-primary", :remote => true, :id => "search_button"  %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+          
+          <script>
+            $(document).ready(function() {
+              $("#selected_properties").select2({
+                  //placeholder: "Select a property",
+                  allowClear: true
+              });
+            });
+          </script>

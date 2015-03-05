@@ -1,0 +1,24 @@
+<article class="col-xs-12 col-sm-12 col-md-12 col-lg-3">
+
+<h2><%= @system_user.username %></h2>
+
+<table class="table table-hover table-striped">
+  <tr>
+    <td><%=t("user.status")%>:</td>
+    <td><%= t("#{system_user_status_format(@system_user.status)}") %></td>
+    <% if !disable_lock_button?(@system_user) %>
+      <td>
+      <%=button_to t(change_status_button_name(@system_user.status)), {:controller => 'system_users', :action => change_status_action_name(@system_user.status), :id => @system_user.id}, :class => "btn btn-danger", :remote => true %>
+      </td>
+    <% end %>
+  </tr>
+  <tr>
+    <td><%=t("role.role") %>:</td>
+    <td><%=t("#{roles_format(@system_user)}")%></td>
+    <% if !disable_edit_roles_button?(@system_user) %>
+      <td>
+	<%=button_to t("general.edit"), {:controller => 'system_users', :action => 'edit_roles', :id => @system_user.id}, :class => "btn btn-primary", :remote => true %>
+      </td>
+    <% end %>
+  </tr>
+</table>

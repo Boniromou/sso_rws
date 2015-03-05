@@ -1,0 +1,26 @@
+<header>
+  <%=t("maintenance.maintenance_time") %>
+</header>
+<fieldset>
+  <%= render "shared/datetime_picker"%>
+  
+  <section>
+    <label class="label"><%=t("maintenance.duration") %></label>
+    <div class="inline-group">
+      <label class="select-inline"></label>
+      <%= select_tag "duration_day", options_for_select(duration_day_options, @params.blank? ? nil:@params[:duration_day]), :class => "input-sm", :disabled => duration_disabled? %>
+      <label class="label-inline"><%= t("maintenance.days") %></label>
+      
+      <label class="select-inline"></label>
+      <%= select_tag "duration_hour", options_for_select(duration_hour_options, @params.blank? ? nil:@params[:duration_hour]), :class => "input-sm", :disabled => duration_disabled? %>
+      <label class="label-inline"><%= t("maintenance.hours") %></label>
+    </div>
+  </section>
+
+  <section>
+    <label class="checkbox">
+      <%= check_box_tag "never_end", true, never_end_option, :onchange => "disable_duration();" %>
+      <i></i><%=t("maintenance.never_end") %>
+    </label>
+  </section>
+</fieldset>

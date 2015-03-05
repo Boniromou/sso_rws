@@ -1,0 +1,15 @@
+<div class="row">
+  <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+    <%= form_tag({action: :reschedule_update}, :method => :put, :class => "smart-form", :remote => true) do %>
+      <%= hidden_field_tag 'lock_version', @maintenance.lock_version %>
+      <%= render :partial => "maintenance_time_form" %>
+
+      <footer>
+        <%= submit_tag t("general.confirm"), :class => "btn btn-primary" %>
+        <%= link_to t("general.cancel"), scheduled_maintenance_path, :class => "btn btn-default", :remote => true %>
+      </footer>
+    <% end %>
+  </article>
+</div>
+
+<%= render :partial => "error" %>
