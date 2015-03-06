@@ -67,3 +67,5 @@ group :test do
   gem 'simplecov'
   #gem 'capybara-webkit'
 end
+
+gem "pundit"
