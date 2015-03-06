@@ -1,4 +1,4 @@
-ApRws::Application.routes.draw do
+SsoRws::Application.routes.draw do
   devise_for :system_users, controllers: {:sessions => "system_user_sessions"}, :skip => 'registration'
 
   devise_scope :system_user do

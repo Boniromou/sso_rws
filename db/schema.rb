@@ -11,7 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150121045233) do
+ActiveRecord::Schema.define(:version => 20150306033858) do
+
+  create_table "app_system_users", :force => true do |t|
+    t.integer  "system_user_id", :null => false
+    t.integer  "app_id",         :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "app_system_users", ["app_id"], :name => "app_id"
+  add_index "app_system_users", ["system_user_id"], :name => "system_user_id"
+
+  create_table "apps", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "audit_logs", :force => true do |t|
     t.string   "audit_target",  :limit => 45, :null => false
@@ -43,47 +59,6 @@ ActiveRecord::Schema.define(:version => 20150121045233) do
     t.boolean "onthefly_register",               :default => false, :null => false
     t.string  "domain",                          :default => "",    :null => false
   end
-
-  create_table "maintenance_types", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  create_table "maintenances", :force => true do |t|
-    t.integer  "property_id"
-    t.integer  "maintenance_type_id"
-    t.datetime "start_time",                         :null => false
-    t.datetime "end_time",                           :null => false
-    t.integer  "duration",                           :null => false
-    t.boolean  "allow_test_account",                 :null => false
-    t.string   "status",                             :null => false
-    t.datetime "cancelled_at"
-    t.datetime "completed_at"
-    t.datetime "expired_at"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
-    t.integer  "lock_version",        :default => 0
-  end
-
-  add_index "maintenances", ["maintenance_type_id"], :name => "fk_maintenance_type_id"
-  add_index "maintenances", ["property_id"], :name => "fk_property_id"
-
-  create_table "propagations", :force => true do |t|
-    t.integer  "maintenance_id"
-    t.string   "status",                        :null => false
-    t.integer  "retry",          :default => 0, :null => false
-    t.string   "action",                        :null => false
-    t.datetime "propagating_at"
-    t.datetime "propagated_at"
-    t.datetime "broken_at"
-    t.datetime "cancelled_at"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
-    t.integer  "lock_version",   :default => 0
-  end
-
-  add_index "propagations", ["maintenance_id"], :name => "fk_maintenance_id"
 
   create_table "properties", :force => true do |t|
     t.datetime "created_at",  :null => false
@@ -121,11 +96,5 @@ ActiveRecord::Schema.define(:version => 20150121045233) do
   end
 
   add_index "system_users", ["auth_source_id"], :name => "auth_source_id"
-
-  create_table "tests", :force => true do |t|
-    t.string   "name",       :limit => 20
-    t.datetime "created_at",               :null => false
-    t.datetime "updated_at",               :null => false
-  end
 
 end

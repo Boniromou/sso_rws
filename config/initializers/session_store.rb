@@ -18,7 +18,7 @@ if File.file?(filename)
       v.symbolize_keys! if v.respond_to?(:symbolize_keys!)
     end
 
-    ApRws::Application.config.session_store :dalli_store,
+    SsoRws::Application.config.session_store :dalli_store,
                                               :key => '_ap_rws_session',
                                               #:domain => SITE_DOMAIN,
                                               :memcache_server => mem_config['servers'],

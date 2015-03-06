@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-ApRws::Application.load_tasks
+SsoRws::Application.load_tasks
