@@ -6,10 +6,18 @@
   <tr>
     <td><%=t("user.status")%>:</td>
     <td><%= t("#{system_user_status_format(@system_user.status)}") %></td>
-    <% if !disable_lock_button?(@system_user) %>
-      <td>
-      <%=button_to t(change_status_button_name(@system_user.status)), {:controller => 'system_users', :action => change_status_action_name(@system_user.status), :id => @system_user.id}, :class => "btn btn-danger", :remote => true %>
-      </td>
+    <% if @system_user.status %>
+      <% if policy(@system_user).lock? %>
+        <td>
+          <%=button_to t(change_status_button_name(@system_user.status)), {:controller => 'system_users', :action => change_status_action_name(@system_user.status), :id => @system_user.id}, :class => "btn btn-danger", :remote => true %>
+        </td>
+      <% end %>
+    <% else %>
+      <% if policy(@system_user).unlock? %>
+        <td>
+          <%=button_to t(change_status_button_name(@system_user.status)), {:controller => 'system_users', :action => change_status_action_name(@system_user.status), :id => @system_user.id}, :class => "btn btn-danger", :remote => true %>
+        </td>
+      <% end %>
     <% end %>
   </tr>
   <tr>

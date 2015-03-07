@@ -5,6 +5,8 @@ class SystemUser < ActiveRecord::Base
   belongs_to :auth_source
   has_many :role_assignments, :as => :user, :dependent => :destroy
   has_many :roles, :through => :role_assignments
+  has_many :app_system_users
+  has_many :apps, :through => :app_system_users
 
   def is_admin?
     admin
@@ -42,5 +44,14 @@ class SystemUser < ActiveRecord::Base
   # username for login
   def login
     self.auth_source.domain ? "#{self.auth_source.domain}\\#{self.username}" : self.username
+  end
+
+  def role_in_app
+    app = App.find_by_name(APP_NAME)
+    self.roles.each do |role|
+      if role.app.id == app.id
+	return role
+      end
+    end
   end
 end

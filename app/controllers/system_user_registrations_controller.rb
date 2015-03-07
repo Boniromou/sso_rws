@@ -16,7 +16,7 @@ class SystemUserRegistrationsController < Devise::RegistrationsController
       auth_source = auth_source.becomes(auth_source.auth_type.constantize)
       if auth_source.authenticate("#{auth_source.domain}\\#{username}", password)
         flash[:success] = "alert.signup_completed"
-        SystemUser.create(:username => username, :auth_source_id => auth_source.id)
+        system_user = SystemUser.create(:username => username, :auth_source_id => auth_source.id)
       else
         Rails.logger.info "SystemUser[username=#{username}] Registration failed. Authentication failed"
         flash[:alert] = "alert.invalid_login"

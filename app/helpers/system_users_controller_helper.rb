@@ -20,12 +20,6 @@ module SystemUsersControllerHelper
     return "role.#{system_user.roles[0].name}"
   end
 
-  def disable_lock_button?(system_user)
-    return true if system_user.is_root?
-    return true if current_system_user.id == system_user.id
-    return false
-  end
-
   def disable_edit_roles_button?(system_user)
     return true if system_user.is_root?
     return true if current_system_user.id == system_user.id

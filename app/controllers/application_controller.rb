@@ -3,6 +3,7 @@ require 'admin_portal_error'
 class ApplicationController < ActionController::Base
   layout false
   #layout proc {|controller| controller.request.xhr? ? false: "base" }
+  include Pundit
   protect_from_forgery
   before_filter :set_locale, :authenticate_system_user!, :check_activation_status
   respond_to :html, :js

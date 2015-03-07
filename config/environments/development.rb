@@ -37,3 +37,5 @@ SsoRws::Application.configure do
 
 #  SITE_DOMAIN = 'laxino.com'
 end
+
+APP_NAME = 'user'

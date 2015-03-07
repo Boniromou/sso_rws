@@ -53,8 +53,14 @@
                               <td id="<%=su.id%>"><%=link_to "#{su.username}", system_user_path(su), :remote => true %></td>
                               <td id="<%=su.id%>"><%=t("#{system_user_status_format(su.status)}") %></td>
                               <td id="<%=su.id%>">
-                                <% if !disable_lock_button?(su) %>
+  				<% if su.status %>
+				  <% if policy(su).lock? %>
                             <%=button_to t(change_status_button_name(su.status)), {:controller => "system_users", :action => change_status_action_name(su.status), :id => su.id}, :class => "btn btn-danger", :remote => true %>
+				  <% end %>
+				<% else %>
+				  <% if policy(su).unlock? %>
+                            <%=button_to t(change_status_button_name(su.status)), {:controller => "system_users", :action => change_status_action_name(su.status), :id => su.id}, :class => "btn btn-danger", :remote => true %>
+				  <% end %>
                                 <% end %>
                               </td>
                             </tr>

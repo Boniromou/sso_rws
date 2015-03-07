@@ -4,8 +4,8 @@
         <!-- PLACE YOUR LOGO HERE -->
         <!--span id="logo"> <img src="img/logo.png" alt="SmartAdmin"> </span-->
         <span id="logo">
-          <!--%= image_tag("mylogo.png", alt: "Admin Portal") %-->
-          <p> Admin Portal </p>
+          <!--%= image_tag("mylogo.png", alt: "Cirrus User") %-->
+          <p> Cirrus User </p>
         </span>
         <!-- END LOGO PLACEHOLDER -->
 
@@ -63,13 +63,10 @@
             <%= link_to "Dashboard", dashboard_index_path %>
           </li>
           <li class="active">
-            <%= link_to t("header.administration"), administration_root_path %>
+            <%= link_to t("header.user_manangement"), administration_root_path %>
           </li>
           <li>
-            <%= link_to "Property Control", property_control_root_path %>
-          </li>
-          <li>
-            <%= link_to "Audit Log", audit_logs_root_path %>
+            <%= link_to t("header.audit_log"), audit_logs_root_path %>
           </li>
         </ul>
         <!-- end dropdown-menu-->

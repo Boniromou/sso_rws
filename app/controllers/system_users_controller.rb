@@ -1,6 +1,8 @@
 class SystemUsersController < ApplicationController
   layout proc {|controller| controller.request.xhr? ? false: "administration" }
   respond_to :html, :js
+  #after_action :verify_authorized
+  alias_method :current_user, :current_system_user
   
   def index
     @system_users = SystemUser.all
@@ -23,6 +25,7 @@ class SystemUsersController < ApplicationController
   def lock
     AuditLog.system_user_log("lock", current_system_user.username, sid, client_ip) {
       system_user = SystemUser.find_by_id(params[:id])
+      authorize system_user
       system_user.update_attributes({:status => 0}) if system_user
     }
 
