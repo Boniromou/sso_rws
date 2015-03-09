@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
   
   def handle_unauthorize
     #sign_out current_system_user if current_system_user
-    flash[:alert] = "alert.unauthenticated"
+    flash[:alert] = "unauthorized!!!"  # TODO missing translation
     if request.xhr?
       #render :nothing => true, :status => :unauthorized
       render :js => "window.location = '/dashboard'"
@@ -90,10 +90,4 @@ class ApplicationController < ActionController::Base
     # TODO: determine what path to redirect to based on role/permission
     "dashboard"
   end
-
-  #def handle_unauthorize
-  #  p "user unauthorizze!!!"
-  #  flash[:alert] = 'unauthorize!' # TODO missing translation
-  #  redirect_to root_path
-  #end
 end
