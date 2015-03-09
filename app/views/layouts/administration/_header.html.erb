@@ -53,7 +53,7 @@
       <div class="project-context hidden-xs">
         <span class="label"></span>
         <span class="project-selector dropdown-toggle" data-toggle="dropdown">
-          <%= t("header.administration") %>
+          <%= t("header.user_management") %>
           <i class="fa fa-angle-down"></i>
         </span>
 
@@ -62,12 +62,16 @@
           <li>
             <%= link_to "Dashboard", dashboard_index_path %>
           </li>
+	  <% if policy(current_system_user).index? %> 
           <li class="active">
             <%= link_to t("header.user_manangement"), administration_root_path %>
           </li>
+	  <% end %>
+	  <% if policy(AuditLog).search? %>
           <li>
             <%= link_to t("header.audit_log"), audit_logs_root_path %>
           </li>
+	  <% end %>
         </ul>
         <!-- end dropdown-menu-->
 

@@ -7,10 +7,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :set_locale, :authenticate_system_user!, :check_activation_status
   respond_to :html, :js
+  alias_method :current_user, :current_system_user
 
   #rescue_from ::ActiveRecord::RecordInvalid, :with => :handle_invalid_error
   #rescue_from ::ActiveRecord::StaleObjectError, :with => :handle_unsync_error
   #rescue_from Exception, :with => :handle_fatal_error
+
+  rescue_from Pundit::NotAuthorizedError, :with => :handle_unauthorize
 
   def set_locale
     I18n.locale = params[:locale] && I18n.available_locales.include?(params[:locale].to_sym) ? params[:locale] : I18n.default_locale
@@ -58,10 +61,11 @@ class ApplicationController < ActionController::Base
   end
   
   def handle_unauthorize
-    sign_out current_system_user if current_system_user
+    #sign_out current_system_user if current_system_user
     flash[:alert] = "alert.unauthenticated"
     if request.xhr?
-      render :nothing => true, :status => :unauthorized
+      #render :nothing => true, :status => :unauthorized
+      render :js => "window.location = '/dashboard'"
     else
       redirect_to root_path
     end
@@ -86,4 +90,10 @@ class ApplicationController < ActionController::Base
     # TODO: determine what path to redirect to based on role/permission
     "dashboard"
   end
+
+  #def handle_unauthorize
+  #  p "user unauthorizze!!!"
+  #  flash[:alert] = 'unauthorize!' # TODO missing translation
+  #  redirect_to root_path
+  #end
 end

@@ -3,6 +3,10 @@ class AuditLog < ActiveRecord::Base
   validates_presence_of :audit_target, :action_type, :action, :action_status, :action_by, :action_at
   ACTION_TYPE_LIST = ["create", "read", "update", "delete"]
 
+  def self.policy_class
+    AuditLogPolicy
+  end
+
   def self.maintenance_log(action, action_by, session_id, ip, options={}, &block)
     compose_log("maintenance", action, action_by, session_id, ip, options, &block)
   end

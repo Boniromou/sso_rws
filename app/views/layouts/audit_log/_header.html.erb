@@ -62,12 +62,11 @@
 					<li>
             <%= link_to "Dashboard", dashboard_index_path %>
 					</li>
+					<% if policy(current_system_user).index? %>
 					<li>
-						<%= link_to "Administration", administration_root_path %>
+						<%= link_to t("header.user_management"), administration_root_path %>
 					</li>
-					<li>
-						<%= link_to "Property Control", property_control_root_path %>
-					</li>
+					<% end %>
 					<li class="active">
 						<%= link_to "Audit Log", audit_logs_root_path %>
 					</li>

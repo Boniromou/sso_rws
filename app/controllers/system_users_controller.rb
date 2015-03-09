@@ -2,10 +2,10 @@ class SystemUsersController < ApplicationController
   layout proc {|controller| controller.request.xhr? ? false: "administration" }
   respond_to :html, :js
   #after_action :verify_authorized
-  alias_method :current_user, :current_system_user
   
   def index
     @system_users = SystemUser.all
+    authorize current_system_user
     session[:previous_action] = "index"
     respond_to do |format|
       format.html { render file: "system_users/index", formats: [:html] }
@@ -15,6 +15,7 @@ class SystemUsersController < ApplicationController
 
   def show
     @system_user = SystemUser.find_by_id(params[:id])
+    authorize @system_user
     session[:previous_action] = "show"
     respond_to do |format|
       format.html { render file: "system_users/show", formats: [:html] }
@@ -36,6 +37,7 @@ class SystemUsersController < ApplicationController
   def unlock
     AuditLog.system_user_log("unlock", current_system_user.username, sid, client_ip) {
       system_user = SystemUser.find_by_id(params[:id])
+      authorize system_user
       system_user.update_attributes({:status => 1}) if system_user
     }
     redirect_to :back
@@ -45,6 +47,7 @@ class SystemUsersController < ApplicationController
   # edit roles page
   def edit_roles
     @system_user = SystemUser.find_by_id(params[:id])
+    authorize @system_user
     @roles = Role.all
     #respond_with @system_users
     respond_to do |format|
@@ -56,6 +59,7 @@ class SystemUsersController < ApplicationController
   def update_roles
     AuditLog.system_user_log("edit_role", current_system_user.username, sid, client_ip) {
       system_user = SystemUser.find_by_id(params[:id])
+      authorize system_user
       if params[:commit] == I18n.t("general.confirm")
         system_user.update_roles(params[:roles])
         flash[:success] = "flash_message.success"

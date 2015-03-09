@@ -50,7 +50,13 @@
                         <tbody>
                           <% @system_users.each do |su| %>
                             <tr align="center">
-                              <td id="<%=su.id%>"><%=link_to "#{su.username}", system_user_path(su), :remote => true %></td>
+                              <td id="<%=su.id%>">
+				<% if policy(su).show? %>
+				  <%=link_to "#{su.username}", system_user_path(su), :remote => true %>
+				<% else %>
+				  <%= su.username %>
+				<% end %>
+			      </td>
                               <td id="<%=su.id%>"><%=t("#{system_user_status_format(su.status)}") %></td>
                               <td id="<%=su.id%>">
   				<% if su.status %>

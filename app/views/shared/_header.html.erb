@@ -63,7 +63,7 @@
             <%= link_to "Dashboard", dashboard_path %>
 					</li>
 					<li <%= controller_layout=="administration" ? " class=active" : "" %>>
-						<%= link_to "Administration", administration_path %>
+						<%= link_to t("header.user_manangement"), administration_path %>
 					</li>
 					<li <%= controller_layout=="property_control" ? " class=active" : "" %>>
 						<%= link_to "Property Control", property_control_path %>
