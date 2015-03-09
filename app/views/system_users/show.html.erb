@@ -22,8 +22,10 @@
   </tr>
   <tr>
     <td><%=t("role.role") %>:</td>
-    <td><%=t("#{roles_format(@system_user)}")%></td>
-    <% if !disable_edit_roles_button?(@system_user) %>
+    <td>
+      <%=t("#{roles_format(@system_user)}")%>
+    </td>
+    <% if allow_edit_roles?(@system_user) %>
       <td>
 	<%=button_to t("general.edit"), {:controller => 'system_users', :action => 'edit_roles', :id => @system_user.id}, :class => "btn btn-primary", :remote => true %>
       </td>
