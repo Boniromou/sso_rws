@@ -1,5 +1,5 @@
 class SystemUsersController < ApplicationController
-  layout proc {|controller| controller.request.xhr? ? false: "administration" }
+  layout proc {|controller| controller.request.xhr? ? false: "user_management" }
   respond_to :html, :js
   #after_action :verify_authorized
   

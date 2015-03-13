@@ -1,3 +1,27 @@
 class DashboardController < ApplicationController
-  layout proc {|controller| controller.request.xhr? ? false: "dashboard" }
+  def home
+    respond_to do |format|
+      format.html { render file: "dashboard/home", :layout => "home", formats: [:html] }
+      format.js { render template: "dashboard/home", formats: [:js] }
+    end
+  end
+
+  def user_management
+    respond_to do |format|
+      format.html { render file: "dashboard/user_management", :layout => "user_management", formats: [:html] }
+      format.js { render template: "dashboard/user_management", formats: [:js] }
+    end
+  end
+
+  def audit_log
+    respond_to do |format|
+      format.html { render file: "dashboard/audit_log", :layout => "audit_log", formats: [:html] }
+      format.js { render template: "dashboard/audit_log", formats: [:js] }
+    end
+  end
+
+  protected
+  def dashboard_layout
+    request.xhr? ? false : params[:action]
+  end
 end

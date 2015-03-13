@@ -13,7 +13,7 @@ en:
     time_conflict: The schedule conflicts with previous schedule [Maintenance id =%{maintenance_id}]
     invalid_property: property can not be null
   title:
-    title: Admin Portal
+    title: User Management
     login_title: Admin Portal - Login
     signup_title: Admin Portal - Registration
   general:
@@ -131,8 +131,10 @@ en:
     broken: broken
     cancelled: cancelled
   tree_view:
-    create_maintenance: Create Maintenance
-    search_maintenance: Search Maintenance
+    home: Home
+    dashboard: dashboard
+    list_user: List System Users
+    list_role: List Roles
   login_page:
     username_tooltip: please enter username
     password_tooltip: Enter your password

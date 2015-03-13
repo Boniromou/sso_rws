@@ -4,8 +4,7 @@
   <%= render "shared/head" %>
 </head>
 <body>
-  <%= render "layouts/dashboard/header" %>
-  <!--%= render "shared/left_panel" --%>
+  <%= render partial: "shared/header", locals: { selected_page_tab: "home" } %>
   <%= render "shared/main_panel" %>
   <%= render "shared/footer" %>
   <%= javascript_include_tag "application" %>

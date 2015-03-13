@@ -16,19 +16,14 @@
 
 	<% if policy(current_system_user).index? %>
         <ul>
-          <li>
-            <%= link_to "#", :title => t("header.user_management") do %>
-              <i class="fa fa-lg fa-fw fa-user"></i>
-              <span class="menu-item-parent">
-                <%= t("header.user_management") %>
-              </span>
+          <li id="nav_dashboard">
+            <%= link_to user_management_dashboard_index_path, :title => t("tree_view.dashboard"), :remote => true do %>
+              <i class="fa fa-home"></i> <span class="menu-item-parent"><%= t("tree_view.dashboard") %></span>
             <% end %>
-	    <% if policy(current_system_user).index? %>
-            <ul>
-              <li id="nav_list_system_users">
-                <%= link_to t("user.list_users"), system_users_path, :remote => true %>
-              </li>
-            </ul>
+          </li>
+          <li id="nav_list_system_users">
+            <%= link_to system_users_path, :title => t("tree_view.list_role"), :remote => true do %>
+              <i class="fa fa-search"></i> <span class="menu-item-parent"><%= t("tree_view.list_role") %></span>
             <% end %>
           </li>
         </ul>

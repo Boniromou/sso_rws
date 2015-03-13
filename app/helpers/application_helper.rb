@@ -31,6 +31,16 @@ module ApplicationHelper
     end
   end
 
+  def dropbox_menu_for_select(tabs, selected=nil)
+    content_tag :ul, :class => "dropdown-menu" do
+      tabs.each do |title, url|
+        content_tag :li, :class => (selected==title ? "active" : "") do
+          link_to title, url
+        end
+      end
+    end
+  end
+
   def parse_date(date_str, is_end_time=false)
     if is_end_time
       Time.strptime(date_str + " 23:59:59", "%Y-%m-%d %H:%M:%S")
