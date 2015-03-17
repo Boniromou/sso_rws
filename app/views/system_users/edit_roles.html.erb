@@ -3,24 +3,24 @@
 
 <%= form_tag({action: :update_roles}, :method => :put, :class => "smart-form", :remote => true) do %>
   <header role="heading">
+    <%= t("role.role") %>
   </header>
 
+  <% @apps.each do |app| %>
   <fieldset>
+    <%= app.name %>
     <section>
-    <% @roles.each do |role| %>
+    <% app.roles.each do |role| %>
       <label class="radio">
         <%= radio_button_tag "roles", role.id, current_role?(@system_user, role.id) %>
         <i></i>
         <%=t("role.#{role.name}") %>
       </label>
     <% end %>
-    <label class="radio">
-      <%= radio_button_tag 'roles', -1, @system_user.roles.blank? ? true:false %>
-      <i></i>
-      <%=t("general.na") %>
-    </label>
     </section>
   </fieldset>
+  <% end %>
+
 
   <footer>
     <%= submit_tag(t("general.confirm"), :class => "btn btn-primary", :remote => true) %> <%= link_to t("general.cancel"), system_user_path(@system_user), :class => "btn btn-default", :remote => true %>

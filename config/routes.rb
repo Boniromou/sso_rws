@@ -12,12 +12,13 @@ SsoRws::Application.routes.draw do
 
   #match 'home' => 'system_user_sessions#home', :as => :home
 
-  resources :roles
+  resources :roles, :only => [:index]
   resources :system_users
   resources :dashboard, :only => [:index] do
     collection do
       get 'home'
       get 'user_management'
+      get 'role_management'
       get 'audit_log'
     end
   end
@@ -32,6 +33,7 @@ SsoRws::Application.routes.draw do
   #get 'audit_logs' => 'audit_logs#index', :as => :audit_logs
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'system_users#index', :as => :user_management_root
+  get 'role_management' => 'roles#index', :as => :role_management_root
   get 'audit_logs' => 'audit_logs#search', :as => :audit_logs_root
 
   # system users

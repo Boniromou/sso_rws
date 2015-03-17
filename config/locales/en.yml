@@ -53,6 +53,7 @@ en:
     edit_role: Edit Role
   header:
     user_management: User Management
+    role_management: Role Management
     property_management: Property Management
     administration: Administration
     home: Home
@@ -132,7 +133,7 @@ en:
     cancelled: cancelled
   tree_view:
     home: Home
-    dashboard: dashboard
+    dashboard: Dashboard
     list_user: List System Users
     list_role: List Roles
   login_page:

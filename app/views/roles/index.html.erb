@@ -1,15 +1,14 @@
-<h1>Listing roles</h1>
+<h1><%= t("role.role") %></h1>
 
-<%=t("alert.invalid_login") %>
- 
-<table>
-  <tr>
-    <th>name</th>
-  </tr>
- 
-  <% @roles.each do |r| %>
-    <tr>
-      <td><%=t("role.#{r.name}") %></td>
-    </tr>
+<% @apps.each do |app| %>
+
+<%= app.name %>
+  <% app.roles.each do |role| %>
+  <%= role.name %>
+    <% role.permissions.each do |p| %>
+      <%= p.name %>
+    <% end %>
+    <br><br/>
   <% end %>
-</table>
+  <br><br/>
+<% end %>
