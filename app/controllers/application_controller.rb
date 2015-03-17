@@ -88,6 +88,6 @@ class ApplicationController < ActionController::Base
   
   def default_selected_function
     # TODO: determine what path to redirect to based on role/permission
-    "dashboard"
+    "home"
   end
 end

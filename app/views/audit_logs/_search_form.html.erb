@@ -22,8 +22,6 @@
                       <select class="input-sm" name="target_name" id="target_name">
                         <option value="all"><%= t("general.all") %></option>
                         <option value="system_user"><%= t("user.system_user") %></option>
-                        <option value="maintenance"><%= t("maintenance.title") %></option>
-                        <option value="propagation"><%= t("propagation.title") %></option>
                       </select>
                     </label>
                   </section>
@@ -53,44 +51,15 @@
           <% end %>
           <!--/form-->
           
+          <%= gen_hidden_action_list(@action_lists) -%>
+          
           <script type="text/javascript">
+            //dynamic action menu
             $(document).ready(function(){
-              $("select#target_name").change(function() {
-                var target = $(this).val();
-                $.get("action_list/" + target);
-              });
+               $("select#target_name").change(function() {
+                 var target = $(this).val();
+                 var action_list = $("div#action_lists_to_load div#" + target).html();
+                 $("select#action_list").html(action_list);
+               });
             });
-            /*
-            $.getJSON("action_list/" + target + ".json", function(actions) { 
-              //console.log(actions);
-              $("select#action").empty();
-              $.each(actions, function(val, text) {
-                //console.log(val);
-                //console.log(text);
-                $("select#action").append( $('<option></option>').val(val).html(text) );
-              });
-            });
-            */
-            /*
-            var maintenance_actions = ["Create", "Cancel", "Complete", "Extend", "Reschedule", "Expire"];
-            var system_user_actions = ["Lock", "Unlock", "Edit Role"];
-            
-            $(document).ready(function(){
-              $("select#target_name").change(function() {
-                var target = $(this).val();
-                if ( target == "all" ) {
-                  $("select#action").empty();
-                  $("select#action").append( $('<option></option>').val("all").html("All") );
-                } else {
-                  var actions;
-                  if ( target == "maintenance" ) { actions = maintenance_actions; }
-                  if ( target == "system_user" ) { actions = system_user_actions; }
-                  $("select#action").empty();
-                  $.each(actions, function(val, text) {
-                    $("select#action").append( $('<option></option>').val(val).html(text) );
-                  });
-                }
-              });
-            });
-            */
           </script>

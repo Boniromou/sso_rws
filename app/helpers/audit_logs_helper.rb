@@ -45,4 +45,15 @@ module AuditLogsHelper
         nil
     end
   end
+
+  def gen_hidden_action_list(action_lists, dom_id="action_lists_to_load")
+    content_tag :div, :id => dom_id, :style => "display: none;" do
+      action_lists.each do |audit_target, actions|
+        actions_dom = content_tag(:div, :id => audit_target) do
+          concat(options_for_select(actions.map { |action, action_local_key| [t(action_local_key), action] }))
+        end
+        concat actions_dom
+      end
+    end
+  end
 end
