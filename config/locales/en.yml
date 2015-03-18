@@ -66,6 +66,7 @@ en:
     helpdesk: Helpdesk
     user_manager: User Manager
     auditor: Auditor
+    service_desk_specialist: Service Desk Specialist
   auditlog:
     search_audit: Search Audit Log
     audit_time: Time

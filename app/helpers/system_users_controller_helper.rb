@@ -26,7 +26,17 @@ module SystemUsersControllerHelper
 
   def current_role?(system_user, role_id)
     return false if system_user.role_assignments.blank?
-    return true if system_user.role_assignments[0].role_id == role_id
+    return true if system_user.role_assignments.find_by_role_id(role_id)
     return false
+  end
+
+  def current_app?(system_user, app_id)
+    #assigned_apps = system_user.app_system_users
+    #if assigned_apps && 
+    if system_user.app_system_users.find_by_app_id(app_id)
+      true
+    else
+      false
+    end
   end
 end

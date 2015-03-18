@@ -8,21 +8,53 @@
 
   <% @apps.each do |app| %>
   <fieldset>
-    <%= app.name %>
     <section>
-    <% app.roles.each do |role| %>
-      <label class="radio">
-        <%= radio_button_tag "roles", role.id, current_role?(@system_user, role.id) %>
-        <i></i>
-        <%=t("role.#{role.name}") %>
-      </label>
-    <% end %>
+      <div class="row">
+        <div class="col col-12">
+          <label class="checkbox">
+            <%= check_box_tag "enabled_#{app.name}", "checked", @current_app_ids.include?(app.id) ? true : false %>
+            <i></i>
+            <%= label_tag "#{app.name}" %>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="row">
+        <div class="col col-12">
+        <% app.roles.each do |role| %>
+          <%= label_tag nil, nil, :class => @current_app_ids.include?(app.id) ? "radio" : "radio state-disabled" do %>
+            <%= radio_button_tag "#{app.name}", role.id, @current_role_ids.include?(role.id) %>
+            <i></i>
+            <%= label_tag t("role.#{role.name}") %>
+          <% end %>
+        <% end %>
+        </div>
+      </div>
     </section>
   </fieldset>
   <% end %>
-
 
   <footer>
     <%= submit_tag(t("general.confirm"), :class => "btn btn-primary", :remote => true) %> <%= link_to t("general.cancel"), system_user_path(@system_user), :class => "btn btn-default", :remote => true %>
   </footer>
 <% end %>
+
+<script type = "text/javascript" >
+  $(document).ready(function(){
+    $("div#content [type=checkbox]").on('click', function() {
+      //console.log($(this));
+      if ($(this).prop('checked')) {
+        var radio_btns = $(this).closest("fieldset").find("[type=radio]");
+        radio_btns.parent().removeClass("state-disabled");
+        radio_btns.removeAttr('disabled');
+      } else {
+        var radio_btns = $(this).closest("fieldset").find("[type=radio]");
+        radio_btns.parent().addClass("radio state-disabled");
+        radio_btns.attr("disabled", "disabled");
+        radio_btns.removeAttr('checked');
+      }
+    });
+  });
+</script>

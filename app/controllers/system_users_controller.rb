@@ -48,8 +48,11 @@ class SystemUsersController < ApplicationController
   def edit_roles
     @system_user = SystemUser.find_by_id(params[:id])
     authorize @system_user
-    @roles = Role.all
+    @apps = App.all
+    @current_role_ids = @system_user.role_assignments.select(:role_id).map { |role_asm| role_asm.role_id }
+    @current_app_ids = @system_user.app_system_users.select(:app_id).map { |app_asm| app_asm.app_id }
     #respond_with @system_users
+
     respond_to do |format|
       format.html { render file: "system_users/edit_roles", formats: [:html] }
       format.js { render file: "system_users/edit_roles", formats: [:js] }
@@ -57,14 +60,15 @@ class SystemUsersController < ApplicationController
   end
 
   def update_roles
-    AuditLog.system_user_log("edit_role", current_system_user.username, sid, client_ip) {
+    AuditLog.system_user_log("edit_role", current_system_user.username, sid, client_ip) do
       system_user = SystemUser.find_by_id(params[:id])
       authorize system_user
       if params[:commit] == I18n.t("general.confirm")
-        system_user.update_roles(params[:roles])
+        system_user.update_roles(role_ids_param)
+
         flash[:success] = "flash_message.success"
       end
-    }
+    end
     @system_user = SystemUser.find_by_id(params[:id])
     if request.xhr?
       show
@@ -74,6 +78,13 @@ class SystemUsersController < ApplicationController
   end
 
   private
+  def role_ids_param
+    role_ids = App.all.map do |app|
+      params[app.name.to_sym]
+    end
+    role_ids.compact.uniq
+  end
+
   def refresh_last_page
     #send session[:previous_action]
      render :action => session[:previous_action]

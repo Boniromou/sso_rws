@@ -17,22 +17,36 @@ class SystemUser < ActiveRecord::Base
   def activated?
     self.status
   end
-
+=begin
   def update_roles(role_id)
     unless role_id.blank?
       if role_id.to_i > 0
         if self.roles.blank?
-	  self.role_assignments.create({:role_id => role_id})
-	else
-	  if self.role_assignments[0].role_id.to_i != role_id.to_i
-	    self.role_assignments[0].role_id = role_id
-	    self.role_assignments[0].save!
-	  end
+          self.role_assignments.create({:role_id => role_id})
+        else
+          if self.role_assignments[0].role_id.to_i != role_id.to_i
+            self.role_assignments[0].role_id = role_id
+            self.role_assignments[0].save!
+          end
         end
       elsif role_id.to_i == -1
-	if !self.role_assignments[0].blank?
-	  self.role_assignments[0].destroy
-	end
+        if !self.role_assignments[0].blank?
+          self.role_assignments[0].destroy
+        end
+      end
+    end
+  end
+=end
+  def update_roles(role_ids)
+    existing_roles = self.role_assignments.map { |role_assignment| role_assignment.role_id }
+    diff_role_ids = self.class.diff(existing_roles, role_ids)
+    transaction do
+      diff_role_ids.each do |role_id|
+        if existing_roles.include?(role_id)
+          revoke_role(role_id)
+        elsif 
+          assign_role(role_id)
+        end
       end
     end
   end
@@ -50,8 +64,43 @@ class SystemUser < ActiveRecord::Base
     app = App.find_by_name(APP_NAME)
     self.roles.each do |role|
       if role.app.id == app.id
-	return role
+        return role
       end
     end
+  end
+
+  private
+  # a = [2, 4, 6, 8]
+  # b = [1, 2, 3, 4]
+  #  => [6, 8, 1, 3]
+  def self.diff(x,y)
+    o = x
+    x = x.reject{|a| if y.include?(a); a end }
+    y = y.reject{|a| if o.include?(a); a end }
+    x | y
+  end
+
+  def assign_role(role_id)
+    Rails.logger.info "Grant role (id=#{role_id}) for #{self.class.name} (id=#{self.id})"
+    self.role_assignments.create({:role_id => role_id})
+    role = Role.find_by_id(role_id)
+    add_app_assignment(role.app_id)
+  end
+
+  def revoke_role(role_id)
+    Rails.logger.info "Revoke role (id=#{role_id}) for #{self.class.name} (id=#{self.id})"
+    self.role_assignments.find_by_role_id(role_id).destroy
+    role = Role.find_by_id(role_id)
+    remove_app_assignment(role.app_id)
+  end
+
+  def add_app_assignment(app_id)
+    Rails.logger.info "Assign App (id=#{app_id}) for #{self.class.name} (id=#{self.id})"
+    self.app_system_users.create({:app_id => app_id})
+  end
+
+  def remove_app_assignment(app_id)
+    Rails.logger.info "Remove App (id=#{app_id}) for #{self.class.name} (id=#{self.id})"
+    self.app_system_users.find_by_app_id(app_id).destroy
   end
 end
