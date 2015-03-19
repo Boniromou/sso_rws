@@ -10,6 +10,7 @@ SsoRws::Application.routes.draw do
     post "/register" => "system_user_registrations#create"
   end
 
+  post "/internal/system_user_sessions" => "internal/system_user_sessions#create"
   #match 'home' => 'system_user_sessions#home', :as => :home
 
   resources :roles
