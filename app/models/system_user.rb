@@ -70,6 +70,21 @@ class SystemUser < ActiveRecord::Base
     end
   end
 
+  def cache_info(app_name)
+    cache_status
+    cache_permissions(app_name) unless is_admin?
+  end
+
+  def lock
+    update_attributes({:status => 0})
+    cache_status
+  end
+
+  def unlock
+    update_attributes({:status => 1})
+    cache_status
+  end
+
   private
   # a = [2, 4, 6, 8]
   # b = [1, 2, 3, 4]
@@ -105,11 +120,6 @@ class SystemUser < ActiveRecord::Base
     self.app_system_users.find_by_app_id(app_id).destroy
   end
 
-  def cache_info(app_name)
-    cache_status
-    cache_permissions(app_name) unless is_admin?
-  end
-
   def cache_status
     cache_key = "#{self.id}"
     cache_hash = {}
@@ -135,13 +145,4 @@ class SystemUser < ActiveRecord::Base
     Rails.cache.write(cache_key, {:permissions => {:role => role.name, :permissions => perm_hash}})
   end
 
-  def lock
-    update_attributes({:status => 0})
-    cache_status 
-  end
-  
-  def unlock
-    update_attributes({:status => 1})
-    cache_status
-  end
 end
