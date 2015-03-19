@@ -80,7 +80,8 @@ class SystemUsersController < ApplicationController
   private
   def role_ids_param
     role_ids = App.all.map do |app|
-      params[app.name.to_sym]
+      v = params[app.name.to_sym]
+      v ? v.to_i : nil
     end
     role_ids.compact.uniq
   end
