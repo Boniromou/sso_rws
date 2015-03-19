@@ -32,9 +32,9 @@ SsoRws::Application.routes.draw do
   #get 'property_control' =>  'application#property_control_layout', :as => :property_control
   #get 'audit_logs' => 'audit_logs#index', :as => :audit_logs
   get 'home' => 'dashboard#home', :as => :home_root
-  get 'user_management' => 'system_users#index', :as => :user_management_root
-  get 'role_management' => 'roles#index', :as => :role_management_root
-  get 'audit_logs' => 'audit_logs#search', :as => :audit_logs_root
+  get 'user_management' => 'dashboard#user_management', :as => :user_management_root
+  get 'role_management' => 'dashboard#role_management', :as => :role_management_root
+  get 'audit_logs' => 'dashboard#audit_log', :as => :audit_logs_root
 
   # system users
   post 'system_users/:id/lock' => 'system_users#lock'

@@ -20,6 +20,13 @@ class DashboardController < ApplicationController
     end
   end
 
+  def role_management
+    respond_to do |format|
+      format.html { render file: "dashboard/role_management", :layout => "role_management", formats: [:html] }
+      format.js { render template: "dashboard/role_management", formats: [:js] }
+    end
+  end
+
   protected
   def dashboard_layout
     request.xhr? ? false : params[:action]
