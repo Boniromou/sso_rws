@@ -122,9 +122,10 @@ class SystemUser < ActiveRecord::Base
 
   def cache_status
     cache_key = "#{self.id}"
-    cache_hash = {}
-    cache_hash[cache_key] = {:status => self.status, :admin => self.admin}
+    #cache_hash = {}
+    cache_hash = {:status => self.status, :admin => self.admin}
     Rails.cache.write(cache_key, cache_hash)
+p Rails.cache.fetch "#{self.id}"
   end
 
   def cache_permissions(app_name)
