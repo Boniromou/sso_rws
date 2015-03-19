@@ -27,7 +27,8 @@ class SystemUsersController < ApplicationController
     AuditLog.system_user_log("lock", current_system_user.username, sid, client_ip) {
       system_user = SystemUser.find_by_id(params[:id])
       authorize system_user
-      system_user.update_attributes({:status => 0}) if system_user
+      #system_user.update_attributes({:status => 0}) if system_user
+      system_user.lock
     }
 
     redirect_to :back
@@ -38,7 +39,7 @@ class SystemUsersController < ApplicationController
     AuditLog.system_user_log("unlock", current_system_user.username, sid, client_ip) {
       system_user = SystemUser.find_by_id(params[:id])
       authorize system_user
-      system_user.update_attributes({:status => 1}) if system_user
+      system_user.unlock
     }
     redirect_to :back
     #refresh_last_page

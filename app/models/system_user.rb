@@ -60,8 +60,9 @@ class SystemUser < ActiveRecord::Base
     self.auth_source.domain ? "#{self.auth_source.domain}\\#{self.username}" : self.username
   end
 
-  def role_in_app
-    app = App.find_by_name(APP_NAME)
+  def role_in_app(app_name=nil)
+    app_name = app_name || APP_NAME
+    app = App.find_by_name(app_name)
     self.roles.each do |role|
       if role.app.id == app.id
         return role
@@ -102,5 +103,45 @@ class SystemUser < ActiveRecord::Base
   def remove_app_assignment(app_id)
     Rails.logger.info "Remove App (id=#{app_id}) for #{self.class.name} (id=#{self.id})"
     self.app_system_users.find_by_app_id(app_id).destroy
+  end
+
+  def cache_info(app_name)
+    cache_status
+    cache_permissions(app_name) unless is_admin?
+  end
+
+  def cache_status
+    cache_key = "#{self.id}"
+    cache_hash = {}
+    cache_hash[cache_key] = {:status => self.status, :admin => self.admin}
+    Rails.cache.write(cache_key, cache_hash)
+  end
+
+  def cache_permissions(app_name)
+    cache_key = "#{app_name}:permissions:#{self.id}"
+    role = role_in_app(app_name)
+    permissions = role.permissions
+    targets = permissions.map{|x| x.target}.uniq
+    perm_hash = {}
+    targets.each do |t|
+      actions = []
+      permissions.each do |perm|
+	if perm.target == t
+	  actions << perm.action
+	end
+      end
+      perm_hash[t.to_sym] = actions
+    end
+    Rails.cache.write(cache_key, {:permissions => {:role => role.name, :permissions => perm_hash}})
+  end
+
+  def lock
+    update_attributes({:status => 0})
+    cache_status 
+  end
+  
+  def unlock
+    update_attributes({:status => 1})
+    cache_status
   end
 end
