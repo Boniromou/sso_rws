@@ -35,5 +35,12 @@ SsoRws::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
+  config.cache_store = :dalli_store,
+                        'int-cons-vapp01.rnd.laxino.com:11211', 'int-cons-vapp01.rnd.laxino.com:11212',
+                        {:namespace => 'cirrus_int',
+                         :expires_in => 1.day,
+                         :socket_timeout => 3,
+                         :compress => true }
+
   SITE_DOMAIN = 'laxino.com'
 end

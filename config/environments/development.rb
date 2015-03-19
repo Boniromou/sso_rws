@@ -36,7 +36,12 @@ SsoRws::Application.configure do
   config.assets.debug = true
 
 #  SITE_DOMAIN = 'laxino.com'
-  config.cache_store = :dalli_store, 'int-cons-vapp01.rnd.laxino.com:11211', { :namespace => 'cirrus_dev', :expires_in => 1.day, :socket_timeout => 3, :compress => true }
+  config.cache_store = :dalli_store,
+                        'int-cons-vapp01.rnd.laxino.com:11211', 'int-cons-vapp01.rnd.laxino.com:11212',
+                        {:namespace => 'cirrus_dev',
+                         :expires_in => 1.day,
+                         :socket_timeout => 3,
+                         :compress => true }
 end
 
 APP_NAME = 'user'
