@@ -39,7 +39,7 @@ class ApplicationController < ActionController::Base
       handle_unauthorize
     end
   end
-  
+ 
   # TODO: migrate these later
   #############################
   def administration_layout

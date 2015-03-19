@@ -68,6 +68,7 @@ class SystemUser < ActiveRecord::Base
         return role
       end
     end
+    return nil
   end
 
   def cache_info(app_name)
@@ -122,15 +123,14 @@ class SystemUser < ActiveRecord::Base
 
   def cache_status
     cache_key = "#{self.id}"
-    #cache_hash = {}
     cache_hash = {:status => self.status, :admin => self.admin}
     Rails.cache.write(cache_key, cache_hash)
-p Rails.cache.fetch "#{self.id}"
   end
 
   def cache_permissions(app_name)
     cache_key = "#{app_name}:permissions:#{self.id}"
     role = role_in_app(app_name)
+    return unless role
     permissions = role.permissions
     targets = permissions.map{|x| x.target}.uniq
     perm_hash = {}

@@ -17,6 +17,9 @@ class Internal::SystemUserSessionsController < ApplicationController
     elsif !sys_usr.activated?
        message = "alert.inactive_account"
        Rails.logger.info "SystemUser[username=#{username}][domain=#{auth_source.domain}] Login failed. Inactive_account"
+    elsif !sys_usr.is_admin? && !sys_usr.role_in_app(app_name)
+       message = "alert.account_no_role"
+       Rails.logger.info "SystemUser[username=#{username}][domain=#{auth_source.domain}] Login failed. No role assiged"
     else
       auth_source = auth_source.becomes(auth_source.auth_type.constantize)
       if auth_source.authenticate(sys_usr.login, password)

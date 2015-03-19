@@ -22,6 +22,13 @@ module Devise
           Rails.logger.info "SystemUser[username=#{username}][domain=#{auth_source.domain}] Login failed. Inactive_account"
           return
         end
+ 	unless sys_usr.is_admin?
+          unless sys_usr.role_in_app
+	    fail!("alert.account_no_role")
+            Rails.logger.info "SystemUser[username=#{username}][domain=#{auth_source.domain}] Login failed. No role assigned"
+            return
+          end
+        end
 #        auth_source = AuthSource.find_by_id(sys_usr.auth_source_id)
         auth_source = auth_source.becomes(auth_source.auth_type.constantize)
         if auth_source.authenticate(sys_usr.login, password)
