@@ -5,10 +5,10 @@ class Role < ActiveRecord::Base
   has_many :permissions, :through => :role_permissions
   belongs_to :app 
 
-  def has_permission?(action)
-    result = self.permissions.collect{|x| x.action}.include?(action)
-p "00000 #{action} 00000"
- p result
-    result
+  def has_permission?(target, action)
+    result = self.permissions.collect{|x| {:action => x.action, :target => x.target}}.include?({:action => action, :target => target})
+   p "has permission on #{target} and #{action}"
+   p result
+   result
   end
 end

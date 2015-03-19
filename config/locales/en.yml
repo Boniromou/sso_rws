@@ -4,18 +4,20 @@ en:
     locale_key: English
   alert:
     invalid_login: Invalid user name or password
-    inactive_account: The account is inactive, please contact User Manager for account
-      activation
+    inactive_account: The account is inactive, please contact the System Administrator
+      for account activation
     registered_account: The account has been registered
-    signup_completed: Sign up completed, please contact User Manager for account activation
+    signup_completed: Sign up completed, please contact the System Administrator for
+      account activation
     unauthenticated: you need to sign in or sign up before continuing
+    account_no_role: you account is not ready to use, please contact the System Administrator.
     invalid_time_range: Invalid time range
     time_conflict: The schedule conflicts with previous schedule [Maintenance id =%{maintenance_id}]
     invalid_property: property can not be null
   title:
     title: User Management
-    login_title: Admin Portal - Login
-    signup_title: Admin Portal - Registration
+    login_title: Login
+    signup_title: Registration
   general:
     login: Login
     logout: logout
@@ -29,7 +31,6 @@ en:
     no_result_found: No Record Found
     error_message: Error Message
     sign_up: Sign Up
-    na: N/A
     operation: Operation
     start_time: Start Time
     end_time: End Time
@@ -38,10 +39,11 @@ en:
     success: Success
     fail: Fail
     all: All
+    dashboard: Dashboard
   user:
     user_name: User Name
     password: Password
-    list_users: List System Users
+    list_users: System User
     system_user: System User
     name: Name
     status: Status
@@ -53,20 +55,14 @@ en:
     edit_role: Edit Role
   header:
     user_management: User Management
-    role_management: Role Management
     property_management: Property Management
     administration: Administration
     home: Home
     audit_log: Audit Log
+    role_management: Roles Management
   role:
     role: Role
-    root_user: Root user
-    system_operator: System Operator
-    property_operator: Property Operator
-    helpdesk: Helpdesk
-    user_manager: User Manager
-    auditor: Auditor
-    service_desk_specialist: Service Desk Specialist
+    na: No Permission
   auditlog:
     search_audit: Search Audit Log
     audit_time: Time
@@ -84,59 +80,9 @@ en:
     remove_type: Remove
     update_type: Update
     delete_type: Delete
-  maintenance:
-    title: Maintenance
-    maintenance_time: Maintenance Time
-    days: Days
-    hours: Hours
-    neverend: Never End
-    on_going: On Going
-    reschedule: Reschedule
-    extend: Extend
-    maintenance_id: Maintenance ID
-    property: Property
-    duration: Duration
-    allow_test: Allow Test
-    propagation_id: Propagation ID
-    time_stamp: Time Stamp
-    allow_test_account_value: Enabled
-    disallow_test_account_value: Disabled
-    scheduled_at: Scheduled at
-    period: Period
-    test_account: Test Acc.
-  maintenance_action:
-    create: Create
-    cancel: Cancel
-    complete: Complete
-    reschedule: Reschedule
-    expire: Expire
-    extend: Extend
-  maintenance_status:
-    scheduled: Scheduled
-    activating: Activating
-    activated: Activated
-    completing: Completing
-    completed: Completed
-    cancelling: Cancelling
-    cancelled: Cancelled
-    expired: Expired
-  propagation:
-    action: Action
-    created_at: Created at
-    resume: Resume
-  propagation_action:
-    activate: activate
-    extend: extend
-    complete: complete
-    propagating: propagating
-    propagated: propagated
-    broken: broken
-    cancelled: cancelled
   tree_view:
-    home: Home
-    dashboard: Dashboard
-    list_user: List System Users
-    list_role: List Roles
+    create_maintenance: Create Maintenance
+    search_maintenance: Search Maintenance
   login_page:
     username_tooltip: please enter username
     password_tooltip: Enter your password
@@ -148,4 +94,7 @@ en:
     fail: Update Fail.
     lock_error: Page has been updated, please try again.
     time_invalid: Time invalid.
-    not_allow_propagation: Another propagation job is running, please wait.
+    not_authorize: You are not authorize for this request.
+  propagation:
+    title: Propagation
+    error: Error
