@@ -1,11 +1,15 @@
-<article class="col-xs-12 col-sm-12 col-md-12 col-lg-3">
+<article class="col-xs-12 col-sm-12 col-md-12 col-lg-5">
 
 <h2><%= @system_user.username %></h2>
 
 <table class="table table-hover table-striped">
   <tr>
     <td><%=t("user.status")%>:</td>
-    <td><%= t("#{system_user_status_format(@system_user.status)}") %></td>
+    <td>
+      <div class="col-md-12">
+        <%= t("#{system_user_status_format(@system_user.status)}") %>
+      </div>
+    </td>
     <% if @system_user.status %>
       <% if policy(@system_user).lock? %>
         <td>
@@ -23,11 +27,19 @@
   <tr>
     <td><%=t("role.role") %>:</td>
     <td>
-      <%=t("#{roles_format(@system_user)}")%>
+    <% @system_user.roles.each do |role| %>
+      <div class="col-md-4">
+        <%= "#{role.app.name.titleize}:" %>
+      </div>
+      <div class="col-md-8">
+        <%= "#{role.name.titleize}" %>
+      </div>
+      <br>
+    <% end %>
     </td>
     <% if allow_edit_roles?(@system_user) %>
       <td>
-	<%=button_to t("general.edit"), {:controller => 'system_users', :action => 'edit_roles', :id => @system_user.id}, :class => "btn btn-primary", :remote => true %>
+        <%=button_to t("general.edit"), {:controller => 'system_users', :action => 'edit_roles', :id => @system_user.id}, :class => "btn btn-primary", :remote => true %>
       </td>
     <% end %>
   </tr>

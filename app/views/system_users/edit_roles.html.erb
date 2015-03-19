@@ -14,7 +14,7 @@
           <label class="checkbox">
             <%= check_box_tag "enabled_#{app.name}", "checked", @current_app_ids.include?(app.id) ? true : false %>
             <i></i>
-            <%= label_tag "#{app.name}" %>
+            <%= label_tag "#{app.name.titleize}" %>
           </label>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <%= label_tag nil, nil, :class => @current_app_ids.include?(app.id) ? "radio" : "radio state-disabled" do %>
             <%= radio_button_tag "#{app.name}", role.id, @current_role_ids.include?(role.id) %>
             <i></i>
-            <%= label_tag t("role.#{role.name}") %>
+            <%= label_tag nil, "#{role.name.titleize}" %>
           <% end %>
         <% end %>
         </div>

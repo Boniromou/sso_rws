@@ -44,7 +44,7 @@ SsoRws::Application.routes.draw do
 
   # audit_log
   match 'search_audit_logs' => 'audit_logs#search', :via => [:get, :post], :as => :search_audit_logs
-  get 'action_list/:target' => 'audit_logs#action_list'
+  #get 'action_list/:target' => 'audit_logs#action_list'
 
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
