@@ -14,6 +14,7 @@ class DashboardController < ApplicationController
   end
 
   def audit_log
+    authorize :dashboard, :audit_log?
     respond_to do |format|
       format.html { render file: "dashboard/audit_log", :layout => "audit_log", formats: [:html] }
       format.js { render template: "dashboard/audit_log", formats: [:js] }
