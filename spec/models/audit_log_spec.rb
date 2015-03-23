@@ -9,23 +9,6 @@ describe AuditLog do
     AuditLog.delete_all
   end
 
-  describe "#maintenance_log" do
-    it 'should create an audit log for maintenance correctly' do
-      AuditLog.maintenance_log("create", "portal.admin", "qwer1234", "127.0.0.1", { :action_at => Time.now })
-      al = AuditLog.first
-      expect(al.audit_target).to eq("maintenance")
-      expect(al.action_type).to eq("create")
-      expect(al.action).to eq("create")
-      expect(al.action_status).to eq("success")
-      expect(al.action_error).to be_nil 
-      expect(al.session_id).to eq("qwer1234")
-      expect(al.ip).to eq("127.0.0.1")
-      expect(al.action_by).to eq("portal.admin")
-      expect(al.action_at).to be_kind_of(Time)
-      expect(al.description).to be_nil
-    end
-  end
-
   describe "#system_user_log" do
     it 'should create an audit log for system_user correctly' do
       AuditLog.system_user_log("lock", "portal.admin", "qwer1234", "127.0.0.1", { :action_at => Time.now })
