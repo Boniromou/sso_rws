@@ -1,0 +1,14 @@
+1:
+  id: 1
+  auth_type: "AuthSourceLdap"
+  name: "Laxino LDAP"
+  host: "10.10.28.91"
+  port: 389
+  account: 'mo\svc.linux'
+  account_password: "Ccc1234%"
+  base_dn: "DC=mo,DC=laxino,DC=com"
+  attr_login: "sAMAccountName"
+  attr_firstname: "givenName"
+  attr_lastname: "sN"
+  attr_mail: "mail"
+  onthefly_register: 1

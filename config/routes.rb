@@ -13,8 +13,22 @@ SsoRws::Application.routes.draw do
   post "/internal/system_user_sessions" => "internal/system_user_sessions#create"
   #match 'home' => 'system_user_sessions#home', :as => :home
 
+  # functional tabs on page header
+  get 'home' => 'dashboard#home', :as => :home_root
+  get 'user_management' => 'dashboard#user_management', :as => :user_management_root
+  get 'role_management' => 'dashboard#role_management', :as => :role_management_root
+  get 'audit_logs' => 'dashboard#audit_log', :as => :audit_logs_root
+
   resources :roles, :only => [:index]
-  resources :system_users
+  resources :system_users, :only => [:index, :show] do
+    member do
+      post 'lock'
+      post 'unlock'
+      match 'edit_roles'
+      match 'update_roles'
+    end
+  end
+
   resources :dashboard, :only => [:index] do
     collection do
       get 'home'
@@ -23,30 +37,11 @@ SsoRws::Application.routes.draw do
       get 'audit_log'
     end
   end
-  resources :maintenances, :except => [:create, :destroy]
-  resources :audit_logs, :only => [:show]
-  #resources :propagations, :only => [:show]
-   
-  # functional tabs on page header
-  #get 'dashboard' =>  'dashboard#index', :as => :dashboard
-  #get 'administration' => 'application#administration_layout', :as => :administration
-  #get 'property_control' =>  'application#property_control_layout', :as => :property_control
-  #get 'audit_logs' => 'audit_logs#index', :as => :audit_logs
-  get 'home' => 'dashboard#home', :as => :home_root
-  get 'user_management' => 'dashboard#user_management', :as => :user_management_root
-  get 'role_management' => 'dashboard#role_management', :as => :role_management_root
-  get 'audit_logs' => 'dashboard#audit_log', :as => :audit_logs_root
 
-  # system users
-  post 'system_users/:id/lock' => 'system_users#lock'
-  post 'system_users/:id/unlock' => 'system_users#unlock'
-  match 'system_users/:id/edit_roles' => 'system_users#edit_roles'
-  match 'system_users/:id/update_roles' => 'system_users#update_roles'
+  resources :audit_logs, :only => [:show]
 
   # audit_log
   match 'search_audit_logs' => 'audit_logs#search', :via => [:get, :post], :as => :search_audit_logs
-  #get 'action_list/:target' => 'audit_logs#action_list'
-
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.

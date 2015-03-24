@@ -14,8 +14,6 @@ module AuditLogsHelper
     case target_name
       when "system_user"
         "user.system_user"
-      when "maintenance"
-        "maintenance.title"
       else
         nil
     end
@@ -29,18 +27,6 @@ module AuditLogsHelper
         "user.unlock"
       when "edit_role"
         "user.edit_role"
-      when "create"
-        "maintenance.create"
-      when "cancel"
-        "maintenance.cancel"
-      when "complete"
-        "maintenance.complete"
-      when "extend"
-        "maintenance.extend"
-      when "reschedule"
-        "maintenance.reschedule"
-      when "expire"
-        "maintenance.expire"
       else
         nil
     end

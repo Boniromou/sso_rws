@@ -2,6 +2,15 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment",__FILE__)
 require 'rspec/rails'
 require 'capybara/rails'
+require 'phantomjs'
+require 'capybara/rspec'
+require 'phantomjs/poltergeist'
+
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(app, :phantomjs => Phantomjs.path, :js_errors => false, :default_wait_time => 5, :timeout => 90)
+end
+
+Capybara.javascript_driver = :poltergeist
 
 Devise::TestHelpers
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
@@ -21,3 +30,4 @@ RSpec.configure do |config|
 
   config.infer_spec_type_from_file_location!
 end
+

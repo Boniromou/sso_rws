@@ -1,0 +1,32 @@
+1:
+  id: 1
+  name: "user_manager"
+  app_id: 1
+2:
+  id: 2
+  name: "auditor"
+  app_id: 1
+3:
+  id: 3
+  name: "change_coordinator"
+  app_id: 2
+4:
+  id: 4
+  name: "service_desk_manager"
+  app_id: 2
+5:
+  id: 5
+  name: "service_desk_agent"
+  app_id: 2
+6:
+  id: 6
+  name: "service_desk_agent"
+  app_id: 2
+7:
+  id: 7
+  name: "property_operator"
+  app_id: 2
+8:
+  id: 8
+  name: "system_auditor"
+  app_id: 2

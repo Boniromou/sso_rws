@@ -1,6 +1,8 @@
 require "feature_spec_helper"
 
 describe SystemUsersController do
+  fixtures :roles, :apps
+
   before(:all) do
     include Warden::Test::Helpers
     Warden.test_mode!
@@ -216,131 +218,130 @@ describe SystemUsersController do
 
   describe '[7] Edit Roles' do
     before(:each) do
-      @system_user_1 = SystemUser.create!(:username => "lulupdan", :status => true, :admin => false)
-      @system_user_2 = SystemUser.create!(:username => "lucy", :status => true, :admin => false)
-      @user_manager = Role.find_by_name("user_manager")
-      @helpdesk = Role.find_by_name("helpdesk")
-      @system_user_2.role_assignments.create!({:role_id => @helpdesk.id})
+      @system_user_1 = SystemUser.create!(:username => "ray1", :status => true, :admin => false)
+      @system_user_2 = SystemUser.create!(:username => "ray2", :status => true, :admin => false)
+      #@user_manager = Role.first
+      #@helpdesk = Role.find_by_name("helpdesk")
+      #@system_user_2.role_assignments.create!({:role_id => @helpdesk.id})
     end
 
     after(:each) do
+      RoleAssignment.delete_all
+      AppSystemUser.delete_all
+      AuditLog.delete_all
       @system_user_1.destroy
       @system_user_2.destroy
-      RoleAssignment.delete_all
+    end
+
+    def verify_grant_role(click_cancel_button=false)
+      r1 = Role.first
+      app1 = App.first
+      roles = Role.all.group_by { |role| role.app_id }
+      apps = App.all
+      #@system_user_1.role_assignments.create!({:role_id => r1.id})
+      #@system_user_1.app_system_users.create!({:app_id => r1.app.id})
+      login_as_root
+      visit edit_roles_system_user_path(@system_user_1)
+      main_panel = find("div#content")
+      expect(main_panel).to have_content(@system_user_1.username)
+      # verify the app name
+      all("div#content fieldset section:nth-child(1)").each_with_index do |v, i|
+        expect(v.text).to eq apps[i].name.titleize
+      end
+      # verify the role names
+      all("div#content fieldset section:nth-child(2)").each_with_index do |v, i|
+        if roles[i+1].present?
+          roles[i+1].each do |role|
+            expect(v).to have_content role.name.titleize
+          end
+        end
+      end
+      within ("div#content form") do
+        choose("#{r1.name.titleize}")
+        if click_cancel_button
+          click_link(I18n.t("general.cancel"))
+        else
+          click_button(I18n.t("general.confirm"))
+        end
+      end
+      unless click_cancel_button
+        @system_user_1.reload
+        expect(@system_user_1.roles.first.name).to eq r1.name
+        user_profile = find("div#content table")
+        expect(user_profile).to have_content "#{app1.name.titleize}"
+        expect(user_profile).to have_content "#{r1.name.titleize}"
+      end
+    end
+
+    def verify_revoke_role
+      r1 = Role.first
+      app1 = App.first
+      roles = Role.all.group_by { |role| role.app_id }
+      apps = App.all
+      @system_user_1.role_assignments.create!({:role_id => r1.id})
+      @system_user_1.app_system_users.create!({:app_id => r1.app.id})
+      login_as_root
+      visit edit_roles_system_user_path(@system_user_1)
+      main_panel = find("div#content")
+      expect(main_panel).to have_content(@system_user_1.username)
+      # verify the app name
+      all("div#content fieldset section:nth-child(1)").each_with_index do |v, i|
+        expect(v.text).to eq apps[i].name.titleize
+      end
+      # verify the role names
+      all("div#content fieldset section:nth-child(2)").each_with_index do |v, i|
+        if roles[i+1].present?
+          roles[i+1].each do |role|
+            expect(v).to have_content role.name.titleize
+          end
+        end
+      end
+      within ("div#content form") do
+        radio_btn_1 = find("input##{app1.name}_#{r1.id}")
+        expect(radio_btn_1[:checked]).to eq "checked"
+        uncheck("#{app1.name.titleize}")
+        #radio_btn_1.unselect_option
+        #click_button(I18n.t("general.confirm"))
+        # capybara won't let radio buttons unselected
+        visit "/system_users/#{@system_user_1.id}/update_roles"
+      end
+      @system_user_1.reload
+      expect(@system_user_1.roles.length).to eq 0
+      user_profile = find("div#content table")
+      expect(user_profile).not_to have_content "#{app1.name.titleize}"
+      expect(user_profile).not_to have_content "#{r1.name.titleize}"
     end
 
     it '[7.1] Grant role' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@system_user_1.id}/edit_roles"
-      expect(page).to have_content(@system_user_1.username)
-      expect(page).to have_content(I18n.t("role.user_manager"))
-      expect(page).to have_content(I18n.t("role.system_operator"))
-      expect(page).to have_content(I18n.t("role.property_operator"))
-      expect(page).to have_content(I18n.t("role.helpdesk"))
-      expect(page).to have_content(I18n.t("role.auditor"))
-      expect(page).to have_content(I18n.t("general.na"))
-      find_field('roles_1', checked:false)
-      find_field('roles_2', checked:false)
-      find_field('roles_3', checked:false)
-      find_field('roles_4', checked:false)
-      find_field('roles_5', checked:false)
-      find_field('roles_-1', checked:true)
-      choose("roles_#{@user_manager.id}")
-      find_field('roles_1', checked:true)
-      find_field('roles_2', checked:false)
-      find_field('roles_3', checked:false)
-      find_field('roles_4', checked:false)
-      find_field('roles_5', checked:false)
-      find_field('roles_-1', checked:false)
-      click_button(I18n.t("general.confirm"))
-      expect(page).to have_content(@system_user_1.username)
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_button(I18n.t("user.lock"))
-      expect(page).to have_content('Role')
-      expect(page).to have_content(I18n.t("role.user_manager"))
+      verify_grant_role
     end
 
     it '[7.2] revoke role' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@system_user_2.id}/edit_roles"
-      expect(page).to have_content(@system_user_2.username)
-      expect(page).to have_content(I18n.t("role.user_manager"))
-      expect(page).to have_content(I18n.t("role.system_operator"))
-      expect(page).to have_content(I18n.t("role.property_operator"))
-      expect(page).to have_content(I18n.t("role.helpdesk"))
-      expect(page).to have_content(I18n.t("role.auditor"))
-      expect(page).to have_content(I18n.t("general.na"))
-      find_field('roles_1', checked:false)
-      find_field('roles_2', checked:false)
-      find_field('roles_3', checked:true)
-      find_field('roles_4', checked:false)
-      find_field('roles_5', checked:false)
-      find_field('roles_-1', checked:false)
-      choose("roles_-1")
-      find_field('roles_1', checked:false)
-      find_field('roles_2', checked:false)
-      find_field('roles_3', checked:false)
-      find_field('roles_4', checked:false)
-      find_field('roles_5', checked:false)
-      find_field('roles_-1', checked:true)
-      click_button(I18n.t("general.confirm"))
-      expect(page).to have_content(@system_user_2.username)
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_button(I18n.t("user.lock"))
-      expect(page).to have_content('Role')
-      expect(page).to have_content(I18n.t("general.na"))
+      verify_revoke_role
     end
 
     it '[7.3] Audit edit role' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@system_user_2.id}/edit_roles"
-      find_field('roles_1', checked:false)
-      find_field('roles_2', checked:false)
-      find_field('roles_3', checked:true)
-      find_field('roles_4', checked:false)
-      find_field('roles_5', checked:false)
-      find_field('roles_-1', checked:false)
-      choose("roles_-1")
-      click_button(I18n.t("general.confirm"))
-      al = AuditLog.first
-      expect(al.audit_target).to eq("system_user")
-      expect(al.action_type).to eq("update")
-      expect(al.action).to eq("edit_role")
-      expect(al.action_status).to eq("success")
-      expect(al.action_error).to be_nil
-      expect(al.session_id).not_to be_empty
-      expect(al.ip).not_to be_empty
-      expect(al.action_by).to eq("portal.admin")
-      expect(al.action_at).to be_kind_of(Time)
-      expect(al.description).to be_nil
+      verify_grant_role
+      check_success_audit_log("system_user", "update", "edit_role", "portal.admin")
     end
 
     it '[7.4] Cancel edit role' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@system_user_2.id}/edit_roles"
-      find_field('roles_1', checked:false)
-      find_field('roles_2', checked:false)
-      find_field('roles_3', checked:true)
-      find_field('roles_4', checked:false)
-      find_field('roles_5', checked:false)
-      find_field('roles_-1', checked:false)
-      choose("roles_-1")
-      click_link(I18n.t("general.cancel"))
-      expect(current_path).to eq(system_user_path(@system_user_2))
-      expect(AuditLog.all).to be_empty
+      verify_grant_role(true)
+      al = AuditLog.all
+      expect(al.length).to eq 0
     end
 
     it '[7.5] Current user cannot edit role for himself (view system user)' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@root_user.id}"
-      expect(page).to have_content(@root_user.username)
+      root_user = SystemUser.find_by_admin(1)
+      login_as_root
+      visit system_user_path(root_user)
+      expect(page).to have_content(root_user.username)
       expect(page).to have_content(I18n.t("user.status"))
       expect(page).to have_content(I18n.t("user.active"))
       expect(page).to have_no_button(I18n.t("user.lock"))
       expect(page).to have_content(I18n.t("role.role"))
-      expect(page).to have_content(I18n.t("role.root_user"))
+      #expect(page).to have_content(I18n.t("role.root_user"))
       expect(page).to have_no_button(I18n.t("general.edit"))
-      logout(@root_user)  
     end
   end
 end

@@ -64,11 +64,8 @@ class SystemUsersController < ApplicationController
     AuditLog.system_user_log("edit_role", current_system_user.username, sid, client_ip) do
       system_user = SystemUser.find_by_id(params[:id])
       authorize system_user
-      if params[:commit] == I18n.t("general.confirm")
-        system_user.update_roles(role_ids_param)
-
-        flash[:success] = "flash_message.success"
-      end
+      system_user.update_roles(role_ids_param)
+      flash[:success] = "flash_message.success"
     end
     @system_user = SystemUser.find_by_id(params[:id])
     if request.xhr?

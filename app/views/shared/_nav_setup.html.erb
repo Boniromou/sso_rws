@@ -8,10 +8,6 @@
     $('#nav_search_audit_logs').addClass("active");
   <% when "list_system_users" %>
     $('#nav_list_system_users').addClass("active");
-  <% when "search_maintenance" %>
-    $('#nav_search_maintenance').addClass("active");
-  <% when "create_maintenance" %>
-    $('#nav_create_maintenance').addClass("active");
   <% else %>
     $('#nav_<%= tab_to_activate %>').addClass("active");
 <% end %>
