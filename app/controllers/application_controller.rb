@@ -36,26 +36,25 @@ class ApplicationController < ActionController::Base
   def check_activation_status
     if current_system_user && !current_system_user.activated?
       Rails.logger.info "[SystemUser id=#{current_system_user.id}] to be forced to logout due to de-activated status"
-      handle_unauthorize
+      handle_inactive_status
     end
   end
- 
-  # TODO: migrate these later
-  #############################
-  def administration_layout
-    render :nothing => true, :layout => "administration"
-  end
-  
-  def property_control_layout
-    render :nothing => true, :layout => "property_control"
-  end
-  ##############################
  
   def client_ip
     request.env["HTTP_X_FORWARDED_FOR"]
   end
  
   protected
+  def handle_inactive_status
+    sign_out current_system_user if current_system_user
+    flash[:alert] = "alert.inactive_account"
+    if request.xhr?
+      render :nothing => true, :status => :unauthorized
+    else
+      redirect_to root_path
+    end
+  end
+
   def sid
     request.session_options[:id]
   end

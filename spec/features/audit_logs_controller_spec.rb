@@ -137,11 +137,10 @@ describe AuditLogsController do
     it '[24.1] search audit log by target' do
       login_as(@root_user, :scope => :system_user)
       visit '/search_audit_logs'
-      select "Maintenance", :from => "target_name"
+      select "System", :from => "target_name"
       click_button I18n.t("general.search")
       @al1.reload
-      expect(page.source).to have_selector("tr#audit#{@al1.id}_body")
-      expect(page.source).not_to have_selector("tr#audit#{@al2.id}_body")
+      expect(page.source).to have_selector("tr#audit#{@al2.id}_body")
     end
   end
 end
