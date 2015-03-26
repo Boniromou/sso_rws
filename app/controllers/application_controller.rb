@@ -61,10 +61,10 @@ class ApplicationController < ActionController::Base
   
   def handle_unauthorize
     #sign_out current_system_user if current_system_user
-    flash[:alert] = "unauthorized!!!"  # TODO missing translation
+    flash[:alert] = "flash_message.not_authorize"  # TODO missing translation
     if request.xhr?
       #render :nothing => true, :status => :unauthorized
-      render :js => "window.location = '/dashboard'"
+      render :js => "window.location = '/dashboard/home'"
     else
       redirect_to root_path
     end

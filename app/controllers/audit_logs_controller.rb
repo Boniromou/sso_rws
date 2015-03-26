@@ -2,6 +2,7 @@ class AuditLogsController < ApplicationController
   layout proc {|controller| controller.request.xhr? ? false: "audit_log" }
 
   def search
+    authorize AuditLog
     if request.post? && params[:commit] == I18n.t("general.search")
       start_time = parse_search_time(params[:start_time]) unless params[:start_time].blank?
       end_time = parse_search_time(params[:end_time], true) unless params[:end_time].blank?

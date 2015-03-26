@@ -71,15 +71,19 @@
           <li class=<%= selected_page_tab == "home" ? "active" : "" %>>
             <%= link_to "Home", home_root_path, :id => "home_link" %>
           </li>
-          <li class=<%= selected_page_tab == "user_management" ? "active" : "" %>>
-            <%= link_to t("header.user_management"), user_management_root_path, :id => "user_management_link" %>
-          </li>
-          <li class=<%= selected_page_tab == "role_management" ? "active" : "" %>>
-            <%= link_to t("header.role_management"), role_management_root_path, :id => "role_management_link" %>
-          </li>
-          <li class=<%= selected_page_tab == "audit_log" ? "active" : "" %>>
-            <%= link_to t("header.audit_log"), audit_logs_root_path, :id => "audit_log_link" %>
-          </li>
+          <% if policy(SystemUser).index? %> 
+            <li class=<%= selected_page_tab == "user_management" ? "active" : "" %>>
+              <%= link_to t("header.user_management"), user_management_root_path, :id => "user_management_link" %>
+            </li>
+ 	  <% end %>
+            <li class=<%= selected_page_tab == "role_management" ? "active" : "" %>>
+              <%= link_to t("header.role_management"), role_management_root_path, :id => "role_management_link" %>
+            </li>
+          <% if policy(AuditLog).search? %>
+            <li class=<%= selected_page_tab == "audit_log" ? "active" : "" %>>
+              <%= link_to t("header.audit_log"), audit_logs_root_path, :id => "audit_log_link" %>
+            </li>
+          <% end %>
         </ul>
         <!-- end dropdown-menu-->
 
