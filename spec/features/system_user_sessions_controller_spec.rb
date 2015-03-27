@@ -26,7 +26,7 @@ describe SystemUserSessionsController do
       fill_in "system_user_username", :with => @root_user.username
       fill_in "system_user_password", :with => 'secret'
       click_button I18n.t("general.login")
-      expect(page.current_path).to eq home_dashboard_index_path
+      expect(page.current_path).to eq home_root_path
     end
 
     it "[1.2] login fail with wrong password" do

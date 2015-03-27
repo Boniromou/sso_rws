@@ -28,4 +28,6 @@ if File.file?(filename)
                                               :keepalive => true
 
   end
+
+  Rails.cache.silence!
 end

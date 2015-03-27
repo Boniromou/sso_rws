@@ -37,7 +37,7 @@ class AuthSourceLdap < AuthSource
 
   def authenticate(login, password)
     return false if login.blank? || password.blank?
-    puts "[auth_source_id=#{self.id}]LDAP authenticating to #{self.name}...."
+    Rails.logger.info "[auth_source_id=#{self.id}]LDAP authenticating to #{self.name}...."
     ldap_con = initialize_ldap_con(login, password)
     ldap_con.bind ? true : false
   end
