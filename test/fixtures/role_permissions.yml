@@ -1,0 +1,209 @@
+############################
+# user_manager
+############################
+1:
+  id: 1
+  role_id: 1
+  permission_id: 2
+2:
+  id: 2
+  role_id: 1
+  permission_id: 3
+3:
+  id: 3
+  role_id: 1
+  permission_id: 4
+4:
+  id: 4
+  role_id: 1
+  permission_id: 5
+############################
+# auditor
+############################
+5:
+  id: 5
+  role_id: 2
+  permission_id: 1
+############################
+# change_coordinator
+############################
+6:
+  id: 6
+  role_id: 3
+  permission_id: 9
+7:
+  id: 7
+  role_id: 3
+  permission_id: 12
+8:
+  id: 8
+  role_id: 3
+  permission_id: 14
+9:
+  id: 9
+  role_id: 3
+  permission_id: 15
+10:
+  id: 10
+  role_id: 3
+  permission_id: 21
+11:
+  id: 11
+  role_id: 3
+  permission_id: 22
+############################
+# service_desk_manager
+############################
+12:
+  id: 12
+  role_id: 4
+  permission_id: 1
+13:
+  id: 13
+  role_id: 4
+  permission_id: 8
+14:
+  id: 14
+  role_id: 4
+  permission_id: 9
+15:
+  id: 15
+  role_id: 4
+  permission_id: 10
+16:
+  id: 16
+  role_id: 4
+  permission_id: 11
+17:
+  id: 17
+  role_id: 4
+  permission_id: 12
+18:
+  id: 18
+  role_id: 4
+  permission_id: 13
+19:
+  id: 19
+  role_id: 4
+  permission_id: 14
+20:
+  id: 20
+  role_id: 4
+  permission_id: 15
+21:
+  id: 21
+  role_id: 4
+  permission_id: 16
+22:
+  id: 22
+  role_id: 4
+  permission_id: 17
+23:
+  id: 23
+  role_id: 4
+  permission_id: 18
+24:
+  id: 24
+  role_id: 4
+  permission_id: 19
+25:
+  id: 25
+  role_id: 4
+  permission_id: 20
+26:
+  id: 26
+  role_id: 4
+  permission_id: 21
+27:
+  id: 27
+  role_id: 4
+  permission_id: 22
+28:
+  id: 28
+  role_id: 4
+  permission_id: 23
+29:
+  id: 29
+  role_id: 4
+  permission_id: 24
+############################
+# service_desk_agent
+############################
+30:
+  id: 30
+  role_id: 5
+  permission_id: 8
+31:
+  id: 31
+  role_id: 5
+  permission_id: 9
+32:
+  id: 32
+  role_id: 5
+  permission_id: 10
+33:
+  id: 33
+  role_id: 5
+  permission_id: 11
+34:
+  id: 34
+  role_id: 5
+  permission_id: 12
+35:
+  id: 35
+  role_id: 5
+  permission_id: 13
+36:
+  id: 36
+  role_id: 5
+  permission_id: 14
+37:
+  id: 37
+  role_id: 5
+  permission_id: 15
+38:
+  id: 38
+  role_id: 5
+  permission_id: 16
+39:
+  id: 39
+  role_id: 5
+  permission_id: 17
+40:
+  id: 40
+  role_id: 5
+  permission_id: 18
+41:
+  id: 41
+  role_id: 5
+  permission_id: 19
+42:
+  id: 42
+  role_id: 5
+  permission_id: 20
+43:
+  id: 43
+  role_id: 5
+  permission_id: 21
+44:
+  id: 44
+  role_id: 5
+  permission_id: 22
+############################
+# system_auditor
+############################
+45:
+  id: 45
+  role_id: 7
+  permission_id: 1
+############################
+# cashier
+############################
+46:
+  id: 46
+  role_id: 8
+  permission_id: 25
+47:
+  id: 47
+  role_id: 8
+  permission_id: 26
