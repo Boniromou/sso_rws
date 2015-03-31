@@ -63,6 +63,7 @@ en:
   role:
     role: Role
     na: No Permission
+    list_roles: Role and Permission
   auditlog:
     search_audit: Search Audit Log
     audit_time: Time

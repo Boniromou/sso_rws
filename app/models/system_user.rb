@@ -17,26 +17,7 @@ class SystemUser < ActiveRecord::Base
   def activated?
     self.status
   end
-=begin
-  def update_roles(role_id)
-    unless role_id.blank?
-      if role_id.to_i > 0
-        if self.roles.blank?
-          self.role_assignments.create({:role_id => role_id})
-        else
-          if self.role_assignments[0].role_id.to_i != role_id.to_i
-            self.role_assignments[0].role_id = role_id
-            self.role_assignments[0].save!
-          end
-        end
-      elsif role_id.to_i == -1
-        if !self.role_assignments[0].blank?
-          self.role_assignments[0].destroy
-        end
-      end
-    end
-  end
-=end
+
   def update_roles(role_ids)
     existing_roles = self.role_assignments.map { |role_assignment| role_assignment.role_id }
     diff_role_ids = self.class.diff(existing_roles, role_ids)
@@ -52,7 +33,7 @@ class SystemUser < ActiveRecord::Base
   end
 
   def self.get_by_username_and_domain(username, domain)
-    SystemUser.joins(:auth_source).where("auth_sources.domain" => domain, :username => username).first
+    self.joins(:auth_source).where("auth_sources.domain" => domain, :username => username).first
   end
 
   # username for login
@@ -137,9 +118,9 @@ class SystemUser < ActiveRecord::Base
     targets.each do |t|
       actions = []
       permissions.each do |perm|
-	if perm.target == t
-	  actions << perm.action
-	end
+    	if perm.target == t
+    	  actions << perm.action
+    	end
       end
       perm_hash[t.to_sym] = actions
     end
