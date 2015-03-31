@@ -2,7 +2,6 @@ require 'admin_portal_error'
 
 class ApplicationController < ActionController::Base
   layout false
-  #layout proc {|controller| controller.request.xhr? ? false: "base" }
   include Pundit
   protect_from_forgery
   before_filter :set_locale, :authenticate_system_user!, :check_activation_status
@@ -23,14 +22,14 @@ class ApplicationController < ActionController::Base
     if resource.is_a?(SystemUser)
       Rails.logger.info "A SystemUser logged in. Session=#{session.inspect}"
       #Rails.logger.info request.session_options.inspect
-      Rails.application.routes.recognize_path default_selected_function
+      home_root_path
     elsif
-      root_path
+      app_root_path
     end
   end
 
   def after_sign_out_path_for(resource)
-    root_path
+    app_root_path
   end
 
   def check_activation_status
@@ -46,6 +45,7 @@ class ApplicationController < ActionController::Base
  
   protected
   def handle_inactive_status
+    Rails.logger.info 'handle_inactive_status'
     sign_out current_system_user if current_system_user
     flash[:alert] = "alert.inactive_account"
     if request.xhr?
@@ -60,13 +60,12 @@ class ApplicationController < ActionController::Base
   end
   
   def handle_unauthorize
-    #sign_out current_system_user if current_system_user
-    flash[:alert] = "flash_message.not_authorize"  # TODO missing translation
+    Rails.logger.info 'handle_unauthorize'
+    flash[:alert] = "flash_message.not_authorize"
     if request.xhr?
-      #render :nothing => true, :status => :unauthorized
-      render :js => "window.location = '/dashboard/home'"
+      render :js => "window.location = '/home'"
     else
-      redirect_to root_path
+      redirect_to home_root_path
     end
   end
   
@@ -87,6 +86,6 @@ class ApplicationController < ActionController::Base
   
   def default_selected_function
     # TODO: determine what path to redirect to based on role/permission
-    "home"
+    Rails.application.routes.recognize_path "home"
   end
 end

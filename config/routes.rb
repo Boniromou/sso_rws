@@ -1,10 +1,11 @@
 SsoRws::Application.routes.draw do
-  devise_for :system_users, controllers: {:sessions => "system_user_sessions"}, :skip => 'registration'
+  devise_for :system_users, controllers: { :sessions => "system_user_sessions", :registration => "system_user_registrations" }, only: :sessions
 
   devise_scope :system_user do
-    root :to => "system_user_sessions#new"
+    root :to => "system_user_sessions#new", :as => :app_root
+    #root to: 'dashboard#home', :as => :home_root
     get "/login" => "system_user_sessions#new", :as => :login
-    post '/login' => 'system_user_sessions#create', :as => :system_user_session
+    post '/login' => 'system_user_sessions#create'
     get "/logout" => "system_user_sessions#destroy", :as => :logout
     get "/register" => "system_user_registrations#new", :as => :new_system_user_registration
     post "/register" => "system_user_registrations#create"
@@ -14,6 +15,7 @@ SsoRws::Application.routes.draw do
   #match 'home' => 'system_user_sessions#home', :as => :home
 
   # functional tabs on page header
+  root :to => 'dashboard#home', :as => :root
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root
   get 'role_management' => 'dashboard#role_management', :as => :role_management_root
@@ -38,10 +40,9 @@ SsoRws::Application.routes.draw do
     end
   end
 
-  resources :audit_logs, :only => [:show]
-
-  # audit_log
-  match 'search_audit_logs' => 'audit_logs#search', :via => [:get, :post], :as => :search_audit_logs
+  resources :audit_logs, :only => [:show] do
+    match 'search', :via => [:get, :post], on: :collection
+  end
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.

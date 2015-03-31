@@ -26,7 +26,7 @@ describe AuditLogsController do
     
     it '[9.1] Search audit log by time' do
       login_as(@root_user, :scope => :system_user)
-      visit '/search_audit_logs'
+      visit search_audit_logs_path
       fill_in "from", :with => "2014-9-29"
       fill_in "to", :with => "2014-9-29"
       click_button I18n.t("general.search")
@@ -50,7 +50,7 @@ describe AuditLogsController do
     
     it '[10.1] search audit log by actioner' do
       login_as(@root_user, :scope => :system_user)
-      visit '/search_audit_logs'
+      visit search_audit_logs_path
       fill_in "action_by", :with => "portal.admin"
       click_button I18n.t("general.search")
       expect(page.source).to have_selector("tr#audit#{@al1.id}_body")
@@ -59,7 +59,7 @@ describe AuditLogsController do
     
     it '[10.2] search empty in actioner' do
       login_as(@root_user, :scope => :system_user)
-      visit '/search_audit_logs'
+      visit search_audit_logs_path
       click_button I18n.t("general.search")
       expect(page.source).to have_selector("tr#audit#{@al1.id}_body")
       expect(page.source).to have_selector("tr#audit#{@al2.id}_body")
@@ -94,7 +94,7 @@ describe AuditLogsController do
 =end
     it '[11.2] search all action' do
       login_as(@root_user, :scope => :system_user)
-      visit '/search_audit_logs'
+      visit search_audit_logs_path
       select "All", :from => "target_name"
       select "All", :from => "action_list"
       click_button I18n.t("general.search")
@@ -136,7 +136,7 @@ describe AuditLogsController do
     
     it '[24.1] search audit log by target' do
       login_as(@root_user, :scope => :system_user)
-      visit '/search_audit_logs'
+      visit search_audit_logs_path
       select "System", :from => "target_name"
       click_button I18n.t("general.search")
       @al1.reload
