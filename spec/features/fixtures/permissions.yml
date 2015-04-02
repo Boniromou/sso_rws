@@ -131,3 +131,13 @@ player_balance:
   name: "balance"
   action: "balance"
   target: "player"
+deposit:
+  id: 27
+  name: "deposit"
+  action: "deposit"
+  target: "player_transaction"
+withdraw:
+  id: 28
+  name: "withdraw"
+  action: "withdraw"
+  target: "player_transaction"
