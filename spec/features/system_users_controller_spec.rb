@@ -1,12 +1,12 @@
 require "feature_spec_helper"
 
 describe SystemUsersController do
-  fixtures :roles, :apps
+  fixtures :apps, :permissions, :role_permissions, :roles
 
   before(:all) do
     include Warden::Test::Helpers
     Warden.test_mode!
-    @root_user = SystemUser.find_by_admin(1)
+    @root_user = SystemUser.find_by_admin(1) || SystemUser.create(:id => 1, :username => "portal.admin", :status => true, :admin => true, :auth_source_id => 1)
   end
 
   after(:all) do
@@ -35,9 +35,13 @@ describe SystemUsersController do
   describe '[5] View system user' do
     before(:each) do
       @system_user_1 = SystemUser.create!(:username => "lulupdan", :status => true, :admin => false)
+      user_manager_role = Role.find_by_name "user_manager"
+      @system_user_1.update_roles([user_manager_role.id])
     end
 
     after(:each) do
+      RoleAssignment.delete_all
+      AppSystemUser.delete_all
       @system_user_1.destroy
     end
 
@@ -53,27 +57,27 @@ describe SystemUsersController do
     end
 
     it '[5.2] Current user cannot edit role for himself' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@root_user.id}"
-      expect(page).to have_content(@root_user.username)
-      expect(page).to have_content(I18n.t("user.status"))
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_content(I18n.t("role.role"))
-      #expect(page).to have_content(I18n.t("role.root_user"))
-      expect(page).to have_no_button(I18n.t("general.edit"))
-      logout(@root_user)
-    end
-
-    it '[5.3] Edit button is alwawys disabled in Root user' do
       login_as(@system_user_1, :scope => :system_user)
       visit "/system_users/#{@system_user_1.id}"
       expect(page).to have_content(@system_user_1.username)
       expect(page).to have_content(I18n.t("user.status"))
       expect(page).to have_content(I18n.t("user.active"))
       expect(page).to have_content(I18n.t("role.role"))
-      expect(page).to have_content(I18n.t("general.na")) 
+      #expect(page).to have_content(I18n.t("role.root_user"))
       expect(page).to have_no_button(I18n.t("general.edit"))
       logout(@system_user_1)
+    end
+
+    it '[5.3] Edit button is alwawys disabled in Root user' do
+      login_as(@root_user, :scope => :system_user)
+      visit "/system_users/#{@root_user.id}"
+      expect(page).to have_content(@root_user.username)
+      expect(page).to have_content(I18n.t("user.status"))
+      expect(page).to have_content(I18n.t("user.active"))
+      expect(page).to have_content(I18n.t("role.role"))
+      #expect(page).to have_content(I18n.t("general.na")) 
+      expect(page).to have_no_button(I18n.t("general.edit"))
+      logout(@root_user)
     end
   end
 
@@ -342,6 +346,211 @@ describe SystemUsersController do
       expect(page).to have_content(I18n.t("role.role"))
       #expect(page).to have_content(I18n.t("role.root_user"))
       expect(page).to have_no_button(I18n.t("general.edit"))
+    end
+  end
+
+  describe "[14] Role authorization" do
+    fixtures :apps, :permissions, :role_permissions, :roles
+
+    before(:each) do
+      AppSystemUser.delete_all
+      SystemUser.delete_all
+    end
+
+    after(:each) do
+      AppSystemUser.delete_all
+      SystemUser.delete_all
+    end
+
+    after(:all) do
+      RolePermission.delete_all
+      Role.delete_all
+      Permission.delete_all
+      AppSystemUser.delete_all
+      SystemUser.delete_all
+      App.delete_all
+    end
+
+    it "[14.1] click unauthorized action" do
+      auditor_role = Role.find_by_name "auditor"
+      user_manager_role = Role.find_by_name "user_manager"
+      auditor_1 = SystemUser.create!(:username => "auditor_1", :status => true, :admin => false)
+      auditor_2 = SystemUser.create!(:username => "auditor_2", :status => true, :admin => false)
+      auditor_1.update_roles([user_manager_role.id])
+      auditor_2.update_roles([auditor_role.id])
+      login_as(auditor_1, :scope => :system_user)
+      visit home_root_path
+      visit system_users_path
+      auditor_1.update_roles([auditor_role.id])
+      lock_usr_btn_select = "div#content table tbody tr:nth-child(2) td:nth-child(3) input"
+      find(lock_usr_btn_select).click
+      verify_unauthorized_request
+    end
+
+    it "[14.2] click link to the unauthorized page" do
+      auditor_role = Role.find_by_name "auditor"
+      auditor_1 = SystemUser.create!(:username => "auditor_1", :status => true, :admin => false)
+      auditor_1.update_roles([auditor_role.id])
+      login_as(auditor_1, :scope => :system_user)
+      visit home_root_path
+      visit user_management_root_path
+      verify_unauthorized_request
+    end
+
+    it "[14.3] Search audit log (authorized)" do
+      auditor_role = Role.find_by_name "auditor"
+      auditor_1 = SystemUser.create!(:username => "auditor_1", :status => true, :admin => false)
+      auditor_1.update_roles([auditor_role.id])
+      login_as(auditor_1, :scope => :system_user)
+      visit home_root_path
+      visit audit_logs_root_path
+      expect(current_path).to eq audit_logs_root_path
+      verify_authorized_request
+    end
+
+    it "[14.4] Search audit log (unauthorized)" do
+      user_manager_role = Role.find_by_name "user_manager"
+      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
+      user_manager_1.update_roles([user_manager_role.id])
+      login_as(user_manager_1, :scope => :system_user)
+      visit home_root_path
+      assert_dropdown_menu_item(I18n.t("header.audit_log"), false)
+    end
+
+    it "[14.5] List System User (authorized)" do
+      user_manager_role = Role.find_by_name "user_manager"
+      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
+      user_manager_1.update_roles([user_manager_role.id])
+      login_as(user_manager_1, :scope => :system_user)
+      visit home_root_path
+      assert_dropdown_menu_item I18n.t("header.user_management")
+      visit user_management_root_path
+      assert_left_panel_item I18n.t("general.dashboard")
+      assert_left_panel_item I18n.t("user.list_users")
+    end
+
+    it "[14.6] List System User (unauthorized)" do
+      auditor_role = Role.find_by_name "auditor"
+      auditor_1 = SystemUser.create!(:username => "auditor_1", :status => true, :admin => false)
+      auditor_1.update_roles([auditor_role.id])
+      login_as(auditor_1, :scope => :system_user)
+      visit home_root_path
+      assert_dropdown_menu_item(I18n.t("header.user_management"), false)
+    end
+
+    it "[14.7] View user profile (authroized)" do
+      user_manager_role = Role.find_by_name "user_manager"
+      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
+      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
+      user_manager_1.update_roles([user_manager_role.id])
+      user_manager_2.update_roles([user_manager_role.id])
+      login_as(user_manager_1, :scope => :system_user)
+      visit home_root_path
+      assert_dropdown_menu_item I18n.t("header.user_management")
+      visit user_management_root_path
+      assert_left_panel_item I18n.t("general.dashboard")
+      assert_left_panel_item I18n.t("user.list_users")
+      click_link I18n.t("user.list_users")
+      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
+      find(user_manager_2_profile_link_selector).click
+      verify_authorized_request
+    end
+
+    it "[14.8] Grant roles (authorized)" do
+      user_manager_role = Role.find_by_name "user_manager"
+      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
+      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
+      user_manager_1.update_roles([user_manager_role.id])
+      user_manager_2.update_roles([user_manager_role.id])
+      login_as(user_manager_1, :scope => :system_user)
+      visit home_root_path
+      assert_dropdown_menu_item I18n.t("header.user_management")
+      visit user_management_root_path
+      assert_left_panel_item I18n.t("general.dashboard")
+      assert_left_panel_item I18n.t("user.list_users")
+      click_link I18n.t("user.list_users")
+      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
+      find(user_manager_2_profile_link_selector).click
+      click_button I18n.t("general.edit")
+      expect(has_link?(I18n.t("general.cancel"))).to be true
+      click_button I18n.t("general.confirm")
+      verify_authorized_request
+    end
+
+    it "[14.9] Lock System user (authorized)" do
+      user_manager_role = Role.find_by_name "user_manager"
+      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
+      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
+      user_manager_1.update_roles([user_manager_role.id])
+      user_manager_2.update_roles([user_manager_role.id])
+      login_as(user_manager_1, :scope => :system_user)
+      visit home_root_path
+      assert_dropdown_menu_item I18n.t("header.user_management")
+      visit user_management_root_path
+      assert_left_panel_item I18n.t("general.dashboard")
+      assert_left_panel_item I18n.t("user.list_users")
+      click_link I18n.t("user.list_users")
+      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
+      find(user_manager_2_profile_link_selector).click
+      click_button I18n.t("user.lock")
+      verify_authorized_request
+    end
+
+    it "[14.10] Lock System user (unauthorized)" do
+      allow(SystemUserPolicy).to receive("lock?").and_return(false)
+      user_manager_role = Role.find_by_name "user_manager"
+      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
+      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
+      user_manager_1.update_roles([user_manager_role.id])
+      user_manager_2.update_roles([user_manager_role.id])
+      login_as(user_manager_1, :scope => :system_user)
+      visit home_root_path
+      assert_dropdown_menu_item I18n.t("header.user_management")
+      visit user_management_root_path
+      assert_left_panel_item I18n.t("general.dashboard")
+      assert_left_panel_item I18n.t("user.list_users")
+      click_link I18n.t("user.list_users")
+      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
+      find(user_manager_2_profile_link_selector).click
+      expect(has_link?(I18n.t("user.lock"))).to be false
+    end
+
+    it "[14.11] Un-lock system user (authorized)" do
+      user_manager_role = Role.find_by_name "user_manager"
+      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
+      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => false, :admin => false)
+      user_manager_1.update_roles([user_manager_role.id])
+      user_manager_2.update_roles([user_manager_role.id])
+      login_as(user_manager_1, :scope => :system_user)
+      visit home_root_path
+      assert_dropdown_menu_item I18n.t("header.user_management")
+      visit user_management_root_path
+      assert_left_panel_item I18n.t("general.dashboard")
+      assert_left_panel_item I18n.t("user.list_users")
+      click_link I18n.t("user.list_users")
+      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
+      find(user_manager_2_profile_link_selector).click
+      click_button I18n.t("user.unlock")
+      verify_authorized_request
+    end
+
+    it "[14.12] un-lock system user (unauthorized)" do
+      allow(SystemUserPolicy).to receive("unlock?").and_return(false)
+      user_manager_role = Role.find_by_name "user_manager"
+      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
+      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
+      user_manager_1.update_roles([user_manager_role.id])
+      user_manager_2.update_roles([user_manager_role.id])
+      login_as(user_manager_1, :scope => :system_user)
+      visit home_root_path
+      assert_dropdown_menu_item I18n.t("header.user_management")
+      visit user_management_root_path
+      assert_left_panel_item I18n.t("general.dashboard")
+      assert_left_panel_item I18n.t("user.list_users")
+      click_link I18n.t("user.list_users")
+      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
+      find(user_manager_2_profile_link_selector).click
+      expect(has_link?(I18n.t("user.unlock"))).to be false
     end
   end
 end

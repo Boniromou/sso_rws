@@ -27,7 +27,8 @@
   <tr>
     <td><%=t("role.role") %>:</td>
     <td>
-    <% @system_user.roles.each do |role| %>
+    <% if @system_user.roles.present? %>
+      <% @system_user.roles.each do |role| %>
       <div class="col-md-4">
         <%= "#{role.app.name.titleize}:" %>
       </div>
@@ -35,6 +36,11 @@
         <%= "#{role.name.titleize}" %>
       </div>
       <br>
+      <% end %>
+    <% else %>
+      <div class="col-md-12">
+        -
+      </div>
     <% end %>
     </td>
     <% if allow_edit_roles?(@system_user) %>

@@ -7,6 +7,7 @@ class DashboardController < ApplicationController
   end
 
   def user_management
+    authorize :dashboard, :user_management?
     respond_to do |format|
       format.html { render file: "dashboard/user_management", :layout => "user_management", formats: [:html] }
       format.js { render template: "dashboard/user_management", formats: [:js] }
@@ -22,6 +23,7 @@ class DashboardController < ApplicationController
   end
 
   def role_management
+    #authorize :dashboard, :role_management?
     respond_to do |format|
       format.html { render file: "dashboard/role_management", :layout => "role_management", formats: [:html] }
       format.js { render template: "dashboard/role_management", formats: [:js] }

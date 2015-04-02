@@ -1,7 +1,16 @@
 module StepHelper
-  def check_flash_message(msg)
-    flash_msg = find("div#flash_message div#message_content")
-    expect(flash_msg.text).to eq(msg)
+  def check_flash_message(msg, check_existenance=true)
+    if check_existenance
+      flash_msg = find("div#flash_message div#message_content")
+      expect(flash_msg.text).to eq(msg)
+    else
+      flash_msg = first("div#flash_message div#message_content")
+      if flash_msg
+        expect(flash_msg.text).not_to eq(msg)
+      else
+        expect(flash_msg).to be_nil
+      end
+    end
   end
 
   def mock_time_at_now(time_in_str)
@@ -10,7 +19,7 @@ module StepHelper
   end
 
   def login_as_root
-    root_user = SystemUser.find_by_admin(1)
+    root_user = SystemUser.find_by_admin(1) || SystemUser.create(:username => "portal.admin", :status => true, :admin => true, :auth_source_id => 1)
     login_as(root_user, :scope => :system_user)
   end
 
@@ -40,6 +49,36 @@ module StepHelper
     expect(al.action_by).to eq action_by
     expect(al.action_at).to be_kind_of(Time)
     expect(al.description).to eq description
+  end
+
+  def verify_unauthorized_request
+    expect(current_path).to eq home_root_path
+    check_flash_message I18n.t("flash_message.not_authorize")
+  end
+
+  def verify_authorized_request
+    expect(current_path).not_to eq home_root_path
+    check_flash_message(I18n.t("flash_message.not_authorize"), false)
+  end
+
+  def assert_dropdown_menu_item(text_label, check_existenance=true)
+    dropdown_menu_selector = "header#header div.project-context ul.dropdown-menu"
+    dropdown_menu = find(dropdown_menu_selector)
+    if check_existenance
+      expect(dropdown_menu).to have_content text_label
+    else
+      expect(dropdown_menu).not_to have_content text_label
+    end
+  end
+
+  def assert_left_panel_item(text_label, check_existenance=true)
+    left_panel_selector = "nav ul"
+    left_panel = find(left_panel_selector)
+    if check_existenance
+      expect(left_panel).to have_content text_label
+    else
+      expect(left_panel).not_to have_content text_label
+    end
   end
 end
 

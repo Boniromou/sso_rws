@@ -4,7 +4,7 @@ describe SystemUserSessionsController do
   before(:all) do
     include Warden::Test::Helpers
     Warden.test_mode!
-    @root_user = SystemUser.find_by_admin(1)
+    @root_user = SystemUser.find_by_admin(1) || SystemUser.create(:id => 1, :username => "portal.admin", :status => true, :admin => true, :auth_source_id => 1)
   end
 
   after(:all) do
