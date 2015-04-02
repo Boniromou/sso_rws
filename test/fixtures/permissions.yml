@@ -109,7 +109,7 @@ sync_test_players:
 list_deprecate_test_player:
   id: 22
   name: "list_deprecate_player"
-  action: "list_deprecate"
+  action: "list_deprecated"
   target: "test_player"
 recover_test_player:
   id: 23
@@ -119,7 +119,7 @@ recover_test_player:
 list_test_player_log:
   id: 24
   name: "list_log_history"
-  action: "list_log_history"
+  action: "list_log"
   target: "test_player"
 create_player:
   id: 25
@@ -131,3 +131,13 @@ player_balance:
   name: "balance"
   action: "balance"
   target: "player"
+deposit:
+  id: 27
+  name: "deposit"
+  action: "deposit"
+  target: "player_transaction"
+withdraw:
+  id: 28
+  name: "withdraw"
+  action: "withdraw"
+  target: "player_transaction"
