@@ -349,6 +349,23 @@ describe SystemUsersController do
     end
   end
 
+  describe "[13] Switch main functional tab" do
+    it "[13.1] Select User Management" do
+      login_as(@root_user)
+      visit '/home'
+      first('ul.dropdown-menu').find('a', :text => I18n.t("header.user_management")).click
+      expect(current_path).to eq(user_management_root_path)
+      expect(page).to have_selector("div#inactived_system_user table#system_user")
+    end
+
+    it "[13.3] Select Role Management" do
+      login_as(@root_user)
+      visit '/home'
+      first('ul.dropdown-menu').find('a', :text => I18n.t("header.role_management")).click
+      expect(current_path).to eq(role_management_root_path)
+    end
+  end
+
   describe "[14] Role authorization" do
     fixtures :apps, :permissions, :role_permissions, :roles
 

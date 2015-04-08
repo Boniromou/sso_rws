@@ -1,3 +1,10 @@
 <h1>Welcome, <%= current_system_user.username %></h1>
 
+<% if policy(SystemUser.new).index? %>
+<h5><%= t("user.inactive") %> <%= t("user.system_user") %></h5>
+<div id="inactived_system_user">
+  <%= render :partial => "system_users/system_user_table" %>
+</div>
+<% end %>
+
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "dashboard" } %>

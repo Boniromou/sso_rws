@@ -104,6 +104,15 @@ describe AuditLogsController do
     end
   end
 
+  describe '[13] Switch main functional tab' do
+    it '[13.2] Click Audit log' do
+      login_as(@root_user)
+      visit '/home'
+      first('ul.dropdown-menu').find('a', :text => I18n.t("header.audit_log")).click
+      click_link I18n.t("auditlog.search_audit")
+      expect(current_path).to eq(search_audit_logs_path)
+    end
+  end
 =begin  
   describe '[23] Search audit log by action type' do
     before(:each) do

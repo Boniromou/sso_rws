@@ -7,6 +7,8 @@ class DashboardController < ApplicationController
   end
 
   def user_management
+    @system_users = SystemUser.inactived
+    @unshow_operation = true
     authorize :dashboard, :user_management?
     respond_to do |format|
       format.html { render file: "dashboard/user_management", :layout => "user_management", formats: [:html] }

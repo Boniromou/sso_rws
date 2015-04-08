@@ -18,6 +18,10 @@ class SystemUser < ActiveRecord::Base
     self.status
   end
 
+  def self.inactived
+    where("status = ?", "inactived")
+  end
+
   def update_roles(role_ids)
     existing_roles = self.role_assignments.map { |role_assignment| role_assignment.role_id }
     diff_role_ids = self.class.diff(existing_roles, role_ids)

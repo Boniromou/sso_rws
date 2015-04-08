@@ -3,7 +3,7 @@
 
 <%= form_tag({action: :update_roles}, :method => :put, :class => "smart-form", :remote => true) do %>
   <header role="heading">
-    <%= t("role.role") %>
+    <%= t("user.edit_role") %>
   </header>
 
   <% @apps.each do |app| %>
