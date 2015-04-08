@@ -30,6 +30,7 @@ class SystemUser < ActiveRecord::Base
         end
       end
     end
+    
   end
 
   def self.get_by_username_and_domain(username, domain)
@@ -83,13 +84,17 @@ class SystemUser < ActiveRecord::Base
     self.role_assignments.create({:role_id => role_id})
     role = Role.find_by_id(role_id)
     add_app_assignment(role.app_id)
+    app = App.find_by_id(role.app_id)
+    cache_permissions(app.name) if app
   end
 
   def revoke_role(role_id)
     Rails.logger.info "Revoke role (id=#{role_id}) for #{self.class.name} (id=#{self.id})"
     self.role_assignments.find_by_role_id(role_id).destroy
     role = Role.find_by_id(role_id)
+    app = App.find_by_id(role.app_id)
     remove_app_assignment(role.app_id)
+    cache_revoke_permissions(app.name) if app
   end
 
   def add_app_assignment(app_id)
@@ -125,5 +130,10 @@ class SystemUser < ActiveRecord::Base
       perm_hash[t.to_sym] = actions
     end
     Rails.cache.write(cache_key, {:permissions => {:role => role.name, :permissions => perm_hash}})
+  end
+
+  def cache_revoke_permissions(app_name)
+    cache_key = "#{app_name}:permissions:#{self.id}"
+    Rails.cache.delete(cache_key)
   end
 end
