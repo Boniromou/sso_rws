@@ -43,3 +43,5 @@ SsoRws::Application.configure do
                          :compress => true }
   SITE_DOMAIN = 'laxino.com'
 end
+
+APP_NAME = 'user'
