@@ -44,7 +44,7 @@ create_maintenance:
 search_maintenance:
   id: 9
   name: "search_maintenance"
-  action: "search_maintenance"
+  action: "search"
   target: "maintenance"
 cancel_maintenance:
   id: 10
