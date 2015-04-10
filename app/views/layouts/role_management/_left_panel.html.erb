@@ -14,7 +14,7 @@
         traditional href="" links. See documentation for details.
         -->
 
-      <% if policy(current_system_user).index? %>
+      <!-- % if policy(current_system_user).index? % -->
         <ul>
           <li id="nav_dashboard">
             <%= link_to role_management_dashboard_index_path, :title => t("general.dashboard"), :remote => true do %>
@@ -27,7 +27,7 @@
             <% end %>
           </li>
         </ul>
-      <% end %>
+      <!-- % end % -->
       </nav>
       <span class="minifyme" data-action="minifyMenu"> 
         <i class="fa fa-arrow-circle-left hit"></i> 
