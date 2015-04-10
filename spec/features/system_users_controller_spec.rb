@@ -358,6 +358,13 @@ describe SystemUsersController do
       expect(page).to have_selector("div#inactived_system_user table#system_user")
     end
 
+    it "[13.2] Click Audit log" do
+      login_as_root
+      visit '/home'
+      first('ul.dropdown-menu').find('a', :text => I18n.t("header.audit_log")).click
+      expect(current_path).to eq(audit_logs_root_path)
+    end
+
     it "[13.3] Select Role Management" do
       login_as(@root_user)
       visit '/home'

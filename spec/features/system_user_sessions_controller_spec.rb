@@ -47,7 +47,7 @@ describe SystemUserSessionsController do
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
 
-    it "[1.5] login without role assigned" do
+    it "[1.6] login without role assigned" do
       visit '/login'
       fill_in "system_user_username", :with => @u1.username
       fill_in "system_user_password", :with => 'secret'

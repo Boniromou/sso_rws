@@ -130,7 +130,7 @@ describe AuditLogsController do
     end
   end
 =end
-  describe '[24] Search audit log by target' do
+  describe '[12] Search audit log by target' do
     before(:each) do
       AuditLog.delete_all
       @al1 = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "create", :action_status => "success", :action_by => "portal.admin", :action_at => "2014-09-29 12:00:00", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
@@ -143,7 +143,7 @@ describe AuditLogsController do
       AuditLog.delete_all
     end
     
-    it '[24.1] search audit log by target' do
+    it '[12.1] search audit log by target' do
       login_as(@root_user, :scope => :system_user)
       visit search_audit_logs_path
       select "System", :from => "target_name"
