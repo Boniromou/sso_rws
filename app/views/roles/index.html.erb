@@ -1,23 +1,43 @@
+<!-- Breadcrumbs -->
+  <div class="row">
+    <div id="breadcrumbs" class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
+      <h2 class="page-title txt-color-blueDark">
+        <i class="fa-fw fa fa-list"></i>
+        <%= t("role.list_roles") %>
+      </h2>
+    </div>
+  </div>
+<!-- end Breadcrumbs -->
 
 
-<div class="col-md-6">
-<h2><%= t("role.role") %></h2>
+<!-- pannel -->
+  <section id="widget-grid" class="">
+    <div class="row">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
 
-<% @apps.each do |app| %>
-<table class="table table-hover table-striped">
-  
-  <h2><%= app.name.titleize %>  </h2>
-    <% app.roles.each do |role| %>
-    <tr>
-    <td>
-      <a href="javascript:void(0);" rel="popover" data-placement="right" data-original-title="<%= role.name.titleize %>" data-content="<%= gen_permission_dom role %>" data-html="true"><%= role.name.titleize %>
-      </a>
-    </td>
-    </tr>
-    <% end %>
+        <% @apps.each do |app| %>
+        <div id=<%= app.name %> class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
 
-</table>
-<% end %>
-</div>
+          <header><h2><strong><%= app.name.titleize %></strong></h2></header>
+
+          <div>
+            <div class="widget-body">
+                <% app.roles.each do |role| %>
+                  <h5>
+                    <small><i class='fa fa-check-square-o'></i></small>
+                    <%= role.name.titleize %>
+                    <small><%=link_to t("role.show_permission"), role_path(role), :remote => true %></small>
+                  </h5>
+                <% end %>
+            </div>
+          </div>
+
+        </div>
+        <% end %>
+
+      </article>
+    </div>
+  </section>
+<!-- end pannel -->
 
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_roles" } %>

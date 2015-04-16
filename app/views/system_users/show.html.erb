@@ -1,52 +1,61 @@
-<article class="col-xs-12 col-sm-12 col-md-12 col-lg-5">
+<!-- Breadcrumbs -->
+<div class="row">
+<div id="breadcrumbs" class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
+  <h2 class="page-title txt-color-blueDark">
+    <i class="fa-fw fa fa-list"></i> 
+    <%= t("user.list_users") %>
+    <span> &gt; </span>
+    <i><%= @system_user.username %></i>
+    <small>(<%= t("#{system_user_status_format(@system_user.status)}") %>)</small>  
+  </h2>
+</div>
+</div>
+<!-- end Breadcrumbs -->
 
-<h2><%= @system_user.username %></h2>
+<!-- pannel -->
+  <section id="widget-grid" class="">
+    <div class="row">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
 
-<table class="table table-hover table-striped">
-  <tr>
-    <td><%=t("user.status")%>:</td>
-    <td>
-      <div class="col-md-12">
-        <%= t("#{system_user_status_format(@system_user.status)}") %>
-      </div>
-    </td>
-    <% if @system_user.status %>
-      <% if policy(@system_user).lock? %>
-        <td>
-          <%=button_to t(change_status_button_name(@system_user.status)), {:controller => 'system_users', :action => change_status_action_name(@system_user.status), :id => @system_user.id}, :class => "btn btn-danger", :remote => true %>
-        </td>
-      <% end %>
-    <% else %>
-      <% if policy(@system_user).unlock? %>
-        <td>
-          <%=button_to t(change_status_button_name(@system_user.status)), {:controller => 'system_users', :action => change_status_action_name(@system_user.status), :id => @system_user.id}, :class => "btn btn-danger", :remote => true %>
-        </td>
-      <% end %>
-    <% end %>
-  </tr>
-  <tr>
-    <td><%=t("role.role") %>:</td>
-    <td>
-    <% if @system_user.roles.present? %>
-      <% @system_user.roles.each do |role| %>
-      <div class="col-md-4">
-        <%= "#{role.app.name.titleize}:" %>
-      </div>
-      <div class="col-md-8">
-        <%= "#{role.name.titleize}" %>
-      </div>
-      <br>
-      <% end %>
-    <% else %>
-      <div class="col-md-12">
-        -
-      </div>
-    <% end %>
-    </td>
-    <% if allow_edit_roles?(@system_user) %>
-      <td>
-        <%=button_to t("general.edit"), {:controller => 'system_users', :action => 'edit_roles', :id => @system_user.id}, :class => "btn btn-primary", :remote => true %>
-      </td>
-    <% end %>
-  </tr>
-</table>
+        <!-- Systems and roles -->
+        <div id="systems_and_roles" class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+          <header>
+            <h2><strong><%= t("role.systems_and_roles") %></strong></h2>
+            
+            <% if allow_edit_roles?(@system_user) %>
+            <div class="widget-toolbar" role="menu">
+	    <div class="btn-group">
+            <%=button_to t("general.edit"), {:controller => 'system_users', :action => 'edit_roles', :id => @system_user.id}, :class => "btn btn-primary btn-xs", :remote => true %>
+	    </div>
+	    </div>
+            <% end %>
+          </header>
+          <div>
+            <div class="widget-body">
+              <% if @system_user.roles.present? %>
+                <table id="systems_and_roles" class="table table-bordered table-striped">
+                  <thead>
+                    <th class="col-md-2">System</th>
+                    <th class="col-md-2"><%= t("role.role") %></th>
+                  </thead>
+                  <tbody>
+                     <% @system_user.roles.each do |role| %>
+                       <tr align="center">
+                       <td><%= "#{role.app.name.titleize}" %></td>
+                       <td><%= "#{role.name.titleize}" %></td>
+                       </tr>
+                     <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                No role in any App.
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <!-- end Systems and roles -->
+
+      </article>
+    </div>
+  </section>
+<!-- pannel -->

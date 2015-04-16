@@ -1,3 +1,14 @@
-<h1>Welcome to Role Management Dashboard!</h1>
+<!-- Breadcrumbs -->
+  <div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
+      <h2 class="page-title txt-color-blueDark">
+        <i class="fa-fw fa fa-home"></i>
+        <%= t("general.dashboard") %>
+      </h2>
+    </div>
+  </div>
+<!-- end Breadcrumbs -->
+
+<h2>Welcome, <i><%= current_system_user.username %></i></h2>
 
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "dashboard" } %>

@@ -15,11 +15,6 @@
         -->
 
         <ul>
-          <li id="nav_dashboard">
-            <%= link_to audit_log_dashboard_index_path, :title => t("general.dashboard"), :remote => true do %>
-              <i class="fa fa-lg fa-fw fa fa-home"></i> <span class="menu-item-parent"><%= t("general.dashboard") %></span>
-            <% end %>
-          </li>
           <li id="nav_search_audit_logs">
             <%= link_to search_audit_logs_path, :title => t("auditlog.search_audit"), :remote => true do %>
               <i class="fa fa-lg fa-fw fa-list"></i> <span class="menu-item-parent"><%= t("auditlog.search_audit") %></span>

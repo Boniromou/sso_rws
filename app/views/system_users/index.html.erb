@@ -1,65 +1,30 @@
-        <!-- widget grid -->
-        <section id="widget-grid" class="">
-          <!-- row -->
-          <div class="row">
+<!-- Breadcrumbs -->
+  <div class="row">
+    <div id="breadcrumbs" class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
+      <h2 class="page-title txt-color-blueDark">
+        <i class="fa-fw fa fa-list"></i>
+        <%= t("user.list_users") %>
+      </h2>
+    </div>
+  </div>
+<!-- end Breadcrumbs --> 
 
-            <!-- NEW WIDGET START -->
-            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-
-              <!-- Widget ID (each widget will need unique ID)-->
-              <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false">
-                <!-- widget options:
-                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-
-                data-widget-colorbutton="false"
-                data-widget-editbutton="false"
-                data-widget-togglebutton="false"
-                data-widget-deletebutton="false"
-                data-widget-fullscreenbutton="false"
-                data-widget-custombutton="false"
-                data-widget-collapsed="true"
-                data-widget-sortable="false"
-
-                -->
-                <header>
-                  <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                  <h2><%= t("user.list_users") %></h2>
-
-                </header>
-
-                <!-- widget div-->
-                <div>
-
-                  <!-- widget edit box -->
-                  <div class="jarviswidget-editbox">
-                    <!-- This area used as dropdown edit box -->
-
-                  </div>
-                  <!-- end widget edit box -->
-
-                  <!-- widget content -->
-                  <div class="widget-body">
-                    
-                    <div id="inactived_system_user" class="table-responsive">
-                      <%= render :partial => "system_users/system_user_table" %>
-                    </div>
-
-                  </div>
-                  <!-- end widget content -->
-
-                </div>
-                <!-- end widget div -->
-
+<!-- pannel -->
+  <section id="widget-grid" class="">
+    <div class="row">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+          <div>
+            <div class="widget-body">
+              <div id="inactived_system_user" class="table-responsive">
+                <%= render :partial => "system_users/system_user_table" %>
               </div>
-              <!-- end widget -->
-
-            </article>
-            <!-- WIDGET END -->
+            </div>
           </div>
+      </article>
+    </div>
+  </section>
+<!-- pannel -->
 
-          <!-- end row -->
-        </section>
-        <!-- end widget grid -->
         
-        <%= render "shared/page_setup" %>
-        <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_system_users" } %>
+<%= render "shared/page_setup" %>
+<%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_system_users" } %>

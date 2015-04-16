@@ -19,9 +19,8 @@ SsoRws::Application.routes.draw do
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root
   get 'role_management' => 'dashboard#role_management', :as => :role_management_root
-  get 'audit_logs' => 'dashboard#audit_log', :as => :audit_logs_root
 
-  resources :roles, :only => [:index]
+  resources :roles, :only => [:index, :show]
   resources :system_users, :only => [:index, :show] do
     member do
       post 'lock'
@@ -36,7 +35,6 @@ SsoRws::Application.routes.draw do
       get 'home'
       get 'user_management'
       get 'role_management'
-      get 'audit_log'
     end
   end
 

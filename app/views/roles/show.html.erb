@@ -1,0 +1,54 @@
+<!-- Breadcrumbs -->
+  <div class="row">
+    <div id="breadcrumbs" class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
+      <h2 class="page-title txt-color-blueDark">
+        <i class="fa-fw fa fa-list"></i>
+        <%= t("role.list_roles") %>
+        <span>&gt; <%= @app.name.titleize %> - <%= @role.name.titleize %></span>
+      </h2>
+    </div>
+  </div>
+<!-- end Breadcrumbs -->
+
+<!-- pannel -->
+  <section id="widget-grid" class="">
+    <div class="row">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false">
+
+          <header><h2><strong><%= t("role.permissions") %></strong></h2></header>
+
+          <div>
+            <div class="widget-body">
+              <% @permissions_by_app.each do |target, perms| %>
+                <h3><%= target.to_s.titleize %></h3>
+                
+                <% if @permissions_by_role.has_key?(target.to_sym) %>
+                  <% perms.each do |perm| %>
+                    <h5>
+                      <% if @permissions_by_role[target.to_sym].include? perm %>
+		      &nbsp; <small><i class='fa fa-check-square-o'></i></small>
+                      <%= perm.titleize%>
+                      <% else %>
+                        &nbsp; <small><i class='fa fa-square-o'></i> <%= perm.titleize%></small>
+                      <% end %>
+                    </h5>
+                  <% end %>
+                <% else %>
+                  <% perms.each do |perm| %>
+                    <h5>
+		    &nbsp; <small><i class='fa fa-square-o'></i> <%= perm.titleize%></small>
+                    </h5>
+                  <% end %>
+                <% end %>
+                <br></br>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+<!-- pannel -->
+
+

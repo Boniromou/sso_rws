@@ -64,6 +64,9 @@ en:
     role: Role
     na: No Permission
     list_roles: Role and Permission
+    show_permission: show permissions
+    permissions: Permissions
+    systems_and_roles: Systems and Roles
   auditlog:
     search_audit: Search Audit Log
     audit_time: Time

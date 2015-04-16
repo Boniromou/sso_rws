@@ -49,7 +49,6 @@ describe SystemUsersController do
       login_as(@root_user, :scope => :system_user)
       visit "/system_users/#{@root_user.id}"
       expect(page).to have_content(@root_user.username)
-      expect(page).to have_content(I18n.t("user.status"))
       expect(page).to have_content(I18n.t("user.active"))
       expect(page).to have_content(I18n.t("role.role"))
       #expect(page).to have_content(I18n.t("role.root_user"))
@@ -60,7 +59,6 @@ describe SystemUsersController do
       login_as(@system_user_1, :scope => :system_user)
       visit "/system_users/#{@system_user_1.id}"
       expect(page).to have_content(@system_user_1.username)
-      expect(page).to have_content(I18n.t("user.status"))
       expect(page).to have_content(I18n.t("user.active"))
       expect(page).to have_content(I18n.t("role.role"))
       #expect(page).to have_content(I18n.t("role.root_user"))
@@ -72,7 +70,6 @@ describe SystemUsersController do
       login_as(@root_user, :scope => :system_user)
       visit "/system_users/#{@root_user.id}"
       expect(page).to have_content(@root_user.username)
-      expect(page).to have_content(I18n.t("user.status"))
       expect(page).to have_content(I18n.t("user.active"))
       expect(page).to have_content(I18n.t("role.role"))
       #expect(page).to have_content(I18n.t("general.na")) 
@@ -120,7 +117,7 @@ describe SystemUsersController do
       expect(page.all('tr')[1].all('td')[1]).to have_content(I18n.t("user.inactive"))
       expect(page.all('tr')[1].all('td')[2]).to have_button(I18n.t("user.unlock"))
     end
-
+=begin
     it "[6.3] Activate system user (view system user)" do
       login_as(@root_user, :scope => :system_user)
       visit "/system_users/#{@system_user_2.id}"
@@ -140,7 +137,7 @@ describe SystemUsersController do
       expect(page).to have_content(I18n.t("user.inactive"))
       expect(page).to have_button(I18n.t("user.unlock"))
     end
-
+=end
     it '[6.5] login as de-activated account' do
       visit "/"
       fill_in "system_user_username", :with => @system_user_2.username
@@ -156,7 +153,7 @@ describe SystemUsersController do
       expect(page.all('tr')[0].all('td')[1]).to have_content(I18n.t("user.active"))
       expect(page.all('tr')[0].all('td')[2]).to have_no_button(I18n.t("user.lock"))
     end
-
+=begin
     it "[6.7] Current user cannot de-activate himself (view system user)" do
       login_as(@root_user, :scope => :system_user)
       visit "/system_users/#{@root_user.id}"
@@ -169,12 +166,13 @@ describe SystemUsersController do
       expect(page).to have_no_button(I18n.t("general.edit"))
       logout(@root_user) 
     end
-
+=end
     it '[6.8] audit log for Activate system user' do
       login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@system_user_2.id}"
-      expect(page).to have_content(@system_user_2.username)
-      expect(page).to have_content(I18n.t("user.inactive"))
+      visit "/system_users"
+      expect(page.all('tr')[2].all('td')[0]).to have_content(@system_user_2.username)
+      expect(page.all('tr')[2].all('td')[1]).to have_content(I18n.t("user.inactive"))
+      expect(page.all('tr')[2].all('td')[2]).to have_button(I18n.t("user.unlock"))
       click_button I18n.t("user.unlock")
       al = AuditLog.first
       expect(al.audit_target).to eq("system_user")
@@ -191,9 +189,10 @@ describe SystemUsersController do
 
     it '[6.9] audit log for De-activate system user' do
       login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@system_user_1.id}"
-      expect(page).to have_content(@system_user_1.username)
-      expect(page).to have_content(I18n.t("user.active"))
+      visit "/system_users"
+      expect(page.all('tr')[1].all('td')[0]).to have_content(@system_user_1.username)
+      expect(page.all('tr')[1].all('td')[1]).to have_content(I18n.t("user.active"))
+      expect(page.all('tr')[1].all('td')[2]).to have_button(I18n.t("user.lock"))
       click_button I18n.t("user.lock")
       al = AuditLog.first
       expect(al.audit_target).to eq("system_user")
@@ -303,7 +302,7 @@ describe SystemUsersController do
       within ("div#content form") do
         radio_btn_1 = find("input##{app1.name}_#{r1.id}")
         expect(radio_btn_1[:checked]).to eq "checked"
-        uncheck("#{app1.name.titleize}")
+        uncheck("enabled_#{app1.name}")
         #radio_btn_1.unselect_option
         #click_button(I18n.t("general.confirm"))
         # capybara won't let radio buttons unselected
@@ -311,7 +310,7 @@ describe SystemUsersController do
       end
       @system_user_1.reload
       expect(@system_user_1.roles.length).to eq 0
-      user_profile = find("div#content table")
+      user_profile = find("div#content div#systems_and_roles")
       expect(user_profile).not_to have_content "#{app1.name.titleize}"
       expect(user_profile).not_to have_content "#{r1.name.titleize}"
     end
@@ -340,7 +339,7 @@ describe SystemUsersController do
       login_as_root
       visit system_user_path(root_user)
       expect(page).to have_content(root_user.username)
-      expect(page).to have_content(I18n.t("user.status"))
+      #expect(page).to have_content(I18n.t("user.status"))
       expect(page).to have_content(I18n.t("user.active"))
       expect(page).to have_no_button(I18n.t("user.lock"))
       expect(page).to have_content(I18n.t("role.role"))
@@ -355,14 +354,14 @@ describe SystemUsersController do
       visit '/home'
       first('ul.dropdown-menu').find('a', :text => I18n.t("header.user_management")).click
       expect(current_path).to eq(user_management_root_path)
-      expect(page).to have_selector("div#inactived_system_user table#system_user")
+      expect(page).to have_selector("div#inactived_system_user")
     end
 
     it "[13.2] Click Audit log" do
       login_as_root
       visit '/home'
       first('ul.dropdown-menu').find('a', :text => I18n.t("header.audit_log")).click
-      expect(current_path).to eq(audit_logs_root_path)
+      expect(current_path).to eq(search_audit_logs_path)
     end
 
     it "[13.3] Select Role Management" do
@@ -427,8 +426,8 @@ describe SystemUsersController do
       auditor_1.update_roles([auditor_role.id])
       login_as(auditor_1, :scope => :system_user)
       visit home_root_path
-      visit audit_logs_root_path
-      expect(current_path).to eq audit_logs_root_path
+      visit search_audit_logs_path
+      expect(current_path).to eq search_audit_logs_path
       verify_authorized_request
     end
 
@@ -515,7 +514,7 @@ describe SystemUsersController do
       assert_left_panel_item I18n.t("user.list_users")
       click_link I18n.t("user.list_users")
       user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
-      find(user_manager_2_profile_link_selector).click
+      #find(user_manager_2_profile_link_selector).click
       click_button I18n.t("user.lock")
       verify_authorized_request
     end
@@ -535,7 +534,7 @@ describe SystemUsersController do
       assert_left_panel_item I18n.t("user.list_users")
       click_link I18n.t("user.list_users")
       user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
-      find(user_manager_2_profile_link_selector).click
+      #find(user_manager_2_profile_link_selector).click
       expect(has_link?(I18n.t("user.lock"))).to be false
     end
 
@@ -553,7 +552,7 @@ describe SystemUsersController do
       assert_left_panel_item I18n.t("user.list_users")
       click_link I18n.t("user.list_users")
       user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
-      find(user_manager_2_profile_link_selector).click
+      #find(user_manager_2_profile_link_selector).click
       click_button I18n.t("user.unlock")
       verify_authorized_request
     end
@@ -573,7 +572,7 @@ describe SystemUsersController do
       assert_left_panel_item I18n.t("user.list_users")
       click_link I18n.t("user.list_users")
       user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
-      find(user_manager_2_profile_link_selector).click
+      #find(user_manager_2_profile_link_selector).click
       expect(has_link?(I18n.t("user.unlock"))).to be false
     end
   end

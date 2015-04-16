@@ -1,9 +1,20 @@
+<!-- Breadcrumbs -->
+  <div class="row">
+    <div id="breadcrumbs" class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
+      <h2 class="page-title txt-color-blueDark">
+        <i class="fa-fw fa fa-list"></i>
+        <%= t("auditlog.search_audit") %>
+      </h2>
+    </div>
+  </div>
+<!-- end Breadcrumbs -->
+
+
 <div id="myTabContent1" class="tab-content padding-10">
-	<div class="tab-pane fade in active" id="audit_log_content">
+  <div class="tab-pane fade in active" id="audit_log_content">
     <%= render "audit_logs/search_form" %>
     
-    <div id="audit_logs_result">
-      
+    <div id="audit_logs_result">    
     </div>
   </div>
 </div>

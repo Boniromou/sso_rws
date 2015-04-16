@@ -1,33 +1,53 @@
-<article class="col-xs-12 col-sm-12 col-md-12 col-lg-3">
-<h2><%= @system_user.username %></h2>
+<!-- Breadcrumbs -->
+<div class="row">
+<div class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
+  <h2 class="page-title txt-color-blueDark">
+    <i class="fa-fw fa fa-list"></i>
+    <%= t("user.list_users") %>
+    &gt;
+    <i><%= @system_user.username %></i>
+    <span>&gt; Edit Roles</span>
+  </h2>
+</div>
+</div>
+<!-- end Breadcrumbs -->
+
+
+  <section id="widget-grid" class="">
+    <div class="row">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+
+          <div>
+            <div class="widget-body">
+
 
 <%= form_tag({action: :update_roles}, :method => :put, :class => "smart-form", :remote => true) do %>
-  <header role="heading">
-    <%= t("user.edit_role") %>
-  </header>
-
   <% @apps.each do |app| %>
   <fieldset id="<%= "#{app.name}_app" %>">
     <section>
       <div class="row">
-        <div class="col col-12">
+        <div class="col col-1">
           <label class="checkbox">
             <%= check_box_tag "enabled_#{app.name}", "checked", @current_app_ids.include?(app.id) ? true : false %>
             <i></i>
-            <%= label_tag "#{app.name.titleize}" %>
           </label>
+        </div>
+        <div class="col col-11">
+            <h3><%= label_tag "#{app.name.titleize}" %></h3>
         </div>
       </div>
     </section>
 
     <section>
       <div class="row">
-        <div class="col col-12">
+        <div class="col col-1">
+        </div>
+        <div class="col col-11">
         <% app.roles.each do |role| %>
           <%= label_tag nil, nil, :class => @current_app_ids.include?(app.id) ? "radio" : "radio state-disabled" do %>
             <%= radio_button_tag "#{app.name}", role.id, @current_role_ids.include?(role.id) %>
             <i></i>
-            <%= label_tag nil, "#{role.name.titleize}" %>
+            <h5><%= label_tag nil, "#{role.name.titleize}" %></h5>
           <% end %>
         <% end %>
         </div>
@@ -40,6 +60,20 @@
     <%= submit_tag(t("general.confirm"), :class => "btn btn-primary", :remote => true) %> <%= link_to t("general.cancel"), system_user_path(@system_user), :class => "btn btn-default", :remote => true %>
   </footer>
 <% end %>
+
+
+
+
+            </div>
+          </div>
+      </article>
+    </div>
+  </section>
+
+
+
+
+
 
 <script type = "text/javascript" >
   $(document).ready(function(){

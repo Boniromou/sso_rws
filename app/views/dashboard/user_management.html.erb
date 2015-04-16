@@ -1,10 +1,38 @@
-<h1>Welcome, <%= current_system_user.username %></h1>
+<!-- Breadcrumbs -->
+  <div class="row">
+    <div id="breadcrumbs" class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
+      <h2 class="page-title txt-color-blueDark">
+        <i class="fa-fw fa fa-home"></i>
+        <%= t("general.dashboard") %>
+      </h2>
+    </div>
+  </div>
+<!-- end Breadcrumbs -->
 
+<h2>Welcome, <i><%= current_system_user.username %></i></h2>
+
+<!-- pannel -->
 <% if policy(SystemUser.new).index? %>
-<h5><%= t("user.inactive") %> <%= t("user.system_user") %></h5>
-<div id="inactived_system_user">
-  <%= render :partial => "system_users/system_user_table" %>
-</div>
+  <section id="widget-grid" class="">
+    <div class="row">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false">
+          <header><h2><strong><%= t("dashboard.inactive_system_user") %></strong></h2></header>
+
+          <div>
+            <div id="inactived_system_user" class="widget-body">
+              <% if @system_users.empty? %>
+                no record
+              <% else %>
+                <%= render :partial => "system_users/system_user_table" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
 <% end %>
+<!-- pannel -->
 
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "dashboard" } %>

@@ -10,4 +10,17 @@ class Role < ActiveRecord::Base
    Rails.logger.info "has_permission? on #{target} and #{action}: #{result.present?}"
    result
   end
+
+  def self.permissions(role_id)
+    perm_hash ={}
+    role = self.find_by_id(role_id)
+    role.permissions.each do |perm|
+      if perm_hash.has_key?(perm.target.to_sym)
+        perm_hash[perm.target.to_sym] << perm.action unless perm_hash[perm.target.to_sym].include? perm.action
+      else
+        perm_hash[perm.target.to_sym] = [perm.action]
+      end
+    end
+    perm_hash
+  end
 end
