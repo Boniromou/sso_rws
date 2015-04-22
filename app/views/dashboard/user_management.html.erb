@@ -22,7 +22,7 @@
           <div>
             <div id="inactived_system_user" class="widget-body">
               <% if @system_users.empty? %>
-                <%= t("header.no_record") %>
+                <%= t("general.no_result_found") %>
               <% else %>
                 <%= render :partial => "system_users/system_user_table" %>
               <% end %>
