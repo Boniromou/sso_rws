@@ -53,6 +53,7 @@ en:
     unlock: un-lock
     preferred_language: Preferred Language
     edit_role: Edit Role
+    no_role: No roles assigned to this user
   header:
     user_management: User Management
     property_management: Property Management
@@ -107,5 +108,7 @@ en:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users
     welcome: Welcome
-  ! '':
-    ! '': Roles
+  systems:
+    title: Systems
+  roles:
+    title: Roles

@@ -35,8 +35,8 @@
               <% if @system_user.roles.present? %>
                 <table id="systems_and_roles" class="table table-bordered table-striped">
                   <thead>
-                    <th class="col-md-2">System</th>
-                    <th class="col-md-2"><%= t("role.role") %></th>
+                    <th class="col-md-2"><%= t("systems.title") %></th>
+                    <th class="col-md-2"><%= t("roles.title") %></th>
                   </thead>
                   <tbody>
                      <% @system_user.roles.each do |role| %>
@@ -48,7 +48,7 @@
                   </tbody>
                 </table>
               <% else %>
-                No role in any App.
+                <%= t("user.no_role") %>
               <% end %>
             </div>
           </div>

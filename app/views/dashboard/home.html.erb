@@ -1,3 +1,3 @@
-<h1>Welcome, <i><%= current_system_user.username %></i></h1>
+<h1><%= t("header.welcome") %>, <i><%= current_system_user.username %></i></h1>
 
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "dashboard" } %>
