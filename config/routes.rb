@@ -51,5 +51,5 @@ SsoRws::Application.routes.draw do
 #  match "/500" => "errors#exception"
 
   # Catch routing error here
-#  match '*unmatched', :to => 'application#render_error'
+  match '*unmatched', :to => 'application#handle_route_not_found', via: :get
 end

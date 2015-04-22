@@ -64,9 +64,9 @@ en:
     role: Role
     na: No Permission
     list_roles: Role and Permission
+    systems_and_roles: Systems and Roles
     show_permission: show permissions
     permissions: Permissions
-    systems_and_roles: Systems and Roles
   auditlog:
     search_audit: Search Audit Log
     audit_time: Time
@@ -84,21 +84,28 @@ en:
     remove_type: Remove
     update_type: Update
     delete_type: Delete
-  tree_view:
-    create_maintenance: Create Maintenance
-    search_maintenance: Search Maintenance
   login_page:
     username_tooltip: please enter username
     password_tooltip: Enter your password
   logout_page:
     action_yes: 'Yes'
     action_no: 'No'
-  flash_message:
-    success: Update Success.
-    fail: Update Fail.
-    lock_error: Page has been updated, please try again.
-    time_invalid: Time invalid.
-    not_authorize: You are not authorize for this request.
   propagation:
     title: Propagation
     error: Error
+  flash_message:
+    not_authorize: You are not authorize for this request.
+  app_system name:
+    user_management: User Management
+    gameing_operation: Gaming Operation
+    cage: Cage
+  success:
+    edit_role: Edit role for [%{user_name}]successful.
+    lock_user: Lock user [%{user_name}]
+    unlock_user: Unlock user [%{user_name}]
+  dashboard:
+    inactive_system_user: Inactive System User
+    no_record: no record of inactive users
+    welcome: Welcome
+  ! '':
+    ! '': Roles

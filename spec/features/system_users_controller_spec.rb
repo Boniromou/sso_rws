@@ -104,6 +104,7 @@ describe SystemUsersController do
       expect(page.all('tr')[2].all('td')[0]).to have_content(@system_user_2.username)
       expect(page.all('tr')[2].all('td')[1]).to have_content(I18n.t("user.active"))
       expect(page.all('tr')[2].all('td')[2]).to have_button(I18n.t("user.lock"))
+      check_flash_message I18n.t("success.unlock_user", :user_name => @system_user_2.username)
     end
 
     it "[6.2] De-activate system user (list system user)" do
@@ -116,6 +117,7 @@ describe SystemUsersController do
       expect(page.all('tr')[1].all('td')[0]).to have_content(@system_user_1.username)
       expect(page.all('tr')[1].all('td')[1]).to have_content(I18n.t("user.inactive"))
       expect(page.all('tr')[1].all('td')[2]).to have_button(I18n.t("user.unlock"))
+      check_flash_message I18n.t("success.lock_user", :user_name => @system_user_1.username)
     end
 =begin
     it "[6.3] Activate system user (view system user)" do
@@ -273,6 +275,7 @@ describe SystemUsersController do
         user_profile = find("div#content table")
         expect(user_profile).to have_content "#{app1.name.titleize}"
         expect(user_profile).to have_content "#{r1.name.titleize}"
+        check_flash_message I18n.t("success.edit_role", :user_name => @system_user_1.username)
       end
     end
 
@@ -313,6 +316,7 @@ describe SystemUsersController do
       user_profile = find("div#content div#systems_and_roles")
       expect(user_profile).not_to have_content "#{app1.name.titleize}"
       expect(user_profile).not_to have_content "#{r1.name.titleize}"
+      check_flash_message I18n.t("success.edit_role", :user_name => @system_user_1.username)
     end
 
     it '[7.1] Grant role' do

@@ -19,7 +19,7 @@ if File.file?(filename)
     end
 
     SsoRws::Application.config.session_store :dalli_store,
-                                              :key => '_ap_rws_session',
+                                              :key => '_sso_rws_session',
                                               #:domain => SITE_DOMAIN,
                                               :memcache_server => mem_config['servers'],
                                               :namespace => mem_config['namespace'],

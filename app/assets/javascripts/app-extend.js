@@ -50,8 +50,8 @@ $("#from").datepicker({
     onClose: function (selectedDate) {
         $("#to").datepicker("option", "minDate", selectedDate);
     }
-
 });
+
 $("#to").datepicker({
     defaultDate: "+1w",
     changeMonth: true,
@@ -63,24 +63,42 @@ $("#to").datepicker({
     }
 });
 
-// flash message
-$(document).ready(function() {
-  if ($('div#message_content').length > 0) {
-    var flash_type = $('div#message_content').parent()
+function popSuccess () {
+  $.smallBox({
+    title : "Success",
+    content : $('div#message_content').text(),
+    color : "#659265",
+    icon : "fa fa-check",
+  });
+}
+
+function popFail() {
+  $.smallBox({
+    title : "Fail",
+    content : $('div#message_content').text(),
+    color : "#C46A69",
+    icon : "fa fa-warning",
+  });
+}
+
+function clearFlashMessage() {
+  if ($("div#divSmallBoxes").length) {
+    $("div#divSmallBoxes").empty();
+  }
+}
+
+function popFlashMessage() {
+  if ($('div#message_content').length) {
+    var flash_type = $('div#message_content').parent();
     if (flash_type.hasClass("alert alert-success")) {
-      $.smallBox({
-        title : "Success",
-        content : $('div#message_content').text(),
-        color : "#659265",
-        iconSmall : "fa fa-check fa-2x fadeInRight animated",
-      });
+      popSuccess();
     } else if (flash_type.hasClass("alert-warning")) {
-      $.smallBox({
-        title : "Fail",
-        content : $('div#message_content').text(),
-        color : "#C46A69",
-        iconSmall : "fa fa-times fa-2x fadeInRight animated",
-      });
+      popFail();
     }
   }
+}
+
+// pop for existing content if found
+$(document).ready(function() {
+  popFlashMessage();
 });

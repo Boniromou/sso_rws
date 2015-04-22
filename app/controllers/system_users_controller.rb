@@ -5,8 +5,8 @@ class SystemUsersController < ApplicationController
   
   def index
     @system_users = SystemUser.all
-    authorize current_system_user
-    session[:previous_action] = "index"
+    #authorize current_system_user
+    authorize SystemUser
     respond_to do |format|
       format.html { render file: "system_users/index", formats: [:html] }
       format.js { render file: "system_users/index", formats: [:js] }
@@ -16,7 +16,6 @@ class SystemUsersController < ApplicationController
   def show
     @system_user = SystemUser.find_by_id(params[:id])
     authorize @system_user
-    session[:previous_action] = "show"
     respond_to do |format|
       format.html { render file: "system_users/show", formats: [:html] }
       format.js { render file: "system_users/show", formats: [:js] }
@@ -24,25 +23,24 @@ class SystemUsersController < ApplicationController
   end
 
   def lock
-    AuditLog.system_user_log("lock", current_system_user.username, sid, client_ip) {
+    AuditLog.system_user_log("lock", current_system_user.username, sid, client_ip) do
       system_user = SystemUser.find_by_id(params[:id])
       authorize system_user
       #system_user.update_attributes({:status => 0}) if system_user
       system_user.lock
-    }
-
-    redirect_to :back
-    #refresh_last_page
+      flash[:success] = I18n.t("success.lock_user", :user_name => system_user.username)
+    end
+    redirect_to(system_users_path)
   end
 
   def unlock
-    AuditLog.system_user_log("unlock", current_system_user.username, sid, client_ip) {
+    AuditLog.system_user_log("unlock", current_system_user.username, sid, client_ip) do
       system_user = SystemUser.find_by_id(params[:id])
       authorize system_user
       system_user.unlock
-    }
-    redirect_to :back
-    #refresh_last_page
+      flash[:success] = I18n.t("success.unlock_user", :user_name => system_user.username)
+    end
+    redirect_to(system_users_path)
   end
 
   # edit roles page
@@ -65,7 +63,7 @@ class SystemUsersController < ApplicationController
       system_user = SystemUser.find_by_id(params[:id])
       authorize system_user
       system_user.update_roles(role_ids_param)
-      flash[:success] = "flash_message.success"
+      flash[:success] = I18n.t("success.edit_role", :user_name => system_user.username)
     end
     @system_user = SystemUser.find_by_id(params[:id])
     if request.xhr?
@@ -82,10 +80,5 @@ class SystemUsersController < ApplicationController
       v ? v.to_i : nil
     end
     role_ids.compact.uniq
-  end
-
-  def refresh_last_page
-    #send session[:previous_action]
-     render :action => session[:previous_action]
   end
 end

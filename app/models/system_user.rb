@@ -57,6 +57,12 @@ class SystemUser < ActiveRecord::Base
     return nil
   end
 
+  # determine if the user has permission on a particular action (in this app by default)
+  def has_permission?(target, action, app_name=APP_NAME)
+    role = role_in_app(app_name)
+    role && role.has_permission?(target, action)
+  end
+
   def cache_info(app_name)
     cache_status
     cache_permissions(app_name) unless is_admin?

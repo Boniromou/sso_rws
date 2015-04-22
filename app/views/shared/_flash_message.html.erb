@@ -4,7 +4,12 @@
                 <%= content_tag :div, :class => "alert #{bootstrap_class_for(type)} fade in" do %>
                   <button class="close" data-dismiss="alert">×</button>
                   <div id="message_content">
+                    <!-- %= t(msg) % -->
+                    <% if defined?(use_translation) && use_translation %>
                     <%= t(msg) %>
+                    <% else %>
+                    <%= msg %>
+                    <% end %>
                   </div>
                 <% end %>
                 <!--% flash.clear %-->

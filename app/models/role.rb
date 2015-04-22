@@ -7,8 +7,8 @@ class Role < ActiveRecord::Base
 
   def has_permission?(target, action)
     result = self.permissions.collect{|x| {:action => x.action, :target => x.target}}.include?({:action => action, :target => target})
-   Rails.logger.info "has_permission? on #{target} and #{action}: #{result.present?}"
-   result
+    Rails.logger.info "has_permission? on #{target} and #{action}: #{result.present?}"
+    result
   end
 
   def self.permissions(role_id)

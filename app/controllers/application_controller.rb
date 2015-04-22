@@ -10,8 +10,7 @@ class ApplicationController < ActionController::Base
 
   #rescue_from ::ActiveRecord::RecordInvalid, :with => :handle_invalid_error
   #rescue_from ::ActiveRecord::StaleObjectError, :with => :handle_unsync_error
-  #rescue_from Exception, :with => :handle_fatal_error
-
+  rescue_from Exception, :with => :handle_fatal_error
   rescue_from Pundit::NotAuthorizedError, :with => :handle_unauthorize
 
   def set_locale
@@ -42,12 +41,19 @@ class ApplicationController < ActionController::Base
   def client_ip
     request.env["HTTP_X_FORWARDED_FOR"]
   end
+
+  def handle_route_not_found
+    respond_to do |format|
+      format.html { render partial: "shared/error404", formats: [:html], layout: "error_page", status: :not_found }
+      format.js { render partial: "shared/error404", formats: [:js], status: :not_found }
+    end
+  end
  
   protected
   def handle_inactive_status
     Rails.logger.info 'handle_inactive_status'
     sign_out current_system_user if current_system_user
-    flash[:alert] = "alert.inactive_account"
+    flash[:alert] = "alert.inactive_account"  # login page want raw locale key due to devise behavior
     if request.xhr?
       render :nothing => true, :status => :unauthorized
     else
@@ -61,7 +67,7 @@ class ApplicationController < ActionController::Base
   
   def handle_unauthorize
     Rails.logger.info 'handle_unauthorize'
-    flash[:alert] = "flash_message.not_authorize"
+    flash[:alert] = I18n.t("flash_message.not_authorize")
     if request.xhr?
       render :js => "window.location = '/home'"
     else
@@ -87,5 +93,16 @@ class ApplicationController < ActionController::Base
   def default_selected_function
     # TODO: determine what path to redirect to based on role/permission
     Rails.application.routes.recognize_path "home"
+  end
+
+  def handle_fatal_error(e)
+    @from = params[:from]
+    Rails.logger.error "#{e.message}"
+    Rails.logger.error "#{e.backtrace.inspect}"
+    respond_to do |format|
+      format.html { render partial: "shared/error500", formats: [:html], layout: "error_page", status: :internal_server_error }
+      format.js { render partial: "shared/error500", formats: [:js], status: :internal_server_error }
+    end
+    return
   end
 end
