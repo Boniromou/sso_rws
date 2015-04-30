@@ -1,5 +1,5 @@
 ############################
-# user_manager
+# service_desk_manager
 ############################
 1:
   id: 1
@@ -17,13 +17,17 @@
   id: 4
   role_id: 1
   permission_id: 5
+5:
+  id: 5
+  role_id: 1
+  permission_id: 1
 ############################
 # auditor
 ############################
-5:
-  id: 5
-  role_id: 2
-  permission_id: 1
+#5:
+#  id: 5
+#  role_id: 2
+#  permission_id: 1
 ############################
 # change_coordinator
 ############################
@@ -192,10 +196,10 @@
 ############################
 # system_auditor
 ############################
-45:
-  id: 45
-  role_id: 7
-  permission_id: 1
+#45:
+#  id: 45
+#  role_id: 7
+#  permission_id: 1
 ############################
 # cashier
 ############################

@@ -25,16 +25,16 @@ unlock_system_user:
   name: "unlock_system_user"
   action: "unlock_system_user"
   target: "system_user"
-lock_root:
-  id: 6
-  name: "lock_root"
-  action: "lock_root"
-  target: "system_user"
-unlock_root:
-  id: 7
-  name: "unlock_root"
-  action: "unlock_root"
-  target: "system_user"
+#lock_root:
+#  id: 6
+#  name: "lock_root"
+#  action: "lock_root"
+#  target: "system_user"
+#unlock_root:
+#  id: 7
+#  name: "unlock_root"
+#  action: "unlock_root"
+#  target: "system_user"
 # operations
 create_maintenance:
   id: 8
@@ -121,6 +121,7 @@ list_test_player_log:
   name: "list_log_history"
   action: "list_log"
   target: "test_player"
+# cage
 create_player:
   id: 25
   name: "create"

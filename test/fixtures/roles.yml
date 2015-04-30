@@ -2,10 +2,10 @@ user_manager:
   id: 1
   name: "user_manager"
   app_id: 1
-auditor:
-  id: 2
-  name: "auditor"
-  app_id: 1
+#auditor:
+#  id: 2
+#  name: "auditor"
+#  app_id: 1
 change_coordinator:
   id: 3
   name: "change_coordinator"
@@ -18,14 +18,14 @@ service_desk_agent:
   id: 5
   name: "service_desk_agent"
   app_id: 2
-property_operator:
+property_manager:
   id: 6
-  name: "property_operator"
+  name: "product_manager"
   app_id: 2
-system_auditor:
-  id: 7
-  name: "system_auditor"
-  app_id: 2
+#system_auditor:
+#  id: 7
+#  name: "system_auditor"
+#  app_id: 2
 cashier:
   id: 8
   name: "cashier"
