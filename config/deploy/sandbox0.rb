@@ -5,7 +5,7 @@ set :branch, 'REL_0_1_0'
 # Define your repository server for integration environment here.
 #   production SVN - svn.prod.laxigames.com
 #   development SVN - svn.mo.laxino.com
-set :repo_host, 'svn.mo.laxino.com'
+set :repo_host, 'svn.prod.laxigames.com'
 
 # Define your application servers for integration environment here.
 #   int - Integration
