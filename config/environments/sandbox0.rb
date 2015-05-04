@@ -1,4 +1,4 @@
-ApRws::Application.configure do
+SsoRws::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # Code is not reloaded between requests
@@ -64,4 +64,13 @@ ApRws::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+  config.cache_store = :dalli_store,
+                        'snd-cons-vapp01.sandbox.laxigames.com:11211',
+                        {:namespace => 'cirrus_snd',
+                         :expires_in => 1.day,
+                         :socket_timeout => 3,
+                         :compress => true }
+  SITE_DOMAIN = 'laxigames.com'
 end
+
+APP_NAME = 'user'

@@ -37,3 +37,23 @@ staging0:
   password: rigi
   host: mo-stg-generic-db01.rnd.laxino.com
   port: 3306
+
+sandbox0:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_sandbox
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: ph-snd-sso-vdb01.laxigames.com
+  port: 6034
+
+production0:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_production
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: ph-prd-sso-vdb01.laxigames.com
+  port: 6033
