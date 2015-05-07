@@ -1,5 +1,5 @@
 class AuthSource < ActiveRecord::Base
-  DEFAULT_SRC = "Laxino LDAP"
+  DEFAULT_SRC = "Laxino LDAP MO"
 
   has_many :system_users
   validates_presence_of :name
@@ -27,6 +27,10 @@ class AuthSource < ActiveRecord::Base
   end
 =end
   def self.get_default_auth_source
-    AuthSource.find_by_name(DEFAULT_SRC) 
+    if defined?(AUTH_SOURCE_CODE_NAME)
+      AUTH_SOURCE_CODE_NAME
+    else
+      AuthSource.find_by_name(DEFAULT_SRC) 
+    end
   end
 end

@@ -80,7 +80,7 @@ describe SystemUsersController do
 
   describe "[6] Activate/De-activate system user" do
     before(:each) do
-      @auth_source = AuthSource.find_by_name('Laxino LDAP')
+      @auth_source = AuthSource.find_by_name('Laxino LDAP MO')
       @system_user_1 = SystemUser.create!(:username => "lulupdan", :status => true, :admin => false)
       @system_user_2 = SystemUser.create!(:username => "lalalala", :status => false, :admin => false, :auth_source_id => @auth_source.id)
  #     @system_user_3 = SystemUser.create!(:username => "gogopanda", :status => false, :admin => false)
