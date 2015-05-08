@@ -142,3 +142,33 @@ withdraw:
   name: "withdraw"
   action: "withdraw"
   target: "player_transaction"
+transaction_history:
+  id: 29
+  name: "search"
+  action: "search"
+  target: "player_transaction"
+reprint_slip:
+  id: 30
+  name: "reprint_slip"
+  action: "reprint"
+  target: "player_transaction"
+print_slip:
+  id: 31
+  name: "print_slip"
+  action: "print"
+  target: "player_transaction"
+roll_shift:
+  id: 32
+  name: "roll"
+  action: "roll"
+  target: "shift"
+search_front_money_report:
+  id: 33
+  name: "search_front_money"
+  action: "search_fm"
+  target: "shift"
+print_front_money_report:
+  id: 34
+  name: "print_front_money"
+  action: "print_fm"
+  target: "shift"

@@ -30,3 +30,15 @@ cashier:
   id: 8
   name: "cashier"
   app_id: 3
+cage_manager:
+  id: 9
+  name: "cage_manager"
+  app_id: 3
+shift_manager:
+  id: 10
+  name: "shift_manager"
+  app_id: 3
+marketing_counter:
+  id: 11
+  name: "marketing_counter"
+  app_id: 3
