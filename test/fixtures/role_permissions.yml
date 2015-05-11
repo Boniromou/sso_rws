@@ -219,3 +219,104 @@
   id: 49
   role_id: 8
   permission_id: 28
+50:
+  id: 50
+  role_id: 8
+  permission_id: 29
+51:
+  id: 51
+  role_id: 8
+  permission_id: 31
+############################
+# cage manager
+############################
+52:
+  id: 52
+  role_id: 9
+  permission_id: 25
+53:
+  id: 53
+  role_id: 9
+  permission_id: 26
+54:
+  id: 54
+  role_id: 9
+  permission_id: 27
+55:
+  id: 55
+  role_id: 9
+  permission_id: 28
+56:
+  id: 56
+  role_id: 9
+  permission_id: 29
+57:
+  id: 57
+  role_id: 9
+  permission_id: 30
+58:
+  id: 58
+  role_id: 9
+  permission_id: 31
+59:
+  id: 59
+  role_id: 9
+  permission_id: 34
+72:
+  id: 72
+  role_id: 9
+  permission_id: 33
+############################
+# shift manager
+############################
+60:
+  id: 60
+  role_id: 10
+  permission_id: 25
+61:
+  id: 61
+  role_id: 10
+  permission_id: 26
+62:
+  id: 62
+  role_id: 10
+  permission_id: 27
+63:
+  id: 63
+  role_id: 10
+  permission_id: 28
+64:
+  id: 64
+  role_id: 10
+  permission_id: 29
+65:
+  id: 65
+  role_id: 10
+  permission_id: 30
+66:
+  id: 66
+  role_id: 10
+  permission_id: 31
+67:
+  id: 67
+  role_id: 10
+  permission_id: 32
+68:
+  id: 68
+  role_id: 10
+  permission_id: 33
+69:
+  id: 69
+  role_id: 10
+  permission_id: 34
+############################
+# marketing counter
+############################
+70:
+  id: 70
+  role_id: 11
+  permission_id: 25
+71:
+  id: 71
+  role_id: 11
+  permission_id: 26
