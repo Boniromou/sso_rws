@@ -67,5 +67,8 @@ module SsoRws
 
     # Enable AJAX call
     config.enable_ajax = true
+   
+    # Add slash to the end of each URL
+    config.action_controller.default_url_options = { :trailing_slash => true }
   end
 end
