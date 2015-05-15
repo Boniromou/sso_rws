@@ -35,6 +35,9 @@ SsoRws::Application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
+  # not add slash to the end of each URL
+  config.action_controller.default_url_options = { :trailing_slash => false }
+
 #  SITE_DOMAIN = ''
   config.cache_store = :dalli_store, 'int-cons-vapp01.rnd.laxino.com:11211', { :namespace => 'cirrus_test', :expires_in => 1.day, :socket_timeout => 3, :compress => true }
 end
