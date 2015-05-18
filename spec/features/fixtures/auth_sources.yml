@@ -1,7 +1,7 @@
 1:
   id: 1
   auth_type: "AuthSourceLdap"
-  name: "Laxino LDAP MO"
+  name: "Laxino LDAP"
   host: "10.10.28.91"
   port: 389
   account: 'mo\svc.linux'
