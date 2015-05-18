@@ -1,7 +1,6 @@
 require "feature_spec_helper"
 
 describe SystemUserSessionsController do
-  fixtures :auth_sources
   before(:all) do
     include Warden::Test::Helpers
     Warden.test_mode!

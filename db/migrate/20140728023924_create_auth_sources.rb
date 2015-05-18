@@ -19,6 +19,6 @@ class CreateAuthSources < ActiveRecord::Migration
       t.boolean :onthefly_register, :default => false, :null => false
     end
 
-     AuthSource.create!(:auth_type => "AuthSourceLdap", :name => "Laxino LDAP", :host => "10.10.28.91", :port => 389, :account => 'mo\svc.linux', :account_password => "Ccc1234%", :base_dn => "DC=mo,DC=laxino,DC=com", :attr_login => "sAMAccountName", :attr_firstname => "givenName", :attr_lastname => "sN", :attr_mail => "mail", :onthefly_register => 1)
+     AuthSource.create!(:auth_type => "AuthSourceLdap", :name => "Laxino LDAP", :host => AUTH_SOURCE_HOST, :port => 389, :account => 'mo\svc.linux', :account_password => "Ccc1234%", :base_dn => "DC=mo,DC=laxino,DC=com", :attr_login => "sAMAccountName", :attr_firstname => "givenName", :attr_lastname => "sN", :attr_mail => "mail", :onthefly_register => 1)
   end
 end
