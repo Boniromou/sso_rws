@@ -126,6 +126,22 @@
   id: 29
   role_id: 4
   permission_id: 24
+100:
+  id: 100
+  role_id: 4
+  permission_id: 110
+101:
+  id: 101
+  role_id: 4
+  permission_id: 111
+102:
+  id: 102
+  role_id: 4
+  permission_id: 112
+103:
+  id: 103
+  role_id: 4
+  permission_id: 113
 ############################
 # service_desk_agent
 ############################
@@ -189,6 +205,33 @@
   id: 44
   role_id: 5
   permission_id: 22
+200:
+  id: 200
+  role_id: 5
+  permission_id: 110
+201:
+  id: 201
+  role_id: 5
+  permission_id: 111
+202:
+  id: 202
+  role_id: 5
+  permission_id: 113
+############################
+# product_manager
+############################
+300:
+  id: 300
+  role_id: 6
+  permission_id: 110
+301:
+  id: 301
+  role_id: 6
+  permission_id: 112
+302:
+  id: 302
+  role_id: 6
+  permission_id: 113
 ############################
 # system_auditor
 ############################
