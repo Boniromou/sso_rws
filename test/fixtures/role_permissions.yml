@@ -142,6 +142,14 @@
   id: 103
   role_id: 4
   permission_id: 113
+104:
+  id: 104
+  role_id: 4
+  permission_id: 114
+105:
+  id: 105
+  role_id: 4
+  permission_id: 115
 ############################
 # service_desk_agent
 ############################
