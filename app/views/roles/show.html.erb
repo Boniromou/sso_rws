@@ -24,20 +24,20 @@
                 <h3><%= target.to_s.titleize %></h3>
                 
                 <% if @permissions_by_role.has_key?(target.to_sym) %>
-                  <% perms.each do |perm| %>
+                  <% perms.each do |action, name| %>
                     <h5>
-                      <% if @permissions_by_role[target.to_sym].include? perm %>
+                      <% if @permissions_by_role[target.to_sym].include? action.to_s %>
 		      &nbsp; <small><i class='fa fa-check-square-o'></i></small>
-                      <%= perm.titleize%>
+                      <%= name.titleize%>
                       <% else %>
-                        &nbsp; <small><i class='fa fa-square-o'></i> <%= perm.titleize%></small>
+                        &nbsp; <small><i class='fa fa-square-o'></i> <%= name.titleize%></small>
                       <% end %>
                     </h5>
                   <% end %>
                 <% else %>
-                  <% perms.each do |perm| %>
+                  <% perms.each do |action, name| %>
                     <h5>
-		    &nbsp; <small><i class='fa fa-square-o'></i> <%= perm.titleize%></small>
+		    &nbsp; <small><i class='fa fa-square-o'></i> <%= name.titleize%></small>
                     </h5>
                   <% end %>
                 <% end %>

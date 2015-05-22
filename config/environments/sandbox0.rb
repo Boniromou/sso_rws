@@ -73,5 +73,5 @@ SsoRws::Application.configure do
   SITE_DOMAIN = 'laxigames.com'
 end
 
-AUTH_SOURCE_CODE_NAME = "Laxino LDAP PH"
 APP_NAME = 'user'
+AUTH_SOURCE_HOST = '10.81.223.27'

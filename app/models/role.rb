@@ -11,7 +11,7 @@ class Role < ActiveRecord::Base
     result
   end
 
-  def self.permissions(role_id)
+  def self.target_permissions(role_id)
     perm_hash ={}
     role = self.find_by_id(role_id)
     role.permissions.each do |perm|
