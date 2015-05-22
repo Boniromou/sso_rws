@@ -9,7 +9,7 @@ class RolesController < ApplicationController
 
   def show
     @role = Role.find_by_id(params[:id])
-    @permissions_by_role = Role.permissions(params[:id])
+    @permissions_by_role = Role.target_permissions(params[:id])
 
     app_id = @role.app_id   
     @app = App.find_by_id(app_id)
