@@ -9,11 +9,9 @@ class App < ActiveRecord::Base
     app.roles.each do |role|
       permissions = role.permissions
       permissions.each do |perm|
-        if perm_hash.has_key?(perm.target.to_sym)
-          perm_hash[perm.target.to_sym] << perm.action unless perm_hash[perm.target.to_sym].include? perm.action
-        else
-          perm_hash[perm.target.to_sym] = [perm.action]
-        end
+        perms = perm_hash.has_key?(perm.target.to_sym) ? perm_hash[perm.target.to_sym] : {}
+        perms[perm.action.to_sym] = perm.name
+        perm_hash[perm.target.to_sym] = perms
       end
     end
     perm_hash
