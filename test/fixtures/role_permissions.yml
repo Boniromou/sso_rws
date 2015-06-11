@@ -274,6 +274,18 @@
   id: 51
   role_id: 8
   permission_id: 31
+73:
+  id: 73
+  role_id: 8
+  permission_id: 36
+74:
+  id: 74
+  role_id: 8
+  permission_id: 37
+75:
+  id: 75
+  role_id: 8
+  permission_id: 38
 ############################
 # cage manager
 ############################
@@ -313,6 +325,22 @@
   id: 72
   role_id: 9
   permission_id: 33
+76:
+  id: 76
+  role_id: 9
+  permission_id: 35
+77:
+  id: 77
+  role_id: 9
+  permission_id: 36
+78:
+  id: 78
+  role_id: 9
+  permission_id: 37
+79:
+  id: 79
+  role_id: 9
+  permission_id: 38
 ############################
 # shift manager
 ############################
@@ -356,6 +384,18 @@
   id: 69
   role_id: 10
   permission_id: 34
+80:
+  id: 80
+  role_id: 10
+  permission_id: 36
+81:
+  id: 81
+  role_id: 10
+  permission_id: 37
+82:
+  id: 82
+  role_id: 10
+  permission_id: 38
 ############################
 # marketing counter
 ############################
@@ -367,6 +407,18 @@
   id: 71
   role_id: 11
   permission_id: 26
+83:
+  id: 83
+  role_id: 11
+  permission_id: 36
+84:
+  id: 84
+  role_id: 11
+  permission_id: 37
+85:
+  id: 85
+  role_id: 11
+  permission_id: 38
 ################################
 # it support at user management
 ################################
