@@ -1,23 +1,17 @@
 require "feature_spec_helper"
 
 describe AuditLogsController do
-  before(:all) do
-    include Warden::Test::Helpers
-    Warden.test_mode!
-    @root_user = SystemUser.find_by_admin(1) || SystemUser.create(:id => 1, :username => "portal.admin", :status => true, :admin => true, :auth_source_id => 1)
-  end
+  fixtures :auth_sources
 
-  after(:all) do
-    Warden.test_reset!
+  before(:all) do
+    @root_user = create(:system_user, :admin)
   end
   
   describe '[9] Search audit log by Time' do
     before(:each) do
       AuditLog.delete_all
-      @al1 = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "create", :action_status => "success", :action_by => "portal.admin", :action_at => "2014-09-29 12:00:00", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
-      @al1.save(:validate => false)
-      @al2 = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "create", :action_status => "success", :action_by => "portal.admin", :action_at => "2014-09-30 12:00:00", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
-      @al2.save(:validate => false)
+      @al1 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-29 12:00:00")
+      @al2 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-30 12:00:00")
     end
     
     after(:each) do
@@ -38,10 +32,8 @@ describe AuditLogsController do
   describe '[10] Search audit log by actioner' do
     before(:each) do
       AuditLog.delete_all
-      @al1 = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "create", :action_status => "success", :action_by => "portal.admin", :action_at => "2014-09-29 12:00:00", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
-      @al1.save(:validate => false)
-      @al2 = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "create", :action_status => "success", :action_by => "ray.chan", :action_at => "2014-09-29 12:00:00", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
-      @al2.save(:validate => false)
+      @al1 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-29 12:00:00")
+      @al2 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_by => "ray", :action_at => "2014-09-29 12:00:00")
     end
     
     after(:each) do
@@ -69,10 +61,8 @@ describe AuditLogsController do
   describe '[11] Search audit log by action' do
     before(:each) do
       AuditLog.delete_all
-      @al1 = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "create", :action_status => "success", :action_by => "portal.admin", :action_at => "2014-09-29 12:00:00", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
-      @al1.save(:validate => false)
-      @al2 = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "reschedule", :action_status => "success", :action_by => "portal.admin", :action_at => "2014-09-29 12:00:00", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
-      @al2.save(:validate => false)
+      @al1 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-29 12:00:00")
+      @al2 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "update", :action => "reschedule", :action_at => "2014-09-29 12:00:00")
     end
     
     after(:each) do
@@ -133,10 +123,8 @@ describe AuditLogsController do
   describe '[12] Search audit log by target' do
     before(:each) do
       AuditLog.delete_all
-      @al1 = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "create", :action_status => "success", :action_by => "portal.admin", :action_at => "2014-09-29 12:00:00", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
-      @al1.save(:validate => false)
-      @al2 = AuditLog.new({ :audit_target => "system_user", :action_type => "update", :action_error => "", :action => "lock", :action_status => "success", :action_by => "portal.admin", :action_at => "2014-09-29 12:00:01", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
-      @al2.save(:validate => false)
+      @al1 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-29 12:00:00")
+      @al2 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "lock", :action_at => "2014-09-29 12:00:00")
     end
     
     after(:each) do

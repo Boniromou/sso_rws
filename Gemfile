@@ -62,10 +62,12 @@ end
 gem 'dalli', "~> 2.0.3"
 
 group :test do
+  gem 'database_cleaner', '1.4.1'
   gem 'capybara', '2.4.3'
   gem 'poltergeist'
   gem 'phantomjs', :require => 'phantomjs/poltergeist'
   gem 'simplecov'
+  gem 'factory_girl', '4.5.0'
   #gem 'capybara-webkit'
 end
 

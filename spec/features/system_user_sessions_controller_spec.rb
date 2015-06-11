@@ -1,19 +1,16 @@
 require "feature_spec_helper"
 
 describe SystemUserSessionsController do
-  before(:all) do
-    include Warden::Test::Helpers
-    Warden.test_mode!
-    @root_user = SystemUser.find_by_admin(1) || SystemUser.create(:id => 1, :username => "portal.admin", :status => true, :admin => true, :auth_source_id => 1)
-  end
+  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
 
-  after(:all) do
-    Warden.test_reset! 
+  before(:all) do
+    @root_user = create(:system_user, :admin)
   end
 
   describe "[1] Login" do
     before(:each) do
-      @u1 = SystemUser.create!(:username => 'lulu', :status => true, :admin => false, :auth_source_id => 1)
+      #@u1 = SystemUser.create!(:username => 'lulu', :status => true, :admin => false, :auth_source_id => 1)
+      @u1 = create(:system_user)
     end
 
     after(:each) do

@@ -22,9 +22,9 @@ module Devise
           Rails.logger.info "SystemUser[username=#{username}][domain=#{auth_source.domain}] Login failed. Inactive_account"
           return
         end
- 	unless sys_usr.is_admin?
+        unless sys_usr.is_admin?
           unless sys_usr.role_in_app
-	    fail!("alert.account_no_role")
+            fail!("alert.account_no_role")
             Rails.logger.info "SystemUser[username=#{username}][domain=#{auth_source.domain}] Login failed. No role assigned"
             return
           end
@@ -42,14 +42,14 @@ module Devise
       end
 
       def username
-	if params[:system_user]
-	  return params[:system_user][:username]
+        if params[:system_user]
+          return params[:system_user][:username]
         end
-	return nil
+        return nil
       end
 
       def password
-	if params[:system_user]
+        if params[:system_user]
           return params[:system_user][:password]
         end
         return nil
