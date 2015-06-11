@@ -207,7 +207,7 @@ print_front_money_report:
   name: "print_front_money"
   action: "print_fm"
   target: "shift"
-search_audit_log:
+search_audit_log_at_cage:
   id: 35
   name: "search"
   action: "search"
