@@ -42,3 +42,11 @@ marketing_counter:
   id: 11
   name: "marketing_counter"
   app_id: 3
+user_management_it_support:
+  id: 12
+  name: "it_support"
+  app_id: 1
+gaming_operation_it_support:
+  id: 13
+  name: "it_support"
+  app_id: 2
