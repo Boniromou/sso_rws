@@ -21,6 +21,14 @@
   id: 5
   role_id: 1
   permission_id: 1
+401:
+  id: 401
+  role_id: 1
+  permission_id: 117
+402:
+  id: 402
+  role_id: 1
+  permission_id: 118
 ############################
 # change_coordinator
 ############################
@@ -155,14 +163,6 @@
   id: 116
   role_id: 4
   permission_id: 116
-117:
-  id: 117
-  role_id: 4
-  permission_id: 117
-118:
-  id: 118
-  role_id: 4
-  permission_id: 118
 ############################
 # service_desk_agent
 ############################
