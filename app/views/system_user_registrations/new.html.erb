@@ -3,7 +3,7 @@
 <% end %>
 
 <!-- ap_register_panel -->
-<%= form_for(resource, as: resource_name, url: new_system_user_registration_path, html: {:class => "smart-form client-form"}) do |f| %>
+<%= form_for(:system_user, url: new_system_user_registration_path, html: {:class => "smart-form client-form"}) do |f| %>
   <header><%= t("title.signup_title") %></header>
   <fieldset>
     <section>
@@ -24,6 +24,7 @@
     <% end %>
   </fieldset>
   <footer>
+     <%= render :partial => "shared/caplock_reminder" %>
      <%= f.submit(t("general.sign_up"), :class => "btn btn-primary") %>
   </footer>
 <% end %>

@@ -4,16 +4,18 @@ en:
     locale_key: English
   alert:
     invalid_login: Invalid user name or password
-    inactive_account: The account is inactive, please contact the System Administrator
-      for account activation
+    inactive_account: The account is inactive, please contact System Administrator
+      for account activation.
     registered_account: The account has been registered
-    signup_completed: Sign up completed, please contact the System Administrator for
-      account activation
+    signup_completed: Sign up completed, please contact System Administrator for account
+      activation.
     unauthenticated: you need to sign in or sign up before continuing
-    account_no_role: you account is not ready to use, please contact the System Administrator.
+    account_no_role: your account is not ready to use, please contact System Administrator
+      for assistance.
     invalid_time_range: Invalid time range
     time_conflict: The schedule conflicts with previous schedule [Maintenance id =%{maintenance_id}]
     invalid_property: property can not be null
+    caps_lock: The Caps Lock is turn ON
   title:
     title: User Management
     login_title: Login
@@ -101,7 +103,7 @@ en:
     gameing_operation: Gaming Operation
     cage: Cage
   success:
-    edit_role: Edit role for [%{user_name}]successful.
+    edit_role: Edit role for [%{user_name}] successful.
     lock_user: Lock user [%{user_name}]
     unlock_user: Unlock user [%{user_name}]
   dashboard:
@@ -112,3 +114,6 @@ en:
     title: Systems
   roles:
     title: Roles
+  audit_log:
+    search_range_remark: The search range is limited to [%{config_value}] days
+    search_range_error: The search range is limited to [%{config_value}] days

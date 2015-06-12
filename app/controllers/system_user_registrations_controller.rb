@@ -1,9 +1,9 @@
-class SystemUserRegistrationsController < Devise::RegistrationsController
+class SystemUserRegistrationsController < ActionController::Base
   layout "login"
 
   def new
     @nav_app_link = params[:app]
-    super
+    #super
   end
 
   def create
@@ -31,19 +31,4 @@ class SystemUserRegistrationsController < Devise::RegistrationsController
     end
     render :new
   end
-
-  #def update
-  #  super
-  #end
-
-  def after_sign_up_path_for(resource)
-    #new_sign_in_path(resource)
-    signed_in_root_path(resource)
-
-  end
-
-  #def after_update_path_for(resource)
-    #new_sign_in_path(resource)
-    #signed_in_root_path(resource)
-  #end
 end

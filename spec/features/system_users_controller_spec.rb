@@ -1,21 +1,14 @@
 require "feature_spec_helper"
 
 describe SystemUsersController do
-  fixtures :apps, :permissions, :role_permissions, :roles
+  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
 
   before(:all) do
-    include Warden::Test::Helpers
-    Warden.test_mode!
-    @root_user = SystemUser.find_by_admin(1) || SystemUser.create(:id => 1, :username => "portal.admin", :status => true, :admin => true, :auth_source_id => 1)
-  end
-
-  after(:all) do
-    Warden.test_reset! 
+    @root_user = create(:system_user, :admin)
   end
   
   describe "[4] List System user" do
     before(:each) do
-      
     end
 
     after(:each) do
@@ -34,9 +27,8 @@ describe SystemUsersController do
 
   describe '[5] View system user' do
     before(:each) do
-      @system_user_1 = SystemUser.create!(:username => "lulupdan", :status => true, :admin => false)
       user_manager_role = Role.find_by_name "user_manager"
-      @system_user_1.update_roles([user_manager_role.id])
+      @system_user_1 = create(:system_user, :roles => [user_manager_role])
     end
 
     after(:each) do
@@ -80,17 +72,14 @@ describe SystemUsersController do
 
   describe "[6] Activate/De-activate system user" do
     before(:each) do
-      @auth_source = AuthSource.find_by_name('Laxino LDAP')
-      @system_user_1 = SystemUser.create!(:username => "lulupdan", :status => true, :admin => false)
-      @system_user_2 = SystemUser.create!(:username => "lalalala", :status => false, :admin => false, :auth_source_id => @auth_source.id)
- #     @system_user_3 = SystemUser.create!(:username => "gogopanda", :status => false, :admin => false)
+      @system_user_1 = create(:system_user, :status => true)
+      @system_user_2 = create(:system_user, :status => false)
       AuditLog.delete_all 
     end
 
     after(:each) do
       @system_user_1.destroy
       @system_user_2.destroy
-#      @system_user_3.destroy
       AuditLog.delete_all
     end
 
@@ -223,8 +212,8 @@ describe SystemUsersController do
 
   describe '[7] Edit Roles' do
     before(:each) do
-      @system_user_1 = SystemUser.create!(:username => "ray1", :status => true, :admin => false)
-      @system_user_2 = SystemUser.create!(:username => "ray2", :status => true, :admin => false)
+      @system_user_1 = create(:system_user)
+      @system_user_2 = create(:system_user)
       #@user_manager = Role.first
       #@helpdesk = Role.find_by_name("helpdesk")
       #@system_user_2.role_assignments.create!({:role_id => @helpdesk.id})
@@ -401,10 +390,8 @@ describe SystemUsersController do
     it "[14.1] click unauthorized action" do
       auditor_role = Role.find_by_name "auditor"
       user_manager_role = Role.find_by_name "user_manager"
-      auditor_1 = SystemUser.create!(:username => "auditor_1", :status => true, :admin => false)
-      auditor_2 = SystemUser.create!(:username => "auditor_2", :status => true, :admin => false)
-      auditor_1.update_roles([user_manager_role.id])
-      auditor_2.update_roles([auditor_role.id])
+      auditor_1 = create(:system_user, :roles => [user_manager_role])
+      auditor_2 = create(:system_user, :roles => [auditor_role])
       login_as(auditor_1, :scope => :system_user)
       visit home_root_path
       visit system_users_path
@@ -416,8 +403,7 @@ describe SystemUsersController do
 
     it "[14.2] click link to the unauthorized page" do
       auditor_role = Role.find_by_name "auditor"
-      auditor_1 = SystemUser.create!(:username => "auditor_1", :status => true, :admin => false)
-      auditor_1.update_roles([auditor_role.id])
+      auditor_1 = create(:system_user, :roles => [auditor_role])
       login_as(auditor_1, :scope => :system_user)
       visit home_root_path
       visit user_management_root_path
@@ -426,8 +412,7 @@ describe SystemUsersController do
 
     it "[14.3] Search audit log (authorized)" do
       auditor_role = Role.find_by_name "auditor"
-      auditor_1 = SystemUser.create!(:username => "auditor_1", :status => true, :admin => false)
-      auditor_1.update_roles([auditor_role.id])
+      auditor_1 = create(:system_user, :roles => [auditor_role])
       login_as(auditor_1, :scope => :system_user)
       visit home_root_path
       visit search_audit_logs_path
@@ -437,8 +422,7 @@ describe SystemUsersController do
 
     it "[14.4] Search audit log (unauthorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
-      user_manager_1.update_roles([user_manager_role.id])
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
       login_as(user_manager_1, :scope => :system_user)
       visit home_root_path
       assert_dropdown_menu_item(I18n.t("header.audit_log"), false)
@@ -446,8 +430,7 @@ describe SystemUsersController do
 
     it "[14.5] List System User (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
-      user_manager_1.update_roles([user_manager_role.id])
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
       login_as(user_manager_1, :scope => :system_user)
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -458,8 +441,7 @@ describe SystemUsersController do
 
     it "[14.6] List System User (unauthorized)" do
       auditor_role = Role.find_by_name "auditor"
-      auditor_1 = SystemUser.create!(:username => "auditor_1", :status => true, :admin => false)
-      auditor_1.update_roles([auditor_role.id])
+      auditor_1 = create(:system_user, :roles => [auditor_role])
       login_as(auditor_1, :scope => :system_user)
       visit home_root_path
       assert_dropdown_menu_item(I18n.t("header.user_management"), false)
@@ -467,10 +449,8 @@ describe SystemUsersController do
 
     it "[14.7] View user profile (authroized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
-      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
-      user_manager_1.update_roles([user_manager_role.id])
-      user_manager_2.update_roles([user_manager_role.id])
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role])
       login_as(user_manager_1, :scope => :system_user)
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -485,10 +465,8 @@ describe SystemUsersController do
 
     it "[14.8] Grant roles (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
-      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
-      user_manager_1.update_roles([user_manager_role.id])
-      user_manager_2.update_roles([user_manager_role.id])
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role])
       login_as(user_manager_1, :scope => :system_user)
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -506,10 +484,8 @@ describe SystemUsersController do
 
     it "[14.9] Lock System user (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
-      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
-      user_manager_1.update_roles([user_manager_role.id])
-      user_manager_2.update_roles([user_manager_role.id])
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role])
       login_as(user_manager_1, :scope => :system_user)
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -526,10 +502,8 @@ describe SystemUsersController do
     it "[14.10] Lock System user (unauthorized)" do
       allow(SystemUserPolicy).to receive("lock?").and_return(false)
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
-      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
-      user_manager_1.update_roles([user_manager_role.id])
-      user_manager_2.update_roles([user_manager_role.id])
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role])
       login_as(user_manager_1, :scope => :system_user)
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -544,10 +518,8 @@ describe SystemUsersController do
 
     it "[14.11] Un-lock system user (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
-      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => false, :admin => false)
-      user_manager_1.update_roles([user_manager_role.id])
-      user_manager_2.update_roles([user_manager_role.id])
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :status => false, :roles => [user_manager_role])
       login_as(user_manager_1, :scope => :system_user)
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -564,10 +536,8 @@ describe SystemUsersController do
     it "[14.12] un-lock system user (unauthorized)" do
       allow(SystemUserPolicy).to receive("unlock?").and_return(false)
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = SystemUser.create!(:username => "user_manager_1", :status => true, :admin => false)
-      user_manager_2 = SystemUser.create!(:username => "user_manager_2", :status => true, :admin => false)
-      user_manager_1.update_roles([user_manager_role.id])
-      user_manager_2.update_roles([user_manager_role.id])
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role])
       login_as(user_manager_1, :scope => :system_user)
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")

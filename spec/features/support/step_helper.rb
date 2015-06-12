@@ -80,6 +80,10 @@ module StepHelper
       expect(left_panel).not_to have_content text_label
     end
   end
+
+  def click_header_link(title)
+    first('ul.dropdown-menu').find('a', :text => title).click
+  end
 end
 
 RSpec.configure do |config|

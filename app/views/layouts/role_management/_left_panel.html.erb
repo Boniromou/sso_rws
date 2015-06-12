@@ -21,11 +21,13 @@
               <i class="fa fa-lg fa-fw fa fa-home"></i> <span class="menu-item-parent"><%= t("general.dashboard") %></span>
             <% end %>
           </li>
+          <% if policy(Role).link? %>
           <li id="nav_list_roles">
             <%= link_to roles_path, :title => t("role.list_roles"), :remote => true do %>
               <i class="fa fa-lg fa-fw fa fa-list"></i> <span class="menu-item-parent"><%= t("role.list_roles") %></span>
             <% end %>
           </li>
+          <% end %>
         </ul>
       <!-- % end % -->
       </nav>

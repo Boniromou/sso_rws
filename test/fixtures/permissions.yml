@@ -156,6 +156,21 @@ print_jp_slip:
   name: "print_slip"
   action: "print_slip"
   target: "jackpot"
+edit_test_players:
+  id: 116
+  name: "edit_test_player"
+  action: "edit"
+  target: "test_player"
+show_role:
+  id: 117
+  name: "show_role"
+  action: "list"
+  target: "role"
+show_permission:
+  id: 118
+  name: "show_permission"
+  action: "show"
+  target: "permission"
 # cage
 create_player:
   id: 25
@@ -207,3 +222,29 @@ print_front_money_report:
   name: "print_front_money"
   action: "print_fm"
   target: "shift"
+search_audit_log_at_cage:
+  id: 35
+  name: "search"
+  action: "search"
+  target: "audit_log"
+player_profile:
+  id: 36
+  name: "view_player_profile"
+  action: "profile"
+  target: "player"
+edit_player:
+  id: 37
+  name: "edit_player"
+  action: "edit"
+  target: "player"
+lock_player:
+  id: 38
+  name: "lock_player"
+  action: "lock"
+  target: "player"
+print_transaction_report:
+  id: 39
+  name: "print_trnasaction_report"
+  action: "print_report"
+  target: "player_transaction"
+
