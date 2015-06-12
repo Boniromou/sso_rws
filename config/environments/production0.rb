@@ -79,3 +79,4 @@ end
 APP_NAME = 'user_management'
 AUTH_SOURCE_HOST = '10.81.223.27'
 
+SEARCH_RANGE_FOR_AUDIT_LOG = 7

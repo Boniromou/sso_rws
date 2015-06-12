@@ -1,7 +1,14 @@
-    <br>
-      <% if @audit_logs.blank? %>
+      <% if defined? @search_time_range_error %>
+        <p> <%= @search_time_range_error %> </p>
+      <% elsif @audit_logs.blank? %>
+        <% if defined? @search_time_range_remark %> <p> <%= @search_time_range_remark %> </p> <% end %>
         <p> <%= t("general.no_result_found") %> </p>
       <% else %>
+        <% if defined? @search_time_range_remark %>
+          <p> <%= @search_time_range_remark %> </p>
+        <% else %>
+          <br></br>
+        <% end %>
         <div class="table-responsive">
           <table class="table table-bordered table-striped">
             <thead>
