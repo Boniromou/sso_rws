@@ -227,3 +227,8 @@ lock_player:
   name: "lock_player"
   action: "lock"
   target: "player"
+print_transaction_report:
+  id: 39
+  name: "print_trnasaction_report"
+  action: "print_report"
+  target: "player_transaction"
