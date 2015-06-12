@@ -156,6 +156,21 @@ print_jp_slip:
   name: "print_slip"
   action: "print_slip"
   target: "jackpot"
+edit_test_players:
+  id: 116
+  name: "edit_test_player"
+  action: "edit"
+  target: "test_player"
+show_role:
+  id: 117
+  name: "show_role"
+  action: "list"
+  target: "role"
+show_permission:
+  id: 118
+  name: "show_permission"
+  action: "show"
+  target: "permission"
 # cage
 create_player:
   id: 25
@@ -232,3 +247,4 @@ print_transaction_report:
   name: "print_trnasaction_report"
   action: "print_report"
   target: "player_transaction"
+
