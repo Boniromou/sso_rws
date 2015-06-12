@@ -114,3 +114,6 @@ en:
     title: Systems
   roles:
     title: Roles
+  audit_log:
+    search_range_remark: The search range is limited to [%{config_value}] days
+    search_range_error: The search range is limited to [%{config_value}] days
