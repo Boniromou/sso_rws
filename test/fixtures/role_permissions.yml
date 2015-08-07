@@ -440,6 +440,37 @@
   id: 85
   role_id: 11
   permission_id: 38
+############################
+# it specialist
+############################
+3001:
+  id: 3001
+  role_id: 14
+  permission_id: 40
+3002:
+  id: 3002
+  role_id: 14
+  permission_id: 41
+3003:
+  id: 3003
+  role_id: 14
+  permission_id: 42
+3004:
+  id: 3004
+  role_id: 14
+  permission_id: 43
+3005:
+  id: 3005
+  role_id: 14
+  permission_id: 44
+3006:
+  id: 3006
+  role_id: 14
+  permission_id: 45
+3007:
+  id: 3007
+  role_id: 14
+  permission_id: 46
 ################################
 # it support at user management
 ################################

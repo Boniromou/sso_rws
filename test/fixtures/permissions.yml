@@ -244,7 +244,41 @@ lock_player:
   target: "player"
 print_transaction_report:
   id: 39
-  name: "print_trnasaction_report"
+  name: "print_transaction_report"
   action: "print_report"
   target: "player_transaction"
-
+list_location:
+  id: 40
+  name: "list_location"
+  action: "list"
+  target: "location"
+change_location_status:
+  id: 41
+  name: "change_location_status"
+  action: "change_status"
+  target: "location"
+add_location:
+  id: 42
+  name: "add_location"
+  action: "add"
+  target: "location"
+list_station:
+  id: 43
+  name: "list_station"
+  action: "list"
+  target: "station"
+create_station:
+  id: 44
+  name: "create_station"
+  action: "create"
+  target: "station"
+change_station_status:
+  id: 45
+  name: "change_station_status"
+  action: "change_status"
+  target: "station"
+register_terminal:
+  id: 46
+  name: "register_terminal"
+  action: "register"
+  target: "station"
