@@ -171,6 +171,16 @@ show_permission:
   name: "show_permission"
   action: "show"
   target: "permission"
+show_jackpot_setting:
+  id: 119
+  name: "show_jackpot_setting"
+  action: "show_setting"
+  target: "jackpot"
+show_audit_info:
+  id: 120 
+  name: "show_audit_info"
+  action: "show_audit_info"
+  target: "audit_info"
 # cage
 create_player:
   id: 25
