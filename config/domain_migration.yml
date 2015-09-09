@@ -84,3 +84,13 @@ smartocean2:
     database: dhaulagiri_slms_production
     host: prd-sms-vdb01.prod.so.idc02.laxigames.local
   <<: *default_tables
+
+mockup0:
+- source_db:
+    adapter: mysql2
+    port: 3306
+    username: laxino
+    password: laxino
+    database: dhaulagiri_slms_staging
+    host: mo-stg-slms-vdb01.rnd.laxino.com
+  <<: *default_tables
