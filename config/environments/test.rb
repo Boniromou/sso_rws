@@ -42,5 +42,7 @@ SsoRws::Application.configure do
   config.cache_store = :dalli_store, 'int-cons-vapp01.rnd.laxino.com:11211', { :namespace => 'cirrus_test', :expires_in => 1.day, :socket_timeout => 3, :compress => true }
 end
 
-APP_NAME = 'user'
+APP_NAME = 'user_management'
 AUTH_SOURCE_HOST = '10.10.28.91'
+
+SEARCH_RANGE_FOR_AUDIT_LOG = 7

@@ -1,5 +1,5 @@
 ############################
-# service_desk_manager
+# user_manager
 ############################
 1:
   id: 1
@@ -21,13 +21,14 @@
   id: 5
   role_id: 1
   permission_id: 1
-############################
-# auditor
-############################
-#5:
-#  id: 5
-#  role_id: 2
-#  permission_id: 1
+401:
+  id: 401
+  role_id: 1
+  permission_id: 117
+402:
+  id: 402
+  role_id: 1
+  permission_id: 118
 ############################
 # change_coordinator
 ############################
@@ -130,6 +131,42 @@
   id: 29
   role_id: 4
   permission_id: 24
+100:
+  id: 100
+  role_id: 4
+  permission_id: 100
+110:
+  id: 110
+  role_id: 4
+  permission_id: 110
+111:
+  id: 111
+  role_id: 4
+  permission_id: 111
+112:
+  id: 112
+  role_id: 4
+  permission_id: 112
+113:
+  id: 113
+  role_id: 4
+  permission_id: 113
+114:
+  id: 114
+  role_id: 4
+  permission_id: 114
+115:
+  id: 115
+  role_id: 4
+  permission_id: 115
+116:
+  id: 116
+  role_id: 4
+  permission_id: 116
+117:
+  id: 117
+  role_id: 4
+  permission_id: 119
 ############################
 # service_desk_agent
 ############################
@@ -193,13 +230,56 @@
   id: 44
   role_id: 5
   permission_id: 22
+200:
+  id: 200
+  role_id: 5
+  permission_id: 110
+201:
+  id: 201
+  role_id: 5
+  permission_id: 111
+202:
+  id: 202
+  role_id: 5
+  permission_id: 113
+203:
+  id: 203
+  role_id: 5
+  permission_id: 116
+204:
+  id: 204
+  role_id: 5
+  permission_id: 119
+############################
+# product_manager
+############################
+300:
+  id: 300
+  role_id: 6
+  permission_id: 110
+301:
+  id: 301
+  role_id: 6
+  permission_id: 112
+302:
+  id: 302
+  role_id: 6
+  permission_id: 113
+303:
+  id: 303
+  role_id: 6
+  permission_id: 119
+304:
+  id: 304
+  role_id: 6
+  permission_id: 120
 ############################
 # system_auditor
 ############################
-#45:
-#  id: 45
-#  role_id: 7
-#  permission_id: 1
+45:
+  id: 45
+  role_id: 7
+  permission_id: 1
 ############################
 # cashier
 ############################
@@ -227,6 +307,18 @@
   id: 51
   role_id: 8
   permission_id: 31
+73:
+  id: 73
+  role_id: 8
+  permission_id: 36
+74:
+  id: 74
+  role_id: 8
+  permission_id: 37
+75:
+  id: 75
+  role_id: 8
+  permission_id: 38
 ############################
 # cage manager
 ############################
@@ -266,6 +358,22 @@
   id: 72
   role_id: 9
   permission_id: 33
+76:
+  id: 76
+  role_id: 9
+  permission_id: 39
+77:
+  id: 77
+  role_id: 9
+  permission_id: 36
+78:
+  id: 78
+  role_id: 9
+  permission_id: 37
+79:
+  id: 79
+  role_id: 9
+  permission_id: 38
 ############################
 # shift manager
 ############################
@@ -309,6 +417,22 @@
   id: 69
   role_id: 10
   permission_id: 34
+80:
+  id: 80
+  role_id: 10
+  permission_id: 36
+81:
+  id: 81
+  role_id: 10
+  permission_id: 37
+82:
+  id: 82
+  role_id: 10
+  permission_id: 38
+86:
+  id: 86
+  role_id: 10
+  permission_id: 39
 ############################
 # marketing counter
 ############################
@@ -320,3 +444,192 @@
   id: 71
   role_id: 11
   permission_id: 26
+83:
+  id: 83
+  role_id: 11
+  permission_id: 36
+84:
+  id: 84
+  role_id: 11
+  permission_id: 37
+85:
+  id: 85
+  role_id: 11
+  permission_id: 38
+############################
+# it specialist
+############################
+3001:
+  id: 3001
+  role_id: 14
+  permission_id: 40
+3002:
+  id: 3002
+  role_id: 14
+  permission_id: 41
+3003:
+  id: 3003
+  role_id: 14
+  permission_id: 42
+3004:
+  id: 3004
+  role_id: 14
+  permission_id: 43
+3005:
+  id: 3005
+  role_id: 14
+  permission_id: 44
+3006:
+  id: 3006
+  role_id: 14
+  permission_id: 45
+3007:
+  id: 3007
+  role_id: 14
+  permission_id: 46
+################################
+# it support at user management
+################################
+1000:
+  id: 1000
+  role_id: 12
+  permission_id: 1
+1001:
+  id: 1001
+  role_id: 12
+  permission_id: 2
+1002:
+  id: 1002
+  role_id: 12
+  permission_id: 3
+1003:
+  id: 1003
+  role_id: 12
+  permission_id: 4
+1004:
+  id: 1004
+  role_id: 12
+  permission_id: 5
+1005:
+  id: 1005
+  role_id: 12
+  permission_id: 117
+1006:
+  id: 1006
+  role_id: 12
+  permission_id: 118
+################################
+# it support at user management
+################################
+2000:
+  id: 2000
+  role_id: 13
+  permission_id: 1
+2001:
+  id: 2001
+  role_id: 13
+  permission_id: 8
+2002:
+  id: 2002
+  role_id: 13
+  permission_id: 9
+2003:
+  id: 2003
+  role_id: 13
+  permission_id: 10
+2004:
+  id: 2004
+  role_id: 13
+  permission_id: 11
+2005:
+  id: 2005
+  role_id: 13
+  permission_id: 12
+2006:
+  id: 2006
+  role_id: 13
+  permission_id: 13
+2007:
+  id: 2007
+  role_id: 13
+  permission_id: 14
+2008:
+  id: 2008
+  role_id: 13
+  permission_id: 15
+2009:
+  id: 2009
+  role_id: 13
+  permission_id: 16
+2010:
+  id: 2010
+  role_id: 13
+  permission_id: 17
+2011:
+  id: 2011
+  role_id: 13
+  permission_id: 18
+2012:
+  id: 2012
+  role_id: 13
+  permission_id: 19
+2013:
+  id: 2013
+  role_id: 13
+  permission_id: 20
+2014:
+  id: 2014
+  role_id: 13
+  permission_id: 21
+2015:
+  id: 2015
+  role_id: 13
+  permission_id: 22
+2016:
+  id: 2016
+  role_id: 13
+  permission_id: 23
+2017:
+  id: 2017
+  role_id: 13
+  permission_id: 24
+2018:
+  id: 2018
+  role_id: 13
+  permission_id: 100
+2019:
+  id: 2019
+  role_id: 13
+  permission_id: 110
+2020:
+  id: 2020
+  role_id: 13
+  permission_id: 111
+2021:
+  id: 2021
+  role_id: 13
+  permission_id: 112
+2022:
+  id: 2022
+  role_id: 13
+  permission_id: 113
+2023:
+  id: 2023
+  role_id: 13
+  permission_id: 114
+2024:
+  id: 2024
+  role_id: 13
+  permission_id: 115
+2025:
+  id: 2025
+  role_id: 13
+  permission_id: 116
+2026:
+  id: 2026
+  role_id: 13
+  permission_id: 119
+2027:
+  id: 2027
+  role_id: 13
+  permission_id: 120

@@ -1,9 +1,9 @@
 user:
   id: 1
-  name: "user"
+  name: "user_management"
 operation:
   id: 2
-  name: "operation"
+  name: "gaming_operation"
 cage:
   id: 3
   name: "cage"
