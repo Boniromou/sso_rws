@@ -121,6 +121,41 @@ list_test_player_log:
   name: "list_log_history"
   action: "list_log"
   target: "test_player"
+list_current_game_release:
+  id: 100
+  name: "list_current_game_release"
+  action: "list_current_game_release"
+  target: "game"
+list_game_rtp:
+  id: 110
+  name: "list_games"
+  action: "index"
+  target: "rtp"
+update_game_rtp:
+  id: 111
+  name: "update_RTP"
+  action: "update"
+  target: "rtp"
+list_game_rtp_history:
+  id: 112
+  name: "list_log"
+  action: "history"
+  target: "rtp"
+search_denom:
+  id: 113
+  name: "search_denom"
+  action: "search"
+  target: "denom"
+search_jp:
+  id: 114
+  name: "search_jackpot"
+  action: "search_jackpot"
+  target: "jackpot"
+print_jp_slip:
+  id: 115
+  name: "print_slip"
+  action: "print_slip"
+  target: "jackpot"
 # cage
 create_player:
   id: 25
@@ -172,3 +207,23 @@ print_front_money_report:
   name: "print_front_money"
   action: "print_fm"
   target: "shift"
+search_audit_log_at_cage:
+  id: 35
+  name: "search"
+  action: "search"
+  target: "audit_log"
+player_profile:
+  id: 36
+  name: "view_player_profile"
+  action: "profile"
+  target: "player"
+edit_player:
+  id: 37
+  name: "edit_player"
+  action: "edit"
+  target: "player"
+lock_player:
+  id: 38
+  name: "lock_player"
+  action: "lock"
+  target: "player"
