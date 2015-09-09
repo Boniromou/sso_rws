@@ -76,7 +76,8 @@ SsoRws::Application.configure do
   SITE_DOMAIN = 'laxigames.local'
 end
 
-APP_NAME = 'user_management'
+APP_NAME = 'user'
+# APP_NAME = 'user_management'
 AUTH_SOURCE_HOST = 'vmodc01.mo.laxino.com'
 
-SEARCH_RANGE_FOR_AUDIT_LOG = 7
+# SEARCH_RANGE_FOR_AUDIT_LOG = 7
