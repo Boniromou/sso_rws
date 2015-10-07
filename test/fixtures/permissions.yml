@@ -181,6 +181,36 @@ show_audit_info:
   name: "show_audit_info"
   action: "show_audit_info"
   target: "audit_info"
+list_current_game_release:
+  id: 121
+  name: "list_current_game_release"
+  action: "list_current"
+  target: "game_release"
+deprecate_game_release:
+  id: 122
+  name: "deprecate_game_release"
+  action: "deprecate"
+  target: "game_release"
+list_deprecated_game_release:
+  id: 123
+  name: "list_deprecated_game_release"
+  action: "list_deprecated"
+  target: "game_release"
+recover_game_release:
+  id: 124
+  name: "recover_game_release"
+  action: "recover"
+  target: "game_release"
+list_approved_release_candidate:
+  id: 125
+  name: "list_approved"
+  action: "list_approved"
+  target: "release_candidate"
+set_current:
+  id: 126
+  name: "set_current"
+  action: "set_current"
+  target: "release_candidate"
 # cage
 create_player:
   id: 25

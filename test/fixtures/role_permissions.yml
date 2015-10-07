@@ -36,6 +36,14 @@
   id: 6
   role_id: 3
   permission_id: 9
+7:
+  id: 7
+  role_id: 3
+  permission_id: 125
+8:
+  id: 8
+  role_id: 3
+  permission_id: 126
 # 7:
 #  id: 7
 #  role_id: 3
@@ -167,6 +175,30 @@
   id: 117
   role_id: 4
   permission_id: 119
+118:
+  id: 118
+  role_id: 4
+  permission_id: 121
+119:
+  id: 119
+  role_id: 4
+  permission_id: 122
+120:
+  id: 120
+  role_id: 4
+  permission_id: 123
+121:
+  id: 121
+  role_id: 4
+  permission_id: 124
+122:
+  id: 122
+  role_id: 4
+  permission_id: 125
+123:
+  id: 123
+  role_id: 4
+  permission_id: 126
 ############################
 # service_desk_agent
 ############################
@@ -250,6 +282,10 @@
   id: 204
   role_id: 5
   permission_id: 119
+205:
+  id: 205
+  role_id: 5
+  permission_id: 125
 ############################
 # product_manager
 ############################
@@ -273,6 +309,10 @@
   id: 304
   role_id: 6
   permission_id: 120
+305:
+  id: 305
+  role_id: 6
+  permission_id: 125
 ############################
 # system_auditor
 ############################
@@ -633,3 +673,27 @@
   id: 2027
   role_id: 13
   permission_id: 120
+2028:
+  id: 2028
+  role_id: 13
+  permission_id: 121
+2029:
+  id: 2029
+  role_id: 13
+  permission_id: 122
+2030:
+  id: 2030
+  role_id: 13
+  permission_id: 123
+2031:
+  id: 2031
+  role_id: 13
+  permission_id: 124
+2032:
+  id: 2032
+  role_id: 13
+  permission_id: 125
+2033:
+  id: 2033
+  role_id: 13
+  permission_id: 126
