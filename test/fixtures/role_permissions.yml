@@ -64,6 +64,34 @@
 #   id: 11
 #   role_id: 3
 #   permission_id: 22
+500:
+  id: 500
+  role_id: 3
+  permission_id: 127
+501:
+  id: 501
+  role_id: 3
+  permission_id: 128
+502:
+  id: 502
+  role_id: 3
+  permission_id: 129
+503:
+  id: 503
+  role_id: 3
+  permission_id: 130
+504:
+  id: 504
+  role_id: 3
+  permission_id: 131
+505:
+  id: 505
+  role_id: 3
+  permission_id: 132
+506:
+  id: 506
+  role_id: 3
+  permission_id: 133
 ############################
 # service_desk_manager
 ############################
@@ -199,6 +227,34 @@
   id: 123
   role_id: 4
   permission_id: 126
+124:
+  id: 124
+  role_id: 4
+  permission_id: 127
+125:
+  id: 125
+  role_id: 4
+  permission_id: 128
+126:
+  id: 126
+  role_id: 4
+  permission_id: 129
+127:
+  id: 127
+  role_id: 4
+  permission_id: 130
+128:
+  id: 128
+  role_id: 4
+  permission_id: 131
+129:
+  id: 129
+  role_id: 4
+  permission_id: 132
+130:
+  id: 130
+  role_id: 4
+  permission_id: 133
 ############################
 # service_desk_agent
 ############################
@@ -286,6 +342,22 @@
   id: 205
   role_id: 5
   permission_id: 125
+206:
+  id: 206
+  role_id: 5
+  permission_id: 127
+207:
+  id: 207
+  role_id: 5
+  permission_id: 128
+208:
+  id: 208
+  role_id: 5
+  permission_id: 129
+209:
+  id: 209
+  role_id: 5
+  permission_id: 133
 ############################
 # product_manager
 ############################
@@ -313,6 +385,14 @@
   id: 305
   role_id: 6
   permission_id: 125
+306:
+  id: 306
+  role_id: 6
+  permission_id: 129
+307:
+  id: 307
+  role_id: 6
+  permission_id: 133
 ############################
 # system_auditor
 ############################
@@ -697,3 +777,31 @@
   id: 2033
   role_id: 13
   permission_id: 126
+2034:
+  id: 2034
+  role_id: 13
+  permission_id: 127
+2035:
+  id: 2035
+  role_id: 13
+  permission_id: 128
+2036:
+  id: 2036
+  role_id: 13
+  permission_id: 129
+2037:
+  id: 2037
+  role_id: 13
+  permission_id: 130
+2038:
+  id: 2038
+  role_id: 13
+  permission_id: 131
+2039:
+  id: 2039
+  role_id: 13
+  permission_id: 132
+2040:
+  id: 2040
+  role_id: 13
+  permission_id: 133

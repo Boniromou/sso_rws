@@ -178,8 +178,8 @@ show_jackpot_setting:
   target: "jackpot"
 show_audit_info:
   id: 120 
-  name: "show_audit_info"
-  action: "show_audit_info"
+  name: "show"
+  action: "show"
   target: "audit_info"
 list_current_game_release:
   id: 121
@@ -203,13 +203,48 @@ recover_game_release:
   target: "game_release"
 list_approved_release_candidate:
   id: 125
-  name: "list_approved"
+  name: "list_approved_release_candidate"
   action: "list_approved"
   target: "release_candidate"
-set_current:
+set_current_version:
   id: 126
-  name: "set_current"
+  name: "set_current_version"
   action: "set_current"
+  target: "release_candidate"
+launch_new_release_candidate:
+  id: 127
+  name: "launch_new_release_candidate"
+  action: "launch_new"
+  target: "release_candidate"
+launch_approved_release_candidate:
+  id: 128
+  name: "launch_approved_release_candidate"
+  action: "launch_approved"
+  target: "release_candidate"
+list_new_release_candidate:
+  id: 129
+  name: "list_new_release_candidate"
+  action: "list_new"
+  target: "release_candidate"
+jump_start:
+  id: 130
+  name: "jump_start"
+  action: "jump_start"
+  target: "release_candidate"
+approve_release_candidate:
+  id: 131
+  name: "approve_release_candidate"
+  action: "approve"
+  target: "release_candidate"
+fail:
+  id: 132
+  name: "fail_release_candidate"
+  action: "fail"
+  target: "release_candidate"
+list_rejected_release_candidate:
+  id: 133
+  name: "list_rejected_release_candidate"
+  action: "list_rejected"
   target: "release_candidate"
 # cage
 create_player:
