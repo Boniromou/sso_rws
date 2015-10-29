@@ -65,7 +65,7 @@ SsoRws::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
   config.cache_store = :dalli_store,
-                        'snd-cons-vapp01.sandbox.laxigames.com:11211',
+                        'snd-cons-vapp01.sbox.so.idc02.laxigames.local:11211',
                         {:namespace => 'cirrus_snd',
                          :expires_in => 1.day,
                          :socket_timeout => 3,

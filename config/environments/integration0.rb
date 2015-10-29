@@ -41,11 +41,5 @@ SsoRws::Application.configure do
                          :expires_in => 1.day,
                          :socket_timeout => 3,
                          :compress => true }
-
-  SITE_DOMAIN = 'laxino.com'
 end
 
-APP_NAME = 'user_management'
-AUTH_SOURCE_HOST = '10.10.28.91'
-
-SEARCH_RANGE_FOR_AUDIT_LOG = 7

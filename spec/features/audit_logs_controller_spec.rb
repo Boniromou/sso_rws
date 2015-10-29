@@ -10,8 +10,8 @@ describe AuditLogsController do
   describe '[9] Search audit log by Time' do
     before(:each) do
       AuditLog.delete_all
-      @al1 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-29 12:00:00")
-      @al2 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-30 12:00:00")
+      @al1 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "lock", :action_at => "2014-09-29 12:00:00")
+      @al2 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "lock", :action_at => "2014-09-30 12:00:00")
     end
     
     after(:each) do
@@ -41,8 +41,7 @@ describe AuditLogsController do
     end
 
     it '[9.3] search audit log without time range' do
-      al = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "create", :action_status => "success", :action_by => "portal.admin", :action_at => @al1.action_at + (SEARCH_RANGE_FOR_AUDIT_LOG + 2 ) * 86400, :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
-      al.save(:validate => false)
+      al = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "lock", :action_by => "portal.admin", :action_at => @al1.action_at + (SEARCH_RANGE_FOR_AUDIT_LOG + 2 ) * 86400)
 
       time_now = @al1.action_at + 1 * 86400
       allow(Time).to receive(:now).and_return(time_now)
@@ -58,8 +57,8 @@ describe AuditLogsController do
   describe '[10] Search audit log by actioner' do
     before(:each) do
       AuditLog.delete_all
-      @al1 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-29 12:00:00")
-      @al2 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_by => "ray", :action_at => "2014-09-29 12:00:00")
+      @al1 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "lock", :action_at => "2014-09-29 12:00:00")
+      @al2 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "lock", :action_by => "ray", :action_at => "2014-09-29 12:00:00")
     end
     
     after(:each) do
@@ -91,8 +90,8 @@ describe AuditLogsController do
   describe '[11] Search audit log by action' do
     before(:each) do
       AuditLog.delete_all
-      @al1 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-29 12:00:00")
-      @al2 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "update", :action => "reschedule", :action_at => "2014-09-29 12:00:00")
+      @al1 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "lock", :action_at => "2014-09-29 12:00:00")
+      @al2 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "lock", :action_at => "2014-09-29 12:00:00")
     end
     
     after(:each) do
@@ -117,8 +116,8 @@ describe AuditLogsController do
       visit search_audit_logs_path
       fill_in "from", :with => "2014-9-29"
       fill_in "to", :with => "2014-9-30"
-      select "All", :from => "target_name"
-      select "All", :from => "action_list"
+      select I18n.t("general.all"), :from => "target_name"
+      select I18n.t("general.all"), :from => "action_list"
       click_button I18n.t("general.search")
       @al1.reload
       expect(page.source).to have_selector("tr#audit#{@al1.id}_body")

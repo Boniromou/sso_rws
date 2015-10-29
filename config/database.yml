@@ -57,3 +57,33 @@ production0:
   password: rigi.pa$$w0rd123
   host: ph-prd-sso-vdb01.laxigames.com
   port: 6033
+
+sandbox2:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_sandbox
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: tw-snd-sso-vdb01.laxigames.local  
+  port: 6034
+
+smartocean2:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_production
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: tw-prd-sso-vdb01.laxigames.local
+  port: 6033
+
+mockup0:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_mockup
+  username: rigi
+  password: rigi
+  host: mo-mock-sso-vdb01.rnd.laxino.com
+  port: 3306
