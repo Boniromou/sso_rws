@@ -108,6 +108,7 @@ if prompt == 'Y'
       apps_table.insert(:id => app_id, :name => app_name, :created_at => Time.now.utc, :updated_at => Time.now.utc)
     end
 
+    # TODO: truncate role_permissions_table and permissions_table before insert
     permission_data.each do |permission_h|
       permission = permissions_table.where("name = ? and target = ?", permission_h[:action], permission_h[:target]).first
 
