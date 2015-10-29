@@ -70,5 +70,11 @@ module SsoRws
    
     # Add slash to the end of each URL
     config.action_controller.default_url_options = { :trailing_slash => true }
+
+    config.before_initialize do
+      require 'rigi/portal_error'
+      require 'rigi/utils/load_constant'
+      Rigi::Setting.define_constant
+    end
   end
 end

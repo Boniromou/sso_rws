@@ -70,10 +70,4 @@ SsoRws::Application.configure do
                          :expires_in => 1.day,
                          :socket_timeout => 3,
                          :compress => true }
-  SITE_DOMAIN = 'laxigames.com'
 end
-
-APP_NAME = 'user_management'
-AUTH_SOURCE_HOST = '10.81.223.27'
-
-SEARCH_RANGE_FOR_AUDIT_LOG = 7

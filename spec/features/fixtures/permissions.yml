@@ -7,8 +7,8 @@ search_audit_log:
 # user
 list_system_user:
   id: 2
-  name: "list_system_user"
-  action: "list_system_user"
+  name: "show"
+  action: "show"
   target: "system_user"
 grant_roles:
   id: 3
@@ -17,13 +17,13 @@ grant_roles:
   target: "system_user"
 lock_system_user:
   id: 4
-  name: "lock_system_user"
-  action: "lock_system_user"
+  name: "lock"
+  action: "lock"
   target: "system_user"
 unlock_system_user:
   id: 5
-  name: "unlock_system_user"
-  action: "unlock_system_user"
+  name: "unlock"
+  action: "unlock"
   target: "system_user"
 lock_root:
   id: 6
@@ -43,7 +43,7 @@ create_maintenance:
   target: "maintenance"
 search_maintenance:
   id: 9
-  name: "search_maintenance"
+  name: "search"
   action: "search"
   target: "maintenance"
 cancel_maintenance:
