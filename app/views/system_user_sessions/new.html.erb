@@ -10,16 +10,20 @@
         <%= f.label(t("user.user_name"), :class => "label") %>
         <label class="input"><i class="icon-append fa fa-user"></i>
           <%= f.text_field(:username) %>
-          <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i><%=t("login_page.username_tooltip") %></b></label>
+          <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i><%=t("login_page.username_tooltip") %></b>
+        </label>
       </section>
       <section>
         <%= f.label(t("user.password"), :class => "label") %>
         <label class="input"><i class="icon-append fa fa-lock"></i>
           <%= f.password_field :password %>
-          <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i><%=t("login_page.password_tooltip") %></b> </label>
+          <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i><%=t("login_page.password_tooltip") %></b>
+        </label>
       </section>
     </fieldset>
     <footer>
+       <%= render :partial => "shared/caplock_reminder" %>
        <%= f.submit(t("general.login"), :class => "btn btn-primary") %>
     </footer>
   <% end %>
+

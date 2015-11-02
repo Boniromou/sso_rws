@@ -2,7 +2,7 @@
           <%= form_tag(search_audit_logs_path, :remote => true, :id => "search_form") do %>
             <fieldset>
               <div class="row">
-                  <%= render "shared/date_range_picker" %>
+                  <%= render partial: "shared/date_range_picker" , locals: {:default_start_time => @default_start_time, :default_end_time => @default_end_time } %>
               </div>
               
               <div class="row">
@@ -20,8 +20,7 @@
                     <label class="label"><%= t("auditlog.target") %></label>
                     <label class="select">
                       <select class="input-sm" name="target_name" id="target_name">
-                        <option value="all"><%= t("general.all") %></option>
-                        <option value="system_user"><%= t("user.system_user") %></option>
+                        <%= gen_audit_target_options -%>
                       </select>
                     </label>
                   </section>
@@ -44,14 +43,15 @@
             <div class="form-actions">
               <div class="row">
                 <div class="col-md-12">
+                  <%= hidden_field_tag 'from', search_audit_logs_path %>
                   <%= submit_tag t("general.search"), :class => "btn btn-primary", :remote => true  %>
                 </div>
               </div>
             </div>
           <% end %>
           <!--/form-->
-          
-          <%= gen_hidden_action_list(@action_lists) -%>
+
+          <%= gen_hidden_action_list -%>
           
           <script type="text/javascript">
             //dynamic action menu

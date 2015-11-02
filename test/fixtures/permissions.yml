@@ -1,126 +1,3 @@
-# shared
-search_audit_log:
-  id: 1
-  name: "search"
-  action: "search"
-  target: "audit_log"
-# user
-list_system_user:
-  id: 2
-  name: "list_system_user"
-  action: "list_system_user"
-  target: "system_user"
-grant_roles:
-  id: 3
-  name: "grant_roles"
-  action: "grant_roles"
-  target: "system_user"
-lock_system_user:
-  id: 4
-  name: "lock_system_user"
-  action: "lock_system_user"
-  target: "system_user"
-unlock_system_user:
-  id: 5
-  name: "unlock_system_user"
-  action: "unlock_system_user"
-  target: "system_user"
-#lock_root:
-#  id: 6
-#  name: "lock_root"
-#  action: "lock_root"
-#  target: "system_user"
-#unlock_root:
-#  id: 7
-#  name: "unlock_root"
-#  action: "unlock_root"
-#  target: "system_user"
-# operations
-create_maintenance:
-  id: 8
-  name: "create"
-  action: "create"
-  target: "maintenance"
-search_maintenance:
-  id: 9
-  name: "search_maintenance"
-  action: "search"
-  target: "maintenance"
-cancel_maintenance:
-  id: 10
-  name: "cancel"
-  action: "cancel"
-  target: "maintenance"
-complete_maintenance:
-  id: 11
-  name: "complete"
-  action: "complete"
-  target: "maintenance"
-extend_maintenance:
-  id: 12
-  name: "extend"
-  action: "extend"
-  target: "maintenance"
-reschedule_maintenance:
-  id: 13
-  name: "reschedule"
-  action: "reschedule"
-  target: "maintenance"
-resume_propagation:
-  id: 14
-  name: "resume_propagation"
-  action: "resume"
-  target: "maintenance"
-list_test_player:
-  id: 15
-  name: "list_test_player"
-  action: "list"
-  target: "test_player"
-add_test_player:
-  id: 16
-  name: "add_test_player"
-  action: "add"
-  target: "test_player"
-enable_test_player:
-  id: 17
-  name: "enable_test_player"
-  action: "enable"
-  target: "test_player"
-disable_test_player:
-  id: 18
-  name: "disable_test_player"
-  action: "disable"
-  target: "test_player"
-deprecate_test_player:
-  id: 19
-  name: "deprecate_test_player"
-  action: "deprecate"
-  target: "test_player"
-resume_test_player:
-  id: 20
-  name: "resume_test_player"
-  action: "resume"
-  target: "test_player"
-sync_test_players:
-  id: 21
-  name: "sync"
-  action: "sync"
-  target: "test_player"
-list_deprecate_test_player:
-  id: 22
-  name: "list_deprecate_player"
-  action: "list_deprecated"
-  target: "test_player"
-recover_test_player:
-  id: 23
-  name: "recover_test_player"
-  action: "recover"
-  target: "test_player"
-list_test_player_log:
-  id: 24
-  name: "list_log_history"
-  action: "list_log"
-  target: "test_player"
 # cage
 create_player:
   id: 25
@@ -172,3 +49,63 @@ print_front_money_report:
   name: "print_front_money"
   action: "print_fm"
   target: "shift"
+search_audit_log_at_cage:
+  id: 35
+  name: "search"
+  action: "search"
+  target: "audit_log"
+player_profile:
+  id: 36
+  name: "view_player_profile"
+  action: "profile"
+  target: "player"
+edit_player:
+  id: 37
+  name: "edit_player"
+  action: "edit"
+  target: "player"
+lock_player:
+  id: 38
+  name: "lock_player"
+  action: "lock"
+  target: "player"
+print_transaction_report:
+  id: 39
+  name: "print_transaction_report"
+  action: "print_report"
+  target: "player_transaction"
+list_location:
+  id: 40
+  name: "list_location"
+  action: "list"
+  target: "location"
+change_location_status:
+  id: 41
+  name: "change_location_status"
+  action: "change_status"
+  target: "location"
+add_location:
+  id: 42
+  name: "add_location"
+  action: "add"
+  target: "location"
+list_station:
+  id: 43
+  name: "list_station"
+  action: "list"
+  target: "station"
+create_station:
+  id: 44
+  name: "create_station"
+  action: "create"
+  target: "station"
+change_station_status:
+  id: 45
+  name: "change_station_status"
+  action: "change_status"
+  target: "station"
+register_terminal:
+  id: 46
+  name: "register_terminal"
+  action: "register"
+  target: "station"

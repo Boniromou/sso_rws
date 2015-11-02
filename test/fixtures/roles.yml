@@ -1,31 +1,3 @@
-user_manager:
-  id: 1
-  name: "user_manager"
-  app_id: 1
-#auditor:
-#  id: 2
-#  name: "auditor"
-#  app_id: 1
-change_coordinator:
-  id: 3
-  name: "change_coordinator"
-  app_id: 2
-service_desk_manager:
-  id: 4
-  name: "service_desk_manager"
-  app_id: 2
-service_desk_agent:
-  id: 5
-  name: "service_desk_agent"
-  app_id: 2
-property_manager:
-  id: 6
-  name: "product_manager"
-  app_id: 2
-#system_auditor:
-#  id: 7
-#  name: "system_auditor"
-#  app_id: 2
 cashier:
   id: 8
   name: "cashier"
@@ -41,4 +13,8 @@ shift_manager:
 marketing_counter:
   id: 11
   name: "marketing_counter"
+  app_id: 3
+cage_it_specialist:
+  id: 14
+  name: "it_specialist"
   app_id: 3

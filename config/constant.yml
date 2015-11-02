@@ -1,0 +1,48 @@
+#
+# set your custom CONSTANT here. All elements defined here will become a constant with uppercase
+# example:
+#
+# development:
+#   app_name: 'user_management'
+#
+# APP_NAME #=> 'user_management'
+#
+default: &default
+  app_name: 'user_management'
+  auth_source_host: '10.10.28.91'
+  search_day_range: 7
+  search_range_for_audit_log: 7
+
+test:
+  <<: *default
+
+development:
+  <<: *default
+
+integration0:
+  <<: *default
+  site_domain: 'laxino.com'
+
+staging0:
+  <<: *default
+  site_domain: 'laxino.com'
+
+sandbox0:
+  <<: *default
+  site_domain: 'laxigames.com'
+
+production0:
+  <<: *default
+  site_domain: 'laxigames.com'
+
+mockup0:
+  <<: *default
+  site_domain: 'laxino.com'
+
+sandbox2:
+  <<: *default
+  site_domain: 'laxigames.local'
+
+smartocean2:
+  <<: *default
+  site_domain: 'laxigames.local'

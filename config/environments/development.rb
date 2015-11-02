@@ -43,6 +43,3 @@ SsoRws::Application.configure do
                          :socket_timeout => 3,
                          :compress => true }
 end
-
-APP_NAME = 'user'
-AUTH_SOURCE_HOST = '10.10.28.91'
