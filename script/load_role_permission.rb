@@ -57,7 +57,7 @@ s.each(cols) do |row|
   role_columns.each_key do |role|
     role_permission_data[role] ||= {}
 
-    if row[role].upcase == permission_indicator
+    if row[role] && row[role].upcase == permission_indicator
       role_permission_data[role][:grant] ||= []
       role_permission_data[role][:grant] << { :action => row[:action], :target => row[:target]}
     else
