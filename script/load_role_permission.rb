@@ -17,7 +17,8 @@ sheet_name = ARGV[2]
 apps_info = { 
               :SSO => { :id => 1, :name => 'user_management' }, 
               :AP => { :id => 2, :name => 'gaming_operation' }, 
-              :CAGE => { :id => 3, :name => 'cage' } 
+              :CAGE => { :id => 3, :name => 'cage' }, 
+              :SM => { :id => 4, :name => 'station_management' }
             }
 permission_columns = { :action => 'action', :target => 'target' }
 permission_indicator = 'Y'
