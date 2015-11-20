@@ -23,8 +23,8 @@ SsoRws::Application.routes.draw do
   resources :roles, :only => [:index, :show]
   resources :system_users, :only => [:index, :show] do
     member do
-      post 'lock'
-      post 'unlock'
+      #post 'lock'
+      #post 'unlock'
       match 'edit_roles'
       match 'update_roles'
     end

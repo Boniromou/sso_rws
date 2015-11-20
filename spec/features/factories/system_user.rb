@@ -5,11 +5,24 @@ FactoryGirl.define do
     admin     false
 
     before(:create) do |system_user|
-      system_user.auth_source = AuthSource.first || create(:auth_source)
+      system_user.auth_source = AuthSource.first || create(:auth_source, :internal)
     end
 
-    after(:create) do |system_user|
+    transient do
+      with_property_ids nil
+    end
+
+    after(:create) do |system_user, factory|
       system_user.roles.each { |role| system_user.apps << role.app }
+
+      if factory.with_property_ids
+        property_ids = factory.with_property_ids
+
+        property_ids.each do |property_id|
+          create(:property, :id => property_id) unless Property.exists?(:id => property_id)
+          create(:properties_system_user, system_user_id: system_user.id, property_id: property_id)
+        end
+      end
     end
 
     trait :admin do

@@ -4,9 +4,9 @@ class SystemUsersController < ApplicationController
   #after_action :verify_authorized
   
   def index
-    @system_users = SystemUser.all
-    #authorize current_system_user
-    authorize SystemUser
+    @system_users = policy_scope(SystemUser)
+    authorize :system_users, :index?
+
     respond_to do |format|
       format.html { render file: "system_users/index", formats: [:html] }
       format.js { render file: "system_users/index", formats: [:js] }
@@ -15,13 +15,14 @@ class SystemUsersController < ApplicationController
 
   def show
     @system_user = SystemUser.find_by_id(params[:id])
-    authorize @system_user
+    authorize @system_user, :show?
+
     respond_to do |format|
       format.html { render file: "system_users/show", formats: [:html] }
       format.js { render file: "system_users/show", formats: [:js] }
     end
   end
-
+=begin
   def lock
     AuditLog.system_user_log("lock", current_system_user.username, sid, client_ip) do
       system_user = SystemUser.find_by_id(params[:id])
@@ -42,11 +43,12 @@ class SystemUsersController < ApplicationController
     end
     redirect_to(system_users_path)
   end
+=end
 
   # edit roles page
   def edit_roles
     @system_user = SystemUser.find_by_id(params[:id])
-    authorize @system_user
+    authorize @system_user, :edit_roles?
     @apps = App.all
     @current_role_ids = @system_user.role_assignments.select(:role_id).map { |role_asm| role_asm.role_id }
     @current_app_ids = @system_user.app_system_users.select(:app_id).map { |app_asm| app_asm.app_id }
@@ -59,13 +61,14 @@ class SystemUsersController < ApplicationController
   end
 
   def update_roles
-    AuditLog.system_user_log("edit_role", current_system_user.username, sid, client_ip) do
-      system_user = SystemUser.find_by_id(params[:id])
-      authorize system_user
-      system_user.update_roles(role_ids_param)
-      flash[:success] = I18n.t("success.edit_role", :user_name => system_user.username)
-    end
     @system_user = SystemUser.find_by_id(params[:id])
+    authorize @system_user, :update_roles?
+
+    AuditLog.system_user_log("edit_role", current_system_user.username, sid, client_ip) do
+      @system_user.update_roles(role_ids_param)
+      flash[:success] = I18n.t("success.edit_role", :user_name => @system_user.username)
+    end
+
     if request.xhr?
       show
     else
@@ -79,6 +82,7 @@ class SystemUsersController < ApplicationController
       v = params[app.name.to_sym]
       v ? v.to_i : nil
     end
+    
     role_ids.compact.uniq
   end
 end

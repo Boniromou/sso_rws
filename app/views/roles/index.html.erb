@@ -26,7 +26,7 @@
                   <h5>
                     <small><i class='fa fa-check-square-o'></i></small>
                     <%= role.name.titleize %>
-                    <% if policy(Permission).show? %>
+                    <% if policy(:permission).show? %>
                       <small><%=link_to t("role.show_permission"), role_path(role), :remote => true %></small>
                     <% end %>
                   </h5>

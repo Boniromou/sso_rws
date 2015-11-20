@@ -2,12 +2,6 @@ audit_target:
   system_user: 
     locale_key: "user.system_user"
     action_name:
-      lock:
-        action_type: "update"
-        locale_key: "user.lock"
-      unlock:
-        action_type: "update"
-        locale_key: "user.unlock"
       edit_role:
         action_type: "update"
         locale_key: "user.edit_role"

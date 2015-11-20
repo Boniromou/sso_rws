@@ -14,5 +14,17 @@ FactoryGirl.define do
     attr_mail "mail"
     onthefly_register 1
     domain "test"
+
+    trait :internal do
+      id 1
+      name "Laxino LDAP"
+      is_internal true
+    end
+
+    trait :external do
+      id  2
+      name "EXT LDAP"
+      is_internal false
+    end
   end
 end

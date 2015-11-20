@@ -1,0 +1,37 @@
+lax_ldap: &lax_ldap
+  host: 'modc04.mo.laxino.com'
+  password: 'P@ssword'
+  binddn: 'rnd.ldap@mo.laxino.com'
+  method: :simple
+  searchbase: 'dc=mo, dc=laxino, dc=com'
+  searchscope: 'sub'
+
+test:
+  <<: *lax_ldap
+
+development:
+  <<: *lax_ldap
+
+integration0:
+  <<: *lax_ldap
+
+staging0:
+  <<: *lax_ldap
+
+sandbox0:
+  <<: *lax_ldap
+
+production0:
+  <<: *lax_ldap
+
+mockup0:
+  <<: *lax_ldap
+
+sandbox2:
+  <<: *lax_ldap
+
+smartocean2:
+  <<: *lax_ldap
+
+sandbox3:
+  <<: *lax_ldap

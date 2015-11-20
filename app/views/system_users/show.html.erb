@@ -22,12 +22,12 @@
           <header>
             <h2><strong><%= t("role.systems_and_roles") %></strong></h2>
             
-            <% if allow_edit_roles?(@system_user) %>
+            <% if policy(@system_user).edit_roles?  %>
             <div class="widget-toolbar" role="menu">
-	    <div class="btn-group">
-            <%=button_to t("general.edit"), {:controller => 'system_users', :action => 'edit_roles', :id => @system_user.id}, :class => "btn btn-primary btn-xs", :remote => true %>
-	    </div>
-	    </div>
+              <div class="btn-group">
+                <%=button_to t("general.edit"), {:controller => 'system_users', :action => 'edit_roles', :id => @system_user.id}, :class => "btn btn-primary btn-xs", :remote => true %>
+              </div>
+            </div>
             <% end %>
           </header>
           <div>
