@@ -5,6 +5,7 @@ describe SystemUserSessionsController do
 
   before(:all) do
     @root_user = create(:system_user, :admin)
+    create(:property, :id => 1000)
   end
 
   describe "[1] Login" do

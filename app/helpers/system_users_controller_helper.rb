@@ -20,9 +20,9 @@ module SystemUsersControllerHelper
     return "role.#{system_user.roles[0].name}"
   end
 
-  def allow_edit_roles?(system_user)
-    policy(system_user).edit_roles? 
-  end
+  #def allow_edit_roles?(system_user)
+  #  policy(system_user).edit_roles? 
+  #end
 
   def current_role?(system_user, role_id)
     return false if system_user.role_assignments.blank?

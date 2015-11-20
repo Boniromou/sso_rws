@@ -1,7 +1,7 @@
 class CreateApps < ActiveRecord::Migration
-  class App < ActiveRecord::Base
-    attr_accessible :name
-  end
+  #class App < ActiveRecord::Base
+  #  attr_accessible :name
+  #end
 
   def up
     create_table :apps do |t|
@@ -9,9 +9,9 @@ class CreateApps < ActiveRecord::Migration
       t.timestamps
     end
    
-    App.create!(:name => "user")
-    App.create!(:name => "operation")
-    App.create!(:name => "cage")
+#    App.create!(:name => "user")
+#    App.create!(:name => "operation")
+#    App.create!(:name => "cage")
   end
 
   def down

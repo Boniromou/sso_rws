@@ -5,8 +5,8 @@ require 'sequel'
 require 'logger'
 
 if ARGV.length != 3
-        puts "Usage: ruby script/load_game_name.rb <env> <file_name> <sheet_name>"
-        puts "Example: ruby script/load_game_name.rb development role_permission_files/AdminPortal_Configuration_v0.31.xlsx AP"
+        puts "Usage: ruby script/load_role_permission.rb <env> <file_name> <sheet_name>"
+        puts "Example: ruby script/load_role_permission.rb development role_permission_files/AdminPortal_Configuration_v0.31.xlsx AP"
     Process.exit
 end
 
@@ -111,10 +111,10 @@ if prompt == 'Y'
 
     # TODO: truncate role_permissions_table and permissions_table before insert
     permission_data.each do |permission_h|
-      permission = permissions_table.where("name = ? and target = ?", permission_h[:action], permission_h[:target]).first
+      permission = permissions_table.where("name = ? and target = ? and app_id = ?", permission_h[:action], permission_h[:target], app_id).first
 
       if permission.nil?
-        permissions_table.insert(:name => permission_h[:action], :action => permission_h[:action], :target => permission_h[:target], :created_at => Time.now.utc, :updated_at => Time.now.utc)
+        permissions_table.insert(:name => permission_h[:action], :action => permission_h[:action], :target => permission_h[:target], :app_id => app_id, :created_at => Time.now.utc, :updated_at => Time.now.utc)
       end
     end
 
@@ -128,7 +128,7 @@ if prompt == 'Y'
 
       if permissions[:grant]
         permissions[:grant].each do |permission_h|
-          permission = permissions_table.where("name = ? and target = ?", permission_h[:action], permission_h[:target]).first
+          permission = permissions_table.where("name = ? and target = ? and app_id = ?", permission_h[:action], permission_h[:target], app_id).first
           role_permission = role_permissions_table.where("role_id = ? and permission_id = ?", role[:id], permission[:id]).first
 
           if role_permission.nil?
@@ -139,7 +139,7 @@ if prompt == 'Y'
 
       if permissions[:revoke]
         permissions[:revoke].each do |permission_h|
-          permission = permissions_table.where("name = ? and target = ?", permission_h[:action], permission_h[:target]).first
+          permission = permissions_table.where("name = ? and target = ? and app_id = ?", permission_h[:action], permission_h[:target], app_id).first
           role_permission = role_permissions_table.where("role_id = ? and permission_id = ?", role[:id], permission[:id]).first
 
           if role_permission

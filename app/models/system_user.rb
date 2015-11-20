@@ -1,12 +1,22 @@
 class SystemUser < ActiveRecord::Base
   devise :registerable
          #:recoverable, :rememberable, :trackable    #, :validatable
-  attr_accessible :username, :status, :admin, :auth_source_id#, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip#, :password, :encrypted_password
+  attr_accessible :id, :username, :status, :admin, :auth_source_id#, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip#, :password, :encrypted_password
   belongs_to :auth_source
   has_many :role_assignments, :as => :user, :dependent => :destroy
   has_many :roles, :through => :role_assignments
   has_many :app_system_users
   has_many :apps, :through => :app_system_users
+  has_many :properties_system_users
+  has_many :properties, :through => :properties_system_users
+
+  def active_property_ids
+    PropertiesSystemUser.where(:system_user_id => id, :status => true).select(:property_id).pluck(:property_id)
+  end
+
+  def is_internal?
+    auth_source.is_internal?
+  end
 
   def is_admin?
     admin
@@ -25,6 +35,7 @@ class SystemUser < ActiveRecord::Base
   def update_roles(role_ids)
     existing_roles = self.role_assignments.map { |role_assignment| role_assignment.role_id }
     diff_role_ids = self.class.diff(existing_roles, role_ids)
+
     transaction do
       diff_role_ids.each do |role_id|
         if existing_roles.include?(role_id)
@@ -49,12 +60,14 @@ class SystemUser < ActiveRecord::Base
   def role_in_app(app_name=nil)
     app_name = app_name || APP_NAME
     app = App.find_by_name(app_name)
+
     self.roles.each do |role|
       if role.app.id == app.id
         return role
       end
     end
-    return nil
+
+    nil
   end
 
   # determine if the user has permission on a particular action (in this app by default)
@@ -64,18 +77,42 @@ class SystemUser < ActiveRecord::Base
   end
 
   def cache_info(app_name)
-    cache_status
+    cache_profile
     cache_permissions(app_name) unless is_admin?
   end
 
   def lock
     update_attributes({:status => 0})
-    cache_status
+    cache_profile
   end
 
   def unlock
     update_attributes({:status => 1})
-    cache_status
+    cache_profile
+  end
+
+  def cache_revoke_permissions(app_name)
+    cache_key = "#{app_name}:permissions:#{self.id}"
+    Rails.cache.delete(cache_key)
+  end
+
+  def update_properties(property_ids)
+    PropertiesSystemUser.update_properties_by_system_user(id, property_ids)
+  end
+
+  def update_ad_profile
+    profile = 
+      if is_internal?
+        Rigi::Ldap.retrieve_user_profile(username)
+      else
+        property_ids = Property.select(:id).pluck(:id)
+        Rigi::Ldap.retrieve_user_profile(username, property_ids)
+      end
+    
+    user_properties = is_internal? ? [INTERNAL_PROPERTY_ID] : profile[:groups]
+    self.status = profile[:account_status]
+    update_properties(user_properties)
+    save!
   end
 
   private
@@ -117,9 +154,9 @@ class SystemUser < ActiveRecord::Base
     self.app_system_users.find_by_app_id(app_id).destroy
   end
 
-  def cache_status
+  def cache_profile
     cache_key = "#{self.id}"
-    cache_hash = {:status => self.status, :admin => self.admin}
+    cache_hash = {:status => self.status, :admin => self.admin, :properties => self.active_property_ids}
     Rails.cache.write(cache_key, cache_hash)
   end
 
@@ -130,20 +167,19 @@ class SystemUser < ActiveRecord::Base
     permissions = role.permissions
     targets = permissions.map{|x| x.target}.uniq
     perm_hash = {}
+
     targets.each do |t|
       actions = []
+
       permissions.each do |perm|
         if perm.target == t
           actions << perm.action
         end
       end
+      
       perm_hash[t.to_sym] = actions
     end
-    Rails.cache.write(cache_key, {:permissions => {:role => role.name, :permissions => perm_hash}})
-  end
 
-  def cache_revoke_permissions(app_name)
-    cache_key = "#{app_name}:permissions:#{self.id}"
-    Rails.cache.delete(cache_key)
+    Rails.cache.write(cache_key, {:permissions => {:role => role.name, :permissions => perm_hash}})
   end
 end

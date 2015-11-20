@@ -4,6 +4,10 @@ describe SystemUserRegistrationsController do
   fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
 
   describe "[3] Self Registration" do
+    before(:all) do
+      create(:property, :id => 1000)
+    end
+
     before(:each) do
       #@fake_auth_source_info =  {:auth_type=>"AuthSourceLdap", :name=>"Fake LDAP", :host=>"127.0.0.0", :port=>389, :account=>"test", :account_password=>"secret", :base_dn=>"DC=test,DC=example,DC=com", :attr_login=>"sAMAccountName", :attr_firstname=>"givenName", :attr_lastname=>"sN", :attr_mail=>"mail", :onthefly_register=>true, :domain=>"test"}
       #@auth_source1 = AuthSource.create(@fake_auth_source_info)
@@ -21,6 +25,7 @@ describe SystemUserRegistrationsController do
       fill_in "system_user_password", :with => 'secret'
       click_button I18n.t("general.sign_up")
       expect(page).to have_content I18n.t("alert.signup_completed")
+      PropertiesSystemUser.delete_all
       SystemUser.find_by_username('test_user').destroy
     end
     

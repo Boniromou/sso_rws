@@ -3,10 +3,10 @@ require 'admin_portal_error'
 class ApplicationController < ActionController::Base
   layout false
   include Pundit
+  include Rigi::PunditHelper::Controller
   protect_from_forgery
   before_filter :set_locale, :authenticate_system_user!, :check_activation_status
   respond_to :html, :js
-  alias_method :current_user, :current_system_user
 
   #rescue_from ::ActiveRecord::RecordInvalid, :with => :handle_invalid_error
   #rescue_from ::ActiveRecord::StaleObjectError, :with => :handle_unsync_error
@@ -54,6 +54,7 @@ class ApplicationController < ActionController::Base
     Rails.logger.info 'handle_inactive_status'
     sign_out current_system_user if current_system_user
     flash[:alert] = "alert.inactive_account"  # login page want raw locale key due to devise behavior
+    
     if request.xhr?
       render :nothing => true, :status => :unauthorized
     else
@@ -68,6 +69,7 @@ class ApplicationController < ActionController::Base
   def handle_unauthorize
     Rails.logger.info 'handle_unauthorize'
     flash[:alert] = I18n.t("flash_message.not_authorize")
+
     if request.xhr?
       render :js => "window.location = '/home'"
     else
@@ -78,6 +80,7 @@ class ApplicationController < ActionController::Base
   def render_content(options={})
     @main_content = options[:file] || "#{params[:controller]}/#{params[:action]}"
     @sub_layout = options[:layout]
+
     respond_to do |format|
       format.html { render file: @main_content, formats: [:html], layout: false }
       format.js { render partial: "shared/main_content", formats: [:js] }
@@ -99,10 +102,12 @@ class ApplicationController < ActionController::Base
     @from = params[:from]
     Rails.logger.error "#{e.message}"
     Rails.logger.error "#{e.backtrace.inspect}"
+
     respond_to do |format|
       format.html { render partial: "shared/error500", formats: [:html], layout: "error_page", status: :internal_server_error }
       format.js { render partial: "shared/error500", formats: [:js], status: :internal_server_error }
     end
+
     return
   end
 end

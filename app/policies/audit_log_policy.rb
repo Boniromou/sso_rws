@@ -1,5 +1,10 @@
 class AuditLogPolicy < ApplicationPolicy
-  def search?
-    current_system_user.is_admin? || current_system_user.has_permission?('audit_log', 'search')
+  policy_target :audit_log
+  map_policy :search?
+  map_policy :link?, :delegate_policies => [:search?]
+
+  def initialize(system_user_context, record)
+    super(system_user_context, record)
+    @internal_use_only = true
   end
 end

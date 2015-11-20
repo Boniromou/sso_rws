@@ -3,18 +3,19 @@ class RolesController < ApplicationController
   respond_to :html, :js
 
   def index
+    authorize :role, :index?
 #    @roles = Role.all
-    @apps = App.all
-    authorize Role.new
+    @apps = App.all    
   end
 
   def show
     @role = Role.find_by_id(params[:id])
     @permissions_by_role = Role.target_permissions(params[:id])
-    authorize Permission.new
+    #authorize Permission.new
+    authorize :permission, :show?
 
     app_id = @role.app_id   
     @app = App.find_by_id(app_id)
-    @permissions_by_app = App.permissions(app_id)
+    @permissions_by_app = @app.permissions_with_groups
   end
 end

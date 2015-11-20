@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150307131438) do
+ActiveRecord::Schema.define(:version => 20151119085959) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20150307131438) do
     t.string  "attr_mail",         :limit => 30
     t.boolean "onthefly_register",               :default => false, :null => false
     t.string  "domain",                          :default => "",    :null => false
+    t.boolean "is_internal",                     :default => false, :null => false
   end
 
   create_table "permissions", :force => true do |t|
@@ -66,7 +67,10 @@ ActiveRecord::Schema.define(:version => 20150307131438) do
     t.string   "target"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "app_id"
   end
+
+  add_index "permissions", ["app_id"], :name => "fk_Permissions_AppId"
 
   create_table "properties", :force => true do |t|
     t.datetime "created_at",  :null => false
@@ -74,6 +78,17 @@ ActiveRecord::Schema.define(:version => 20150307131438) do
     t.string   "name"
     t.string   "description"
   end
+
+  create_table "properties_system_users", :force => true do |t|
+    t.integer  "system_user_id",                   :null => false
+    t.integer  "property_id",                      :null => false
+    t.boolean  "status",         :default => true, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
+  add_index "properties_system_users", ["property_id", "system_user_id"], :name => "index_properties_system_users_on_property_id_and_system_user_id", :unique => true
+  add_index "properties_system_users", ["system_user_id"], :name => "fk_PropertiesSystemUsers_SystemUserId"
 
   create_table "role_assignments", :force => true do |t|
     t.string   "user_type",  :limit => 60, :null => false
