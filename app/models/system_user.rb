@@ -22,6 +22,13 @@ class SystemUser < ActiveRecord::Base
     admin
   end
 
+  def self.register!(username, auth_source_id, property_ids)
+    transaction do
+      system_user = create!(:username => username, :auth_source_id => auth_source_id)
+      system_user.update_properties(property_ids)
+    end
+  end
+
   alias_method "is_root?", "is_admin?"
 
   def activated?
@@ -109,7 +116,7 @@ class SystemUser < ActiveRecord::Base
         Rigi::Ldap.retrieve_user_profile(username, property_ids)
       end
     
-    user_properties = is_internal? ? [INTERNAL_PROPERTY_ID] : profile[:groups]
+    user_properties = is_internal? ? [INTERNAL_PROPERTY_ID] : [1003, 1007] #profile[:groups]
     self.status = profile[:account_status]
     update_properties(user_properties)
     save!

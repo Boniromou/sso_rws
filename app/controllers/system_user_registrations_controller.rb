@@ -19,20 +19,36 @@ class SystemUserRegistrationsController < ActionController::Base
       auth_source = auth_source.becomes(auth_source.auth_type.constantize)
       
       if auth_source.authenticate("#{auth_source.domain}\\#{username}", password)
-        system_user = SystemUser.create(:username => username, :auth_source_id => auth_source.id)
-        system_user.update_ad_profile
-        flash[:success] = "alert.signup_completed"
+        profile = get_system_user_profile(username, auth_source.is_internal?)
 
-        #if @nav_app_link
-        #  redirect_to @nav_app_link
-        #else
-        #  redirect_to login_path
-        #end
+        if profile[:status] == false
+          Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has been disabled"
+          flash[:alert] = "alert.invalid_login" # TODO customize specific err msg
+        elsif profile[:property_ids].blank?
+          Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has no properties"
+          flash[:alert] = "alert.invalid_login" # TODO customize specific err msg
+        else
+          SystemUser.register!(username, auth_source.id, profile[:property_ids])
+          flash[:success] = "alert.signup_completed"
+        end
       else
         Rails.logger.info "SystemUser[username=#{username}] Registration failed. Authentication failed"
         flash[:alert] = "alert.invalid_login"
       end
     end
     render :new
+  end
+
+  private
+  def get_system_user_profile(username, is_internal)
+    if is_internal
+      profile = Rigi::Ldap.retrieve_user_profile(username)
+      { :status => profile[:account_status], :property_ids => [INTERNAL_PROPERTY_ID] }
+    else
+      property_ids = Property.select(:id).pluck(:id)
+      profile = Rigi::Ldap.retrieve_user_profile(username, property_ids)
+      #{ :status => profile[:account_status], :property_ids => profile[:groups] }
+      { :status => profile[:account_status], :property_ids => [1003, 1007] }
+    end
   end
 end

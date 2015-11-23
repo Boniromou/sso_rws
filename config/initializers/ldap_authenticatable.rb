@@ -30,9 +30,13 @@ module Devise
         if auth_source.authenticate(sys_usr.login, password)
           sys_usr.update_ad_profile
 
-          unless sys_usr.activated?
+          if !sys_usr.activated?
             fail!("alert.inactive_account")
             Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. Inactive_account"
+            return
+          elsif sys_usr.active_property_ids.blank?
+            Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. The account has no properties"
+            fail!("alert.invalid_login")
             return
           end
 

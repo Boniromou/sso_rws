@@ -21,7 +21,7 @@ class PropertiesSystemUser < ActiveRecord::Base
       end
 
       suspended_entry = by_system_user_id(system_user_id).exclude_property_ids(property_ids)
-      suspended_entry.update_all(:status => false)
+      suspended_entry.update_all(:status => false) unless suspended_entry.blank?
     end
   end
 end
