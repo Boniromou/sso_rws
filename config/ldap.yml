@@ -15,8 +15,11 @@ development:
 integration0:
   <<: *lax_ldap
 
-staging0:
+staging0: &staging0
   <<: *lax_ldap
+
+staging0_external:
+  <<: *staging0
 
 sandbox0:
   <<: *lax_ldap

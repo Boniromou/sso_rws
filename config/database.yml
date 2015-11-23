@@ -28,7 +28,7 @@ integration0:
   host: mo-int-generic-db01.rnd.laxino.com
   port: 3306
 
-staging0:
+staging0: &staging0
   adapter: mysql2
   encoding: utf8
   collation: utf8_bin
@@ -37,6 +37,9 @@ staging0:
   password: rigi
   host: mo-stg-generic-db01.rnd.laxino.com
   port: 3306
+
+staging0_external:
+  <<: *staging0
 
 sandbox0:
   adapter: mysql2

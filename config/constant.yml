@@ -31,6 +31,12 @@ staging0:
   auth_source_host: '10.10.28.91'
   site_domain: 'laxino.com'
 
+staging0_external:
+  <<: *default
+  auth_source_id: 2
+  auth_source_host: '10.10.28.91'
+  site_domain: 'laxino.com'
+
 sandbox0:
   <<: *default
   site_domain: 'laxigames.com'
