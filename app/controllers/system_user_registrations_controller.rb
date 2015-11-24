@@ -47,8 +47,8 @@ class SystemUserRegistrationsController < ActionController::Base
     else
       property_ids = Property.select(:id).pluck(:id)
       profile = Rigi::Ldap.retrieve_user_profile(username, property_ids)
-      #{ :status => profile[:account_status], :property_ids => profile[:groups] }
-      { :status => profile[:account_status], :property_ids => [1003, 1007] }
+      #{ :status => profile[:account_status], :property_ids => [1003, 1007] }
+      { :status => profile[:account_status], :property_ids => profile[:groups] }
     end
   end
 end

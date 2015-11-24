@@ -116,7 +116,7 @@ class SystemUser < ActiveRecord::Base
         Rigi::Ldap.retrieve_user_profile(username, property_ids)
       end
     
-    user_properties = is_internal? ? [INTERNAL_PROPERTY_ID] : [1003, 1007] #profile[:groups]
+    user_properties = is_internal? ? [INTERNAL_PROPERTY_ID] : profile[:groups] # [1003, 1007]
     self.status = profile[:account_status]
     update_properties(user_properties)
     save!
