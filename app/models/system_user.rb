@@ -24,7 +24,7 @@ class SystemUser < ActiveRecord::Base
 
   def self.register!(username, auth_source_id, property_ids)
     transaction do
-      system_user = create!(:username => username, :auth_source_id => auth_source_id)
+      system_user = create!(:username => username, :auth_source_id => auth_source_id, :status => true)
       system_user.update_properties(property_ids)
     end
   end

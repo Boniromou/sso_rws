@@ -55,7 +55,10 @@ module Rigi
         end
       end
 
-      { :account_status => account_status, :groups => groups }
+      res = { :account_status => account_status, :groups => groups }
+      Rails.logger.info "[username=#{username}][filter_groups=#{filter_groups}] AD return result => res.inspect"
+
+      res
     end
   end
 end
