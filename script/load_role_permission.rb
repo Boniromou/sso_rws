@@ -18,7 +18,8 @@ apps_info = {
               :SSO => { :id => 1, :name => 'user_management' }, 
               :AP => { :id => 2, :name => 'gaming_operation' }, 
               :CAGE => { :id => 3, :name => 'cage' }, 
-              :SM => { :id => 4, :name => 'station_management' }
+              :SM => { :id => 4, :name => 'station_management' },
+              :GRMS => { :id => 5, :name => 'game_recall' }
             }
 permission_columns = { :action => 'action', :target => 'target' }
 permission_indicator = 'Y'
