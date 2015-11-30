@@ -19,7 +19,8 @@ apps_info = {
               :AP => { :id => 2, :name => 'gaming_operation' }, 
               :CAGE => { :id => 3, :name => 'cage' }, 
               :SM => { :id => 4, :name => 'station_management' },
-              :GRMS => { :id => 5, :name => 'game_recall' }
+              :GRMS => { :id => 5, :name => 'game_recall' },
+              :SV => { :id => 6, :name => 'signature_verifier' }
             }
 permission_columns = { :action => 'action', :target => 'target' }
 permission_indicator = 'Y'
