@@ -47,6 +47,7 @@ production0:
 
 mockup0:
   <<: *default
+  auth_source_id: 2
   auth_source_host: '10.10.28.91'
   site_domain: 'laxino.com'
 
