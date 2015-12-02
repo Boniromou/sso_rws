@@ -34,7 +34,7 @@ module Devise
             fail!("alert.inactive_account")
             Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. Inactive_account"
             return
-          elsif sys_usr.active_property_ids.blank?
+          elsif !sys_usr.is_admin? && sys_usr.active_property_ids.blank?
             Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. The account has no properties"
             fail!("alert.invalid_login")
             return

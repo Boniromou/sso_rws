@@ -8,7 +8,7 @@
                           <% @system_users.each do |su| %>
                             <tr align="center">
                               <td id="<%=su.id%>">
-                              <% if policy(su).show? && @unshow_operation.blank? %>
+                              <% if policy(su).show? %>
                                 <%=link_to "#{su.username}", system_user_path(su), :remote => true %>
                               <% else %>
                                 <%= su.username %>

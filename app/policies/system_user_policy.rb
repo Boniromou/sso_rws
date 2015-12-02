@@ -20,7 +20,7 @@ class SystemUserPolicy < ApplicationPolicy
   end
 
   def same_group?
-    system_user.is_internal? || same_scope?(record.active_property_ids)
+    system_user.is_admin? || system_user.is_internal? || same_scope?(record.active_property_ids)
   end
 
   class Scope < Scope
