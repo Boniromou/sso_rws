@@ -27,7 +27,7 @@ class Internal::SystemUserSessionsController < ApplicationController
         if !sys_usr.activated?
           message = "alert.inactive_account"
           Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. Inactive_account"
-        elsif sys_usr.active_property_ids.blank?
+        elsif !sys_usr.is_admin? && sys_usr.active_property_ids.blank?
           message = "alert.invalid_login"
           Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. The account has no properties"
         else
