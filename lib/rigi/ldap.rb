@@ -2,6 +2,7 @@ module Rigi
   module Ldap
     extend self
     DISABLED_ACCOUNT_TOKEN = 'Disabled Accounts'
+    MATCH_PATTERN_REGEXP = /CN=\d+iportal/
 
     def search(username)
       ldap_config = Rails.application.config.ldap_config
@@ -51,14 +52,28 @@ module Rigi
 
       memberofs.each do |memberof|
         filter_groups.each do |filter|
-          groups << filter.to_i if memberof.include?(filter.to_s)
+          groups << filter.to_i if dn_has_key?(memberof, filter.to_s)
         end
       end
 
-      res = { :account_status => account_status, :groups => groups }
+      res = { :account_status => account_status, :groups => groups.uniq }
       Rails.logger.info "[username=#{username}][filter_groups=#{filter_groups}] AD return result => res.inspect"
 
       res
+    end
+
+    # "CN=20000iportal,OU=20000_30000,OU=Licensee,OU=Laxino Macau,DC=mo,DC=laxino,DC=com"
+    def dn_has_key?(raw_dn, key)
+      dn_attributes = raw_dn.scan(MATCH_PATTERN_REGEXP)
+
+      unless dn_attributes.empty?
+        dn_attributes.each do |dn_attribute|
+          digit = dn_attribute.scan(/\d+/).first
+          return true if digit && digit == key.to_s
+        end
+      end
+
+      false
     end
   end
 end
