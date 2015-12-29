@@ -1,48 +1,30 @@
 class Internal::SystemUserSessionsController < ApplicationController
   skip_before_filter :authenticate_system_user!
-
   respond_to :json
 
   def create
     username = params[:system_user][:username]
     password = params[:system_user][:password]
     app_name = params[:app_name]
-    auth_source = AuthSource.find_by_id(AUTH_SOURCE_ID)
-    sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id).first
-    message = ''
-    success = false
+    response_body = {}
+    response_status = :ok
 
-    if sys_usr.blank?
-      message = "alert.invalid_login"
-      Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. Not a registered account"
-    elsif !sys_usr.is_admin? && !sys_usr.role_in_app(app_name)
-      message = "alert.account_no_role"
-      Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. No role assiged"
-    else
-      auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-
-      if auth_source.authenticate(sys_usr.login, password)
-        sys_usr.update_ad_profile
-
-        if !sys_usr.activated?
-          message = "alert.inactive_account"
-          Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. Inactive_account"
-        elsif !sys_usr.is_admin? && sys_usr.active_property_ids.blank?
-          message = "alert.invalid_login"
-          Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. The account has no properties"
-        else
-          message = "success"
-          success = true
-          sys_usr.cache_info(app_name)
-        end
-      else
-        message = "alert.invalid_login"
-        Rails.logger.info "SystemUser[username=#{username}][auth_source_name=#{auth_source.name}] Login failed. Authentication failed"
-      end
+    begin
+      response_body[:system_user] = Rigi::Login.authenticate!(username, password, app_name)
+      response_body[:message] = "success"
+      response_body[:success] = true
+    rescue Rigi::InvalidLogin => e
+      response_body[:message] = e.error_message
+      response_body[:success] = false
+      response_status = :unauthorized
+    rescue Exception => e
+      response_body[:message] = e.message
+      response_body[:success] = false
+      response_status = :internal_server_error
     end
 
     respond_to do |format|
-      format.json { render :json => {:success=>success, :message => message, :system_user => sys_usr}, :status => 200 }
+      format.json { render :json => response_body, :status => response_status }
     end
   end
 end

@@ -1,6 +1,7 @@
 module Rigi
   module Ldap
     extend self
+
     DISABLED_ACCOUNT_TOKEN = 'Disabled Accounts'
     MATCH_PATTERN_REGEXP = /CN=\d+iportal/
 
@@ -43,28 +44,42 @@ module Rigi
       ldap_entry = search(username).first
       dnames = ldap_entry[:distinguishedName]
       memberofs = ldap_entry[:memberOf]
-      account_status = true
+      is_disable_account, is_admin_group = false, false
       groups = []
 
-      dnames.each do |dn|
-        account_status = false if dn.include?(DISABLED_ACCOUNT_TOKEN)
-      end
+      Rails.logger.info "Ldap server response: distinguishedName => #{dnames}, memberOf => #{memberofs}"
 
-      memberofs.each do |memberof|
-        filter_groups.each do |filter|
-          groups << filter.to_i if dn_has_key?(memberof, filter.to_s)
+      is_disable_account = dnames.any? { |dn| dn.include?(DISABLED_ACCOUNT_TOKEN) }
+      is_admin_group = dnames.any? { |dn| dn_has_admin_group?(dn) }
+
+      if is_admin_group
+        groups << ADMIN_PROPERTY_ID
+      else
+        memberofs.each do |memberof|
+          filter_groups.each do |filter|
+            groups << filter.to_i if memberof_has_key?(memberof, MATCH_PATTERN_REGEXP, filter.to_s)
+          end
         end
       end
 
-      res = { :account_status => account_status, :groups => groups.uniq }
-      Rails.logger.info "[username=#{username}][filter_groups=#{filter_groups}] AD return result => res.inspect"
+      res = { :account_status => !is_disable_account, :groups => groups.uniq }
+      Rails.logger.info "[username=#{username}][filter_groups=#{filter_groups}] account result => #{res.inspect}"
 
       res
     end
 
-    # "CN=20000iportal,OU=20000_30000,OU=Licensee,OU=Laxino Macau,DC=mo,DC=laxino,DC=com"
-    def dn_has_key?(raw_dn, key)
-      dn_attributes = raw_dn.scan(MATCH_PATTERN_REGEXP)
+    def dn_has_admin_group?(raw_dn)
+      if raw_dn.include?("OU=Users")
+        true
+      elsif raw_dn.include?("OU=Licensee")
+        false
+      else
+        false
+      end
+    end
+
+    def memberof_has_key?(pair, regexp, key)
+      dn_attributes = pair.scan(regexp)
 
       unless dn_attributes.empty?
         dn_attributes.each do |dn_attribute|

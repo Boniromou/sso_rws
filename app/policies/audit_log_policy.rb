@@ -5,6 +5,6 @@ class AuditLogPolicy < ApplicationPolicy
 
   def initialize(system_user_context, record)
     super(system_user_context, record)
-    @internal_use_only = true
+    @admin_property_use_only = true
   end
 end

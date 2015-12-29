@@ -1,6 +1,6 @@
 class SystemUserPolicy < ApplicationPolicy
   def edit_roles?
-    permitted?(:system_user, :show) && system_user.id != record.id && !record.is_root? && same_group?
+    permitted?(:system_user, :grant_roles) && system_user.id != record.id && !record.is_root? && same_group?
   end
 
   def update_roles?
@@ -20,15 +20,15 @@ class SystemUserPolicy < ApplicationPolicy
   end
 
   def same_group?
-    system_user.is_admin? || system_user.is_internal? || same_scope?(record.active_property_ids)
+    system_user.is_admin? || system_user.has_admin_property? || same_scope?(record.active_property_ids)
   end
 
   class Scope < Scope
     def resolve
-      if system_user.is_admin? || system_user.is_internal? || system_user.active_property_ids.include?(INTERNAL_PROPERTY_ID)
+      if system_user.is_admin? || system_user.has_admin_property?
         scope.all
       else
-        scope.joins(:properties_system_users).where("properties_system_users.property_id in (?) AND system_users.auth_source_id = ?", system_user.active_property_ids, AUTH_SOURCE_ID).select("DISTINCT(system_users.id), system_users.*")
+        scope.joins(:properties_system_users).where("properties_system_users.property_id in (?)", system_user.active_property_ids)
       end
     end
   end

@@ -12,7 +12,7 @@ default: &default
   auth_source_id: 1
   search_day_range: 7
   search_range_for_audit_log: 7
-  internal_property_id: 1000
+  admin_property_id: 1000
 
 test:
   <<: *default
@@ -33,7 +33,6 @@ staging0:
 
 staging0_external:
   <<: *default
-  auth_source_id: 2
   auth_source_host: '10.10.28.91'
   site_domain: 'laxino.com'
 
@@ -47,7 +46,6 @@ production0:
 
 mockup0:
   <<: *default
-  auth_source_id: 2
   auth_source_host: '10.10.28.91'
   site_domain: 'laxino.com'
 
@@ -61,5 +59,4 @@ smartocean2:
 
 sandbox3:
   <<: *default
-  auth_source_id: 100
   site_domain: 'laxigames.local'

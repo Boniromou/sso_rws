@@ -9,17 +9,22 @@ class SystemUser < ActiveRecord::Base
   has_many :apps, :through => :app_system_users
   has_many :properties_system_users
   has_many :properties, :through => :properties_system_users
+  scope :with_active_property, -> { joins(:properties_system_users).where("properties_system_users.status = ?", true).select("DISTINCT(system_users.id), system_users.*") }
 
   def active_property_ids
     PropertiesSystemUser.where(:system_user_id => id, :status => true).select(:property_id).pluck(:property_id)
   end
 
-  def is_internal?
-    auth_source.is_internal?
-  end
+#  def is_internal?
+#    auth_source.is_internal?
+#  end
 
   def is_admin?
     admin
+  end
+
+  def has_admin_property?
+    active_property_ids.include?(ADMIN_PROPERTY_ID)
   end
 
   def self.register!(username, auth_source_id, property_ids)
@@ -52,7 +57,8 @@ class SystemUser < ActiveRecord::Base
         end
       end
     end
-    
+
+    refresh_permission_cache
   end
 
   def self.get_by_username_and_domain(username, domain)
@@ -65,10 +71,9 @@ class SystemUser < ActiveRecord::Base
   end
 
   def role_in_app(app_name=nil)
-    app_name = app_name || APP_NAME
-    app = App.find_by_name(app_name)
+    app = App.find_by_name(app_name || APP_NAME)
 
-    self.roles.each do |role|
+    self.roles(true).each do |role|
       if role.app.id == app.id
         return role
       end
@@ -88,6 +93,7 @@ class SystemUser < ActiveRecord::Base
     cache_permissions(app_name) unless is_admin?
   end
 
+=begin
   def lock
     update_attributes({:status => 0})
     cache_profile
@@ -97,29 +103,31 @@ class SystemUser < ActiveRecord::Base
     update_attributes({:status => 1})
     cache_profile
   end
-
-  def cache_revoke_permissions(app_name)
-    cache_key = "#{app_name}:permissions:#{self.id}"
-    Rails.cache.delete(cache_key)
-  end
+=end  
 
   def update_properties(property_ids)
     PropertiesSystemUser.update_properties_by_system_user(id, property_ids)
   end
 
   def update_ad_profile
-    profile = 
-      if is_internal?
-        Rigi::Ldap.retrieve_user_profile(username)
-      else
-        property_ids = Property.select(:id).pluck(:id)
-        Rigi::Ldap.retrieve_user_profile(username, property_ids)
-      end
-    
-    user_properties = is_internal? ? [INTERNAL_PROPERTY_ID] : profile[:groups] # [1003, 1007]
+    property_ids = Property.select(:id).pluck(:id)
+    profile =  Rigi::Ldap.retrieve_user_profile(username, property_ids)
     self.status = profile[:account_status]
-    update_properties(user_properties)
+    update_properties(profile[:groups])
     save!
+  end
+
+  def refresh_permission_cache
+    all_app_ids = App.all
+    assigned_app_ids = self.apps(true).map { |app| app.id }
+
+    all_app_ids.each do |existing_app|
+      if assigned_app_ids.include?(existing_app.id)
+        cache_permissions(existing_app.name)
+      else
+        cache_revoke_permissions(existing_app.name)
+      end
+    end
   end
 
   private
@@ -138,17 +146,13 @@ class SystemUser < ActiveRecord::Base
     self.role_assignments.create({:role_id => role_id})
     role = Role.find_by_id(role_id)
     add_app_assignment(role.app_id)
-    app = App.find_by_id(role.app_id)
-    cache_permissions(app.name) if app
   end
 
   def revoke_role(role_id)
     Rails.logger.info "Revoke role (id=#{role_id}) for #{self.class.name} (id=#{self.id})"
     self.role_assignments.find_by_role_id(role_id).destroy
     role = Role.find_by_id(role_id)
-    app = App.find_by_id(role.app_id)
     remove_app_assignment(role.app_id)
-    cache_revoke_permissions(app.name) if app
   end
 
   def add_app_assignment(app_id)
@@ -165,6 +169,11 @@ class SystemUser < ActiveRecord::Base
     cache_key = "#{self.id}"
     cache_hash = {:status => self.status, :admin => self.admin, :properties => self.active_property_ids}
     Rails.cache.write(cache_key, cache_hash)
+  end
+
+  def cache_revoke_permissions(app_name)
+    cache_key = "#{app_name}:permissions:#{self.id}"
+    Rails.cache.delete(cache_key)
   end
 
   def cache_permissions(app_name)

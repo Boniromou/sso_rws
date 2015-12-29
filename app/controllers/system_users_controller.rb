@@ -4,7 +4,7 @@ class SystemUsersController < ApplicationController
   #after_action :verify_authorized
   
   def index
-    @system_users = policy_scope(SystemUser)
+    @system_users = policy_scope(SystemUser.with_active_property)
     authorize :system_users, :index?
 
     respond_to do |format|

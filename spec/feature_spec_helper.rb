@@ -23,24 +23,35 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, :type => :controller
   config.extend ControllerHelpers, :type => :controller
   config.fixture_path = "#{::Rails.root}/spec/features/fixtures"
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
+
+  config.before(:each) do
+    allow_any_instance_of(ApplicationController).to receive(:client_ip).and_return("192.1.1.1")
+    #allow(Rigi::Ldap).to receive(:retrieve_user_profile).and_return(:account_status => true, :groups => [1000])
+    mock_ad_account_profile(true, [1000])
+  end
+
+  config.infer_spec_type_from_file_location!
+
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+    Rails.cache.clear
+    #FileUtils.rm_rf(Dir["#{Rails.root}/log/test.log"])
+  end
+
+  config.after(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+    Rails.cache.clear
+    Warden.test_reset!
+  end
 
   config.before(:all) do
-    DatabaseCleaner.clean_with(:truncation)
     include Warden::Test::Helpers
     Warden.test_mode!
   end
 
   config.after(:all) do
-    DatabaseCleaner.clean_with(:truncation)
-    Warden.test_reset! 
+    Warden.test_reset!
   end
-
-  config.before(:each) do
-    allow_any_instance_of(ApplicationController).to receive(:client_ip).and_return("192.1.1.1")
-    allow(Rigi::Ldap).to receive(:retrieve_user_profile).and_return(:account_status => true, :groups => [1000])
-  end
-
-  config.infer_spec_type_from_file_location!
 end
 

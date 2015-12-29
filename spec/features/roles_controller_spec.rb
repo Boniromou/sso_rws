@@ -3,7 +3,7 @@ require "feature_spec_helper"
 describe RolesController do
   fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
 
-  before(:all) do
+  before(:each) do
     @root_user = create(:system_user, :admin, :with_property_ids => [1000])
   end
 

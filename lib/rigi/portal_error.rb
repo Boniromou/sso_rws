@@ -19,64 +19,9 @@ module Rigi
     end
   end
 
-  class InvalidTime < PortalError
-    def initialize
-      super
-    end
-  end
-
-  class NotAllowPropagation < PortalError
-    def initialize
-      super
-    end
-  end
-
-  class TestPlayerNotFound < PortalError
-    def initialize
-      super
-    end
-  end
-
-  class DuplicatedTestPlayer < PortalError
-    def initialize(test_player_info)
-      super('', test_player_info)
-    end
-  end
-
-  class InvalidTestPlayerData < PortalError
-    def initialize
-      super
-    end
-  end
-
-  class InvalidStatusUpdate < PortalError
-    def initialize #(record, attempted_action)
-      #locale_key = format_error_locale("invalid_status_update", record.class.name.underscore, attempted_action)
-      super
-    end
-  end
-
-  class InvalidArgument < PortalError
-    def initialize(msg)
-      super(msg)
-    end
-  end
-
-  class DenomLevelNotFound < PortalError
-    def initialize
-      super
-    end
-  end
-
-  class NotUnderMaintenance < PortalError
-    def initialize(game_info)
-      super('', game_info)
-    end
-  end
-
-  class CurrentVersionProtect < PortalError
-    def initialize
-      super
+  class InvalidLogin < PortalError
+    def initialize(error_message)
+      super(error_message)
     end
   end
 end

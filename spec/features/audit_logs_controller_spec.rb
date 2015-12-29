@@ -1,10 +1,12 @@
 require "feature_spec_helper"
 
 describe AuditLogsController do
-  fixtures :auth_sources
+  fixtures :apps, :permissions, :role_permissions, :roles
 
-  before(:all) do
+  before(:each) do
     @root_user = create(:system_user, :admin, :with_property_ids => [1000])
+    user_manager_role = Role.find_by_name "user_manager"
+    @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1003])
   end
   
   describe '[9] Search audit log by Time' do
@@ -51,6 +53,13 @@ describe AuditLogsController do
       click_button I18n.t("general.search")
       expect(page.source).to have_selector("tr#audit#{@al1.id}_body")
       expect(page.source).to_not have_selector("tr#audit#{al.id}_body")
+    end
+
+    it '[9.4] search audit log by non-1000 property user' do
+      login(@system_user_1.username)
+      assert_dropdown_menu_item(I18n.t("header.audit_log"), false)
+      visit search_audit_logs_path
+      verify_unauthorized_request
     end
   end
   

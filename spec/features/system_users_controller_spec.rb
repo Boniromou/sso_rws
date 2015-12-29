@@ -3,70 +3,101 @@ require "feature_spec_helper"
 describe SystemUsersController do
   fixtures :apps, :permissions, :role_permissions, :roles
 
-  before(:all) do
+  before(:each) do
     @root_user = create(:system_user, :admin, :with_property_ids => [1000])
+    user_manager_role = Role.find_by_name "user_manager"
+    @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
+    @system_user_2 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1003])
+    @system_user_3 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1003, 1007, 1014])
+  end
+
+  def verify_system_user_table_column_header
+    col_headers = all("div#content table#system_user thead th")
+    expect(col_headers.length).to eq 3
+    expect(col_headers[0].text).to eq(I18n.t("user.user_name"))
+    expect(col_headers[1].text).to eq(I18n.t("user.status"))
+    expect(col_headers[2].text).to eq(I18n.t("property.title"))
+  end
+
+  def verify_system_user_table_record(row_number, system_user_name, displayed_status, property)
+    row_cells = all("div#content table#system_user tbody tr:nth-child(#{row_number}) td")
+    expect(row_cells.length).to eq 3
+    expect(row_cells[0].text).to eq system_user_name
+    expect(row_cells[1].text).to eq displayed_status
+    expect(row_cells[2].text).to eq property
   end
   
   describe "[4] List System user" do
-    before(:each) do
-    end
-
-    after(:each) do
-    end
-
     it "[4.1] verify the list system user" do
-      login(@root_user.username)
-      visit '/system_users'
-      expect(page).to have_selector('table tr', :count => 1)
-      expect(page).to have_content(I18n.t("user.user_name"))
-      expect(page).to have_content(I18n.t("user.status"))
-      #expect(page).to have_content(I18n.t("general.operation"))
+      mock_ad_account_profile(true, [1000])
+      login(@system_user_1.username)
+      visit system_users_path
+      table_selector = "div#content table#system_user"
+      rows = all("#{table_selector} tbody tr")
+      expect(rows.length).to eq 4
+      verify_system_user_table_record(1, @root_user.username, I18n.t("user.active"), "[1000]")
+      verify_system_user_table_record(2, @system_user_1.username, I18n.t("user.active"), "[1000]")
+      verify_system_user_table_record(3, @system_user_2.username, I18n.t("user.active"), "[1003]")
+      verify_system_user_table_record(4, @system_user_3.username, I18n.t("user.active"), "[1003, 1007, 1014]")
+      logout(@root_user)
+    end
+
+    it "[4.2] verify the list system non-1000 user" do
+      mock_ad_account_profile(true, [1003])
+      login(@system_user_2.username)
+      visit system_users_path
+      table_selector = "div#content table#system_user"
+      rows = all("#{table_selector} tbody tr")
+      expect(rows.length).to eq 2
+      verify_system_user_table_record(1, @system_user_2.username, I18n.t("user.active"), "[1003]")
+      verify_system_user_table_record(2, @system_user_3.username, I18n.t("user.active"), "[1003, 1007, 1014]")
+      logout(@root_user)
+    end
+
+    it "[4.3] filter suspended property group user" do
+      mock_ad_account_profile(true, [1003])
+      login(@system_user_2.username)
+      @system_user_3.update_properties([1007])
+      visit system_users_path
+      table_selector = "div#content table#system_user"
+      rows = all("#{table_selector} tbody tr")
+      expect(rows.length).to eq 1
+      verify_system_user_table_record(1, @system_user_2.username, I18n.t("user.active"), "[1003]")
       logout(@root_user)
     end
   end
 
   describe '[5] View system user' do
-    before(:each) do
-      user_manager_role = Role.find_by_name "user_manager"
-      @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
-    end
+    def verify_system_user_profile_page(system_user, assert_edit_btn=true)
+      visit system_user_path(:id => system_user.id)
+      breadcrumb_dom = find("div#content div#breadcrumbs h2.page-title")
+      expect(breadcrumb_dom).to have_content system_user.username
+      expect(breadcrumb_dom).to have_content system_user.status ? I18n.t("user.active") : I18n.t("user.inactive")
 
-    after(:each) do
-      RoleAssignment.delete_all
-      AppSystemUser.delete_all
-      PropertiesSystemUser.delete_all
-      @system_user_1.destroy
+      tbl = find("div#content div#systems_and_roles")
+
+      if assert_edit_btn
+        expect(tbl).to have_button(I18n.t("general.edit"))
+      else
+        expect(tbl).to have_no_button(I18n.t("general.edit"))
+      end
     end
 
     it '[5.1] Check Single user content' do
       login(@root_user.username)
-      visit "/system_users/#{@root_user.id}"
-      expect(page).to have_content(@root_user.username)
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_content(I18n.t("role.role"))
-      #expect(page).to have_content(I18n.t("role.root_user"))
+      verify_system_user_profile_page(@root_user, false)
       logout(@root_user)
     end
 
     it '[5.2] Current user cannot edit role for himself' do
       login(@system_user_1.username)
-      visit "/system_users/#{@system_user_1.id}"
-      expect(page).to have_content(@system_user_1.username)
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_content(I18n.t("role.role"))
-      #expect(page).to have_content(I18n.t("role.root_user"))
-      expect(page).to have_no_button(I18n.t("general.edit"))
+      verify_system_user_profile_page(@system_user_1, false)
       logout(@system_user_1)
     end
 
     it '[5.3] Edit button is alwawys disabled in Root user' do
       login(@root_user.username)
-      visit "/system_users/#{@root_user.id}"
-      expect(page).to have_content(@root_user.username)
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_content(I18n.t("role.role"))
-      #expect(page).to have_content(I18n.t("general.na")) 
-      expect(page).to have_no_button(I18n.t("general.edit"))
+      verify_system_user_profile_page(@root_user, false)
       logout(@root_user)
     end
   end
@@ -230,38 +261,19 @@ describe SystemUsersController do
   describe "[14] Role authorization" do
     fixtures :apps, :permissions, :role_permissions, :roles
 
-    before(:each) do
-      AppSystemUser.delete_all
-      PropertiesSystemUser.delete_all
-      SystemUser.delete_all
-    end
-
-    after(:each) do
-      AppSystemUser.delete_all
-      PropertiesSystemUser.delete_all
-      SystemUser.delete_all
-    end
-
-    after(:all) do
-      RolePermission.delete_all
-      Role.delete_all
-      Permission.delete_all
-      AppSystemUser.delete_all
-      SystemUser.delete_all
-      App.delete_all
-    end
-
-    xit "[14.1] click unauthorized action" do
+    it "[14.1] click unauthorized action" do
       auditor_role = Role.find_by_name "auditor"
       user_manager_role = Role.find_by_name "user_manager"
       auditor_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
       auditor_2 = create(:system_user, :roles => [auditor_role], :with_property_ids => [1000])
       login(auditor_1.username)
       visit home_root_path
-      visit system_users_path
+      visit system_user_path(:id => auditor_2.id)
       auditor_1.update_roles([auditor_role.id])
-      lock_usr_btn_select = "div#content table tbody tr:nth-child(2) td:nth-child(3) input"
-      find(lock_usr_btn_select).click
+      auditor_1.reload
+      edit_usr_btn_select = "div#content div#systems_and_roles input.btn"
+      find(edit_usr_btn_select).click
+
       verify_unauthorized_request
     end
 
@@ -414,5 +426,43 @@ describe SystemUsersController do
       expect(has_link?(I18n.t("user.unlock"))).to be false
     end
 =end
+  end
+
+  describe "[16] User Change log" do
+    xit "[16.1] 1000 user successfully edit 1003 user" do
+      
+    end
+
+    xit "[16.2] 1003 user successfully edit 1003 user" do
+
+    end
+
+    xit "[16.3] 1000 user successfully edit 1003, 1007 user" do
+      
+    end
+
+    xit "[16.4] 1000 user successfully edit 1000 user" do
+      
+    end
+
+    xit "[16.5] 1003, 1007 user successfully edit 1003 user" do
+      
+    end
+
+    xit "[16.6] 1000 user show all change log" do
+      
+    end
+
+    xit "[16.7] 1003, 1007 user show target user property 1003 and 1007 change log" do
+      
+    end
+
+    xit "[16.8] user change log authorized" do
+      
+    end
+
+    xit "[16.9] user change log unauthorized" do
+      
+    end
   end
 end
