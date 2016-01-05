@@ -28,7 +28,7 @@ module Rigi
         system_user.update_ad_profile
         validate_account_status!(system_user)
         validate_account_properties!(system_user)
-        system_user.cache_info(APP_NAME)
+        system_user.cache_info(app_name)
       else
         Rails.logger.error "SystemUser[username=#{username}] Login failed. Authentication failed"
         raise InvalidLogin.new("alert.invalid_login")
