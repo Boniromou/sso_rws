@@ -1,15 +1,10 @@
-require 'admin_portal_error'
-
 class ApplicationController < ActionController::Base
   layout false
   include Pundit
-  include Rigi::PunditHelper::Controller
   protect_from_forgery
-  before_filter :set_locale, :authenticate_system_user!, :check_activation_status
+  before_filter :set_locale, :authenticate_system_user!, :check_activation_status, :verify_request_scope
   respond_to :html, :js
 
-  #rescue_from ::ActiveRecord::RecordInvalid, :with => :handle_invalid_error
-  #rescue_from ::ActiveRecord::StaleObjectError, :with => :handle_unsync_error
   rescue_from Exception, :with => :handle_fatal_error
   rescue_from Pundit::NotAuthorizedError, :with => :handle_unauthorize
 
@@ -37,8 +32,8 @@ class ApplicationController < ActionController::Base
       handle_inactive_status
     end
   end
- 
-  def client_ip
+
+  def get_client_ip
     request.env["HTTP_X_FORWARDED_FOR"]
   end
 
@@ -50,6 +45,37 @@ class ApplicationController < ActionController::Base
   end
  
   protected
+  class SystemUserContext
+    attr_reader :system_user, :request_property_id
+
+    def initialize(system_user, request_property_id)
+      @system_user = system_user
+      @request_property_id = request_property_id
+    end
+  end
+
+  # e.g.
+  # 
+  #   auditing(:audit_target => "system_user", :audit_action => "edit_roles") do
+  #     # edit roles logic goes here...
+  #   end
+  #
+  # without any argument, it follows convention as controller name and action name become audit_target and audit_action respectively
+  #   auditing { ... }
+  # => same as auditing(:audit_target => controller_name, :audit_action => action_name) { ... }
+  #  
+  def auditing(*args, &block)
+    options = args.extract_options!
+    audit_target = options[:audit_target] || controller_name.singularize
+    audit_action = options[:audit_action] || action_name
+    action_by = options[:action_by] || current_system_user.username
+    sid = options[:session_id] || get_sid
+    client_ip = options[:ip] || get_client_ip
+    description = options[:description]
+
+    AuditLog.compose(audit_target, audit_action, action_by, sid, client_ip, :description => description, &block)
+  end
+
   def handle_inactive_status
     Rails.logger.info 'handle_inactive_status'
     sign_out current_system_user if current_system_user
@@ -62,7 +88,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def sid
+  def get_sid
     request.session_options[:id]
   end
   
@@ -86,17 +112,6 @@ class ApplicationController < ActionController::Base
       format.js { render partial: "shared/main_content", formats: [:js] }
     end
   end
-  
-  def ap_layout
-    #Rails.application.config.enable_ajax ? false : default_selected_function
-    #request.xhr? ? false : default_selected_function
-    false
-  end
-  
-  def default_selected_function
-    # TODO: determine what path to redirect to based on role/permission
-    Rails.application.routes.recognize_path "home"
-  end
 
   def handle_fatal_error(e)
     @from = params[:from]
@@ -109,5 +124,49 @@ class ApplicationController < ActionController::Base
     end
 
     return
+  end
+
+  #
+  # convention:
+  #   policy scope/target name as controller resource name
+  #   policy action name as controller action/api name
+  #
+  # e.g.
+  # 
+  # MaintenancesController#index
+  # => policy_target = "maintenance"
+  # => action_name = "index"
+  #
+  # include the following line in MaintenancesController:
+  #   before_filter :authorize_action, :only => [:index]
+  #
+  def authorize_action(record=nil, policy_def=nil)
+    policy_def ||= "#{action_name}?".to_sym
+    policy_target = 
+      if record.nil?
+        controller_name.singularize.to_sym
+      elsif record.is_a?(Array)
+        record.first
+      else
+        record
+      end
+
+    Rails.logger.info "------ authorize action ------> target = #{policy_target}, action = #{policy_def}"
+    authorize policy_target, policy_def
+  end
+
+  def pundit_user
+    SystemUserContext.new(current_system_user, params[:property_id])
+  end
+
+  def verify_request_scope
+    property_ids = []
+    property_ids << params[:property_id] if params[:property_id]
+    property_ids += params[:selected_properties] if params[:selected_properties]
+
+    property_ids.each do |property_id|
+      property = Property.find_by_id(property_id)
+      authorize property, :same_group?
+    end
   end
 end

@@ -22,6 +22,7 @@ apps_info = {
               :GRMS => { :id => 5, :name => 'game_recall' },
               :SV => { :id => 6, :name => 'signature_verifier' }
             }
+role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }
 permission_indicator = 'Y'
 
@@ -33,17 +34,22 @@ s.default_sheet = sheet_name
 role_first_col_index = permission_columns.length + 1
 role_last_col_index = s.last_column
 role_columns = {}
+role_types_data = {}
 
 (role_first_col_index..role_last_col_index).to_a.each do |col_index|
-  role = s.column(col_index).first
+  type_id = s.column(col_index)[0]
+  role = s.column(col_index)[1]
   role_columns[role] = role
+  role_types_data[role] = type_id
 end
 
 role_columns.delete_if { |key, value| value == '' }
+role_types_data.delete_if { |key, value| value == '' }
 
 p '---------------------------------------------------'
 p 'found roles'
-p role_columns.values
+#p role_columns.values
+p role_types_data
 p '---------------------------------------------------'
 
 cols = permission_columns.merge(role_columns)
@@ -52,6 +58,7 @@ s.each(cols) do |row|
 # row = {:action=>"list_rejected", :target=>"release_candidate", :change_coordinator=>"Y", :service_desk_manager=>"Y", :service_desk_agent=>nil, :product_manager=>"Y", :it_support=>"Y"}
 
   # skip header row
+  next if row[:action] == 'internal_external_role'
   next if row[:action] == 'action'
   next if row[:action] == '' && row[:target] == ''
 
@@ -98,6 +105,7 @@ prompt = STDIN.gets.chomp
 
 if prompt == 'Y'
   apps_table = sso_db[:apps]
+  role_types_table = sso_db[:role_types]
   roles_table = sso_db[:roles]
   permissions_table = sso_db[:permissions]
   role_permissions_table = sso_db[:role_permissions]
@@ -109,6 +117,14 @@ if prompt == 'Y'
 
     if app.nil?
       apps_table.insert(:id => app_id, :name => app_name, :created_at => Time.now.utc, :updated_at => Time.now.utc)
+    end
+
+    role_type_info.each do |role_type_id, role_type_name|
+      role_type = role_types_table.where("id = ? and name = ?", role_type_id, role_type_name).first
+
+      if role_type.nil?
+        role_types_table.insert(:id => role_type_id, :name => role_type_name, :created_at => Time.now.utc, :updated_at => Time.now.utc)
+      end
     end
 
     # TODO: truncate role_permissions_table and permissions_table before insert
@@ -125,7 +141,9 @@ if prompt == 'Y'
 
       if role.nil?
         role = {}
-        role[:id] = roles_table.insert(:name => role_name, :app_id => app_id, :created_at => Time.now.utc, :updated_at => Time.now.utc)
+        role[:id] = roles_table.insert(:name => role_name, :app_id => app_id, :role_type_id => role_types_data[role_name.to_s], :created_at => Time.now.utc, :updated_at => Time.now.utc)
+      else
+        roles_table.where("id = ?", role[:id]).update(:role_type_id => role_types_data[role_name.to_s], :updated_at => Time.now.utc)
       end
 
       if permissions[:grant]

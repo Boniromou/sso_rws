@@ -427,42 +427,4 @@ describe SystemUsersController do
     end
 =end
   end
-
-  describe "[16] User Change log" do
-    xit "[16.1] 1000 user successfully edit 1003 user" do
-      
-    end
-
-    xit "[16.2] 1003 user successfully edit 1003 user" do
-
-    end
-
-    xit "[16.3] 1000 user successfully edit 1003, 1007 user" do
-      
-    end
-
-    xit "[16.4] 1000 user successfully edit 1000 user" do
-      
-    end
-
-    xit "[16.5] 1003, 1007 user successfully edit 1003 user" do
-      
-    end
-
-    xit "[16.6] 1000 user show all change log" do
-      
-    end
-
-    xit "[16.7] 1003, 1007 user show target user property 1003 and 1007 change log" do
-      
-    end
-
-    xit "[16.8] user change log authorized" do
-      
-    end
-
-    xit "[16.9] user change log unauthorized" do
-      
-    end
-  end
 end

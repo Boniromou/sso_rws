@@ -31,8 +31,7 @@ class AuditLog < ActiveRecord::Base
       end
     end
 
-    private
-    def compose_log(*args, &block)
+    def compose(*args, &block)
       options = args.extract_options!
       audit_target, action, action_by, session_id, ip = args
       content = options.merge({:audit_target => audit_target, :action => action, :action_by => action_by, :session_id => session_id, :ip => ip})
@@ -45,6 +44,7 @@ class AuditLog < ActiveRecord::Base
       logging(content)
     end
 
+    private
     def logging(content={})
       audit_target = content[:audit_target]
       action = content[:action]

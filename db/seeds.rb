@@ -19,3 +19,10 @@ unless Property.exists?(:id => 1000)
   Property.create(:id => 1000)
 end
 
+unless RoleType.exists?(:name => 'internal')
+  RoleType.create(:name => 'internal')
+end
+
+unless RoleType.exists?(:name => 'external')
+  RoleType.create(:name => 'external')
+end

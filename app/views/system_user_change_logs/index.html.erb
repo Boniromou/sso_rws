@@ -1,0 +1,87 @@
+<%= breadcrumbs([ t("user.list_users"), "Log"], 'fa fa-lg fa-fw fa-list') -%>
+<%= table_tabs("Log", 
+[ t("user.list_users"), system_users_path, policy(:system_user).index? ],
+[ "Log", system_user_change_logs_path, policy(:system_user_change_log).index? ]) %>
+
+<div class="tab-content padding-10">
+  <div class="tab-pane fade in active" id="system_user_change_logs_content">
+    <!--form-->
+    <%= form_tag(system_user_change_logs_path, :remote => true, :method => 'get', :id => "search_form") do %>
+      <fieldset>
+        <div class="row">
+          <%= render partial: "shared/date_range_picker" , locals: {:default_start_time => params[:start_time], :default_end_time => params[:end_time] } %>
+        </div>
+        
+        <div class="row">
+          <div class="col-sm-4">
+            <section class="smart-form">
+              <label class="label">Target User</label>
+              <label class="input">
+                <%= text_field_tag(:target_system_user_name, params[:target_system_user_name]) %>
+              </label>
+            </section>
+          </div>
+        </div>
+        
+      </fieldset>
+        
+      <div class="form-actions">
+        <div class="row">
+          <div class="col-md-12">
+            <%= submit_tag t("general.search"), :class => "btn btn-primary", :remote => true  %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <!--/form-->
+    <br><br>
+
+    <% if params[:commit].present? %>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="col-md-1"><%= t("auditlog.action_by") %></th>
+            <th class="col-md-1">Action At</th>
+            <th class="col-md-1"><%= t("general.action") %></th>
+            <th class="col-md-1">User</th>
+            <th class="col-md-1">System</th>
+            <th class="col-md-1">From</th>
+            <th class="col-md-1">To</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if @system_user_change_logs.blank? %>
+          <tr align="center">
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+          </tr>
+          <% else %>
+            <% @system_user_change_logs.each do |cl| %>
+            <tr align="center">
+              <td><%= popover(cl.action_by['username'], "Properties", cl.action_by['property_ids'].join(', '), "popover-hover", "top") %></td>
+              <td><%= format_time(cl.created_at) %></td>
+              <td><%= display_text(cl.action) %></td>
+              <td><%= "#{cl.target_username} [#{cl.target_property_id}]" %></td>
+              <td><%= display_text(cl.change_detail['app_name']) %></td>
+              <td><%= display_text(cl.change_detail['from']) %></td>
+              <td><%= display_text(cl.change_detail['to']) %></td>
+            </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% end %>
+  </div>
+</div>
+
+        
+<%= render "shared/page_setup" %>
+<%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_system_users" } %>

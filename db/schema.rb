@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151119085959) do
+ActiveRecord::Schema.define(:version => 20160114025201) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -108,14 +108,36 @@ ActiveRecord::Schema.define(:version => 20151119085959) do
   add_index "role_permissions", ["permission_id"], :name => "permission_id"
   add_index "role_permissions", ["role_id"], :name => "role_id"
 
+  create_table "role_types", :force => true do |t|
+    t.string   "name",        :null => false
+    t.string   "description"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "role_types", ["name"], :name => "index_role_types_on_name", :unique => true
+
   create_table "roles", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
     t.integer  "app_id"
+    t.integer  "role_type_id"
   end
 
   add_index "roles", ["app_id"], :name => "app_id"
+  add_index "roles", ["role_type_id"], :name => "fk_Roles_RoleTypeId"
+
+  create_table "system_user_change_logs", :force => true do |t|
+    t.string   "change_detail",      :limit => 1024, :default => "{}"
+    t.string   "target_username",                                      :null => false
+    t.integer  "target_property_id",                                   :null => false
+    t.string   "action",                                               :null => false
+    t.string   "action_by",          :limit => 1024, :default => "{}"
+    t.string   "description"
+    t.datetime "created_at",                                           :null => false
+    t.datetime "updated_at",                                           :null => false
+  end
 
   create_table "system_users", :force => true do |t|
     t.integer  "sign_in_count",      :default => 0,     :null => false

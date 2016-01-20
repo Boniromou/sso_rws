@@ -1,29 +1,13 @@
-<!-- Breadcrumbs -->
-  <div class="row">
-    <div id="breadcrumbs" class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
-      <h2 class="page-title txt-color-blueDark">
-        <i class="fa-fw fa fa-list"></i>
-        <%= t("user.list_users") %>
-      </h2>
-    </div>
-  </div>
-<!-- end Breadcrumbs --> 
+<%= breadcrumbs([ t("user.list_users") ], 'fa fa-lg fa-fw fa-list') -%>
+<%= table_tabs(t("user.list_users"), 
+[ t("user.list_users"), system_users_path, policy(:system_user).index? ],
+[ "Log", system_user_change_logs_path, policy(:system_user_change_log).index? ]) %>
 
-<!-- pannel -->
-  <section id="widget-grid" class="">
-    <div class="row">
-      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-          <div>
-            <div class="widget-body">
-              <div id="inactived_system_user" class="table-responsive">
-                <%= render :partial => "system_users/system_user_table" %>
-              </div>
-            </div>
-          </div>
-      </article>
-    </div>
-  </section>
-<!-- pannel -->
+<div class="tab-content padding-10">
+  <div class="tab-pane fade in active" id="system_user_change_logs_content">
+    <%= render :partial => "system_users/system_user_table" %>
+  </div>
+</div>
 
         
 <%= render "shared/page_setup" %>

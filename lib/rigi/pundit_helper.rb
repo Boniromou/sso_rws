@@ -151,7 +151,7 @@ module Rigi
 
       def same_scope?(target_property_ids=nil)
         #record = get_record
-        user_property_ids = format_array(system_user.property_ids)
+        user_property_ids = format_array(system_user.active_property_ids)
         target_property_ids = format_array(target_property_ids || get_record_property_ids)
 
         Rails.logger.debug "user's properties => #{user_property_ids}, target's properties => #{target_property_ids}"

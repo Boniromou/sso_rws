@@ -13,6 +13,7 @@ default: &default
   search_day_range: 7
   search_range_for_audit_log: 7
   admin_property_id: 1000
+  admin_role_type_name: 'internal'
 
 test:
   <<: *default

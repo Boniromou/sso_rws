@@ -1,16 +1,17 @@
 FactoryGirl.define do
   factory :role do
-  end
+    transient do
+      with_permissions nil
+    end
 
-  trait :user_management_app do
-    user_management_app
-  end
+    after(:create) do |role, factory|
+      if factory.with_permissions
+        permissions = factory.with_permissions
 
-  trait :gaming_operation_app do
-    gaming_operation_app
-  end
-
-  trait :cage_app do
-    cage_app
+        permissions.each do |permission|
+          create(:role_permission, :role_id => role.id, :permission_id => permission.id)
+        end
+      end
+    end
   end
 end

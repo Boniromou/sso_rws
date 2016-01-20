@@ -149,7 +149,15 @@ module ApplicationHelper
     end
   end
 
+  def popover(name, title, content, rel, placement)
+    link_to(name, "javascript:void(0);", "rel" => rel, "data-placement" => placement, "data-content" => content, "data-original-title" => title)
+  end
+
   def property_tag(property_id)
     "#{t("maintenance.property")} #{property_id}"
+  end
+
+  def display_text(text, empty_indicator='-')
+    text.nil? ? '-' : text.titleize
   end
 end
