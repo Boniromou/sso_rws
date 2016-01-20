@@ -48,9 +48,9 @@ describe SystemUsersController do
       visit system_users_path
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
-      expect(rows.length).to eq 2
+      expect(rows.length).to eq 1
       verify_system_user_table_record(1, @system_user_2.username, I18n.t("user.active"), "[1003]")
-      verify_system_user_table_record(2, @system_user_3.username, I18n.t("user.active"), "[1003, 1007, 1014]")
+      #verify_system_user_table_record(2, @system_user_3.username, I18n.t("user.active"), "[1003, 1007, 1014]")
       logout(@root_user)
     end
 
@@ -191,8 +191,13 @@ describe SystemUsersController do
         #radio_btn_1.unselect_option
         #click_button(I18n.t("general.confirm"))
         # capybara won't let radio buttons unselected
-        visit "/system_users/#{@system_user_1.id}/update_roles"
+        #visit "/system_users/#{@system_user_1.id}/update_roles"
+
       end
+
+      page.driver.post("/system_users/#{@system_user_1.id}/update_roles")
+      visit system_user_path(@system_user_1)
+
       @system_user_1.reload
       expect(@system_user_1.roles.length).to eq 0
       user_profile = find("div#content div#systems_and_roles")
@@ -259,7 +264,7 @@ describe SystemUsersController do
   end
 
   describe "[14] Role authorization" do
-    fixtures :apps, :permissions, :role_permissions, :roles
+    fixtures :apps, :permissions, :role_permissions, :roles, :role_types
 
     it "[14.1] click unauthorized action" do
       auditor_role = Role.find_by_name "auditor"
@@ -271,7 +276,7 @@ describe SystemUsersController do
       visit system_user_path(:id => auditor_2.id)
       auditor_1.update_roles([auditor_role.id])
       auditor_1.reload
-      edit_usr_btn_select = "div#content div#systems_and_roles input.btn"
+      edit_usr_btn_select = "div#content div#systems_and_roles a.btn"
       find(edit_usr_btn_select).click
 
       verify_unauthorized_request
@@ -352,13 +357,13 @@ describe SystemUsersController do
       click_link I18n.t("user.list_users")
       user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
       find(user_manager_2_profile_link_selector).click
-      click_button I18n.t("general.edit")
+      click_link I18n.t("general.edit")
       expect(has_link?(I18n.t("general.cancel"))).to be true
       click_button I18n.t("general.confirm")
       verify_authorized_request
     end
-=begin
-    it "[14.9] Lock System user (authorized)" do
+
+    xit "[14.9] Lock System user (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
       user_manager_1 = create(:system_user, :roles => [user_manager_role])
       user_manager_2 = create(:system_user, :roles => [user_manager_role])
@@ -375,7 +380,7 @@ describe SystemUsersController do
       verify_authorized_request
     end
 
-    it "[14.10] Lock System user (unauthorized)" do
+    xit "[14.10] Lock System user (unauthorized)" do
       allow(SystemUserPolicy).to receive("lock?").and_return(false)
       user_manager_role = Role.find_by_name "user_manager"
       user_manager_1 = create(:system_user, :roles => [user_manager_role])
@@ -392,7 +397,7 @@ describe SystemUsersController do
       expect(has_link?(I18n.t("user.lock"))).to be false
     end
 
-    it "[14.11] Un-lock system user (authorized)" do
+    xit "[14.11] Un-lock system user (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
       user_manager_1 = create(:system_user, :roles => [user_manager_role])
       user_manager_2 = create(:system_user, :status => false, :roles => [user_manager_role])
@@ -409,7 +414,7 @@ describe SystemUsersController do
       verify_authorized_request
     end
 
-    it "[14.12] un-lock system user (unauthorized)" do
+    xit "[14.12] un-lock system user (unauthorized)" do
       allow(SystemUserPolicy).to receive("unlock?").and_return(false)
       user_manager_role = Role.find_by_name "user_manager"
       user_manager_1 = create(:system_user, :roles => [user_manager_role])
@@ -425,6 +430,5 @@ describe SystemUsersController do
       #find(user_manager_2_profile_link_selector).click
       expect(has_link?(I18n.t("user.unlock"))).to be false
     end
-=end
   end
 end

@@ -19,12 +19,6 @@ describe RolesController do
       @system_user_1 = create(:system_user, :roles => [user_manager_role])
     end
 
-    after(:each) do
-      RoleAssignment.delete_all
-      AppSystemUser.delete_all
-      @system_user_1.destroy
-    end
-
     it "[15.3] Show Role (authorized)" do
       allow_any_instance_of(RolePolicy).to receive("index?").and_return(true)
       allow_any_instance_of(PermissionPolicy).to receive("show?").and_return(false)

@@ -2,7 +2,7 @@ require "feature_spec_helper"
 
 describe SystemUserChangeLogsController do
   before(:each) do
-    @app_1 = create(:app, :id => 1, :name => "user_management")
+    @app_1 = App.find_by_name "user_management" || create(:app, :id => 1, :name => "user_management")
     permissions = []
     permissions << create(:permission, :action => "show", :target => "system_user", :app => @app_1)
     permissions << create(:permission, :action => "grant_roles", :target => "system_user", :app => @app_1)
