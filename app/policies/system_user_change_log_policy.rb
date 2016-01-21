@@ -1,7 +1,6 @@
 class SystemUserChangeLogPolicy < ApplicationPolicy
   def index?
-    #permitted?(:system_user, :show)
-    true
+    permitted?(:system_user, :list_change_log)
   end
 
   class Scope < Scope
