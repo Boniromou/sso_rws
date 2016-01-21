@@ -2,15 +2,15 @@ require "feature_spec_helper"
 
 describe SystemUserChangeLogsController do
   before(:each) do
-    @app_1 = App.find_by_name "user_management" || create(:app, :id => 1, :name => "user_management")
-    permissions = []
-    permissions << create(:permission, :action => "show", :target => "system_user", :app => @app_1)
-    permissions << create(:permission, :action => "grant_roles", :target => "system_user", :app => @app_1)
+    @app_1 = App.find_by_name("user_management") || create(:app, :id => 1, :name => "user_management")
+    perm_1 = create(:permission, :action => "show", :target => "system_user", :app => @app_1)
+    perm_2 = create(:permission, :action => "grant_roles", :target => "system_user", :app => @app_1)
+    perm_3 = create(:permission, :action => "list_change_log", :target => "system_user", :app => @app_1)
     int_role_type = create(:role_type, :name => 'internal')
     ext_role_type = create(:role_type, :name => 'external')
-    @int_role_1 = create(:role, :name => "int_role_a", :with_permissions => permissions, :role_type => int_role_type, :app => @app_1)
-    @int_role_2 = create(:role, :name => "int_role_b", :with_permissions => permissions, :role_type => int_role_type, :app => @app_1)
-    @ext_role_1 = create(:role, :name => "ext_role_a", :with_permissions => permissions, :role_type => ext_role_type, :app => @app_1)
+    @int_role_1 = create(:role, :name => "int_role_a", :with_permissions => [perm_1, perm_2, perm_3], :role_type => int_role_type, :app => @app_1)
+    @int_role_2 = create(:role, :name => "int_role_b", :with_permissions => [perm_1, perm_2], :role_type => int_role_type, :app => @app_1)
+    @ext_role_1 = create(:role, :name => "ext_role_a", :with_permissions => [perm_1, perm_2, perm_3], :role_type => ext_role_type, :app => @app_1)
 
     @root_user = create(:system_user, :admin, :with_property_ids => [1000])
     @system_user_1 = create(:system_user, :roles => [@int_role_1], :with_property_ids => [1000])
@@ -19,6 +19,7 @@ describe SystemUserChangeLogsController do
     @system_user_4 = create(:system_user, :roles => [@int_role_1], :with_property_ids => [1003, 1007])
     @system_user_5 = create(:system_user, :roles => [@int_role_1], :with_property_ids => [1000])
     @system_user_6 = create(:system_user, :roles => [@ext_role_1], :with_property_ids => [1000])
+    @system_user_7 = create(:system_user, :roles => [@int_role_2], :with_property_ids => [1000])
   end
 
   describe "[16] User Change log" do
@@ -174,12 +175,34 @@ describe SystemUserChangeLogsController do
       expect(rc_rows.length).to eq 2
     end
 
-    xit "[16.8] user change log authorized" do
-      
+    it "[16.8] user change log authorized" do
+      content = { :action_by => {:username => 'user1', :property_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name} }
+      create(:system_user_change_log, content.merge(:target_username => @system_user_1, :target_property_id => 1000))
+      create(:system_user_change_log, content.merge(:target_username => @system_user_2, :target_property_id => 1000))
+      create(:system_user_change_log, content.merge(:target_username => @system_user_3, :target_property_id => 1000))
+      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1003))
+      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1007))
+
+      login(@system_user_1.username)
+      visit system_user_change_logs_path(:commit => true)
+
+      rc_rows = all("div#content table tbody tr")
+      expect(rc_rows.length).to eq 5
     end
 
-    xit "[16.9] user change log unauthorized" do
-      
+    it "[16.9] user change log unauthorized" do
+      content = { :action_by => {:username => 'user1', :property_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name} }
+      create(:system_user_change_log, content.merge(:target_username => @system_user_1, :target_property_id => 1000))
+      create(:system_user_change_log, content.merge(:target_username => @system_user_2, :target_property_id => 1000))
+      create(:system_user_change_log, content.merge(:target_username => @system_user_3, :target_property_id => 1000))
+      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1003))
+      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1007))
+
+      login(@system_user_7.username)
+      visit system_user_change_logs_path(:commit => true)
+
+      rc_rows = all("div#content table tbody tr")
+      expect(rc_rows.length).to eq 0
     end
 
     it "[16.10] Search change log by time range" do
