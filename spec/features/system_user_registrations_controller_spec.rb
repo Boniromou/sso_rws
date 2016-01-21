@@ -58,6 +58,17 @@ describe SystemUserRegistrationsController do
       go_signup_page_and_register('test_user')
       expect(page).to have_content I18n.t("alert.account_no_property")
     end
+
+    it "[3.13] Register user with upper case." do
+      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+      mock_ad_account_profile(true, [1000])
+      go_signup_page_and_register('TEST_USER')
+      expect(page).to have_content I18n.t("alert.signup_completed")
+      system_user = SystemUser.find_by_username('test_user')
+      property_system_user_1000 = PropertiesSystemUser.where(:property_id => 1000, :system_user_id => system_user.id).first
+      expect(system_user.status).to eq true
+      expect(property_system_user_1000.status).to eq true      
+    end
   end
 
   describe "[1] Login/Logout" do

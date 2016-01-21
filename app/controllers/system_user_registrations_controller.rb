@@ -8,7 +8,7 @@ class SystemUserRegistrationsController < ActionController::Base
 
   def create
     @nav_app_link = params[:app]
-    username = params[:system_user][:username]
+    username = params[:system_user][:username].downcase
     password = params[:system_user][:password]
     auth_source = AuthSource.find_by_id(AUTH_SOURCE_ID)
     sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id).first

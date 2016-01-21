@@ -80,6 +80,14 @@ describe SystemUserSessionsController do
       expect(@system_user_1.status).to eq false
       expect(page).to have_content I18n.t("alert.inactive_account")
     end
+
+    it "[1.12] login user with upper case" do
+      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+      go_login_page_and_login(@system_user_1.username.upcase)
+      expect(page.current_path).to eq home_root_path
+      expect(AppSystemUser.first.system_user_id).to eq @system_user_1.id
+    end
+
   end
 
   describe "[1] Logout" do

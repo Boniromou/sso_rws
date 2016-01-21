@@ -1,3 +1,8 @@
 $('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "system_user_change_logs/index", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
-
+$(document).ready(function() {
+  $('.table').dataTable({
+    "order": [[ 0, "asc"]],
+    "pageLength" : 50
+  });
+});
 <%= render :partial => "shared/flash_message", :formats => [ :js ] %>

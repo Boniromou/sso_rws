@@ -18,7 +18,7 @@ module Devise
 
       def username
         if params[:system_user]
-          return params[:system_user][:username]
+          return params[:system_user][:username].downcase
         end
         return nil
       end

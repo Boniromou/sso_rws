@@ -3,7 +3,7 @@ class Internal::SystemUserSessionsController < ApplicationController
   respond_to :json
 
   def create
-    username = params[:system_user][:username]
+    username = params[:system_user][:username].downcase
     password = params[:system_user][:password]
     app_name = params[:app_name]
     response_body = {}
