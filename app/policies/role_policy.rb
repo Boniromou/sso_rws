@@ -4,7 +4,7 @@ class RolePolicy < ApplicationPolicy
   map_policy :link?, :delegate_policies => [:index?]
 
   def allow_to_assign?
-    system_user.is_admin? || system_user.role_in_app.role_type.name == ADMIN_ROLE_TYPE_NAME || system_user.role_in_app.role_type_id == record.role_type_name
+    system_user.is_admin? || system_user.role_in_app.role_type.name == ADMIN_ROLE_TYPE_NAME || system_user.role_in_app.role_type_id == record.role_type_id
   end
 
   class Scope < Scope
