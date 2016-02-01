@@ -8,42 +8,56 @@ class SystemUserRegistrationsController < ActionController::Base
 
   def create
     @nav_app_link = params[:app]
-    username = params[:system_user][:username].downcase
-    password = params[:system_user][:password]
-    auth_source = AuthSource.find_by_id(AUTH_SOURCE_ID)
-    sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id).first
+    username_with_domain = params[:system_user][:username].downcase
+    login = Rigi::Login.extract_login_name(username_with_domain)
 
-    if sys_usr
-      flash[:alert] = "alert.registered_account"
+    if login.nil?
+      Rails.logger.error "SystemUser[username=#{username_with_domain}] illegal login name format"
+      flash[:alert] = "alert.invalid_login"
     else
-      auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-      
-      if auth_source.authenticate("#{auth_source.domain}\\#{username}", password)
-        profile = get_system_user_profile(username)
+      username = login[:username]
+      domain = login[:domain]
+      password = params[:system_user][:password]    
 
-        if profile[:status] == false
-          Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has been disabled"
-          flash[:alert] = "alert.invalid_login" # TODO customize specific err msg
-        elsif profile[:property_ids].blank?
-          Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has no properties"
-          flash[:alert] = "alert.account_no_property"
-        else
-          SystemUser.register!(username, auth_source.id, profile[:property_ids])
-          flash[:success] = "alert.signup_completed"
-        end
+      auth_source = AuthSource.first
+      sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id, :domain => domain).first
+
+      if sys_usr
+        flash[:alert] = "alert.registered_account"
       else
-        Rails.logger.info "SystemUser[username=#{username}] Registration failed. Authentication failed"
-        flash[:alert] = "alert.invalid_login"
+        auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+        
+        if auth_source.authenticate(username_with_domain, password)
+          #profile = get_system_user_profile(username)
+          property_ids = Property.select(:id).pluck(:id)
+          profile = auth_source.retrieve_user_profile(username, domain, property_ids)
+
+          if profile[:status] == false
+            Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has been disabled"
+            flash[:alert] = "alert.invalid_login" # TODO customize specific err msg
+          elsif profile[:property_ids].blank?
+            Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has no properties"
+            flash[:alert] = "alert.account_no_property"
+          else
+            SystemUser.register!(username, domain, auth_source.id, profile[:property_ids])
+            flash[:success] = "alert.signup_completed"
+          end
+        else
+          Rails.logger.info "SystemUser[username=#{username}] Registration failed. Authentication failed"
+          flash[:alert] = "alert.invalid_login"
+        end
       end
     end
+
     render :new
   end
-
+=begin
   private
-  def get_system_user_profile(username)
+  def get_system_user_profile(auth_source, username)
     property_ids = Property.select(:id).pluck(:id)
     profile = Rigi::Ldap.retrieve_user_profile(username, property_ids)
     #{ :status => profile[:account_status], :property_ids => [1003, 1007] }
     { :status => profile[:account_status], :property_ids => profile[:groups] }
   end
+=end
 end

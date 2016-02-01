@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160114025201) do
+ActiveRecord::Schema.define(:version => 20160128043021) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -45,20 +45,17 @@ ActiveRecord::Schema.define(:version => 20160114025201) do
   end
 
   create_table "auth_sources", :force => true do |t|
-    t.string  "auth_type",         :limit => 30, :default => "",    :null => false
-    t.string  "name",              :limit => 60, :default => "",    :null => false
-    t.string  "host",              :limit => 60
+    t.string  "auth_type",        :limit => 30, :default => "",    :null => false
+    t.string  "name",             :limit => 60, :default => "",    :null => false
+    t.string  "host",             :limit => 60
     t.integer "port"
-    t.string  "account",           :limit => 60
-    t.string  "account_password",  :limit => 60
+    t.string  "account",          :limit => 60
+    t.string  "account_password", :limit => 60
     t.string  "base_dn"
-    t.string  "attr_login",        :limit => 30
-    t.string  "attr_firstname",    :limit => 30
-    t.string  "attr_lastname",     :limit => 60
-    t.string  "attr_mail",         :limit => 30
-    t.boolean "onthefly_register",               :default => false, :null => false
-    t.string  "domain",                          :default => "",    :null => false
-    t.boolean "is_internal",                     :default => false, :null => false
+    t.boolean "is_internal",                    :default => false, :null => false
+    t.string  "encryption"
+    t.string  "method"
+    t.string  "search_scope"
   end
 
   create_table "permissions", :force => true do |t|
@@ -151,8 +148,10 @@ ActiveRecord::Schema.define(:version => 20160114025201) do
     t.boolean  "status",             :default => false, :null => false
     t.boolean  "admin",              :default => false, :null => false
     t.integer  "auth_source_id"
+    t.string   "domain"
   end
 
   add_index "system_users", ["auth_source_id"], :name => "auth_source_id"
+  add_index "system_users", ["username", "domain"], :name => "index_system_users_on_username_and_domain", :unique => true
 
 end

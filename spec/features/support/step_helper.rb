@@ -17,7 +17,7 @@ module StepHelper
     dn = account_status ? ["OU=Licensee"] : ["OU=Licensee,OU=Disabled Accounts"]
     memberof = property_ids.map { |property_id| "CN=#{property_id}iportal" }
     entry = [{ :distinguishedName => dn, :memberOf => memberof }]
-    allow(Rigi::Ldap).to receive(:search).and_return(entry)
+    allow_any_instance_of(AuthSourceLdap).to receive(:search).and_return(entry)
   end
 
   def mock_ad_account_profile(status, property_ids)

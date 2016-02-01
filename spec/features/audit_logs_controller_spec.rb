@@ -11,17 +11,12 @@ describe AuditLogsController do
   
   describe '[9] Search audit log by Time' do
     before(:each) do
-      AuditLog.delete_all
       @al1 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "edit_role", :action_at => "2014-09-29 12:00:00")
       @al2 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "edit_role", :action_at => "2014-09-30 12:00:00")
     end
     
-    after(:each) do
-      AuditLog.delete_all
-    end
-    
     it '[9.1] Search audit log by time' do
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit search_audit_logs_path
       fill_in "from", :with => "2014-9-29"
       fill_in "to", :with => "2014-9-29"
@@ -31,7 +26,7 @@ describe AuditLogsController do
     end
 
     it '[9.2] search audit log exceed the time range' do
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit search_audit_logs_path
       start_str = "2014-9-29"
       end_time = Time.parse(start_str) + (SEARCH_RANGE_FOR_AUDIT_LOG + 1 ) * 86400
@@ -48,7 +43,7 @@ describe AuditLogsController do
       time_now = @al1.action_at + 1 * 86400
       allow(Time).to receive(:now).and_return(time_now)
 
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit search_audit_logs_path
       click_button I18n.t("general.search")
       expect(page.source).to have_selector("tr#audit#{@al1.id}_body")
@@ -56,7 +51,7 @@ describe AuditLogsController do
     end
 
     it '[9.4] search audit log by non-1000 property user' do
-      login(@system_user_1.username)
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
       assert_dropdown_menu_item(I18n.t("header.audit_log"), false)
       visit search_audit_logs_path
       verify_unauthorized_request
@@ -75,7 +70,7 @@ describe AuditLogsController do
     end
     
     it '[10.1] search audit log by actioner' do
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit search_audit_logs_path
       fill_in "from", :with => "2014-9-29"
       fill_in "to", :with => "2014-9-29"
@@ -86,7 +81,7 @@ describe AuditLogsController do
     end
     
     it '[10.2] search empty in actioner' do
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit search_audit_logs_path
       fill_in "from", :with => "2014-9-29"
       fill_in "to", :with => "2014-9-29"
@@ -121,7 +116,7 @@ describe AuditLogsController do
     end
 =end
     it '[11.2] search all action' do
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit search_audit_logs_path
       fill_in "from", :with => "2014-9-29"
       fill_in "to", :with => "2014-9-30"
@@ -136,7 +131,7 @@ describe AuditLogsController do
 
   describe '[13] Switch main functional tab' do
     it '[13.2] Click Audit log' do
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit '/home'
       first('ul.dropdown-menu').find('a', :text => I18n.t("header.audit_log")).click
       click_link I18n.t("auditlog.search_audit")
@@ -172,7 +167,7 @@ describe AuditLogsController do
     end
     
     it '[12.1] search audit log by target' do
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit search_audit_logs_path
       fill_in "from", :with => "2014-9-29"
       fill_in "to", :with => "2014-9-30"

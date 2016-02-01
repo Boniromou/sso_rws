@@ -9,7 +9,6 @@
 #
 default: &default
   app_name: 'user_management'
-  auth_source_id: 1
   search_day_range: 7
   search_range_for_audit_log: 7
   admin_property_id: 1000
@@ -20,21 +19,17 @@ test:
 
 development:
   <<: *default
-  auth_source_host: '10.10.28.91'
 
 integration0:
   <<: *default
-  auth_source_host: '10.10.28.91'
   site_domain: 'laxino.com'
 
 staging0:
   <<: *default
-  auth_source_host: '10.10.28.91'
   site_domain: 'laxino.com'
 
 staging0_external:
   <<: *default
-  auth_source_host: '10.10.28.91'
   site_domain: 'laxino.com'
 
 sandbox0:
@@ -47,7 +42,6 @@ production0:
 
 mockup0:
   <<: *default
-  auth_source_host: '10.10.28.91'
   site_domain: 'laxino.com'
 
 sandbox2:
@@ -59,5 +53,9 @@ smartocean2:
   site_domain: 'laxigames.local'
 
 sandbox3:
+  <<: *default
+  site_domain: 'laxigames.local'
+
+production3:
   <<: *default
   site_domain: 'laxigames.local'

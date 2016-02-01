@@ -24,7 +24,7 @@ describe SystemUserChangeLogsController do
 
   describe "[16] User Change log" do
     it "[16.1] 1000 user successfully edit 1003 user" do
-      login(@system_user_1.username)
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
       visit edit_roles_system_user_path(@system_user_2)
 
       within ("div#content form") do
@@ -46,7 +46,7 @@ describe SystemUserChangeLogsController do
     end
 
     it "[16.2] 1003 user successfully edit 1003 user" do
-      login(@system_user_2.username)
+      login("#{@system_user_2.username}@#{@system_user_2.domain}")
       visit edit_roles_system_user_path(@system_user_3)
 
       within ("div#content form") do
@@ -68,7 +68,7 @@ describe SystemUserChangeLogsController do
     end
 
     it "[16.3] 1000 user successfully edit 1003, 1007 user" do
-      login(@system_user_1.username)
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
       visit edit_roles_system_user_path(@system_user_4)
 
       within ("div#content form") do
@@ -100,7 +100,7 @@ describe SystemUserChangeLogsController do
     end
 
     it "[16.4] 1000 user successfully edit 1000 user" do
-      login(@system_user_1.username)
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
       visit edit_roles_system_user_path(@system_user_5)
 
       within ("div#content form") do
@@ -123,7 +123,7 @@ describe SystemUserChangeLogsController do
 
     it "[16.5] 1003, 1007 user successfully edit 1003 user" do
       mock_ad_account_profile(true, [1003, 1007])
-      login(@system_user_4.username)
+      login("#{@system_user_4.username}@#{@system_user_4.domain}")
       visit edit_roles_system_user_path(@system_user_3)
 
       within ("div#content form") do
@@ -152,7 +152,7 @@ describe SystemUserChangeLogsController do
       create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1003))
       create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1007))
 
-      login(@system_user_1.username)
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
       visit system_user_change_logs_path(:commit => true)
 
       rc_rows = all("div#content table tbody tr")
@@ -168,7 +168,7 @@ describe SystemUserChangeLogsController do
       create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1007))
 
       mock_ad_account_profile(true, [1003, 1007])
-      login(@system_user_4.username)
+      login("#{@system_user_4.username}@#{@system_user_4.domain}")
       visit system_user_change_logs_path(:commit => true)
 
       rc_rows = all("div#content table tbody tr")
@@ -183,7 +183,7 @@ describe SystemUserChangeLogsController do
       create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1003))
       create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1007))
 
-      login(@system_user_1.username)
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
       visit system_user_change_logs_path(:commit => true)
 
       rc_rows = all("div#content table tbody tr")
@@ -198,7 +198,7 @@ describe SystemUserChangeLogsController do
       create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1003))
       create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_property_id => 1007))
 
-      login(@system_user_7.username)
+      login("#{@system_user_7.username}@#{@system_user_7.domain}")
       visit system_user_change_logs_path(:commit => true)
 
       rc_rows = all("div#content table tbody tr")
@@ -214,7 +214,7 @@ describe SystemUserChangeLogsController do
       create(:system_user_change_log, content.merge(:target_username => @system_user_4.username, :target_property_id => 1003, :created_at => 1.day.ago))
       create(:system_user_change_log, content.merge(:target_username => @system_user_4.username, :target_property_id => 1007, :created_at => Time.now))
 
-      login(@system_user_1.username)
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
       visit system_user_change_logs_path(:commit => true, :start_time => "2016-01-01", :end_start => "2016-01-01")
 
       rc_rows = all("div#content table tbody tr")
@@ -229,7 +229,7 @@ describe SystemUserChangeLogsController do
       create(:system_user_change_log, content.merge(:target_username => @system_user_4.username, :target_property_id => 1003))
       create(:system_user_change_log, content.merge(:target_username => @system_user_4.username, :target_property_id => 1007))
 
-      login(@system_user_1.username)
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
       visit system_user_change_logs_path(:commit => true, :target_system_user_name => @system_user_4.username)
 
       rc_rows = all("div#content table tbody tr")
@@ -239,7 +239,7 @@ describe SystemUserChangeLogsController do
 
   describe "[17] Support internal and external role" do
     it "[17.1] Show internal and external roles" do
-      login(@system_user_1.username)
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
       visit edit_roles_system_user_path(@system_user_2)
       main_panel = find("div#content")
       expect(main_panel).to have_content @int_role_1.name.titleize
@@ -247,7 +247,7 @@ describe SystemUserChangeLogsController do
     end
 
     it "[17.2] Show external roles" do
-      login(@system_user_6.username)
+      login("#{@system_user_6.username}@#{@system_user_6.domain}")
       visit edit_roles_system_user_path(@system_user_2)
       main_panel = find("div#content")
       expect(main_panel).not_to have_content @int_role_1.name.titleize

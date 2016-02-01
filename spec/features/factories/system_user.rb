@@ -3,6 +3,7 @@ FactoryGirl.define do
     sequence(:username) { |n| "system_user_#{n}" }
     status    true
     admin     false
+    domain  'example.com'
 
     before(:create) do |system_user|
       system_user.auth_source = AuthSource.first || create(:auth_source, :internal)

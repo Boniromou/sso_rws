@@ -6,14 +6,17 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-
+=begin
 unless AuthSource.exists?(:id => 1, :name => "Laxino LDAP")
   AuthSource.create(:id => 1, :auth_type => "AuthSourceLdap", :name => "Laxino LDAP", :host => 'vmodc01.mo.laxino.com', :port => 389, :account => 'mo\svc.linux', :account_password => "Ccc1234%", :base_dn => "DC=mo,DC=laxino,DC=com", :attr_login => "sAMAccountName", :attr_firstname => "givenName", :attr_lastname => "sN", :attr_mail => "mail", :onthefly_register => 1, :domain => 'mo', :is_internal => true)
 end
+=end
 
+=begin
 unless SystemUser.exists?(:username => 'portal.admin', :auth_source_id => 1)
   SystemUser.create!(:username => 'portal.admin', :status => true, :admin => true, :auth_source_id => 1)
 end
+=end
 
 unless Property.exists?(:id => 1000)
   Property.create(:id => 1000)

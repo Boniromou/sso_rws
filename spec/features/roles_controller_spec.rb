@@ -22,7 +22,7 @@ describe RolesController do
     it "[15.3] Show Role (authorized)" do
       allow_any_instance_of(RolePolicy).to receive("index?").and_return(true)
       allow_any_instance_of(PermissionPolicy).to receive("show?").and_return(false)
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       go_to_role_and_permission
       role_table_selector = "div#content div#user_management"
       expect(find("#{role_table_selector} header")).to have_content("User Management")
@@ -34,7 +34,7 @@ describe RolesController do
     it "[15.4] Show Role (unauthorized)" do
       allow_any_instance_of(RolePolicy).to receive("index?").and_return(false)
       allow_any_instance_of(PermissionPolicy).to receive("show?").and_return(false)
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit home_root_path
       assert_dropdown_menu_item(I18n.t("header.role_management"), false)
       logout(@root_user)
@@ -43,7 +43,7 @@ describe RolesController do
     it "[15.5] Show Permission (authorized)" do
       allow_any_instance_of(RolePolicy).to receive("index?").and_return(true)
       allow_any_instance_of(PermissionPolicy).to receive("show?").and_return(true)
-      login(@root_user.username)
+      login("#{@root_user.username}@#{@root_user.domain}")
       go_to_role_and_permission
       role_table_selector = "div#content div#user_management"
       expect(find("#{role_table_selector} header")).to have_content("User Management")

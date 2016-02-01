@@ -16,10 +16,6 @@ describe SystemUserSessionsController do
       @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1003, 1007])
     end
 
-    after(:each) do
-      @u1.destroy
-    end
-
     def go_login_page_and_login(username)
       visit login_path
       fill_in "system_user_username", :with => username
@@ -29,13 +25,13 @@ describe SystemUserSessionsController do
 
     it "[1.1] Login successful" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      go_login_page_and_login(@root_user.username)
+      go_login_page_and_login("#{@root_user.username}@#{@root_user.domain}")
       expect(page.current_path).to eq home_root_path
     end
 
     it "[1.2] login fail with wrong password" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(false)
-      go_login_page_and_login(@root_user.username)
+      go_login_page_and_login("#{@root_user.username}@#{@root_user.domain}")
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
 
@@ -46,14 +42,14 @@ describe SystemUserSessionsController do
     end
 
     it "[1.6] login without role assigned" do
-      go_login_page_and_login(@u1.username)
+      go_login_page_and_login("#{@u1.username}@#{@u1.domain}")
       expect(page).to have_content I18n.t("alert.account_no_role")
     end
 
     it "[1.9] Login successful and update the User property group" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1003])
-      go_login_page_and_login(@system_user_1.username)
+      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain}")
       property_system_user_1003 = PropertiesSystemUser.where(:property_id => 1003, :system_user_id => @system_user_1.id).first
       property_system_user_1007 = PropertiesSystemUser.where(:property_id => 1007, :system_user_id => @system_user_1.id).first
       expect(property_system_user_1003.status).to eq true
@@ -64,7 +60,7 @@ describe SystemUserSessionsController do
     it "[1.10] Login fail with user AD property group null" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [])
-      go_login_page_and_login(@system_user_1.username)
+      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain}")
       property_system_user_1003 = PropertiesSystemUser.where(:property_id => 1003, :system_user_id => @system_user_1.id).first
       property_system_user_1007 = PropertiesSystemUser.where(:property_id => 1007, :system_user_id => @system_user_1.id).first
       expect(property_system_user_1003.status).to eq false
@@ -75,7 +71,7 @@ describe SystemUserSessionsController do
     it "[1.11] Login successful and update the User lock/unlock status" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(false, [])
-      go_login_page_and_login(@system_user_1.username)
+      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain}")
       @system_user_1.reload
       expect(@system_user_1.status).to eq false
       expect(page).to have_content I18n.t("alert.inactive_account")
@@ -83,7 +79,7 @@ describe SystemUserSessionsController do
 
     it "[1.12] login user with upper case" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      go_login_page_and_login(@system_user_1.username.upcase)
+      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain}".upcase)
       expect(page.current_path).to eq home_root_path
       expect(AppSystemUser.first.system_user_id).to eq @system_user_1.id
     end

@@ -1,3 +1,4 @@
+=begin
 module Rigi
   module LdapConfiguration
     extend self
@@ -26,3 +27,4 @@ module Rigi
 end
 
 Rigi::LdapConfiguration.load
+=end

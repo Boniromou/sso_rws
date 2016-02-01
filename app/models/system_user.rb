@@ -1,7 +1,6 @@
 class SystemUser < ActiveRecord::Base
   devise :registerable
-         #:recoverable, :rememberable, :trackable    #, :validatable
-  attr_accessible :id, :username, :status, :admin, :auth_source_id#, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip#, :password, :encrypted_password
+  attr_accessible :id, :username, :status, :admin, :auth_source_id, :domain
   belongs_to :auth_source
   has_many :role_assignments, :as => :user, :dependent => :destroy
   has_many :roles, :through => :role_assignments
@@ -11,13 +10,14 @@ class SystemUser < ActiveRecord::Base
   has_many :properties, :through => :properties_system_users
   scope :with_active_property, -> { joins(:properties_system_users).where("properties_system_users.status = ?", true).select("DISTINCT(system_users.id), system_users.*") }
 
+  def auth_source
+    auth = AuthSource.find_by_id(auth_source_id)
+    auth.becomes(auth.auth_type.constantize)
+  end
+
   def active_property_ids
     PropertiesSystemUser.where(:system_user_id => id, :status => true).select(:property_id).pluck(:property_id)
   end
-
-#  def is_internal?
-#    auth_source.is_internal?
-#  end
 
   def is_admin?
     admin
@@ -27,9 +27,9 @@ class SystemUser < ActiveRecord::Base
     active_property_ids.include?(ADMIN_PROPERTY_ID)
   end
 
-  def self.register!(username, auth_source_id, property_ids)
+  def self.register!(username, domain, auth_source_id, property_ids)
     transaction do
-      system_user = create!(:username => username, :auth_source_id => auth_source_id, :status => true)
+      system_user = create!(:username => username, :domain => domain, :auth_source_id => auth_source_id, :status => true)
       system_user.update_properties(property_ids)
     end
   end
@@ -59,15 +59,6 @@ class SystemUser < ActiveRecord::Base
     end
 
     refresh_permission_cache
-  end
-
-  def self.get_by_username_and_domain(username, domain)
-    self.joins(:auth_source).where("auth_sources.domain" => domain, :username => username).first
-  end
-
-  # username for login
-  def login
-    self.auth_source.domain ? "#{self.auth_source.domain}\\#{self.username}" : self.username
   end
 
   def role_in_app(app_name=nil)
@@ -111,9 +102,9 @@ class SystemUser < ActiveRecord::Base
 
   def update_ad_profile
     property_ids = Property.select(:id).pluck(:id)
-    profile =  Rigi::Ldap.retrieve_user_profile(username, property_ids)
-    self.status = profile[:account_status]
-    update_properties(profile[:groups])
+    profile = self.auth_source.retrieve_user_profile(username, domain, property_ids)
+    self.status = profile[:status]
+    update_properties(profile[:property_ids])
     save!
   end
 

@@ -1,40 +1,64 @@
-lax_ldap: &lax_ldap
-  host: 'modc04.mo.laxino.com'
+hqidc_ldap: &hqidc_ldap
+  name: 'hqidc_ldap'
+  host: 'dc02.laxino.com'
+  port: 3268
+  account: 'ldap@laxino.com'
   password: 'P@ssword'
-  binddn: 'rnd.ldap@mo.laxino.com'
-  method: :simple
-  searchbase: 'dc=mo, dc=laxino, dc=com'
-  searchscope: 'sub'
+  base_dn: 'dc=laxino, dc=com'
+
+twidc_ldap: &twidc_ldap
+  name: 'twidc_ldap'
+  host: 'vmodc01.mo.laxino.com'
+  port: 389
+  account: ''
+  password: ''
+  base_dn: 'dc=mo, dc=laxino, dc=com'
+
+phidc_ldap: &phidc_ldap
+  name: 'phidc_ldap'
+  host: 'vmodc01.mo.laxino.com'
+  port: 389
+  account: ''
+  password: ''
+  base_dn: 'dc=mo, dc=laxino, dc=com'
+
+moidc_ldap: &moidc_ldap
+  name: 'moidc_ldap'
+  host: 'mo-prd-vdc01.gamesourcecloud.local'
+  port: 3268
+  account: 'svc_idc_ldap@gamesourcecloud.local'
+  password: '$vc_1dc_1daP'
+  base_dn: 'dc=gamesourcecloud, dc=local'
 
 test:
-  <<: *lax_ldap
+  <<: *hqidc_ldap
 
 development:
-  <<: *lax_ldap
+  <<: *hqidc_ldap
 
 integration0:
-  <<: *lax_ldap
+  <<: *hqidc_ldap
 
-staging0: &staging0
-  <<: *lax_ldap
-
-staging0_external:
-  <<: *staging0
+staging0:
+  <<: *hqidc_ldap
 
 sandbox0:
-  <<: *lax_ldap
+  <<: *phidc_ldap
 
 production0:
-  <<: *lax_ldap
+  <<: *phidc_ldap
 
 mockup0:
-  <<: *lax_ldap
+  <<: *hqidc_ldap
 
 sandbox2:
-  <<: *lax_ldap
+  <<: *twidc_ldap
 
 smartocean2:
-  <<: *lax_ldap
+  <<: *twidc_ldap
 
-sandbox3:
-  <<: *lax_ldap
+sandbox3: 
+  <<: *moidc_ldap
+
+production3:
+  <<: *moidc_ldap
