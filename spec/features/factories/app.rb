@@ -1,4 +1,7 @@
 FactoryGirl.define do
+  factory :app do
+  end
+
   factory :user_management_app, class: App do
     id   1
     name "user_management"

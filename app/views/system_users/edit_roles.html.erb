@@ -21,19 +21,19 @@
             <div class="widget-body">
 
 
-<%= form_tag({action: :update_roles}, :method => :put, :class => "smart-form", :remote => true) do %>
-  <% @apps.each do |app| %>
-  <fieldset id="<%= "#{app.name}_app" %>">
+<%= form_tag({action: :update_roles}, :method => :post, :class => "smart-form", :remote => true) do %>
+  <% @roles_by_apps.each do |roles_by_apps| %>
+  <fieldset id="<%= "#{roles_by_apps[:app].name}_app" %>">
     <section>
       <div class="row">
         <div class="col col-1">
           <label class="checkbox">
-            <%= check_box_tag "enabled_#{app.name}", "checked", @current_app_ids.include?(app.id) ? true : false %>
+            <%= check_box_tag "enabled_#{roles_by_apps[:app].name}", "checked", @current_app_ids.include?(roles_by_apps[:app].id) ? true : false %>
             <i></i>
           </label>
         </div>
         <div class="col col-11">
-            <h3><%= label_tag nil, "#{app.name.titleize}" %></h3>
+            <h3><%= label_tag nil, "#{roles_by_apps[:app].name.titleize}" %></h3>
         </div>
       </div>
     </section>
@@ -43,9 +43,9 @@
         <div class="col col-1">
         </div>
         <div class="col col-11">
-        <% app.roles.each do |role| %>
-          <%= label_tag nil, nil, :class => @current_app_ids.include?(app.id) ? "radio" : "radio state-disabled" do %>
-            <%= radio_button_tag "#{app.name}", role.id, @current_role_ids.include?(role.id) %>
+        <% roles_by_apps[:roles].each do |role| %>
+          <%= label_tag nil, nil, :class => @current_app_ids.include?(roles_by_apps[:app].id) ? "radio" : "radio state-disabled" do %>
+            <%= radio_button_tag "#{roles_by_apps[:app].name}", role.id, @current_role_ids.include?(role.id) %>
             <i></i>
             <h5><%= label_tag nil, "#{role.name.titleize}" %></h5>
           <% end %>

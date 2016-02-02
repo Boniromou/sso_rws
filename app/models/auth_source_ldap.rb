@@ -1,34 +1,10 @@
-# Redmine - project management software
-# Copyright (C) 2006-2014  Jean-Philippe Lang
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
 require 'net/ldap'
 require 'net/ldap/dn'
 require 'timeout'
 
 class AuthSourceLdap < AuthSource
-  validates_presence_of :host, :port, :attr_login
-  validates_length_of :name, :host, :maximum => 60, :allow_nil => true
-  validates_length_of :account, :account_password, :base_dn, :filter, :maximum => 255, :allow_blank => true
-  validates_length_of :attr_login, :attr_firstname, :attr_lastname, :attr_mail, :maximum => 30, :allow_nil => true
-  validates_numericality_of :port, :only_integer => true
-  validates_numericality_of :timeout, :only_integer => true, :allow_blank => true
-#  validate :validate_filter
-
-  #before_validation :strip_ldap_attributes
+  DISABLED_ACCOUNT_KEY = 'Disabled Accounts'
+  MATCH_PATTERN_REGEXP = /CN=\d+iportal/
 
   def initialize(attributes=nil, *args)
     super
@@ -44,7 +20,7 @@ class AuthSourceLdap < AuthSource
 
   def initialize_ldap_con(ldap_user, ldap_password)
     options = { :host => self.host,
-                :port => self.port,
+                :port => self.port || 389,
                 :encryption => nil,
                 :auth => {
                   :method => :simple,
@@ -55,8 +31,99 @@ class AuthSourceLdap < AuthSource
     Net::LDAP.new options
   end
 
+  def search(username, domain)
+    options = { :host => self.host,
+                :port => self.port || 3268,
+                :auth => {
+                  :method => self.method || :simple,
+                  :username => self.account,
+                  :password => self.account_password
+                }
+              }
+
+    ldap = Net::LDAP.new(options)
+
+    search_filter = Net::LDAP::Filter.eq("userPrincipalName", "#{username}@#{domain}")
+    
+=begin ... do |entry|
+      Rails.logger.debug "DN: #{entry.dn}"
+
+      entry.each do |attribute, values|
+        Rails.logger.debug "   #{attribute}:"
+
+        values.each do |value|
+          Rails.logger.debug "      --->#{value}"
+        end
+      end
+    end
+=end
+
+    ldap.search( :base => self.base_dn, :filter => search_filter, :return_result => true, :scope => self.search_scope || Net::LDAP::SearchScope_WholeSubtree)
+  end
+
+=begin
   def get_domain
     dn_arr = self.base_dn.split(',')
     dn_arr.first.split('=')[1]
+  end
+=end
+
+  #
+  # retrieve_user_profile('ray.chan', [1003, 1007, 1014, 1021, 20000, 30000])
+  #
+  # # if ray.chan is an AD account as a member of 1003, 1007
+  # => {:account_status => true, :groups => [1003, 1007]}
+  #
+  def retrieve_user_profile(username, domain, filter_groups=[])
+    ldap_entry = search(username, domain).first
+    dnames = ldap_entry[:distinguishedName]
+    memberofs = ldap_entry[:memberOf]
+    is_disable_account, is_admin_group = false, false
+    groups = []
+
+    Rails.logger.info "Ldap server response: distinguishedName => #{dnames}, memberOf => #{memberofs}"
+
+    is_disable_account = dnames.any? { |dn| dn.include?(DISABLED_ACCOUNT_KEY) }
+#    is_admin_group = dnames.any? { |dn| dn_has_admin_group?(dn) }
+
+#    if is_admin_group
+#      groups << ADMIN_PROPERTY_ID
+#    else
+      memberofs.each do |memberof|
+        filter_groups.each do |filter|
+          groups << filter.to_i if memberof_has_key?(memberof, MATCH_PATTERN_REGEXP, filter.to_s)
+        end
+      end
+#    end
+
+    res = { :status => !is_disable_account, :property_ids => groups.uniq }
+    Rails.logger.info "[username=#{username}][filter_groups=#{filter_groups}] account result => #{res.inspect}"
+
+    res
+  end
+
+=begin
+  def dn_has_admin_group?(raw_dn)
+    if raw_dn.include?("OU=Users")
+      true
+    elsif raw_dn.include?("OU=Licensee")
+      false
+    else
+      false
+    end
+  end
+=end
+
+  def memberof_has_key?(pair, regexp, key)
+    dn_attributes = pair.scan(regexp)
+
+    unless dn_attributes.empty?
+      dn_attributes.each do |dn_attribute|
+        digit = dn_attribute.scan(/\d+/).first
+        return true if digit && digit == key.to_s
+      end
+    end
+
+    false
   end
 end

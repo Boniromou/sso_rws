@@ -1,9 +1,12 @@
 class ApplicationPolicy
-  attr_reader :current_system_user, :record
+  include Rigi::PunditHelper::Policy
+  attr_reader :system_user, :record, :request_property_id, :admin_property_use_only
 
-  def initialize(current_system_user, record)
-    @current_system_user = current_system_user
+  def initialize(system_user_context, record)
+    @system_user = system_user_context.system_user
+    @request_property_id = system_user_context.request_property_id
     @record = record
+    @admin_property_use_only ||= false
   end
 
   def index?
@@ -35,20 +38,29 @@ class ApplicationPolicy
   end
 
   def scope
-    Pundit.policy_scope!(current_system_user, record.class)
+    Pundit.policy_scope!(system_user, record.class)
   end
 
   class Scope
-    attr_reader :current_system_user, :scope
+    attr_reader :system_user, :scope
 
-    def initialize(current_system_user, scope)
-      @current_system_user = current_system_user
+    def initialize(system_user_context, scope)
+      @system_user = system_user_context.system_user
       @scope = scope
     end
 
     def resolve
       scope
     end
+  end
+
+  protected
+  def permitted?(target_name, action_names)
+    return true if @system_user.is_admin?
+    role_has_permission = found_permission?(@system_user.id, target_name, action_names)
+    return false if @admin_property_use_only && !system_user.has_admin_property?
+
+    role_has_permission
   end
 end
 

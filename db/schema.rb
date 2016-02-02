@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150307131438) do
+ActiveRecord::Schema.define(:version => 20160128043021) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -45,19 +45,17 @@ ActiveRecord::Schema.define(:version => 20150307131438) do
   end
 
   create_table "auth_sources", :force => true do |t|
-    t.string  "auth_type",         :limit => 30, :default => "",    :null => false
-    t.string  "name",              :limit => 60, :default => "",    :null => false
-    t.string  "host",              :limit => 60
+    t.string  "auth_type",        :limit => 30, :default => "",    :null => false
+    t.string  "name",             :limit => 60, :default => "",    :null => false
+    t.string  "host",             :limit => 60
     t.integer "port"
-    t.string  "account",           :limit => 60
-    t.string  "account_password",  :limit => 60
+    t.string  "account",          :limit => 60
+    t.string  "account_password", :limit => 60
     t.string  "base_dn"
-    t.string  "attr_login",        :limit => 30
-    t.string  "attr_firstname",    :limit => 30
-    t.string  "attr_lastname",     :limit => 60
-    t.string  "attr_mail",         :limit => 30
-    t.boolean "onthefly_register",               :default => false, :null => false
-    t.string  "domain",                          :default => "",    :null => false
+    t.boolean "is_internal",                    :default => false, :null => false
+    t.string  "encryption"
+    t.string  "method"
+    t.string  "search_scope"
   end
 
   create_table "permissions", :force => true do |t|
@@ -66,7 +64,10 @@ ActiveRecord::Schema.define(:version => 20150307131438) do
     t.string   "target"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "app_id"
   end
+
+  add_index "permissions", ["app_id"], :name => "fk_Permissions_AppId"
 
   create_table "properties", :force => true do |t|
     t.datetime "created_at",  :null => false
@@ -74,6 +75,17 @@ ActiveRecord::Schema.define(:version => 20150307131438) do
     t.string   "name"
     t.string   "description"
   end
+
+  create_table "properties_system_users", :force => true do |t|
+    t.integer  "system_user_id",                   :null => false
+    t.integer  "property_id",                      :null => false
+    t.boolean  "status",         :default => true, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
+  add_index "properties_system_users", ["property_id", "system_user_id"], :name => "index_properties_system_users_on_property_id_and_system_user_id", :unique => true
+  add_index "properties_system_users", ["system_user_id"], :name => "fk_PropertiesSystemUsers_SystemUserId"
 
   create_table "role_assignments", :force => true do |t|
     t.string   "user_type",  :limit => 60, :null => false
@@ -93,14 +105,36 @@ ActiveRecord::Schema.define(:version => 20150307131438) do
   add_index "role_permissions", ["permission_id"], :name => "permission_id"
   add_index "role_permissions", ["role_id"], :name => "role_id"
 
+  create_table "role_types", :force => true do |t|
+    t.string   "name",        :null => false
+    t.string   "description"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "role_types", ["name"], :name => "index_role_types_on_name", :unique => true
+
   create_table "roles", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
     t.integer  "app_id"
+    t.integer  "role_type_id"
   end
 
   add_index "roles", ["app_id"], :name => "app_id"
+  add_index "roles", ["role_type_id"], :name => "fk_Roles_RoleTypeId"
+
+  create_table "system_user_change_logs", :force => true do |t|
+    t.string   "change_detail",      :limit => 1024, :default => "{}"
+    t.string   "target_username",                                      :null => false
+    t.integer  "target_property_id",                                   :null => false
+    t.string   "action",                                               :null => false
+    t.string   "action_by",          :limit => 1024, :default => "{}"
+    t.string   "description"
+    t.datetime "created_at",                                           :null => false
+    t.datetime "updated_at",                                           :null => false
+  end
 
   create_table "system_users", :force => true do |t|
     t.integer  "sign_in_count",      :default => 0,     :null => false
@@ -114,8 +148,10 @@ ActiveRecord::Schema.define(:version => 20150307131438) do
     t.boolean  "status",             :default => false, :null => false
     t.boolean  "admin",              :default => false, :null => false
     t.integer  "auth_source_id"
+    t.string   "domain"
   end
 
   add_index "system_users", ["auth_source_id"], :name => "auth_source_id"
+  add_index "system_users", ["username", "domain"], :name => "index_system_users_on_username_and_domain", :unique => true
 
 end

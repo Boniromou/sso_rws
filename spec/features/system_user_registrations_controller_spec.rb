@@ -5,67 +5,81 @@ describe SystemUserRegistrationsController do
 
   describe "[3] Self Registration" do
     before(:each) do
-      #@fake_auth_source_info =  {:auth_type=>"AuthSourceLdap", :name=>"Fake LDAP", :host=>"127.0.0.0", :port=>389, :account=>"test", :account_password=>"secret", :base_dn=>"DC=test,DC=example,DC=com", :attr_login=>"sAMAccountName", :attr_firstname=>"givenName", :attr_lastname=>"sN", :attr_mail=>"mail", :onthefly_register=>true, :domain=>"test"}
-      #@auth_source1 = AuthSource.create(@fake_auth_source_info)
-      #allow(AuthSource).to receive(:get_default_auth_source).and_return(@auth_source1)
+      create(:property, :id => 1000)
     end
 
-    after(:each) do
-      #@auth_source1.destroy
+    def go_signup_page_and_register(username)
+      visit new_system_user_registration_path
+      fill_in "system_user_username", :with => username
+      fill_in "system_user_password", :with => 'secret'
+      click_button I18n.t("general.sign_up")
     end
 
     it "[3.1] Register Successful" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      visit '/register'
-      fill_in "system_user_username", :with => 'test_user'
-      fill_in "system_user_password", :with => 'secret'
-      click_button I18n.t("general.sign_up")
+      mock_ad_account_profile(true, [1000])
+      go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.signup_completed")
-      SystemUser.find_by_username('test_user').destroy
+      system_user = SystemUser.find_by_username('test_user')
+      property_system_user_1000 = PropertiesSystemUser.where(:property_id => 1000, :system_user_id => system_user.id).first
+      expect(system_user.status).to eq true
+      expect(property_system_user_1000.status).to eq true
     end
     
     it "[3.2] Register fail with wrong password" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(false)
-      visit '/register'
-      fill_in "system_user_username", :with => 'test_user'
-      fill_in "system_user_password", :with => 'secret'
-      click_button I18n.t("general.sign_up")
+      go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
 
     it "[3.3] Register fail with wrong account" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(false)
-      visit '/register'
-      fill_in "system_user_username", :with => 'test_user'
-      fill_in "system_user_password", :with => 'secret'
-      click_button I18n.t("general.sign_up")
+      go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
 
     it "[3.4] Duplicated Registration" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      test_user = create(:system_user, :username => 'test_user') # SystemUser.create(:username => 'test_user', :auth_source_id => @auth_source1.id)
-      visit '/register'
-      fill_in "system_user_username", :with => 'test_user'
-      fill_in "system_user_password", :with => 'secret'
-      click_button I18n.t("general.sign_up")
+      test_user = create(:system_user, :username => 'test_user')
+      go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.registered_account")
+    end
+
+    it "[3.11] Register system user fail with AD property not match with MDS" do
+      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+      mock_ad_account_profile(true, [1003])
+      go_signup_page_and_register('test_user@example.com')
+      expect(page).to have_content I18n.t("alert.account_no_property")
+    end
+
+    it "[3.12] Register system user fail with null property in AD." do
+      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+      mock_ad_account_profile(true, [])
+      go_signup_page_and_register('test_user@example.com')
+      expect(page).to have_content I18n.t("alert.account_no_property")
+    end
+
+    it "[3.13] Register user with upper case." do
+      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+      mock_ad_account_profile(true, [1000])
+      go_signup_page_and_register('TEST_USER@EXAMPLE.COM')
+      expect(page).to have_content I18n.t("alert.signup_completed")
+      system_user = SystemUser.find_by_username('test_user')
+      property_system_user_1000 = PropertiesSystemUser.where(:property_id => 1000, :system_user_id => system_user.id).first
+      expect(system_user.status).to eq true
+      expect(property_system_user_1000.status).to eq true      
     end
   end
 
   describe "[1] Login/Logout" do
     before(:each) do
-      @registered_account = create(:system_user, :username => 'test_user', :status => true)
-    end
-
-    after(:each) do
-      @registered_account.destroy
+      @registered_account = create(:system_user, :username => 'test_user', :status => true, :with_property_ids => [1000])
     end
 
     it "[1.7] unexpected login (click login link)" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       visit '/register'
-      fill_in "system_user_username", :with => @registered_account.username
+      fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain}"
       fill_in "system_user_password", :with => 'secret'
       click_button I18n.t("general.sign_up")
       expect(page).to have_content I18n.t("alert.registered_account")
@@ -76,10 +90,12 @@ describe SystemUserRegistrationsController do
     it "[1.8] unexpected login (click register)" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       visit '/register'
-      fill_in "system_user_username", :with => @registered_account.username
+      fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain}"
       fill_in "system_user_password", :with => 'secret'
       click_button I18n.t("general.sign_up")
       expect(page).to have_content I18n.t("alert.registered_account")
+      fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain}"
+      fill_in "system_user_password", :with => 'secret'
       click_button I18n.t("general.sign_up")
       expect(current_path).to eq register_path
       expect(page).to have_content I18n.t("alert.registered_account")

@@ -5,7 +5,7 @@ class AuthSource < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
   validates_length_of :name, :maximum => 60
-  attr_accessible :auth_type, :name, :host, :port, :account, :account_password, :base_dn, :attr_login, :attr_firstname, :attr_lastname, :attr_mail, :onthefly_register, :domain
+  attr_accessible :auth_type, :name, :host, :port, :account, :account_password, :base_dn, :attr_login, :is_internal
 
   def authenticate(login, password)
     raise NotImplementedError

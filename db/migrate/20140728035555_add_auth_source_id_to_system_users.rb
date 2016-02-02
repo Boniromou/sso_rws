@@ -10,8 +10,8 @@ class AddAuthSourceIdToSystemUsers < ActiveRecord::Migration
 
     execute "ALTER TABLE system_users ADD FOREIGN KEY (auth_source_id) REFERENCES auth_sources(id);"
 
-    lax_ldap = AuthSource.find_by_name("Laxino LDAP")
-    SystemUser.create!(:username => 'portal.admin', :status => true, :admin => true, :auth_source_id => lax_ldap.id)
+#    lax_ldap = AuthSource.find_by_name("Laxino LDAP")
+#    SystemUser.create!(:username => 'portal.admin', :status => true, :admin => true, :auth_source_id => lax_ldap.id)
   end
 
   def down

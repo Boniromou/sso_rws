@@ -32,3 +32,4 @@
 //=require "bootstrap/bootstrap-datetimepicker"
 //=require "app"
 //=require "app-extend"
+//=require "pagination"

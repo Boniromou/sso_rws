@@ -1,9 +1,19 @@
 class RolePolicy < ApplicationPolicy
-  def index?
-    current_system_user.is_admin? || current_system_user.role_in_app.has_permission?('role', 'list')
+  policy_target :role
+  map_policy :index?, :action_name => :list
+  map_policy :link?, :delegate_policies => [:index?]
+
+  def allow_to_assign?
+    system_user.is_admin? || system_user.role_in_app.role_type.name == ADMIN_ROLE_TYPE_NAME || system_user.role_in_app.role_type_id == record.role_type_id
   end
 
-  def link?
-    index?
+  class Scope < Scope
+    def resolve
+      if system_user.is_admin? || system_user.role_in_app.role_type.name == ADMIN_ROLE_TYPE_NAME
+        scope.all
+      else
+        scope.where("roles.role_type_id = ?", system_user.role_in_app.role_type_id)
+      end
+    end
   end
 end

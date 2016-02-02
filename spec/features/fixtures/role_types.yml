@@ -1,0 +1,6 @@
+internal:
+  id: 1
+  name: "internal"
+external:
+  id: 2
+  name: "external"

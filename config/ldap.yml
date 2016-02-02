@@ -1,0 +1,64 @@
+hqidc_ldap: &hqidc_ldap
+  name: 'hqidc_ldap'
+  host: 'dc02.laxino.com'
+  port: 3268
+  account: 'ldap@laxino.com'
+  password: 'P@ssword'
+  base_dn: 'dc=laxino, dc=com'
+
+twidc_ldap: &twidc_ldap
+  name: 'twidc_ldap'
+  host: 'vmodc01.mo.laxino.com'
+  port: 389
+  account: ''
+  password: ''
+  base_dn: 'dc=mo, dc=laxino, dc=com'
+
+phidc_ldap: &phidc_ldap
+  name: 'phidc_ldap'
+  host: 'vmodc01.mo.laxino.com'
+  port: 389
+  account: ''
+  password: ''
+  base_dn: 'dc=mo, dc=laxino, dc=com'
+
+moidc_ldap: &moidc_ldap
+  name: 'moidc_ldap'
+  host: 'mo-prd-vdc01.gamesourcecloud.local'
+  port: 3268
+  account: 'svc_idc_ldap@gamesourcecloud.local'
+  password: '$vc_1dc_1daP'
+  base_dn: 'dc=gamesourcecloud, dc=local'
+
+test:
+  <<: *hqidc_ldap
+
+development:
+  <<: *hqidc_ldap
+
+integration0:
+  <<: *hqidc_ldap
+
+staging0:
+  <<: *hqidc_ldap
+
+sandbox0:
+  <<: *phidc_ldap
+
+production0:
+  <<: *phidc_ldap
+
+mockup0:
+  <<: *hqidc_ldap
+
+sandbox2:
+  <<: *twidc_ldap
+
+smartocean2:
+  <<: *twidc_ldap
+
+sandbox3: 
+  <<: *moidc_ldap
+
+production3:
+  <<: *moidc_ldap

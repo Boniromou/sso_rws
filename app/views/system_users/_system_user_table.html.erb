@@ -2,32 +2,20 @@
                         <thead>
                           <th><%=t("user.user_name") %></th>
                           <th><%=t("user.status") %></th>
-                          <% if @unshow_operation.blank? %><th><%=t("general.operation") %></th><% end %>                          
+                          <th><%=t("property.title") %></th>
                         </thead>
                         <tbody>
                           <% @system_users.each do |su| %>
                             <tr align="center">
                               <td id="<%=su.id%>">
-				<% if policy(su).show? && @unshow_operation.blank? %>
-				  <%=link_to "#{su.username}", system_user_path(su), :remote => true %>
-				<% else %>
-				  <%= su.username %>
-				<% end %>
-			      </td>
-                              <td id="<%=su.id%>"><%=t("#{system_user_status_format(su.status)}") %></td>
-                              <% if @unshow_operation.blank? %>
-                              <td id="<%=su.id%>">
-  				<% if su.status %>
-				  <% if policy(su).lock? %>
-                            <%=button_to t(change_status_button_name(su.status)), {:controller => "system_users", :action => change_status_action_name(su.status), :id => su.id}, :class => "btn btn-danger", :remote => true %>
-				  <% end %>
-				<% else %>
-				  <% if policy(su).unlock? %>
-                            <%=button_to t(change_status_button_name(su.status)), {:controller => "system_users", :action => change_status_action_name(su.status), :id => su.id}, :class => "btn btn-danger", :remote => true %>
-				  <% end %>
-                                <% end %>
-                              </td>
+                              <% if policy(su).show? %>
+                                <%=link_to "#{su.username}", system_user_path(su), :remote => true %>
+                              <% else %>
+                                <%= su.username %>
                               <% end %>
+                              </td>
+                              <td id="<%=su.id%>"><%=t("#{system_user_status_format(su.status)}") %></td>
+                              <td><%= su.active_property_ids %></td>
                             </tr>
                           <% end %>
                         </tbody>

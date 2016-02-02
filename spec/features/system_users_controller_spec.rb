@@ -1,230 +1,111 @@
 require "feature_spec_helper"
 
 describe SystemUsersController do
-  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
+  fixtures :apps, :permissions, :role_permissions, :roles
 
-  before(:all) do
-    @root_user = create(:system_user, :admin)
+  before(:each) do
+    @root_user = create(:system_user, :admin, :with_property_ids => [1000])
+    user_manager_role = Role.find_by_name "user_manager"
+    @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
+    @system_user_2 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1003])
+    @system_user_3 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1003, 1007, 1014])
+  end
+
+  def verify_system_user_table_column_header
+    col_headers = all("div#content table#system_user thead th")
+    expect(col_headers.length).to eq 3
+    expect(col_headers[0].text).to eq(I18n.t("user.user_name"))
+    expect(col_headers[1].text).to eq(I18n.t("user.status"))
+    expect(col_headers[2].text).to eq(I18n.t("property.title"))
+  end
+
+  def verify_system_user_table_record(row_number, system_user_name, displayed_status, property)
+    row_cells = all("div#content table#system_user tbody tr:nth-child(#{row_number}) td")
+    expect(row_cells.length).to eq 3
+    expect(row_cells[0].text).to eq system_user_name
+    expect(row_cells[1].text).to eq displayed_status
+    expect(row_cells[2].text).to eq property
   end
   
   describe "[4] List System user" do
-    before(:each) do
-    end
-
-    after(:each) do
-    end
-
     it "[4.1] verify the list system user" do
-      login_as(@root_user, :scope => :system_user)
-      visit '/system_users'
-      expect(page).to have_selector('table tr', :count => 1)
-      expect(page).to have_content(I18n.t("user.user_name"))
-      expect(page).to have_content(I18n.t("user.status"))
-      expect(page).to have_content(I18n.t("general.operation"))
-      logout(@root_user)
+      mock_ad_account_profile(true, [1000])
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
+      visit system_users_path
+      table_selector = "div#content table#system_user"
+      rows = all("#{table_selector} tbody tr")
+      expect(rows.length).to eq 4
+      verify_system_user_table_record(1, @root_user.username, I18n.t("user.active"), "[1000]")
+      verify_system_user_table_record(2, @system_user_1.username, I18n.t("user.active"), "[1000]")
+      verify_system_user_table_record(3, @system_user_2.username, I18n.t("user.active"), "[1003]")
+      verify_system_user_table_record(4, @system_user_3.username, I18n.t("user.active"), "[1003, 1007, 1014]")
+    end
+
+    it "[4.2] verify the list system non-1000 user" do
+      mock_ad_account_profile(true, [1003])
+      login("#{@system_user_2.username}@#{@system_user_2.domain}")
+      visit system_users_path
+      table_selector = "div#content table#system_user"
+      rows = all("#{table_selector} tbody tr")
+      expect(rows.length).to eq 1
+      verify_system_user_table_record(1, @system_user_2.username, I18n.t("user.active"), "[1003]")
+      #verify_system_user_table_record(2, @system_user_3.username, I18n.t("user.active"), "[1003, 1007, 1014]")
+    end
+
+    it "[4.3] filter suspended property group user" do
+      mock_ad_account_profile(true, [1003])
+      login("#{@system_user_2.username}@#{@system_user_2.domain}")
+      @system_user_3.update_properties([1007])
+      visit system_users_path
+      table_selector = "div#content table#system_user"
+      rows = all("#{table_selector} tbody tr")
+      expect(rows.length).to eq 1
+      verify_system_user_table_record(1, @system_user_2.username, I18n.t("user.active"), "[1003]")
     end
   end
 
   describe '[5] View system user' do
-    before(:each) do
-      user_manager_role = Role.find_by_name "user_manager"
-      @system_user_1 = create(:system_user, :roles => [user_manager_role])
-    end
+    def verify_system_user_profile_page(system_user, assert_edit_btn=true)
+      visit system_user_path(:id => system_user.id)
+      breadcrumb_dom = find("div#content div#breadcrumbs h2.page-title")
+      expect(breadcrumb_dom).to have_content system_user.username
+      expect(breadcrumb_dom).to have_content system_user.status ? I18n.t("user.active") : I18n.t("user.inactive")
 
-    after(:each) do
-      RoleAssignment.delete_all
-      AppSystemUser.delete_all
-      @system_user_1.destroy
+      tbl = find("div#content div#systems_and_roles")
+
+      if assert_edit_btn
+        expect(tbl).to have_button(I18n.t("general.edit"))
+      else
+        expect(tbl).to have_no_button(I18n.t("general.edit"))
+      end
     end
 
     it '[5.1] Check Single user content' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@root_user.id}"
-      expect(page).to have_content(@root_user.username)
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_content(I18n.t("role.role"))
-      #expect(page).to have_content(I18n.t("role.root_user"))
+      login("#{@root_user.username}@#{@root_user.domain}")
+      verify_system_user_profile_page(@root_user, false)
       logout(@root_user)
     end
 
     it '[5.2] Current user cannot edit role for himself' do
-      login_as(@system_user_1, :scope => :system_user)
-      visit "/system_users/#{@system_user_1.id}"
-      expect(page).to have_content(@system_user_1.username)
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_content(I18n.t("role.role"))
-      #expect(page).to have_content(I18n.t("role.root_user"))
-      expect(page).to have_no_button(I18n.t("general.edit"))
+      login("#{@system_user_1.username}@#{@system_user_1.domain}")
+      verify_system_user_profile_page(@system_user_1, false)
       logout(@system_user_1)
     end
 
     it '[5.3] Edit button is alwawys disabled in Root user' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@root_user.id}"
-      expect(page).to have_content(@root_user.username)
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_content(I18n.t("role.role"))
-      #expect(page).to have_content(I18n.t("general.na")) 
-      expect(page).to have_no_button(I18n.t("general.edit"))
+      login("#{@root_user.username}@#{@root_user.domain}")
+      verify_system_user_profile_page(@root_user, false)
       logout(@root_user)
-    end
-  end
-
-  describe "[6] Activate/De-activate system user" do
-    before(:each) do
-      @system_user_1 = create(:system_user, :status => true)
-      @system_user_2 = create(:system_user, :status => false)
-      AuditLog.delete_all 
-    end
-
-    after(:each) do
-      @system_user_1.destroy
-      @system_user_2.destroy
-      AuditLog.delete_all
-    end
-
-    it "[6.1] Activate system user (list system user)" do
-      login_as(@root_user, :scope => :system_user)
-      visit '/system_users'
-      expect(page.all('tr')[2].all('td')[0]).to have_content(@system_user_2.username)
-      expect(page.all('tr')[2].all('td')[1]).to have_content(I18n.t("user.inactive"))
-      expect(page.all('tr')[2].all('td')[2]).to have_button(I18n.t("user.unlock"))
-      click_button I18n.t("user.unlock")
-      expect(page.all('tr')[2].all('td')[0]).to have_content(@system_user_2.username)
-      expect(page.all('tr')[2].all('td')[1]).to have_content(I18n.t("user.active"))
-      expect(page.all('tr')[2].all('td')[2]).to have_button(I18n.t("user.lock"))
-      check_flash_message I18n.t("success.unlock_user", :user_name => @system_user_2.username)
-    end
-
-    it "[6.2] De-activate system user (list system user)" do
-      login_as(@root_user, :scope => :system_user)
-      visit '/system_users'
-      expect(page.all('tr')[1].all('td')[0]).to have_content(@system_user_1.username)
-      expect(page.all('tr')[1].all('td')[1]).to have_content(I18n.t("user.active"))
-      expect(page.all('tr')[1].all('td')[2]).to have_button(I18n.t("user.lock"))
-      click_button I18n.t("user.lock")
-      expect(page.all('tr')[1].all('td')[0]).to have_content(@system_user_1.username)
-      expect(page.all('tr')[1].all('td')[1]).to have_content(I18n.t("user.inactive"))
-      expect(page.all('tr')[1].all('td')[2]).to have_button(I18n.t("user.unlock"))
-      check_flash_message I18n.t("success.lock_user", :user_name => @system_user_1.username)
-    end
-=begin
-    it "[6.3] Activate system user (view system user)" do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@system_user_2.id}"
-      expect(page).to have_content(@system_user_2.username)
-      expect(page).to have_content(I18n.t("user.inactive"))
-      click_button I18n.t("user.unlock")
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_button(I18n.t("user.lock"))
-    end
-
-    it "[6.4] de-Activate system user (view system user)" do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@system_user_1.id}"
-      expect(page).to have_content(@system_user_1.username)
-      expect(page).to have_content(I18n.t("user.active"))
-      click_button I18n.t("user.lock")
-      expect(page).to have_content(I18n.t("user.inactive"))
-      expect(page).to have_button(I18n.t("user.unlock"))
-    end
-=end
-    it '[6.5] login as de-activated account' do
-      visit "/"
-      fill_in "system_user_username", :with => @system_user_2.username
-      fill_in "system_user_password", :with => "1233444"
-      click_button I18n.t("general.login")
-      expect(page).to have_content I18n.t("alert.inactive_account")
-    end
-
-    it "[6.6] Current user cannot de-activate himself (list system user)" do
-      login_as(@root_user, :scope => :system_user)
-      visit '/system_users'
-      expect(page.all('tr')[0].all('td')[0]).to have_content(@root_user.username)
-      expect(page.all('tr')[0].all('td')[1]).to have_content(I18n.t("user.active"))
-      expect(page.all('tr')[0].all('td')[2]).to have_no_button(I18n.t("user.lock"))
-    end
-=begin
-    it "[6.7] Current user cannot de-activate himself (view system user)" do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users/#{@root_user.id}"
-      expect(page).to have_content(@root_user.username)
-      expect(page).to have_content(I18n.t("user.status"))
-      expect(page).to have_content(I18n.t("user.active"))
-      expect(page).to have_no_button(I18n.t("user.lock"))
-      expect(page).to have_content(I18n.t("role.role"))
-      #expect(page).to have_content(I18n.t("role.root_user"))
-      expect(page).to have_no_button(I18n.t("general.edit"))
-      logout(@root_user) 
-    end
-=end
-    it '[6.8] audit log for Activate system user' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users"
-      expect(page.all('tr')[2].all('td')[0]).to have_content(@system_user_2.username)
-      expect(page.all('tr')[2].all('td')[1]).to have_content(I18n.t("user.inactive"))
-      expect(page.all('tr')[2].all('td')[2]).to have_button(I18n.t("user.unlock"))
-      click_button I18n.t("user.unlock")
-      al = AuditLog.first
-      expect(al.audit_target).to eq("system_user")
-      expect(al.action_type).to eq("update")
-      expect(al.action).to eq("unlock")
-      expect(al.action_status).to eq("success")
-      expect(al.action_error).to be_nil
-      expect(al.session_id).not_to be_empty
-      expect(al.ip).not_to be_empty
-      expect(al.action_by).to eq("portal.admin")
-      expect(al.action_at).to be_kind_of(Time)
-      expect(al.description).to be_nil
-    end
-
-    it '[6.9] audit log for De-activate system user' do
-      login_as(@root_user, :scope => :system_user)
-      visit "/system_users"
-      expect(page.all('tr')[1].all('td')[0]).to have_content(@system_user_1.username)
-      expect(page.all('tr')[1].all('td')[1]).to have_content(I18n.t("user.active"))
-      expect(page.all('tr')[1].all('td')[2]).to have_button(I18n.t("user.lock"))
-      click_button I18n.t("user.lock")
-      al = AuditLog.first
-      expect(al.audit_target).to eq("system_user")
-      expect(al.action_type).to eq("update")
-      expect(al.action).to eq("lock")
-      expect(al.action_status).to eq("success")
-      expect(al.action_error).to be_nil
-      expect(al.session_id).not_to be_empty
-      expect(al.ip).not_to be_empty
-      expect(al.action_by).to eq("portal.admin")
-      expect(al.action_at).to be_kind_of(Time)
-      expect(al.description).to be_nil
-    end
-
-    it '[6.10] De-activate an active user' do
-      system_user = SystemUser.create!(:username => "tester", :status => true, :admin => false)
-      login_as(system_user, :scope => :system_user)
-      system_user.status = false
-      system_user.save
-      visit home_root_path
-      #expect(page.status_code).to eq 401
-      #visit '/dashboard'
-      expect(page).to have_content I18n.t("alert.inactive_account")
     end
   end
 
   describe '[7] Edit Roles' do
     before(:each) do
-      @system_user_1 = create(:system_user)
-      @system_user_2 = create(:system_user)
+      @system_user_1 = create(:system_user, :with_property_ids => [1000])
+      @system_user_2 = create(:system_user, :with_property_ids => [1000])
       #@user_manager = Role.first
       #@helpdesk = Role.find_by_name("helpdesk")
       #@system_user_2.role_assignments.create!({:role_id => @helpdesk.id})
-    end
-
-    after(:each) do
-      RoleAssignment.delete_all
-      AppSystemUser.delete_all
-      AuditLog.delete_all
-      @system_user_1.destroy
-      @system_user_2.destroy
     end
 
     def verify_grant_role(click_cancel_button=false)
@@ -298,8 +179,13 @@ describe SystemUsersController do
         #radio_btn_1.unselect_option
         #click_button(I18n.t("general.confirm"))
         # capybara won't let radio buttons unselected
-        visit "/system_users/#{@system_user_1.id}/update_roles"
+        #visit "/system_users/#{@system_user_1.id}/update_roles"
+
       end
+
+      page.driver.post("/system_users/#{@system_user_1.id}/update_roles")
+      visit system_user_path(@system_user_1)
+
       @system_user_1.reload
       expect(@system_user_1.roles.length).to eq 0
       user_profile = find("div#content div#systems_and_roles")
@@ -329,7 +215,7 @@ describe SystemUsersController do
 
     it '[7.5] Current user cannot edit role for himself (view system user)' do
       root_user = SystemUser.find_by_admin(1)
-      login_as_root
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit system_user_path(root_user)
       expect(page).to have_content(root_user.username)
       #expect(page).to have_content(I18n.t("user.status"))
@@ -343,7 +229,7 @@ describe SystemUsersController do
 
   describe "[13] Switch main functional tab" do
     it "[13.1] Select User Management" do
-      login_as(@root_user)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit '/home'
       first('ul.dropdown-menu').find('a', :text => I18n.t("header.user_management")).click
       expect(current_path).to eq(user_management_root_path)
@@ -351,14 +237,14 @@ describe SystemUsersController do
     end
 
     it "[13.2] Click Audit log" do
-      login_as_root
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit '/home'
       first('ul.dropdown-menu').find('a', :text => I18n.t("header.audit_log")).click
       expect(current_path).to eq(search_audit_logs_path)
     end
 
     it "[13.3] Select Role Management" do
-      login_as(@root_user)
+      login("#{@root_user.username}@#{@root_user.domain}")
       visit '/home'
       first('ul.dropdown-menu').find('a', :text => I18n.t("header.role_management")).click
       expect(current_path).to eq(role_management_root_path)
@@ -366,45 +252,28 @@ describe SystemUsersController do
   end
 
   describe "[14] Role authorization" do
-    fixtures :apps, :permissions, :role_permissions, :roles
-
-    before(:each) do
-      AppSystemUser.delete_all
-      SystemUser.delete_all
-    end
-
-    after(:each) do
-      AppSystemUser.delete_all
-      SystemUser.delete_all
-    end
-
-    after(:all) do
-      RolePermission.delete_all
-      Role.delete_all
-      Permission.delete_all
-      AppSystemUser.delete_all
-      SystemUser.delete_all
-      App.delete_all
-    end
+    fixtures :apps, :permissions, :role_permissions, :roles, :role_types
 
     it "[14.1] click unauthorized action" do
       auditor_role = Role.find_by_name "auditor"
       user_manager_role = Role.find_by_name "user_manager"
-      auditor_1 = create(:system_user, :roles => [user_manager_role])
-      auditor_2 = create(:system_user, :roles => [auditor_role])
-      login_as(auditor_1, :scope => :system_user)
+      auditor_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
+      auditor_2 = create(:system_user, :roles => [auditor_role], :with_property_ids => [1000])
+      login("#{auditor_1.username}@#{auditor_1.domain}")
       visit home_root_path
-      visit system_users_path
+      visit system_user_path(:id => auditor_2.id)
       auditor_1.update_roles([auditor_role.id])
-      lock_usr_btn_select = "div#content table tbody tr:nth-child(2) td:nth-child(3) input"
-      find(lock_usr_btn_select).click
+      auditor_1.reload
+      edit_usr_btn_select = "div#content div#systems_and_roles a.btn"
+      find(edit_usr_btn_select).click
+
       verify_unauthorized_request
     end
 
     it "[14.2] click link to the unauthorized page" do
       auditor_role = Role.find_by_name "auditor"
-      auditor_1 = create(:system_user, :roles => [auditor_role])
-      login_as(auditor_1, :scope => :system_user)
+      auditor_1 = create(:system_user, :roles => [auditor_role], :with_property_ids => [1000])
+      login("#{auditor_1.username}@#{auditor_1.domain}")
       visit home_root_path
       visit user_management_root_path
       verify_unauthorized_request
@@ -412,8 +281,8 @@ describe SystemUsersController do
 
     it "[14.3] Search audit log (authorized)" do
       auditor_role = Role.find_by_name "auditor"
-      auditor_1 = create(:system_user, :roles => [auditor_role])
-      login_as(auditor_1, :scope => :system_user)
+      auditor_1 = create(:system_user, :roles => [auditor_role], :with_property_ids => [1000])
+      login("#{auditor_1.username}@#{auditor_1.domain}")
       visit home_root_path
       visit search_audit_logs_path
       expect(current_path).to eq search_audit_logs_path
@@ -422,16 +291,16 @@ describe SystemUsersController do
 
     it "[14.4] Search audit log (unauthorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role])
-      login_as(user_manager_1, :scope => :system_user)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
+      login("#{user_manager_1.username}@#{user_manager_1.domain}")
       visit home_root_path
       assert_dropdown_menu_item(I18n.t("header.audit_log"), false)
     end
 
     it "[14.5] List System User (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role])
-      login_as(user_manager_1, :scope => :system_user)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
+      login("#{user_manager_1.username}@#{user_manager_1.domain}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
       visit user_management_root_path
@@ -441,17 +310,17 @@ describe SystemUsersController do
 
     it "[14.6] List System User (unauthorized)" do
       auditor_role = Role.find_by_name "auditor"
-      auditor_1 = create(:system_user, :roles => [auditor_role])
-      login_as(auditor_1, :scope => :system_user)
+      auditor_1 = create(:system_user, :roles => [auditor_role], :with_property_ids => [1000])
+      login("#{auditor_1.username}@#{auditor_1.domain}")
       visit home_root_path
       assert_dropdown_menu_item(I18n.t("header.user_management"), false)
     end
 
     it "[14.7] View user profile (authroized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role])
-      user_manager_2 = create(:system_user, :roles => [user_manager_role])
-      login_as(user_manager_1, :scope => :system_user)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
+      login("#{user_manager_1.username}@#{user_manager_1.domain}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
       visit user_management_root_path
@@ -465,9 +334,9 @@ describe SystemUsersController do
 
     it "[14.8] Grant roles (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role])
-      user_manager_2 = create(:system_user, :roles => [user_manager_role])
-      login_as(user_manager_1, :scope => :system_user)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role], :with_property_ids => [1000])
+      login("#{user_manager_1.username}@#{user_manager_1.domain}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
       visit user_management_root_path
@@ -476,17 +345,17 @@ describe SystemUsersController do
       click_link I18n.t("user.list_users")
       user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
       find(user_manager_2_profile_link_selector).click
-      click_button I18n.t("general.edit")
+      click_link I18n.t("general.edit")
       expect(has_link?(I18n.t("general.cancel"))).to be true
       click_button I18n.t("general.confirm")
       verify_authorized_request
     end
 
-    it "[14.9] Lock System user (authorized)" do
+    xit "[14.9] Lock System user (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
       user_manager_1 = create(:system_user, :roles => [user_manager_role])
       user_manager_2 = create(:system_user, :roles => [user_manager_role])
-      login_as(user_manager_1, :scope => :system_user)
+      login("#{user_manager_1.username}@#{user_manager_1.domain}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
       visit user_management_root_path
@@ -499,12 +368,12 @@ describe SystemUsersController do
       verify_authorized_request
     end
 
-    it "[14.10] Lock System user (unauthorized)" do
+    xit "[14.10] Lock System user (unauthorized)" do
       allow(SystemUserPolicy).to receive("lock?").and_return(false)
       user_manager_role = Role.find_by_name "user_manager"
       user_manager_1 = create(:system_user, :roles => [user_manager_role])
       user_manager_2 = create(:system_user, :roles => [user_manager_role])
-      login_as(user_manager_1, :scope => :system_user)
+      login("#{user_manager_1.username}@#{user_manager_1.domain}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
       visit user_management_root_path
@@ -516,11 +385,11 @@ describe SystemUsersController do
       expect(has_link?(I18n.t("user.lock"))).to be false
     end
 
-    it "[14.11] Un-lock system user (authorized)" do
+    xit "[14.11] Un-lock system user (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
       user_manager_1 = create(:system_user, :roles => [user_manager_role])
       user_manager_2 = create(:system_user, :status => false, :roles => [user_manager_role])
-      login_as(user_manager_1, :scope => :system_user)
+      login("#{user_manager_1.username}@#{user_manager_1.domain}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
       visit user_management_root_path
@@ -533,12 +402,12 @@ describe SystemUsersController do
       verify_authorized_request
     end
 
-    it "[14.12] un-lock system user (unauthorized)" do
+    xit "[14.12] un-lock system user (unauthorized)" do
       allow(SystemUserPolicy).to receive("unlock?").and_return(false)
       user_manager_role = Role.find_by_name "user_manager"
       user_manager_1 = create(:system_user, :roles => [user_manager_role])
       user_manager_2 = create(:system_user, :roles => [user_manager_role])
-      login_as(user_manager_1, :scope => :system_user)
+      login("#{user_manager_1.username}@#{user_manager_1.domain}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
       visit user_management_root_path

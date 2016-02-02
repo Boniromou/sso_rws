@@ -16,6 +16,7 @@ en:
     time_conflict: The schedule conflicts with previous schedule [Maintenance id =%{maintenance_id}]
     invalid_property: property can not be null
     caps_lock: The Caps Lock is turn ON
+    account_no_property: account no property
   title:
     title: User Management
     login_title: Login
@@ -117,3 +118,5 @@ en:
   audit_log:
     search_range_remark: The search range is limited to [%{config_value}] days
     search_range_error: The search range is limited to [%{config_value}] days
+  property:
+    title: Property

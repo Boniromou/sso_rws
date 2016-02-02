@@ -12,7 +12,7 @@
 <h2><%= t("header.welcome") %>, <i><%= current_system_user.username %></i></h2>
 
 <!-- pannel -->
-<% if policy(SystemUser.new).index? %>
+<% if policy(:system_user).index? %>
   <section id="widget-grid" class="">
     <div class="row">
       <article class="col-xs-12 col-sm-12 col-md-12 col-lg-4">

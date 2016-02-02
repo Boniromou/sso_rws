@@ -12,9 +12,6 @@ SsoRws::Application.routes.draw do
   end
 
   post "/internal/system_user_sessions" => "internal/system_user_sessions#create"
-  #match 'home' => 'system_user_sessions#home', :as => :home
-
-  # functional tabs on page header
   root :to => 'dashboard#home', :as => :root
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root
@@ -23,12 +20,14 @@ SsoRws::Application.routes.draw do
   resources :roles, :only => [:index, :show]
   resources :system_users, :only => [:index, :show] do
     member do
-      post 'lock'
-      post 'unlock'
-      match 'edit_roles'
-      match 'update_roles'
+      #post 'lock'
+      #post 'unlock'
+      get 'edit_roles'
+      post 'update_roles'
     end
   end
+
+  resources :system_user_change_logs, :only => [:index]
 
   resources :dashboard, :only => [:index] do
     collection do

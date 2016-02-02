@@ -13,9 +13,29 @@ module StepHelper
     end
   end
 
+  def mock_ldap_query(account_status, property_ids)
+    dn = account_status ? ["OU=Licensee"] : ["OU=Licensee,OU=Disabled Accounts"]
+    memberof = property_ids.map { |property_id| "CN=#{property_id}iportal" }
+    entry = [{ :distinguishedName => dn, :memberOf => memberof }]
+    allow_any_instance_of(AuthSourceLdap).to receive(:search).and_return(entry)
+  end
+
+  def mock_ad_account_profile(status, property_ids)
+    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+    #allow(Rigi::Ldap).to receive(:retrieve_user_profile).and_return(:account_status => status, :groups => property_ids)
+    mock_ldap_query(status, property_ids)
+  end
+
   def mock_time_at_now(time_in_str)
     fake_time = Time.parse(time_in_str)
     allow(Time).to receive(:now).and_return(fake_time)
+  end
+
+  def login(username)
+    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+    visit login_path
+    fill_in "system_user_username", :with => username
+    click_button I18n.t("general.login")
   end
 
   def login_as_root
