@@ -26,11 +26,12 @@
                 <% if @permissions_by_role.has_key?(target.to_sym) %>
                   <% perms.each do |action, name| %>
                     <h5>
+                      <% role_permission_value = @role.get_permission_value(target.to_s, action.to_s) %>
                       <% if @permissions_by_role[target.to_sym].include? action.to_s %>
 		      &nbsp; <small><i class='fa fa-check-square-o'></i></small>
-                      <%= name.titleize%>
+                      <%= name.titleize%><%= " (#{role_permission_value})" if role_permission_value %>
                       <% else %>
-                        &nbsp; <small><i class='fa fa-square-o'></i> <%= name.titleize%></small>
+                        &nbsp; <small><i class='fa fa-square-o'></i> <%= name.titleize%><%= " (#{role_permission_value})" if role_permission_value %></small>
                       <% end %>
                     </h5>
                   <% end %>

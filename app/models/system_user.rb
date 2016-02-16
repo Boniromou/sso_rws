@@ -174,6 +174,7 @@ class SystemUser < ActiveRecord::Base
     permissions = role.permissions
     targets = permissions.map{|x| x.target}.uniq
     perm_hash = {}
+    value_hash = {}
 
     targets.each do |t|
       actions = []
@@ -181,12 +182,17 @@ class SystemUser < ActiveRecord::Base
       permissions.each do |perm|
         if perm.target == t
           actions << perm.action
+          role_permission_value = role.get_permission_value(t, perm.action)
+          if role_permission_value
+            value_hash[t.to_sym] ||= {}
+            value_hash[t.to_sym][perm.action.to_sym] = role_permission_value
+          end
         end
       end
       
       perm_hash[t.to_sym] = actions
     end
 
-    Rails.cache.write(cache_key, {:permissions => {:role => role.name, :permissions => perm_hash}})
+    Rails.cache.write(cache_key, {:permissions => {:role => role.name, :permissions => perm_hash, :values => value_hash}})
   end
 end
