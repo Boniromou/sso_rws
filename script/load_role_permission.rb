@@ -67,9 +67,9 @@ s.each(cols) do |row|
   role_columns.each_key do |role|
     role_permission_data[role] ||= {}
 
-    if row[role] && row[role].upcase == permission_indicator
+    if row[role] && row[role].split(':')[0].upcase == permission_indicator
       role_permission_data[role][:grant] ||= []
-      role_permission_data[role][:grant] << { :action => row[:action], :target => row[:target]}
+      role_permission_data[role][:grant] << { :action => row[:action], :target => row[:target], :value => row[role].split(':')[1]}
     else
       role_permission_data[role][:revoke] ||= []
       role_permission_data[role][:revoke] << { :action => row[:action], :target => row[:target]}
@@ -152,7 +152,10 @@ if prompt == 'Y'
           role_permission = role_permissions_table.where("role_id = ? and permission_id = ?", role[:id], permission[:id]).first
 
           if role_permission.nil?
-            role_permissions_table.insert(:role_id => role[:id], :permission_id => permission[:id], :created_at => Time.now.utc, :updated_at => Time.now.utc)
+            role_permissions_table.insert(:role_id => role[:id], :permission_id => permission[:id], :value => permissions[:grant][:value], :created_at => Time.now.utc, :updated_at => Time.now.utc)
+          else
+            role_permission.value = permissions[:grant][:value]
+            role_permission.save!
           end
         end
       end
