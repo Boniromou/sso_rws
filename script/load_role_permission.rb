@@ -68,7 +68,7 @@ s.each(cols) do |row|
     role_permission_data[role] ||= {}
     if row[role] && row[role].split(':')[0] && row[role].split(':')[0].upcase == permission_indicator
       role_permission_data[role][:grant] ||= []
-      role_permission_data[role][:grant] << { :action => row[:action], :target => row[:target], :value => row[role].split(':')[1]}
+      role_permission_data[role][:grant] << { :action => row[:action], :target => row[:target], :value => row[role].split(':',2)[1]}
     else
       role_permission_data[role][:revoke] ||= []
       role_permission_data[role][:revoke] << { :action => row[:action], :target => row[:target]}
