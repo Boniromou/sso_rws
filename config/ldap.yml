@@ -8,19 +8,19 @@ hqidc_ldap: &hqidc_ldap
 
 twidc_ldap: &twidc_ldap
   name: 'twidc_ldap'
-  host: 'vmodc01.mo.laxino.com'
-  port: 389
-  account: ''
-  password: ''
-  base_dn: 'dc=mo, dc=laxino, dc=com'
+  host: 'tw-prd-vexdc01.777iportal.local'
+  port: 3268
+  account: 'svc_idc_ldap@777iportal.local'
+  password: '$vc_1dc_1daP'
+  base_dn: 'dc=777iportal, dc=local'
 
 phidc_ldap: &phidc_ldap
   name: 'phidc_ldap'
-  host: 'vmodc01.mo.laxino.com'
-  port: 389
-  account: ''
-  password: ''
-  base_dn: 'dc=mo, dc=laxino, dc=com'
+  host: 'ph-prd-vexdc01.888iportal.local'
+  port: 3268
+  account: 'svc_idc_ldap@888iportal.local'
+  password: '$vc_1dc_1daP'
+  base_dn: 'dc=888iportal, dc=local'
 
 moidc_ldap: &moidc_ldap
   name: 'moidc_ldap'
