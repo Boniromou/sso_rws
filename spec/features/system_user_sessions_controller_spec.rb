@@ -84,6 +84,23 @@ describe SystemUserSessionsController do
       expect(AppSystemUser.first.system_user_id).to eq @system_user_1.id
     end
 
+    it "login user with role permission value" do
+      @system_user_1.roles[0].role_permissions.each do |rp|
+        rp.value = 1
+        rp.save
+      end
+      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain}")
+      expect(page.current_path).to eq home_root_path
+      cache_key = "#{APP_NAME}:permissions:#{@system_user_1.id}"
+      permissions = Rails.cache.fetch cache_key
+      expect(permissions[:permissions][:values]).to_not eq nil
+      @system_user_1.roles[0].role_permissions.each do |rp|
+        expect(permissions[:permissions][:values][rp.permission.target.to_sym][rp.permission.action.to_sym]).to eq "1"
+        expect(@system_user_1.roles[0].get_permission_value(rp.permission.target, rp.permission.action)).to eq 1
+      end
+    end
+
   end
 
   describe "[1] Logout" do

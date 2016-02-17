@@ -12,6 +12,11 @@ class Role < ActiveRecord::Base
     result
   end
 
+  def get_permission_value(target, action)
+    role_permission = self.role_permissions.select{|role_permission| role_permission.permission.target == target && role_permission.permission.action == action}.first
+    role_permission.value if role_permission
+  end
+
   def self.target_permissions(role_id)
     perm_hash ={}
     role = self.find_by_id(role_id)
