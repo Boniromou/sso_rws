@@ -20,7 +20,8 @@ class AuthSourceLdap < AuthSource
 
   def initialize_ldap_con(ldap_user, ldap_password)
     options = { :host => self.host,
-                :port => self.port || 389,
+#                :port => self.port || 389,
+                :port => 389,
                 :encryption => nil,
                 :auth => {
                   :method => :simple,

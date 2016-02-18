@@ -2,8 +2,8 @@ class SystemUserChangeLog < ActiveRecord::Base
   attr_accessible :id, :change_detail, :target_username, :target_property_id, :action, :action_by, :description
   serialize :change_detail, JSON
   serialize :action_by, JSON
-  scope :since, -> start_time { where("created_at > ?", start_time) if start_time.present? }
-  scope :until, -> end_time { where("created_at < ?", end_time) if end_time.present? }
+  scope :since, -> time { where("created_at > ?", time.to_start_date) if time.present? }
+  scope :until, -> time { where("created_at < ?", time.to_end_date) if time.present? }
   scope :match_target_username, -> target_username { where("target_username LIKE ?", "%#{target_username}%") if target_username.present? }
 
   def self.search_query(*args)
