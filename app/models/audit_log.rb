@@ -2,8 +2,8 @@ class AuditLog < ActiveRecord::Base
   attr_accessible :audit_target, :action_type, :action, :action_status, :action_error, :session_id, :ip, :action_by, :action_at, :description
   validates_presence_of :audit_target, :action, :action_status, :action_by, :action_at#, :action_type
   validate :action_type, :inclusion => { :in => %w(create read update delete) }
-  scope :since, -> start_time { where("action_at > ?", start_time) if start_time.present? }
-  scope :until, -> end_time { where("action_at < ?", end_time) if end_time.present? }
+  scope :since, -> time { where("action_at > ?", time) if time.present? }
+  scope :until, -> time { where("action_at < ?", time) if time.present? }
   scope :match_action_by, -> actioner { where("action_by LIKE ?", "%#{actioner}%") if actioner.present? }
   scope :by_target, -> target { where("audit_target = ?", target) if target.present? }
   scope :by_action, -> action { where("action = ?", action) if action.present? }

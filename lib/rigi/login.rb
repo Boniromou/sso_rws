@@ -30,11 +30,11 @@ module Rigi
         raise InvalidLogin.new("alert.invalid_login")
       end
 
-      validate_role_status!(system_user, app_name)
       auth_source = auth_source.becomes(auth_source.auth_type.constantize)
 
       if auth_source.authenticate(username_with_domain, password)
         system_user.update_ad_profile
+        validate_role_status!(system_user, app_name)
         validate_account_status!(system_user)
         validate_account_properties!(system_user)
         system_user.cache_info(app_name)
