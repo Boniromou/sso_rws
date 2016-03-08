@@ -36,8 +36,8 @@ class SystemUserRegistrationsController < ActionController::Base
             Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has been disabled"
             flash[:alert] = "alert.invalid_login" # TODO customize specific err msg
           elsif profile[:casino_ids].blank?
-            Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has no properties"
-            flash[:alert] = "alert.account_no_property"
+            Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has no casinos"
+            flash[:alert] = "alert.account_no_casino"
           else
             SystemUser.register!(username, domain, auth_source.id, profile[:casino_ids])
             flash[:success] = "alert.signup_completed"

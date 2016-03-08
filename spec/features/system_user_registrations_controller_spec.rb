@@ -43,18 +43,18 @@ describe SystemUserRegistrationsController do
       expect(page).to have_content I18n.t("alert.registered_account")
     end
 
-    it "[3.11] Register system user fail with AD property not match with MDS" do
+    it "[3.11] Register system user fail with AD casino not match with MDS" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1100])
       go_signup_page_and_register('test_user@example.com')
-      expect(page).to have_content I18n.t("alert.account_no_property")
+      expect(page).to have_content I18n.t("alert.account_no_casino")
     end
 
-    it "[3.12] Register system user fail with null property in AD." do
+    it "[3.12] Register system user fail with null casino in AD." do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [])
       go_signup_page_and_register('test_user@example.com')
-      expect(page).to have_content I18n.t("alert.account_no_property")
+      expect(page).to have_content I18n.t("alert.account_no_casino")
     end
 
     it "[3.13] Register user with upper case." do
