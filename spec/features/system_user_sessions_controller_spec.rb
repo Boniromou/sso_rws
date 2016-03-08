@@ -65,7 +65,7 @@ describe SystemUserSessionsController do
       casino_system_user_1007 = CasinosSystemUser.where(:casino_id => 1007, :system_user_id => @system_user_1.id).first
       expect(casino_system_user_1003.status).to eq false
       expect(casino_system_user_1007.status).to eq false
-      expect(page).to have_content I18n.t("alert.account_no_property")
+      expect(page).to have_content I18n.t("alert.account_no_casino")
     end
 
     it "[1.11] Login successful and update the User lock/unlock status" do

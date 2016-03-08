@@ -77,8 +77,8 @@ module Rigi
 
     def validate_account_casinos!(system_user)
       if !system_user.is_admin? && system_user.active_casino_ids.blank?
-        Rails.logger.error "SystemUser[username=#{system_user.username}] Login failed. The account has no properties"
-        raise InvalidLogin.new("alert.account_no_property")
+        Rails.logger.error "SystemUser[username=#{system_user.username}] Login failed. The account has no casinos"
+        raise InvalidLogin.new("alert.account_no_casino")
       end
     end
   end

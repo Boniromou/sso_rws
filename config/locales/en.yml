@@ -16,7 +16,7 @@ en:
     time_conflict: The schedule conflicts with previous schedule [Maintenance id =%{maintenance_id}]
     invalid_property: property can not be null
     caps_lock: The Caps Lock is turn ON
-    account_no_property: account no property
+    account_no_casino: account no casino
   title:
     title: User Management
     login_title: Login
