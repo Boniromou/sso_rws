@@ -46,11 +46,11 @@ class ApplicationController < ActionController::Base
  
   protected
   class SystemUserContext
-    attr_reader :system_user, :request_property_id
+    attr_reader :system_user, :request_casino_id
 
-    def initialize(system_user, request_property_id)
+    def initialize(system_user, request_casino_id)
       @system_user = system_user
-      @request_property_id = request_property_id
+      @request_casino_id = request_casino_id
     end
   end
 
@@ -156,17 +156,17 @@ class ApplicationController < ActionController::Base
   end
 
   def pundit_user
-    SystemUserContext.new(current_system_user, params[:property_id])
+    SystemUserContext.new(current_system_user, params[:casino_id])
   end
 
   def verify_request_scope
-    property_ids = []
-    property_ids << params[:property_id] if params[:property_id]
-    property_ids += params[:selected_properties] if params[:selected_properties]
+    casino_ids = []
+    casino_ids << params[:casino_id] if params[:casino_id]
+    casino_ids += params[:selected_casinos] if params[:selected_casinos]
 
-    property_ids.each do |property_id|
-      property = Property.find_by_id(property_id)
-      authorize property, :same_group?
+    casino_ids.each do |casino_id|
+      casino = Casino.find_by_id(casino_id)
+      authorize casino, :same_group?
     end
   end
 end

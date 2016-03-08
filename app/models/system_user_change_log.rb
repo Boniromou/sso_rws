@@ -1,5 +1,5 @@
 class SystemUserChangeLog < ActiveRecord::Base
-  attr_accessible :id, :change_detail, :target_username, :target_property_id, :action, :action_by, :description
+  attr_accessible :id, :change_detail, :target_username, :target_casino_id, :action, :action_by, :description
   serialize :change_detail, JSON
   serialize :action_by, JSON
   scope :since, -> time { where("created_at > ?", time.to_start_date) if time.present? }

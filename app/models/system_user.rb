@@ -1,36 +1,39 @@
 class SystemUser < ActiveRecord::Base
   devise :registerable
-  attr_accessible :id, :username, :status, :admin, :auth_source_id, :domain
+  attr_accessible :id, :username, :status, :admin, :auth_source_id, :domain_id
   belongs_to :auth_source
   has_many :role_assignments, :as => :user, :dependent => :destroy
   has_many :roles, :through => :role_assignments
   has_many :app_system_users
   has_many :apps, :through => :app_system_users
-  has_many :properties_system_users
-  has_many :properties, :through => :properties_system_users
-  scope :with_active_property, -> { joins(:properties_system_users).where("properties_system_users.status = ?", true).select("DISTINCT(system_users.id), system_users.*") }
+  belongs_to :domain
+  has_many :casinos_system_users
+  has_many :casinos, :through => :casinos_system_users
+  scope :with_active_casino, -> { joins(:casinos_system_users).where("casinos_system_users.status = ?", true).select("DISTINCT(system_users.id), system_users.*") }
 
   def auth_source
     auth = AuthSource.find_by_id(auth_source_id)
     auth.becomes(auth.auth_type.constantize)
   end
 
-  def active_property_ids
-    PropertiesSystemUser.where(:system_user_id => id, :status => true).select(:property_id).pluck(:property_id)
+  def active_casino_ids
+    CasinosSystemUser.where(:system_user_id => id, :status => true).select(:casino_id).pluck(:casino_id)
   end
 
   def is_admin?
     admin
   end
 
-  def has_admin_property?
-    active_property_ids.include?(ADMIN_PROPERTY_ID)
+  def has_admin_casino?
+    active_casino_ids.include?(ADMIN_CASINO_ID)
   end
 
-  def self.register!(username, domain, auth_source_id, property_ids)
+  def self.register!(username, domain, auth_source_id, casino_ids)
     transaction do
-      system_user = create!(:username => username, :domain => domain, :auth_source_id => auth_source_id, :status => true)
-      system_user.update_properties(property_ids)
+      domain = Domain.where(:name => domain).first
+      domain = Domain.create!(:name => domain) if domain.blank?
+      system_user = create!(:username => username, :domain_id => domain.id, :auth_source_id => auth_source_id, :status => true)
+      system_user.update_casinos(casino_ids)
     end
   end
 
@@ -96,15 +99,15 @@ class SystemUser < ActiveRecord::Base
   end
 =end  
 
-  def update_properties(property_ids)
-    PropertiesSystemUser.update_properties_by_system_user(id, property_ids)
+  def update_casinos(casino_ids)
+    CasinosSystemUser.update_casinos_by_system_user(id, casino_ids)
   end
 
   def update_ad_profile
-    property_ids = Property.select(:id).pluck(:id)
-    profile = self.auth_source.retrieve_user_profile(username, domain, property_ids)
+    casino_ids = Casino.select(:id).pluck(:id)
+    profile = self.auth_source.retrieve_user_profile(username, self.domain.name, casino_ids)
     self.status = profile[:status]
-    update_properties(profile[:property_ids])
+    update_casinos(profile[:casino_ids])
     save!
   end
 
@@ -158,7 +161,7 @@ class SystemUser < ActiveRecord::Base
 
   def cache_profile
     cache_key = "#{self.id}"
-    cache_hash = {:status => self.status, :admin => self.admin, :properties => self.active_property_ids}
+    cache_hash = {:status => self.status, :admin => self.admin, :casinos => self.active_casino_ids}
     Rails.cache.write(cache_key, cache_hash)
   end
 

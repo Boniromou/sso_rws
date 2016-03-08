@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160215084518) do
+ActiveRecord::Schema.define(:version => 20160307082511) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -58,6 +58,55 @@ ActiveRecord::Schema.define(:version => 20160215084518) do
     t.string  "search_scope"
   end
 
+  create_table "casinos", :force => true do |t|
+    t.integer  "licensee_id",               :null => false
+    t.string   "name",        :limit => 45, :null => false
+    t.string   "description"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "casinos", ["licensee_id"], :name => "fk_Casinos_LicenseeId"
+  add_index "casinos", ["name"], :name => "index_casinos_on_name", :unique => true
+
+  create_table "casinos_system_users", :force => true do |t|
+    t.integer  "system_user_id",                   :null => false
+    t.integer  "casino_id",                        :null => false
+    t.boolean  "status",         :default => true, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
+  add_index "casinos_system_users", ["casino_id", "system_user_id"], :name => "index_casinos_system_users_on_casino_id_and_system_user_id", :unique => true
+  add_index "casinos_system_users", ["system_user_id"], :name => "fk_CasinosSystemUsers_SystemUserId"
+
+  create_table "domains", :force => true do |t|
+    t.string   "name",       :limit => 45, :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+  end
+
+  add_index "domains", ["name"], :name => "index_domains_on_name", :unique => true
+
+  create_table "domains_casinos", :force => true do |t|
+    t.integer  "domain_id",  :null => false
+    t.integer  "casino_id",  :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "domains_casinos", ["casino_id"], :name => "fk_DomainsCasinos_CasinoId"
+  add_index "domains_casinos", ["domain_id", "casino_id"], :name => "index_domains_casinos_on_domain_id_and_casino_id", :unique => true
+
+  create_table "licensees", :force => true do |t|
+    t.string   "name",        :limit => 45, :null => false
+    t.string   "description"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "licensees", ["name"], :name => "index_licensees_on_name", :unique => true
+
   create_table "permissions", :force => true do |t|
     t.string   "name"
     t.string   "action"
@@ -74,18 +123,10 @@ ActiveRecord::Schema.define(:version => 20160215084518) do
     t.datetime "updated_at",  :null => false
     t.string   "name"
     t.string   "description"
+    t.integer  "casino_id"
   end
 
-  create_table "properties_system_users", :force => true do |t|
-    t.integer  "system_user_id",                   :null => false
-    t.integer  "property_id",                      :null => false
-    t.boolean  "status",         :default => true, :null => false
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-  end
-
-  add_index "properties_system_users", ["property_id", "system_user_id"], :name => "index_properties_system_users_on_property_id_and_system_user_id", :unique => true
-  add_index "properties_system_users", ["system_user_id"], :name => "fk_PropertiesSystemUsers_SystemUserId"
+  add_index "properties", ["casino_id"], :name => "fk_Properties_CasinoId"
 
   create_table "role_assignments", :force => true do |t|
     t.string   "user_type",  :limit => 60, :null => false
@@ -127,14 +168,14 @@ ActiveRecord::Schema.define(:version => 20160215084518) do
   add_index "roles", ["role_type_id"], :name => "fk_Roles_RoleTypeId"
 
   create_table "system_user_change_logs", :force => true do |t|
-    t.string   "change_detail",      :limit => 1024, :default => "{}"
-    t.string   "target_username",                                      :null => false
-    t.integer  "target_property_id",                                   :null => false
-    t.string   "action",                                               :null => false
-    t.string   "action_by",          :limit => 1024, :default => "{}"
+    t.string   "change_detail",    :limit => 1024, :default => "{}"
+    t.string   "target_username",                                    :null => false
+    t.string   "action",                                             :null => false
+    t.string   "action_by",        :limit => 1024, :default => "{}"
     t.string   "description"
-    t.datetime "created_at",                                           :null => false
-    t.datetime "updated_at",                                           :null => false
+    t.datetime "created_at",                                         :null => false
+    t.datetime "updated_at",                                         :null => false
+    t.integer  "target_casino_id",                                   :null => false
   end
 
   create_table "system_users", :force => true do |t|
@@ -149,10 +190,11 @@ ActiveRecord::Schema.define(:version => 20160215084518) do
     t.boolean  "status",             :default => false, :null => false
     t.boolean  "admin",              :default => false, :null => false
     t.integer  "auth_source_id"
-    t.string   "domain"
+    t.integer  "domain_id"
   end
 
   add_index "system_users", ["auth_source_id"], :name => "auth_source_id"
-  add_index "system_users", ["username", "domain"], :name => "index_system_users_on_username_and_domain", :unique => true
+  add_index "system_users", ["domain_id"], :name => "fk_SystemUsers_DomainId"
+  add_index "system_users", ["username", "domain_id"], :name => "index_system_users_on_username_and_domain_id", :unique => true
 
 end

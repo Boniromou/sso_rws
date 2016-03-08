@@ -20,26 +20,26 @@ class SystemUserRegistrationsController < ActionController::Base
       password = params[:system_user][:password]    
 
       auth_source = AuthSource.first
-      sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id, :domain => domain).first
+      sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id).first 
 
-      if sys_usr
+      if sys_usr && sys_usr.domain.name == domain
         flash[:alert] = "alert.registered_account"
       else
         auth_source = auth_source.becomes(auth_source.auth_type.constantize)
         
         if auth_source.authenticate(username_with_domain, password)
           #profile = get_system_user_profile(username)
-          property_ids = Property.select(:id).pluck(:id)
-          profile = auth_source.retrieve_user_profile(username, domain, property_ids)
+          casino_ids = Casino.select(:id).pluck(:id)
+          profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
 
           if profile[:status] == false
             Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has been disabled"
             flash[:alert] = "alert.invalid_login" # TODO customize specific err msg
-          elsif profile[:property_ids].blank?
+          elsif profile[:casino_ids].blank?
             Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has no properties"
             flash[:alert] = "alert.account_no_property"
           else
-            SystemUser.register!(username, domain, auth_source.id, profile[:property_ids])
+            SystemUser.register!(username, domain, auth_source.id, profile[:casino_ids])
             flash[:success] = "alert.signup_completed"
           end
         else

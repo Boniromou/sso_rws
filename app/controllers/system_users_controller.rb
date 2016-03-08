@@ -3,7 +3,7 @@ class SystemUsersController < ApplicationController
   respond_to :html, :js
   
   def index
-    @system_users = policy_scope(SystemUser.with_active_property)
+    @system_users = policy_scope(SystemUser.with_active_casino)
     authorize :system_users, :index?
   end
 
@@ -79,13 +79,13 @@ class SystemUsersController < ApplicationController
   end
 
   def create_change_log(system_user, action, app_name, from, to)
-    system_user.active_property_ids.each do |target_property_id|
+    system_user.active_casino_ids.each do |target_casino_id|
       cl = SystemUserChangeLog.new
       cl.target_username = system_user.username
-      cl.target_property_id = target_property_id
+      cl.target_casino_id = target_casino_id
       cl.action = action
       cl.action_by[:username] = current_system_user.username
-      cl.action_by[:property_ids] = current_system_user.active_property_ids
+      cl.action_by[:casino_ids] = current_system_user.active_casino_ids
       cl.change_detail[:app_name] = app_name
       cl.change_detail[:from] = from
       cl.change_detail[:to] = to

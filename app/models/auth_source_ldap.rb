@@ -4,7 +4,7 @@ require 'timeout'
 
 class AuthSourceLdap < AuthSource
   DISABLED_ACCOUNT_KEY = 'Disabled Accounts'
-  MATCH_PATTERN_REGEXP = /CN=\d+iportal/
+  MATCH_PATTERN_REGEXP = /CN=\d+casinoid/
 
   def initialize(attributes=nil, *args)
     super
@@ -87,7 +87,7 @@ class AuthSourceLdap < AuthSource
 #    is_admin_group = dnames.any? { |dn| dn_has_admin_group?(dn) }
 
 #    if is_admin_group
-#      groups << ADMIN_PROPERTY_ID
+#      groups << ADMIN_CASINO_ID
 #    else
       memberofs.each do |memberof|
         filter_groups.each do |filter|
@@ -96,7 +96,7 @@ class AuthSourceLdap < AuthSource
       end
 #    end
 
-    res = { :status => !is_disable_account, :property_ids => groups.uniq }
+    res = { :status => !is_disable_account, :casino_ids => groups.uniq }
     Rails.logger.info "[username=#{username}][filter_groups=#{filter_groups}] account result => #{res.inspect}"
 
     res

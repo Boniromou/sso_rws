@@ -1,4 +1,4 @@
 FactoryGirl.define do
-  factory :property do
+  factory :casino do
   end
 end
