@@ -44,7 +44,7 @@ class AuthSourceLdap < AuthSource
     ldap = Net::LDAP.new(options)
 
     search_filter = Net::LDAP::Filter.eq("userPrincipalName", "#{username}@#{domain}")
-    
+
 =begin ... do |entry|
       Rails.logger.debug "DN: #{entry.dn}"
 

@@ -55,7 +55,7 @@ class SystemUser < ActiveRecord::Base
       diff_role_ids.each do |role_id|
         if existing_roles.include?(role_id)
           revoke_role(role_id)
-        elsif 
+        elsif
           assign_role(role_id)
         end
       end
@@ -97,14 +97,14 @@ class SystemUser < ActiveRecord::Base
     update_attributes({:status => 1})
     cache_profile
   end
-=end  
+=end
 
   def update_casinos(casino_ids)
     CasinosSystemUser.update_casinos_by_system_user(id, casino_ids)
   end
 
   def update_ad_profile
-    casino_ids = Casino.select(:id).pluck(:id)
+    casino_ids = Casino.pluck(:id)
     profile = self.auth_source.retrieve_user_profile(username, self.domain.name, casino_ids)
     self.status = profile[:status]
     update_casinos(profile[:casino_ids])
@@ -161,7 +161,14 @@ class SystemUser < ActiveRecord::Base
 
   def cache_profile
     cache_key = "#{self.id}"
-    cache_hash = {:status => self.status, :admin => self.admin, :casinos => self.active_casino_ids}
+    casinos = self.active_casino_ids
+    properties = Property.where(:casino_id => casino_ids).pluck(:id)
+    cache_hash = {
+      :status => self.status,
+      :admin => self.admin,
+      :casinos => casinos,
+      :properties => properties
+    }
     Rails.cache.write(cache_key, cache_hash)
   end
 
@@ -192,7 +199,7 @@ class SystemUser < ActiveRecord::Base
           end
         end
       end
-      
+
       perm_hash[t.to_sym] = actions
     end
 

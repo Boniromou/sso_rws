@@ -7,7 +7,7 @@ module Rigi
     #
     # triggle ldap call, update system_user profile, and then write role permission data to cache
     # when failed, error code indicates the reason
-    # e.g. 
+    # e.g.
     #   authenticate('portal.admin@mo.laxino.com')
     # => SystemUser with username as 'portal.admin'
     #
@@ -23,7 +23,6 @@ module Rigi
         raise InvalidLogin.new("alert.invalid_login")
       end
 
-      #Get domain id before search SystemUser, add 2016-3-8
       domain = Domain.where(:name => login[:domain]).first
       if domain.nil?
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. Not a registered account with existing domain"

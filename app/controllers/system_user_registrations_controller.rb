@@ -17,19 +17,19 @@ class SystemUserRegistrationsController < ActionController::Base
     else
       username = login[:username]
       domain = login[:domain]
-      password = params[:system_user][:password]    
+      password = params[:system_user][:password]
 
       auth_source = AuthSource.first
-      sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id).first 
+      sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id).first
 
       if sys_usr && sys_usr.domain.name == domain
         flash[:alert] = "alert.registered_account"
       else
         auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-        
+
         if auth_source.authenticate(username_with_domain, password)
           #profile = get_system_user_profile(username)
-          casino_ids = Casino.select(:id).pluck(:id)
+          casino_ids = Casino.pluck(:id)
           profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
 
           if profile[:status] == false
