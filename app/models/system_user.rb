@@ -31,7 +31,6 @@ class SystemUser < ActiveRecord::Base
   def self.register!(username, domain, auth_source_id, casino_ids)
     transaction do
       domain = Domain.where(:name => domain).first
-      domain = Domain.create!(:name => domain) if domain.blank?
       system_user = create!(:username => username, :domain_id => domain.id, :auth_source_id => auth_source_id, :status => true)
       system_user.update_casinos(casino_ids)
     end
