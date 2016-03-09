@@ -28,7 +28,7 @@ module Rigi
 
           action_defs.each do |action_def|
             if options.has_key? :delegate_policies
-              define_method("#{action_def}") do 
+              define_method("#{action_def}") do
                 options[:delegate_policies].each do |policy_def|
                   return true if send(policy_def)
                 end
@@ -49,7 +49,7 @@ module Rigi
       def found_permission?(system_user_uid, target, actions)
         permissions = extract_permission(system_user_uid)
 
-        permit_actions = 
+        permit_actions =
           if permissions && permissions.has_key?(target.to_sym)
             permissions[target.to_sym]
           else
@@ -98,7 +98,7 @@ module Rigi
       end
 
       #
-      # examples like: 
+      # examples like:
       #   authorize :dashboard, :index?
       #   policy(:dashboard).index?
       #
@@ -130,10 +130,24 @@ module Rigi
         end
       end
 
+      def get_record_casino_ids
+        record = get_record
+        return [] if record.blank? || record.is_a?(Symbol) || record.id == nil
+        return [record.id] if record.is_a? Casino
+        return [record.casino_id] if record.respond_to?(:casino_id)
+        return [record.casino.id] if record.response_to?(:casino)
+        if record.response_to?(:casinos)
+          ids = []
+          record.casinos.each { |casino| ids << casino.id }
+          return ids
+        end
+        []
+      end
+
       def record_has_property_assoication?
         record = get_record
 
-        klass = 
+        klass =
           if record.is_a?(Class) && record < ActiveRecord::Base
             record
           elsif record.is_a?(ActiveRecord::Base)
@@ -149,25 +163,22 @@ module Rigi
         !intersect.empty?
       end
 
-      def same_scope?(target_property_ids=nil)
-        #record = get_record
-        user_property_ids = format_array(system_user.active_property_ids)
-        target_property_ids = format_array(target_property_ids || get_record_property_ids)
+      def same_scope?(target_casino_ids=nil)
+        user_casino_ids = format_array(system_user.active_casino_ids)
+        target_casino_ids = format_array(target_casino_ids || get_record_casino_ids)
 
-        Rails.logger.debug "user's properties => #{user_property_ids}, target's properties => #{target_property_ids}"
+        Rails.logger.debug "user's casinos => #{user_casino_ids}, target's casinos => #{target_casino_ids}"
 
-        user_property_ids.each do |user_property_id|
-          target_property_ids.each do |target_property_id|
-            if user_property_id.to_s == target_property_id.to_s
-              return true
-            end
+        user_casino_ids.each do |user_casino_id|
+          target_casino_ids.each do |target_casino_id|
+            return true if user_casino_id.to_s == target_casino_id.to_s
           end
         end
 
         false
       end
 
-      
+
       #
       # admin user always return true
       # internal user bypass scope checking
@@ -187,9 +198,9 @@ module Rigi
       #
       # for update request
       #   permitted?(:maintenance, :extend, record)
-      # or 
+      # or
       #   permitted?(:maintenance, :extend, record, :property_id => maint1.property_id)
-      # or 
+      # or
       #   permitted?(:maintenance, :extend, :property_id => record.property_id)
       #   => true     # if system_user share the same property as that of maintenance obj or is internal
       #   => false    # otherwise
@@ -263,7 +274,7 @@ module Rigi
       #   policy action name as controller action/api name
       #
       # e.g.
-      # 
+      #
       # MaintenancesController#index
       # => policy_target = "maintenance"
       # => action_name = "index"
@@ -273,7 +284,7 @@ module Rigi
       #
       def authorize_action(record=nil, policy_def=nil)
         policy_def ||= "#{action_name}?".to_sym
-        policy_target = 
+        policy_target =
           if record.nil?
             controller_name.singularize.to_sym
           elsif record.is_a?(Array)
