@@ -21,7 +21,7 @@ module SystemUsersControllerHelper
   end
 
   #def allow_edit_roles?(system_user)
-  #  policy(system_user).edit_roles? 
+  #  policy(system_user).edit_roles?
   #end
 
   def current_role?(system_user, role_id)
@@ -32,11 +32,20 @@ module SystemUsersControllerHelper
 
   def current_app?(system_user, app_id)
     #assigned_apps = system_user.app_system_users
-    #if assigned_apps && 
+    #if assigned_apps &&
     if system_user.app_system_users.find_by_app_id(app_id)
       true
     else
       false
     end
+  end
+
+  def casino_id_names_format(casino_id_names)
+    return '' if casino_id_names.blank?
+    rtn = "[#{casino_id_names.first[:name]}, #{casino_id_names.first[:id]}]"
+    for i in 1...casino_id_names.length do
+      rtn += ", [#{casino_id_names[i][:name]}, #{casino_id_names[i][:id]}]"
+    end
+    rtn
   end
 end

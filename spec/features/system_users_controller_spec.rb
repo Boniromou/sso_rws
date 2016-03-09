@@ -21,26 +21,40 @@ describe SystemUsersController do
     expect(col_headers[2].text).to eq(I18n.t("property.title"))
   end
 
-  def verify_system_user_table_record(row_number, system_user_name, displayed_status, casino)
-    row_cells = all("div#content table#system_user tbody tr:nth-child(#{row_number}) td")
-    expect(row_cells.length).to eq 3
-    expect(row_cells[0].text).to eq system_user_name
-    expect(row_cells[1].text).to eq displayed_status
-    expect(row_cells[2].text).to eq casino
-  end
-  
   describe "[4] List System user" do
+    def casino_id_names_format(casino_id_names)
+      return '' if casino_id_names.blank?
+      rtn = "[#{casino_id_names.first[:name]}, #{casino_id_names.first[:id]}]"
+      for i in 1...casino_id_names.length do
+        rtn += ", [#{casino_id_names[i][:name]}, #{casino_id_names[i][:id]}]"
+      end
+      rtn
+    end
+
+    def verify_system_user_table_record(row_number, system_user)
+      row_cells = all("div#content table#system_user tbody tr:nth-child(#{row_number}) td")
+      expect(row_cells.length).to eq 3
+      expect(row_cells[0].text).to eq system_user.username
+      if system_user.activated?
+        expect(row_cells[1].text).to eq I18n.t("user.active")
+      else
+        expect(row_cells[1].text).to eq I18n.t("user.inactive")
+      end
+      expect(row_cells[2].text).to eq casino_id_names_format(system_user.active_casino_id_names)
+    end
+
     it "[4.1] verify the list system user" do
       mock_ad_account_profile(true, [1000])
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       visit system_users_path
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
-      expect(rows.length).to eq 4
-      verify_system_user_table_record(1, @root_user.username, I18n.t("user.active"), "[1000]")
-      verify_system_user_table_record(2, @system_user_1.username, I18n.t("user.active"), "[1000]")
-      verify_system_user_table_record(3, @system_user_2.username, I18n.t("user.active"), "[1003]")
-      verify_system_user_table_record(4, @system_user_3.username, I18n.t("user.active"), "[1003, 1007, 1014]")
+
+      users = [@root_user, @system_user_1, @system_user_2, @system_user_3]
+      expect(rows.length).to eq users.length
+      users.each_with_index do |user, index|
+        verify_system_user_table_record(index + 1, user)
+      end
     end
 
     it "[4.2] verify the list system non-1000 user" do
@@ -50,8 +64,7 @@ describe SystemUsersController do
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
       expect(rows.length).to eq 1
-      verify_system_user_table_record(1, @system_user_2.username, I18n.t("user.active"), "[1003]")
-      #verify_system_user_table_record(2, @system_user_3.username, I18n.t("user.active"), "[1003, 1007, 1014]")
+      verify_system_user_table_record(1, @system_user_2)
     end
 
     it "[4.3] filter suspended casino group user" do
@@ -62,7 +75,7 @@ describe SystemUsersController do
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
       expect(rows.length).to eq 1
-      verify_system_user_table_record(1, @system_user_2.username, I18n.t("user.active"), "[1003]")
+      verify_system_user_table_record(1, @system_user_2)
     end
   end
 
@@ -427,4 +440,4 @@ describe SystemUsersController do
       expect(has_link?(I18n.t("user.unlock"))).to be false
     end
   end
-end 
+end

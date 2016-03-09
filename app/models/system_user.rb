@@ -20,6 +20,14 @@ class SystemUser < ActiveRecord::Base
     CasinosSystemUser.where(:system_user_id => id, :status => true).select(:casino_id).pluck(:casino_id)
   end
 
+  def active_casino_id_names
+    rtn = []
+    Casino.where(:id => active_casino_ids).each do |casino|
+      rtn.push({:id => casino.id, :name => casino.name})
+    end
+    rtn
+  end
+
   def is_admin?
     admin
   end
