@@ -42,10 +42,12 @@ module SystemUsersControllerHelper
 
   def casino_id_names_format(casino_id_names)
     return '' if casino_id_names.blank?
-    rtn = "[#{casino_id_names.first[:name]}, #{casino_id_names.first[:id]}]"
-    for i in 1...casino_id_names.length do
-      rtn += ", [#{casino_id_names[i][:name]}, #{casino_id_names[i][:id]}]"
+    rtn = ""
+    casino_id_names.each do |casino|
+      rtn += " [#{casino[:name] || casino['name']}, #{casino[:id] ||casino['id']}]," 
     end
-    rtn
+    rtn = rtn.chomp(',') 
   end
+
+
 end

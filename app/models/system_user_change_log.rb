@@ -11,4 +11,9 @@ class SystemUserChangeLog < ActiveRecord::Base
     target_username, start_time, end_time = args
     match_target_username(target_username).since(start_time).until(end_time)
   end
+
+  def target_casino_name
+    Casino.find(self.target_casino_id).name if self.target_casino_id
+  end
+
 end

@@ -65,10 +65,10 @@
           <% else %>
             <% @system_user_change_logs.each do |cl| %>
             <tr align="center">
-              <td><%= popover(cl.action_by['username'], "Casinos", cl.action_by['casino_ids'].join(', '), "popover-hover", "top") %></td>
+              <td><%= popover(cl.action_by['username'], "Casinos", cl.action_by['casino_name_ids'] ? casino_id_names_format(cl.action_by['casino_name_ids']) : cl.action_by['casino_ids'].join(', '), "popover-hover", "top") %></td>
               <td><%= format_time(cl.created_at) %></td>
               <td><%= display_text(cl.action) %></td>
-              <td><%= "#{cl.target_username} [#{cl.target_casino_id}]" %></td>
+              <td><%= "#{cl.target_username} [#{cl.target_casino_name}, #{cl.target_casino_id}]" %></td>
               <td><%= display_text(cl.change_detail['app_name']) %></td>
               <td><%= display_text(cl.change_detail['from']) %></td>
               <td><%= display_text(cl.change_detail['to']) %></td>

@@ -67,6 +67,13 @@ describe SystemUserRegistrationsController do
       expect(system_user.status).to eq true
       expect(casino_system_user_1000.status).to eq true      
     end
+
+    it "[3.14] Register with incorrect domain" do
+      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+      mock_ad_account_profile(true, [1000])
+      go_signup_page_and_register('test@other.com')
+      expect(page).to have_content I18n.t("alert.invalid_login")
+    end
   end
 
   describe "[1] Login/Logout" do
