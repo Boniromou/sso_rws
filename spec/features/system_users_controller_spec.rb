@@ -1,11 +1,14 @@
 require "feature_spec_helper"
 
 describe SystemUsersController do
-  fixtures :apps, :permissions, :role_permissions, :roles, :licensees, :domains
+  fixtures :apps, :permissions, :role_permissions, :roles, :licensees, :domains, :casinos
 
   before(:each) do
     licensee = Licensee.first
     domain = Domain.first
+    [1000, 1003, 1007, 1014].each do |casino_id|
+      create(:domains_casino, :domain_id => domain.id, :casino_id => casino_id)
+    end
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
     user_manager_role = Role.find_by_name "user_manager"
     @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)

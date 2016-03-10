@@ -33,8 +33,7 @@ class SystemUserRegistrationsController < ActionController::Base
           auth_source = auth_source.becomes(auth_source.auth_type.constantize)
 
           if auth_source.authenticate(username_with_domain, password)
-            #profile = get_system_user_profile(username)
-            casino_ids = Casino.select(:id).pluck(:id)
+            casino_ids = domain_obj.get_casino_ids
             profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
 
             if profile[:status] == false

@@ -1,10 +1,18 @@
 require "feature_spec_helper"
 
 describe SystemUserSessionsController do
-  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources, :domains, :licensees
+  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources, :domains, :licensees, :casinos
+
+  def mock_authenticate(rtn = true)
+    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(rtn)
+  end
 
   before(:each) do
-    @root_user = create(:system_user, :admin, :with_casino_ids => [1000], :domain_id => Domain.first.id, :licensee_id => Licensee.first.id)
+    domain = Domain.first
+    [1000, 1003, 1007, 1014].each do |casino_id|
+      create(:domains_casino, :domain_id => domain.id, :casino_id => casino_id)
+    end
+    @root_user = create(:system_user, :admin, :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => Licensee.first.id)
     #create(:property, :id => 1000)
   end
 
@@ -82,6 +90,13 @@ describe SystemUserSessionsController do
       go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain.name}".upcase)
       expect(page.current_path).to eq home_root_path
       expect(AppSystemUser.first.system_user_id).to eq @system_user_1.id
+    end
+
+    it '[1.13] Login fail with AD casino not match with local' do
+      mock_authenticate
+      mock_ad_account_profile(true, [rand(9999)])
+      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
+      expect(page).to have_content I18n.t("alert.account_no_casino")
     end
 
     it "login user with role permission value" do

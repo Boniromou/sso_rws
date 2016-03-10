@@ -3,6 +3,14 @@ require "feature_spec_helper"
 describe SystemUserRegistrationsController do
   fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources, :domains, :licensees, :casinos
 
+  before :each do
+    domain_name = 'example.com'
+    domain_id = Domain.where(:name => domain_name).first.id
+    [1000, 1003, 1007].each do |casino_id|
+      create(:domains_casino, :domain_id => domain_id, :casino_id => casino_id)
+    end
+  end
+
   describe "[3] Self Registration" do
 
     def go_signup_page_and_register(username)
@@ -22,7 +30,7 @@ describe SystemUserRegistrationsController do
       expect(system_user.status).to eq true
       expect(casino_system_user_1000.status).to eq true
     end
-    
+
     it "[3.2] Register fail with wrong password" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(false)
       go_signup_page_and_register('test_user@example.com')
@@ -65,7 +73,7 @@ describe SystemUserRegistrationsController do
       system_user = SystemUser.find_by_username('test_user')
       casino_system_user_1000 = CasinosSystemUser.where(:casino_id => 1000, :system_user_id => system_user.id).first
       expect(system_user.status).to eq true
-      expect(casino_system_user_1000.status).to eq true      
+      expect(casino_system_user_1000.status).to eq true
     end
 
     it "[3.14] Register with incorrect domain" do

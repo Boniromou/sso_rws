@@ -1,7 +1,7 @@
 require "feature_spec_helper"
 
 describe SystemUserChangeLogsController do
-  fixtures :licensees, :domains
+  fixtures :licensees, :domains, :casinos
 
   before(:each) do
     @app_1 = App.find_by_name("user_management") || create(:app, :id => 1, :name => "user_management")
@@ -16,6 +16,9 @@ describe SystemUserChangeLogsController do
 
     licensee = Licensee.first
     domain = Domain.first
+    [1000, 1003, 1007].each do |casino_id|
+      create(:domains_casino, :domain_id => domain.id, :casino_id => casino_id)
+    end
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
     @system_user_1 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
     @system_user_2 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1003], :domain_id => domain.id, :licensee_id => licensee.id)
