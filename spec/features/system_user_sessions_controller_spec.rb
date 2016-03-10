@@ -3,15 +3,9 @@ require "feature_spec_helper"
 describe SystemUserSessionsController do
   fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources, :domains, :licensees, :casinos
 
-  def mock_authenticate(rtn = true)
-    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(rtn)
-  end
-
-  def expect_have_content(content)
-    expect(page).to have_content content
-  end
-
   before(:each) do
+    mock_authenticate
+
     domain = Domain.first
     [1000, 1003, 1007, 1014].each do |casino_id|
       create(:domains_casino, :domain_id => domain.id, :casino_id => casino_id)
@@ -42,7 +36,6 @@ describe SystemUserSessionsController do
     end
 
     it "[1.1] Login successful" do
-      mock_authenticate
       go_login_page_and_login(@root_user)
       expect(page.current_path).to eq home_root_path
     end
@@ -54,7 +47,6 @@ describe SystemUserSessionsController do
     end
 
     it "[1.3] login fail with wrong account" do
-      mock_authenticate
       go_login_page_and_login(nil)
       expect_have_content(I18n.t("alert.invalid_login"))
     end
@@ -65,7 +57,6 @@ describe SystemUserSessionsController do
     end
 
     it "[1.9] Login successful and update the User casino group" do
-      mock_authenticate
       mock_ad_account_profile(true, [1003])
       go_login_page_and_login(@system_user_1)
       casino_system_user_1003 = CasinosSystemUser.where(:casino_id => 1003, :system_user_id => @system_user_1.id).first
@@ -76,7 +67,6 @@ describe SystemUserSessionsController do
     end
 
     it "[1.10] Login fail with user AD casino group null" do
-      mock_authenticate
       mock_ad_account_profile(true, [])
       go_login_page_and_login(@system_user_1)
       casino_system_user_1003 = CasinosSystemUser.where(:casino_id => 1003, :system_user_id => @system_user_1.id).first
@@ -87,7 +77,6 @@ describe SystemUserSessionsController do
     end
 
     it "[1.11] Login successful and update the User lock/unlock status" do
-      mock_authenticate
       mock_ad_account_profile(false, [])
       go_login_page_and_login(@system_user_1)
       @system_user_1.reload
@@ -96,14 +85,12 @@ describe SystemUserSessionsController do
     end
 
     it "[1.12] login user with upper case" do
-      mock_authenticate
       go_login_page_and_login(@system_user_1)
       expect(page.current_path).to eq home_root_path
       expect(AppSystemUser.first.system_user_id).to eq @system_user_1.id
     end
 
     it '[1.13] Login fail with AD casino not match with local' do
-      mock_authenticate
       mock_ad_account_profile(true, [rand(9999)])
       go_login_page_and_login(@system_user_1)
       expect_have_content(I18n.t("alert.account_no_casino"))
@@ -114,7 +101,6 @@ describe SystemUserSessionsController do
         rp.value = 1
         rp.save
       end
-      mock_authenticate
       go_login_page_and_login(@system_user_1)
       expect(page.current_path).to eq home_root_path
       cache_key = "#{APP_NAME}:permissions:#{@system_user_1.id}"

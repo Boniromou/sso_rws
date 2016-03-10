@@ -4,6 +4,8 @@ describe SystemUserRegistrationsController do
   fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources, :domains, :licensees, :casinos
 
   before :each do
+    mock_authenticate
+
     domain_name = 'example.com'
     domain_id = Domain.where(:name => domain_name).first.id
     [1000, 1003, 1007].each do |casino_id|
@@ -21,7 +23,6 @@ describe SystemUserRegistrationsController do
     end
 
     it "[3.1] Register Successful" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1000])
       go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.signup_completed")
@@ -32,19 +33,18 @@ describe SystemUserRegistrationsController do
     end
 
     it "[3.2] Register fail with wrong password" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(false)
+      mock_authenticate(false)
       go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
 
     it "[3.3] Register fail with wrong account" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(false)
+      mock_authenticate(false)
       go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
 
     it "[3.4] Duplicated Registration" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       domain = Domain.where(:name => 'example.com').first
       test_user = create(:system_user, :username => 'test_user', :domain_id => domain.id, :licensee_id => Licensee.first.id)
       go_signup_page_and_register('test_user@example.com')
@@ -52,21 +52,18 @@ describe SystemUserRegistrationsController do
     end
 
     it "[3.11] Register system user fail with AD casino not match with MDS" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1100])
       go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.account_no_casino")
     end
 
     it "[3.12] Register system user fail with null casino in AD." do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [])
       go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.account_no_casino")
     end
 
     it "[3.13] Register user with upper case." do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1000])
       go_signup_page_and_register('TEST_USER@EXAMPLE.COM')
       expect(page).to have_content I18n.t("alert.signup_completed")
@@ -77,7 +74,6 @@ describe SystemUserRegistrationsController do
     end
 
     it "[3.14] Register with incorrect domain" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1000])
       go_signup_page_and_register('test@other.com')
       expect(page).to have_content I18n.t("alert.invalid_login")
@@ -90,7 +86,6 @@ describe SystemUserRegistrationsController do
     end
 
     it "[1.7] unexpected login (click login link)" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       visit '/register'
       fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain.name}"
       fill_in "system_user_password", :with => 'secret'
@@ -101,7 +96,6 @@ describe SystemUserRegistrationsController do
     end
 
     it "[1.8] unexpected login (click register)" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       visit '/register'
       fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain.name}"
       fill_in "system_user_password", :with => 'secret'
