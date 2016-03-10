@@ -1,12 +1,10 @@
 require "feature_spec_helper"
 
 describe RolesController do
-  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources, :licensees, :domains
+  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
 
   before(:each) do
-    @licensee = Licensee.first
-    @domain = Domain.first
-    @root_user = create(:system_user, :admin, :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
+    @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
   end
 
   def go_to_role_and_permission
@@ -18,7 +16,7 @@ describe RolesController do
   describe "[15] List Role & Permission" do
     before(:each) do
       user_manager_role = Role.find_by_name "user_manager"
-      @system_user_1 = create(:system_user, :roles => [user_manager_role], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      @system_user_1 = create(:system_user, :roles => [user_manager_role])
     end
 
     it "[15.3] Show Role (authorized)" do

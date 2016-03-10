@@ -86,7 +86,6 @@ class SystemUsersController < ApplicationController
       cl.action = action
       cl.action_by[:username] = current_system_user.username
       cl.action_by[:casino_ids] = current_system_user.active_casino_ids
-      cl.action_by[:casino_name_ids] = current_system_user.active_casino_id_names
       cl.change_detail[:app_name] = app_name
       cl.change_detail[:from] = from
       cl.change_detail[:to] = to

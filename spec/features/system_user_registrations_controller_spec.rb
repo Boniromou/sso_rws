@@ -1,7 +1,15 @@
 require "feature_spec_helper"
 
 describe SystemUserRegistrationsController do
-  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources, :domains, :licensees, :casinos
+  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
+
+  before(:each) do
+    create(:domain, :name => "example.com") if !Domain.find_by_name("example.com")
+    licensee = Licensee.first || create(:licensee, name: "laxino")
+    [1000, 1001, 1002, 1003].each do |id|
+      create(:casino, :id => id, :licensee_id => licensee.id)
+    end   
+  end
 
   describe "[3] Self Registration" do
 
@@ -37,8 +45,7 @@ describe SystemUserRegistrationsController do
 
     it "[3.4] Duplicated Registration" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      domain = Domain.where(:name => 'example.com').first
-      test_user = create(:system_user, :username => 'test_user', :domain_id => domain.id, :licensee_id => Licensee.first.id)
+      test_user = create(:system_user, :username => 'test_user')
       go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.registered_account")
     end
@@ -71,14 +78,14 @@ describe SystemUserRegistrationsController do
     it "[3.14] Register with incorrect domain" do
       allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1000])
-      go_signup_page_and_register('test@other.com')
+      go_signup_page_and_register('test_user@other.com')
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
   end
 
   describe "[1] Login/Logout" do
     before(:each) do
-      @registered_account = create(:system_user, :username => 'test_user', :status => true, :with_casino_ids => [1000], :domain_id => Domain.first.id, :licensee_id => Licensee.first.id)
+      @registered_account = create(:system_user, :username => 'test_user', :status => true, :with_casino_ids => [1000])
     end
 
     it "[1.7] unexpected login (click login link)" do

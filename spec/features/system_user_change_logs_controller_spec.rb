@@ -14,16 +14,14 @@ describe SystemUserChangeLogsController do
     @int_role_2 = create(:role, :name => "int_role_b", :with_permissions => [perm_1, perm_2], :role_type => int_role_type, :app => @app_1)
     @ext_role_1 = create(:role, :name => "ext_role_a", :with_permissions => [perm_1, perm_2, perm_3], :role_type => ext_role_type, :app => @app_1)
 
-    licensee = Licensee.first
-    domain = Domain.first
-    @root_user = create(:system_user, :admin, :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
-    @system_user_1 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
-    @system_user_2 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1003], :domain_id => domain.id, :licensee_id => licensee.id)
-    @system_user_3 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1003], :domain_id => domain.id, :licensee_id => licensee.id)
-    @system_user_4 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1003, 1007], :domain_id => domain.id, :licensee_id => licensee.id)
-    @system_user_5 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
-    @system_user_6 = create(:system_user, :roles => [@ext_role_1], :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
-    @system_user_7 = create(:system_user, :roles => [@int_role_2], :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
+    @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
+    @system_user_1 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1000])
+    @system_user_2 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1003])
+    @system_user_3 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1003])
+    @system_user_4 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1003, 1007])
+    @system_user_5 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1000])
+    @system_user_6 = create(:system_user, :roles => [@ext_role_1], :with_casino_ids => [1000])
+    @system_user_7 = create(:system_user, :roles => [@int_role_2], :with_casino_ids => [1000])
   end
 
   describe "[16] User Change log" do

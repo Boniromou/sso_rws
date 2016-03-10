@@ -1,11 +1,10 @@
 require "feature_spec_helper"
 
 describe SystemUserSessionsController do
-  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources, :domains, :licensees
+  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
 
   before(:each) do
-    @root_user = create(:system_user, :admin, :with_casino_ids => [1000], :domain_id => Domain.first.id, :licensee_id => Licensee.first.id)
-    #create(:property, :id => 1000)
+    @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
   end
 
   describe "[1] Login" do
@@ -13,7 +12,7 @@ describe SystemUserSessionsController do
       #@u1 = SystemUser.create!(:username => 'lulu', :status => true, :admin => false, :auth_source_id => 1)
       @u1 = create(:system_user)
       user_manager_role = Role.find_by_name "user_manager"
-      @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007], :domain_id => Domain.first.id, :licensee_id => Licensee.first.id)
+      @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007])
     end
 
     def go_login_page_and_login(username)

@@ -1,14 +1,12 @@
 require "feature_spec_helper"
 
 describe AuditLogsController do
-  fixtures :apps, :permissions, :role_permissions, :roles, :licensees, :domains
+  fixtures :apps, :permissions, :role_permissions, :roles
 
   before(:each) do
-    licensee = Licensee.first
-    domain = Domain.first
-    @root_user = create(:system_user, :admin, :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)   
+    @root_user = create(:system_user, :admin, :with_casino_ids => [1000])   
     user_manager_role = Role.find_by_name "user_manager"
-    @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003], :domain_id => domain.id, :licensee_id => licensee.id)
+    @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003])
   end
   
   describe '[9] Search audit log by Time' do

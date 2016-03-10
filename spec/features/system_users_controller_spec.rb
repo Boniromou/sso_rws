@@ -1,16 +1,14 @@
 require "feature_spec_helper"
 
 describe SystemUsersController do
-  fixtures :apps, :permissions, :role_permissions, :roles, :licensees, :domains
+  fixtures :apps, :permissions, :role_permissions, :roles
 
   before(:each) do
-    licensee = Licensee.first
-    domain = Domain.first
-    @root_user = create(:system_user, :admin, :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
+    @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
     user_manager_role = Role.find_by_name "user_manager"
-    @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000], :domain_id => domain.id, :licensee_id => licensee.id)
-    @system_user_2 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003], :domain_id => domain.id, :licensee_id => licensee.id)
-    @system_user_3 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007, 1014], :domain_id => domain.id, :licensee_id => licensee.id)
+    @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
+    @system_user_2 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003])
+    @system_user_3 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007, 1014])
   end
 
   def verify_system_user_table_column_header
@@ -267,19 +265,14 @@ describe SystemUsersController do
   end
 
   describe "[14] Role authorization" do
-    fixtures :apps, :permissions, :role_permissions, :roles, :role_types, :licensees, :domains
-
-    before(:each) do
-      @licensee = Licensee.first
-      @domain = Domain.first
-    end
+    fixtures :apps, :permissions, :role_permissions, :roles, :role_types
 
     it "[14.1] click unauthorized action" do
       auditor_role = Role.find_by_name "auditor"
       user_manager_role = Role.find_by_name "user_manager"
 
-      auditor_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
-      auditor_2 = create(:system_user, :roles => [auditor_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      auditor_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
+      auditor_2 = create(:system_user, :roles => [auditor_role], :with_casino_ids => [1000])
       login("#{auditor_1.username}@#{auditor_1.domain.name}")
       visit home_root_path
       visit system_user_path(:id => auditor_2.id)
@@ -293,7 +286,7 @@ describe SystemUsersController do
 
     it "[14.2] click link to the unauthorized page" do
       auditor_role = Role.find_by_name "auditor"
-      auditor_1 = create(:system_user, :roles => [auditor_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      auditor_1 = create(:system_user, :roles => [auditor_role], :with_casino_ids => [1000])
       login("#{auditor_1.username}@#{auditor_1.domain.name}")
       visit home_root_path
       visit user_management_root_path
@@ -302,7 +295,7 @@ describe SystemUsersController do
 
     it "[14.3] Search audit log (authorized)" do
       auditor_role = Role.find_by_name "auditor"
-      auditor_1 = create(:system_user, :roles => [auditor_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      auditor_1 = create(:system_user, :roles => [auditor_role], :with_casino_ids => [1000])
       login("#{auditor_1.username}@#{auditor_1.domain.name}")
       visit home_root_path
       visit search_audit_logs_path
@@ -312,7 +305,7 @@ describe SystemUsersController do
 
     it "[14.4] Search audit log (unauthorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
       login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
       visit home_root_path
       assert_dropdown_menu_item(I18n.t("header.audit_log"), false)
@@ -320,7 +313,7 @@ describe SystemUsersController do
 
     it "[14.5] List System User (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
       login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -331,7 +324,7 @@ describe SystemUsersController do
 
     it "[14.6] List System User (unauthorized)" do
       auditor_role = Role.find_by_name "auditor"
-      auditor_1 = create(:system_user, :roles => [auditor_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      auditor_1 = create(:system_user, :roles => [auditor_role], :with_casino_ids => [1000])
       login("#{auditor_1.username}@#{auditor_1.domain.name}")
       visit home_root_path
       assert_dropdown_menu_item(I18n.t("header.user_management"), false)
@@ -339,8 +332,8 @@ describe SystemUsersController do
 
     it "[14.7] View user profile (authroized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
-      user_manager_2 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
       login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -355,8 +348,8 @@ describe SystemUsersController do
 
     it "[14.8] Grant roles (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
-      user_manager_2 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
       login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -374,8 +367,8 @@ describe SystemUsersController do
 
     xit "[14.9] Lock System user (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role], :domain_id => @domain.id, :licensee_id => @licensee.id)
-      user_manager_2 = create(:system_user, :roles => [user_manager_role], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role])
       login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -392,8 +385,8 @@ describe SystemUsersController do
     xit "[14.10] Lock System user (unauthorized)" do
       allow(SystemUserPolicy).to receive("lock?").and_return(false)
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role], :domain_id => @domain.id, :licensee_id => @licensee.id)
-      user_manager_2 = create(:system_user, :roles => [user_manager_role], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role])
       login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -408,8 +401,8 @@ describe SystemUsersController do
 
     xit "[14.11] Un-lock system user (authorized)" do
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role], :domain_id => @domain.id, :licensee_id => @licensee.id)
-      user_manager_2 = create(:system_user, :status => false, :roles => [user_manager_role], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :status => false, :roles => [user_manager_role])
       login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
@@ -426,8 +419,8 @@ describe SystemUsersController do
     xit "[14.12] un-lock system user (unauthorized)" do
       allow(SystemUserPolicy).to receive("unlock?").and_return(false)
       user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role], :domain_id => @domain.id, :licensee_id => @licensee.id)
-      user_manager_2 = create(:system_user, :roles => [user_manager_role], :domain_id => @domain.id, :licensee_id => @licensee.id)
+      user_manager_1 = create(:system_user, :roles => [user_manager_role])
+      user_manager_2 = create(:system_user, :roles => [user_manager_role])
       login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
       visit home_root_path
       assert_dropdown_menu_item I18n.t("header.user_management")
