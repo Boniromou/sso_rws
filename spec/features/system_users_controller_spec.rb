@@ -75,6 +75,19 @@ describe SystemUsersController do
       expect(rows.length).to eq 1
       verify_system_user_table_record(1, @system_user_2)
     end
+
+    it "[4.4] Only allow to view subset casino of user" do
+      mock_ad_account_profile(true, [1003])
+      @system_user_3.update_casinos([1003, 1007])
+
+      login("#{@system_user_2.username}@#{@system_user_2.domain.name}")
+      visit system_users_path
+
+      table_selector = "div#content table#system_user"
+      rows = all("#{table_selector} tbody tr")
+      expect(rows.length).to eq 1
+      verify_system_user_table_record(1, @system_user_2)
+    end
   end
 
   describe '[5] View system user' do
