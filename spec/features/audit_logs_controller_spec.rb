@@ -8,13 +8,13 @@ describe AuditLogsController do
     user_manager_role = Role.find_by_name "user_manager"
     @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003])
   end
-  
+
   describe '[9] Search audit log by Time' do
     before(:each) do
       @al1 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "edit_role", :action_at => "2014-09-29 12:00:00")
       @al2 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "edit_role", :action_at => "2014-09-30 12:00:00")
     end
-    
+
     it '[9.1] Search audit log by time' do
       login("#{@root_user.username}@#{@root_user.domain.name}")
       visit search_audit_logs_path
@@ -57,18 +57,18 @@ describe AuditLogsController do
       verify_unauthorized_request
     end
   end
-  
+
   describe '[10] Search audit log by actioner' do
     before(:each) do
       AuditLog.delete_all
       @al1 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "edit_role", :action_at => "2014-09-29 12:00:00")
       @al2 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "edit_role", :action_by => "ray", :action_at => "2014-09-29 12:00:00")
     end
-    
+
     after(:each) do
       AuditLog.delete_all
     end
-    
+
     it '[10.1] search audit log by actioner' do
       login("#{@root_user.username}@#{@root_user.domain.name}")
       visit search_audit_logs_path
@@ -79,7 +79,7 @@ describe AuditLogsController do
       expect(page.source).to have_selector("tr#audit#{@al1.id}_body")
       expect(page.source).not_to have_selector("tr#audit#{@al2.id}_body")
     end
-    
+
     it '[10.2] search empty in actioner' do
       login("#{@root_user.username}@#{@root_user.domain.name}")
       visit search_audit_logs_path
@@ -90,18 +90,18 @@ describe AuditLogsController do
       expect(page.source).to have_selector("tr#audit#{@al2.id}_body")
     end
   end
-  
+
   describe '[11] Search audit log by action' do
     before(:each) do
       AuditLog.delete_all
       @al1 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "edit_role", :action_at => "2014-09-29 12:00:00")
       @al2 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "edit_role", :action_at => "2014-09-29 12:00:00")
     end
-    
+
     after(:each) do
       AuditLog.delete_all
     end
-    
+
 =begin
     it '[11.1] search audit log by action' do
       login_as(@root_user, :scope => :system_user)
@@ -138,20 +138,20 @@ describe AuditLogsController do
       expect(current_path).to eq(search_audit_logs_path)
     end
   end
-=begin  
+=begin
   describe '[23] Search audit log by action type' do
     before(:each) do
       AuditLog.delete_all
       @al1 = AuditLog.new({ :audit_target => "maintenance", :action_type => "create", :action_error => "", :action => "create", :action_status => "success", :action_by => "portal.admin", :action_at => "2014-09-29 12:00:00", :session_id => "qwer1234", :ip => "127.0.0.1", :description => "" })
       @al1.save(:validate => false)
     end
-    
+
     after(:each) do
       AuditLog.delete_all
     end
-    
+
     it '[23.1] search audit log by action type' do
-    
+
     end
   end
 =end
@@ -161,11 +161,11 @@ describe AuditLogsController do
       @al1 = create(:audit_log, :success, :audit_target => "maintenance", :action_type => "create", :action => "create", :action_at => "2014-09-29 12:00:00")
       @al2 = create(:audit_log, :success, :audit_target => "system_user", :action_type => "update", :action => "edit_role", :action_at => "2014-09-29 12:00:00")
     end
-    
+
     after(:each) do
       AuditLog.delete_all
     end
-    
+
     it '[12.1] search audit log by target' do
       login("#{@root_user.username}@#{@root_user.domain.name}")
       visit search_audit_logs_path

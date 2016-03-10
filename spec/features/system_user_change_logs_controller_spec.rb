@@ -1,7 +1,7 @@
 require "feature_spec_helper"
 
 describe SystemUserChangeLogsController do
-  fixtures :licensees, :domains
+  fixtures :licensees, :domains, :casinos
 
   before(:each) do
     @app_1 = App.find_by_name("user_management") || create(:app, :id => 1, :name => "user_management")

@@ -111,7 +111,7 @@ class SystemUser < ActiveRecord::Base
   end
 
   def update_ad_profile
-    casino_ids = Casino.pluck(:id)
+    casino_ids = self.domain.get_casino_ids
     profile = self.auth_source.retrieve_user_profile(username, self.domain.name, casino_ids)
     self.status = profile[:status]
     update_casinos(profile[:casino_ids])

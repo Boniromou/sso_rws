@@ -4,6 +4,7 @@ describe SystemUserSessionsController do
   fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
 
   before(:each) do
+    mock_authenticate
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
   end
 
@@ -15,40 +16,43 @@ describe SystemUserSessionsController do
       @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007])
     end
 
-    def go_login_page_and_login(username)
+    def go_login_page_and_login(user)
+      username = 'wrong_username'
+      domain = 'wrong.domain.com'
+      if user.present?
+        username = user.username
+        domain = user.domain.name
+      end
       visit login_path
-      fill_in "system_user_username", :with => username
-      fill_in "system_user_password", :with => 'secret'
+      fill_in 'system_user_username', :with => "#{username}@#{domain}"
+      fill_in 'system_user_password', :with => 'secret'
       click_button I18n.t("general.login")
     end
 
     it "[1.1] Login successful" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      go_login_page_and_login("#{@root_user.username}@#{@root_user.domain.name}")
+      go_login_page_and_login(@root_user)
       expect(page.current_path).to eq home_root_path
     end
 
     it "[1.2] login fail with wrong password" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(false)
-      go_login_page_and_login("#{@root_user.username}@#{@root_user.domain.name}")
-      expect(page).to have_content I18n.t("alert.invalid_login")
+      mock_authenticate(false)
+      go_login_page_and_login(@root_user)
+      expect_have_content(I18n.t("alert.invalid_login"))
     end
 
     it "[1.3] login fail with wrong account" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      go_login_page_and_login('wrong_username')
-      expect(page).to have_content I18n.t("alert.invalid_login")
+      go_login_page_and_login(nil)
+      expect_have_content(I18n.t("alert.invalid_login"))
     end
 
     it "[1.6] login without role assigned" do
-      go_login_page_and_login("#{@u1.username}@#{@u1.domain.name}")
-      expect(page).to have_content I18n.t("alert.account_no_role")
+      go_login_page_and_login(@u1)
+      expect_have_content(I18n.t("alert.account_no_role"))
     end
 
     it "[1.9] Login successful and update the User casino group" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1003])
-      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
+      go_login_page_and_login(@system_user_1)
       casino_system_user_1003 = CasinosSystemUser.where(:casino_id => 1003, :system_user_id => @system_user_1.id).first
       casino_system_user_1007 = CasinosSystemUser.where(:casino_id => 1007, :system_user_id => @system_user_1.id).first
       expect(casino_system_user_1003.status).to eq true
@@ -57,30 +61,33 @@ describe SystemUserSessionsController do
     end
 
     it "[1.10] Login fail with user AD casino group null" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [])
-      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
+      go_login_page_and_login(@system_user_1)
       casino_system_user_1003 = CasinosSystemUser.where(:casino_id => 1003, :system_user_id => @system_user_1.id).first
       casino_system_user_1007 = CasinosSystemUser.where(:casino_id => 1007, :system_user_id => @system_user_1.id).first
       expect(casino_system_user_1003.status).to eq false
       expect(casino_system_user_1007.status).to eq false
-      expect(page).to have_content I18n.t("alert.account_no_casino")
+      expect_have_content(I18n.t("alert.account_no_casino"))
     end
 
     it "[1.11] Login successful and update the User lock/unlock status" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(false, [])
-      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
+      go_login_page_and_login(@system_user_1)
       @system_user_1.reload
       expect(@system_user_1.status).to eq false
-      expect(page).to have_content I18n.t("alert.inactive_account")
+      expect_have_content(I18n.t("alert.inactive_account"))
     end
 
     it "[1.12] login user with upper case" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain.name}".upcase)
+      go_login_page_and_login(@system_user_1)
       expect(page.current_path).to eq home_root_path
       expect(AppSystemUser.first.system_user_id).to eq @system_user_1.id
+    end
+
+    it '[1.13] Login fail with AD casino not match with local' do
+      mock_ad_account_profile(true, [rand(9999)])
+      go_login_page_and_login(@system_user_1)
+      expect_have_content(I18n.t("alert.account_no_casino"))
     end
 
     it "login user with role permission value" do
@@ -88,8 +95,7 @@ describe SystemUserSessionsController do
         rp.value = 1
         rp.save
       end
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      go_login_page_and_login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
+      go_login_page_and_login(@system_user_1)
       expect(page.current_path).to eq home_root_path
       cache_key = "#{APP_NAME}:permissions:#{@system_user_1.id}"
       permissions = Rails.cache.fetch cache_key

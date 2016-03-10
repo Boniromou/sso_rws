@@ -104,6 +104,14 @@ module StepHelper
   def click_header_link(title)
     first('ul.dropdown-menu').find('a', :text => title).click
   end
+
+  def mock_authenticate(rtn = true)
+    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(rtn)
+  end
+
+  def expect_have_content(content)
+    expect(page).to have_content content
+  end
 end
 
 RSpec.configure do |config|
