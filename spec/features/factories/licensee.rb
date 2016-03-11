@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :licensee do
-    name "laxino"
-    description "mo.laxino.com"
+    sequence(:name) { |n| "laxino_#{n}" }
+    sequence(:description) { |n| "#{n}.mo.laxino.com" }
   end
 end
