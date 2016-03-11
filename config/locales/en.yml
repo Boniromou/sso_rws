@@ -120,3 +120,5 @@ en:
     search_range_error: The search range is limited to [%{config_value}] days
   property:
     title: Property
+  casino:
+    title: Casino
