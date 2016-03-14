@@ -42,19 +42,17 @@ module SystemUsersControllerHelper
 
   def casino_id_names_format(casino_id_names)
     return '' if casino_id_names.blank?
-    rtn = ""
+
+    id_names = []
     casino_id_names.each do |casino|
+      id_names.push(Rigi::Format.symbolize_keys(casino))
+    end
+
+    rtn = ""
+    id_names.each do |casino|
       rtn += " [#{casino[:name]}, #{casino[:id]}]," 
     end
     rtn = rtn.chomp(',') 
-  end
-
-  def get_casino_names_by_ids(casino_ids)
-    rtn = []
-    Casino.where(:id => casino_ids).each do |casino|
-      rtn.push({:id => casino.id, :name => casino.name})
-    end
-    casino_id_names_format(rtn) if rtn.present?
   end
 
 end
