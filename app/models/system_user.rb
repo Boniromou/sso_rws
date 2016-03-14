@@ -74,7 +74,7 @@ class SystemUser < ActiveRecord::Base
   def role_in_app(app_name=nil)
     app = App.find_by_name(app_name || APP_NAME)
 
-    self.roles(true).each do |role|
+    self.roles(true).includes(:app).each do |role|
       if role.app.id == app.id
         return role
       end

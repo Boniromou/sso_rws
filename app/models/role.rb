@@ -13,7 +13,7 @@ class Role < ActiveRecord::Base
   end
 
   def get_permission_value(target, action)
-    role_permission = self.role_permissions.select{|role_permission| role_permission.permission.target == target && role_permission.permission.action == action}.first
+    role_permission = self.role_permissions.includes(:permission).select{|role_permission| role_permission.permission.target == target && role_permission.permission.action == action}.first
     role_permission.value if role_permission
   end
 

@@ -92,7 +92,7 @@ describe SystemUserSessionsController do
 
     it "login user with role permission value" do
       @system_user_1.roles[0].role_permissions.each do |rp|
-        rp.value = 1
+        rp.value = "1"
         rp.save
       end
       go_login_page_and_login(@system_user_1)
@@ -102,7 +102,7 @@ describe SystemUserSessionsController do
       expect(permissions[:permissions][:values]).to_not eq nil
       @system_user_1.roles[0].role_permissions.each do |rp|
         expect(permissions[:permissions][:values][rp.permission.target.to_sym][rp.permission.action.to_sym]).to eq "1"
-        expect(@system_user_1.roles[0].get_permission_value(rp.permission.target, rp.permission.action)).to eq 1
+        expect(@system_user_1.roles[0].get_permission_value(rp.permission.target, rp.permission.action)).to eq "1"
       end
     end
 
