@@ -65,7 +65,7 @@
           <% else %>
             <% @system_user_change_logs.each do |cl| %>
             <tr align="center">
-              <td><%= popover(cl.action_by['username'], "Casinos", get_casino_names_by_ids(cl.action_by['casino_ids']), "popover-hover", "top") %></td>
+              <td><%= popover(cl.action_by['username'], "Casinos", casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
               <td><%= format_time(cl.created_at) %></td>
               <td><%= display_text(cl.action) %></td>
               <td><%= "#{cl.target_username} [#{cl.target_casino_name}, #{cl.target_casino_id}]" %></td>
