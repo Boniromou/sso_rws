@@ -1,9 +1,9 @@
 class SystemUsersController < ApplicationController
   layout proc {|controller| controller.request.xhr? ? false: "user_management" }
   respond_to :html, :js
-  
+
   def index
-    @system_users = policy_scope(SystemUser.with_active_casino)
+    @system_users = policy_scope(SystemUser.with_active_casino.includes(:casinos))
     authorize :system_users, :index?
   end
 
@@ -54,7 +54,7 @@ class SystemUsersController < ApplicationController
       v = params[app.name.to_sym]
       v ? v.to_i : nil
     end
-    
+
     role_ids.compact.uniq
   end
 

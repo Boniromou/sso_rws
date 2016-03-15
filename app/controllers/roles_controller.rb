@@ -5,7 +5,7 @@ class RolesController < ApplicationController
   def index
     authorize :role, :index?
 #    @roles = Role.all
-    @apps = App.all    
+    @apps = App.includes(:roles).all
   end
 
   def show
@@ -14,7 +14,7 @@ class RolesController < ApplicationController
     #authorize Permission.new
     authorize :permission, :show?
 
-    app_id = @role.app_id   
+    app_id = @role.app_id
     @app = App.find_by_id(app_id)
     @permissions_by_app = @app.permissions_with_groups
   end

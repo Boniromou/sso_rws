@@ -17,12 +17,12 @@ class SystemUser < ActiveRecord::Base
   end
 
   def active_casino_ids
-    CasinosSystemUser.where(:system_user_id => id, :status => true).select(:casino_id).pluck(:casino_id)
+    self.casinos_system_users.where(:status => true).pluck(:casino_id)
   end
 
   def active_casino_id_names
     rtn = []
-    Casino.where(:id => active_casino_ids).each do |casino|
+    self.casinos.each do |casino|
       rtn.push({:id => casino.id, :name => casino.name})
     end
     rtn
@@ -74,7 +74,7 @@ class SystemUser < ActiveRecord::Base
   def role_in_app(app_name=nil)
     app = App.find_by_name(app_name || APP_NAME)
 
-    self.roles(true).includes(:app).each do |role|
+    self.roles.includes(:app, :role_permissions => :permission).each do |role|
       if role.app.id == app.id
         return role
       end
