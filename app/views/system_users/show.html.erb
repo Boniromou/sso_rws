@@ -39,7 +39,7 @@
                     <th class="col-md-2"><%= t("roles.title") %></th>
                   </thead>
                   <tbody>
-                     <% @system_user.roles.each do |role| %>
+                     <% @system_user.roles.includes(:app).each do |role| %>
                        <tr align="center">
                        <td><%= "#{role.app.name.titleize}" %></td>
                        <td><%= "#{role.name.titleize}" %></td>
