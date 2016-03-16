@@ -9,7 +9,7 @@ class RolesController < ApplicationController
   end
 
   def show
-    @role = Role.find_by_id(params[:id])
+    @role = Role.includes(:role_permissions => :permission).find_by_id(params[:id])
     @permissions_by_role = Role.target_permissions(params[:id])
     #authorize Permission.new
     authorize :permission, :show?
