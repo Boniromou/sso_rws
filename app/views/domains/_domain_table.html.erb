@@ -1,0 +1,21 @@
+<table id="domain" class="table table-striped table-bordered table-hover" style="border-collapse:collapse;">
+  <thead>
+    <th class="col-md-1"><%= t("domain.domain_name") %></th>
+    <th class="col-md-1"><%= t("domain.updated_at") %></th>
+    <th class="col-md-1"><%= t("domain.operations") %></th>
+  </thead>
+
+  <tbody>
+    <!-- TODO create domain -->
+    <!-- <tr>
+    <tr> -->
+
+    <% @domains.each do |domain| %>
+      <tr align="center">
+        <td><%= domain.name %></td>
+        <td id="updated-at"><%= format_time(domain.updated_at) %></td>
+        <td></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

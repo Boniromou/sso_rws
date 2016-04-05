@@ -1,0 +1,22 @@
+<table id="domains" class="table table-bordered table-striped">
+  <thead>
+    <th><%=t("user.user_name") %></th>
+    <th><%=t("user.status") %></th>
+    <th><%=t("casino.title") %></th>
+  </thead>
+  <tbody>
+    <% @system_users.each do |su| %>
+      <tr align="center">
+        <td id="<%=su.id%>">
+        <% if policy(su).show? %>
+          <%=link_to "#{su.username}", system_user_path(su), :remote => true %>
+        <% else %>
+          <%= su.username %>
+        <% end %>
+        </td>
+        <td id="<%=su.id%>"><%=t("#{system_user_status_format(su.status)}") %></td>
+        <td><%= casino_id_names_format(su.active_casino_id_names) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
