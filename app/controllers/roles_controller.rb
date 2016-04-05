@@ -6,6 +6,11 @@ class RolesController < ApplicationController
     authorize :role, :index?
 #    @roles = Role.all
     @apps = App.includes(:roles).all
+
+    respond_to do |format|
+      format.html { render file: "roles/#{action_name}", layout: "role_management", formats: [:html] }
+      format.js { render template: "roles/#{action_name}", formats: [:js] }
+    end
   end
 
   def show

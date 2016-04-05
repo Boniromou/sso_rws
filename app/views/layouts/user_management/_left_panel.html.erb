@@ -17,7 +17,7 @@
       <% if policy(:system_user).index? %>
         <ul>
           <li id="nav_dashboard">
-            <%= link_to user_management_dashboard_index_path, :title => t("general.dashboard"), :remote => true do %>
+            <%= link_to user_management_root_path, :title => t("general.dashboard"), :remote => true do %>
               <i class="fa fa-lg fa-fw fa fa-home"></i> <span class="menu-item-parent"><%= t("general.dashboard") %></span>
             <% end %>
           </li>
@@ -29,8 +29,8 @@
         </ul>
       <% end %>
       </nav>
-      <span class="minifyme" data-action="minifyMenu"> 
-        <i class="fa fa-arrow-circle-left hit"></i> 
+      <span class="minifyme" data-action="minifyMenu">
+        <i class="fa fa-arrow-circle-left hit"></i>
       </span>
 
     </aside>
