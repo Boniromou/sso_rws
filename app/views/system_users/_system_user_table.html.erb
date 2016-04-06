@@ -1,8 +1,10 @@
+<%= form_tag({controller: :system_users, action: :index}, :method => :get, :remote => true ) do %>
                       <table id="system_user" class="table table-bordered table-striped">
                         <thead>
                           <th><%=t("user.user_name") %></th>
                           <th><%=t("user.status") %></th>
                           <th><%=t("casino.title") %></th>
+                          <th class="col-md-2" id="updated_at"><%=t("general.updated_at")%></th>
                         </thead>
                         <tbody>
                           <% @system_users.each do |su| %>
@@ -16,7 +18,9 @@
                               </td>
                               <td id="<%=su.id%>"><%=t("#{system_user_status_format(su.status)}") %></td>
                               <td><%= casino_id_names_format(su.active_casino_id_names) %></td>
+                              <td><%= format_time(su.updated_at) %></td>
                             </tr>
                           <% end %>
                         </tbody>
                       </table>
+<% end %>
