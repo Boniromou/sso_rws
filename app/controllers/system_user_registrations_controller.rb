@@ -36,10 +36,7 @@ class SystemUserRegistrationsController < ActionController::Base
             casino_ids = domain_obj.get_casino_ids
             profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
 
-            if profile[:status] == false
-              Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has been disabled"
-              flash[:alert] = "alert.invalid_login" # TODO customize specific err msg
-            elsif profile[:casino_ids].blank?
+            if profile[:casino_ids].blank?
               Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has no casinos"
               flash[:alert] = "alert.account_no_casino"
             else

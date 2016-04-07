@@ -11,12 +11,17 @@ describe SystemUsersController do
     @system_user_3 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007, 1014])
   end
 
+  def format_time(time)
+    time.getlocal.strftime("%Y-%m-%d %H:%M:%S") if time.present?
+  end
+
   def verify_system_user_table_column_header
     col_headers = all("div#content table#system_user thead th")
-    expect(col_headers.length).to eq 3
+    expect(col_headers.length).to eq 4
     expect(col_headers[0].text).to eq(I18n.t("user.user_name"))
     expect(col_headers[1].text).to eq(I18n.t("user.status"))
     expect(col_headers[2].text).to eq(I18n.t("property.title"))
+    expect(col_headers[3].text).to eq(I18n.t("general.updated_at"))
   end
 
   describe "[4] List System user" do
@@ -31,7 +36,7 @@ describe SystemUsersController do
 
     def verify_system_user_table_record(row_number, system_user)
       row_cells = all("div#content table#system_user tbody tr:nth-child(#{row_number}) td")
-      expect(row_cells.length).to eq 3
+      expect(row_cells.length).to eq 4
       expect(row_cells[0].text).to eq system_user.username
       if system_user.activated?
         expect(row_cells[1].text).to eq I18n.t("user.active")
@@ -39,6 +44,7 @@ describe SystemUsersController do
         expect(row_cells[1].text).to eq I18n.t("user.inactive")
       end
       expect(row_cells[2].text).to eq casino_id_names_format(system_user.active_casino_id_names)
+      expect(row_cells[3].text).to eq format_time(system_user.updated_at)
     end
 
     it "[4.1] verify the list system user" do
