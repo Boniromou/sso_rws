@@ -82,7 +82,6 @@ class SystemUsersController < ApplicationController
     system_user.active_casino_ids.each do |target_casino_id|
       cl = SystemUserChangeLog.new
       cl.target_username = system_user.username
-      cl.target_casino_id = target_casino_id
       cl.action = action
       cl.action_by[:username] = current_system_user.username
       cl.action_by[:casino_ids] = current_system_user.active_casino_ids
@@ -91,6 +90,8 @@ class SystemUsersController < ApplicationController
       cl.change_detail[:from] = from
       cl.change_detail[:to] = to
       cl.save!
+
+      cl.target_casinos.create(:target_casino_id => target_casino_id)
     end
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160314021508) do
+ActiveRecord::Schema.define(:version => 20160406074119) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -79,6 +79,18 @@ ActiveRecord::Schema.define(:version => 20160314021508) do
 
   add_index "casinos_system_users", ["casino_id", "system_user_id"], :name => "index_casinos_system_users_on_casino_id_and_system_user_id", :unique => true
   add_index "casinos_system_users", ["system_user_id"], :name => "fk_CasinosSystemUsers_SystemUserId"
+
+  create_table "change_logs", :force => true do |t|
+    t.string   "change_detail",   :limit => 1024, :default => "{}"
+    t.string   "target_username"
+    t.string   "action",                                            :null => false
+    t.string   "action_by",       :limit => 1024, :default => "{}"
+    t.string   "description"
+    t.datetime "created_at",                                        :null => false
+    t.datetime "updated_at",                                        :null => false
+    t.string   "target_domain",   :limit => 45
+    t.string   "type",            :limit => 45
+  end
 
   create_table "domains", :force => true do |t|
     t.string   "name",       :limit => 45, :null => false
@@ -167,17 +179,6 @@ ActiveRecord::Schema.define(:version => 20160314021508) do
   add_index "roles", ["app_id"], :name => "app_id"
   add_index "roles", ["role_type_id"], :name => "fk_Roles_RoleTypeId"
 
-  create_table "system_user_change_logs", :force => true do |t|
-    t.string   "change_detail",    :limit => 1024, :default => "{}"
-    t.string   "target_username",                                    :null => false
-    t.string   "action",                                             :null => false
-    t.string   "action_by",        :limit => 1024, :default => "{}"
-    t.string   "description"
-    t.datetime "created_at",                                         :null => false
-    t.datetime "updated_at",                                         :null => false
-    t.integer  "target_casino_id",                                   :null => false
-  end
-
   create_table "system_users", :force => true do |t|
     t.integer  "sign_in_count",      :default => 0,     :null => false
     t.datetime "current_sign_in_at"
@@ -196,5 +197,12 @@ ActiveRecord::Schema.define(:version => 20160314021508) do
   add_index "system_users", ["auth_source_id"], :name => "auth_source_id"
   add_index "system_users", ["domain_id"], :name => "fk_SystemUsers_DomainId"
   add_index "system_users", ["username", "domain_id"], :name => "index_system_users_on_username_and_domain_id", :unique => true
+
+  create_table "target_casinos", :force => true do |t|
+    t.integer "change_log_id"
+    t.integer "target_casino_id"
+  end
+
+  add_index "target_casinos", ["change_log_id"], :name => "fk_TargetCasinos_ChangeLogId"
 
 end
