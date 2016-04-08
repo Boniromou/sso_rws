@@ -7,54 +7,42 @@ class SystemUserRegistrationsController < ActionController::Base
   end
 
   def create
-    @nav_app_link = params[:app]
-    username_with_domain = params[:system_user][:username].downcase
-    login = Rigi::Login.extract_login_name(username_with_domain)
+    begin
+      @nav_app_link = params[:app]
+      username_with_domain = params[:system_user][:username].downcase
+      login = Rigi::Login.extract_login_name(username_with_domain)
+      raise Rigi::InvalidLogin if login.nil?
 
-    if login.nil?
-      Rails.logger.error "SystemUser[username=#{username_with_domain}] illegal login name format"
-      flash[:alert] = "alert.invalid_login"
-    else
       username = login[:username]
       domain = login[:domain]
       password = params[:system_user][:password]
+      SystemUser.validate_account!(username, domain)
 
-      domain_obj = Domain.where(:name => domain).first
-      if !domain_obj
-        Rails.logger.error "SystemUser[username=#{username_with_domain}] illegal domain"
-        flash[:alert] = "alert.invalid_login"
-      else
-        auth_source = AuthSource.first
-        sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id, :domain_id => domain_obj.id).first
-
-        if sys_usr
-          flash[:alert] = "alert.registered_account"
-        else
-          auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-
-          if auth_source.authenticate(username_with_domain, password)
-            casino_ids = domain_obj.get_casino_ids
-            profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
-            if profile.blank?
-              Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account is not in ldap server"
-              flash[:alert] = I18n.t("alert.account_not_in_ldap")
-            elsif profile[:casino_ids].blank?
-              Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has no casinos"
-              flash[:alert] = "alert.account_no_casino"
-            else
-              SystemUser.register!(username, domain, auth_source.id, profile[:casino_ids])
-              flash[:success] = "alert.signup_completed"
-            end
-          else
-            Rails.logger.info "SystemUser[username=#{username}] Registration failed. Authentication failed"
-            flash[:alert] = "alert.invalid_login"
-          end
-        end
+      auth_source = AuthSource.first
+      auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+      if auth_source.authenticate(username_with_domain, password)
+        SystemUser.register_account!(username, domain)
+        flash[:success] = "alert.signup_completed"
+      else 
+        raise Rigi::InvalidLogin
       end
+    rescue Rigi::InvalidLogin, Rigi::InvalidUsername, Rigi::InvalidDomain
+      Rails.logger.error "SystemUser[username=#{username_with_domain}] illegal login name format"
+      flash[:alert] = "alert.invalid_login"
+    rescue Rigi::RegisteredAccount
+      Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {The account has been registered}"
+      flash[:alert] = "alert.registered_account"
+    rescue Rigi::AccountNotInLdap
+      Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {Account is not in ldap server}"
+      flash[:alert] = "alert.account_not_in_ldap"
+    rescue Rigi::AccountNoCasino
+      Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {Account no casino}"
+      flash[:alert] = "alert.account_no_casino"
     end
 
     render :new
   end
+
 =begin
   private
   def get_system_user_profile(auth_source, username)

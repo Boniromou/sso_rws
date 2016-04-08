@@ -5,6 +5,6 @@ audit_target:
       edit_role:
         action_type: "update"
         locale_key: "user.edit_role"
-      create_system_user:
+      create:
         action_type: "create"
         locale_key: "user.create_system_user"

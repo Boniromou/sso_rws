@@ -10,24 +10,26 @@
     <div class="form-group" >
       </br>
       <label for="username">Username:</label> 
-      <%= text_field :system_user, :username, class: "form-control", autofocus: true, required: 'required' %>
+      <%= text_field :system_user, :username, class: "form-control", autofocus: true, required: "required" %>
       <label>@</label>
       <select class="form-control input-sm" name="system_user[domain]" id="domain">
         <% @domains.each do |domain| %>
           <% if domain[:name].present? %>
             <option value="<%= domain[:name] %>"><%= domain[:name] %></option> 
-          <% end %>
-        <% end %>       
+          <% end %>       
+        <% end %>   
       </select>  
       <a id="modal_link" class="btn btn-primary"><%= t("general.create") %></a>    
       <%= submit_tag "",:id => "create_btn", :class => "btn btn-primary hidden" %>
     </div>
 
-    <div class="row" >
-      <div class='col-md-5'>  
-        <span class="hidden" id="invalid_error" style="color: #D56161; padding-left: 67px"><%= t("alert.invalid_username") %></span> 
+    <% if @errors %>
+      <div class="row" >
+        <div class='col-md-5'>  
+          <span id="invalid_error" style="color: #D56161; padding-left: 67px"><%= @errors %></span> 
+        </div>
       </div>
-    </div>
+    <% end %>
 
   <div class="divMessageBox animated fadeOut fast" id="pop_up_dialog" style=" display: none;">
     <div class="ui-dialog" id="pop_up_ui_dialog" style="width: 600px; top: 50%; left: 50%; margin-top: -75px; margin-left: -300px;">
@@ -82,15 +84,13 @@
     $('#modal_link').click(function() {
       username = $("input[name='system_user[username]']").val();
       domain = $("#domain").val();
-
-      if(username && domain) {
-        $("#invalid_error").addClass("hidden");
-        $('#pop_up_dialog #confirm').click(registerPopUpPanel('<%= t("alert.create_system_user_confirm") %>' +' '+ username + '@' + domain + '?'));
+      if (!username) { 
+        $('input[autofocus="autofocus"]').focus();
+        $("#invalid_error").text("<%= t("alert.invalid_username") %>");
       }
-      else {
-        if (!username) $('input[autofocus="autofocus"]').focus();    
-        $("#invalid_error").removeClass("hidden");
-      }      
+
+      $('#pop_up_dialog #confirm').click(registerPopUpPanel('<%= t("alert.create_system_user_confirm") %>' +' '+ username + '@' + domain + '?'));
+    
       return false;
     });
   });

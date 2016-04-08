@@ -24,4 +24,11 @@ module Rigi
       super(error_message)
     end
   end
+
+  class InvalidUsername < PortalError; end
+  class InvalidDomain < PortalError; end
+  class RegisteredAccount <  PortalError; end
+  class AccountNotInLdap <  PortalError; end
+  class AccountNoCasino < PortalError; end
+
 end

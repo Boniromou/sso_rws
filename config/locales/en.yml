@@ -113,6 +113,7 @@ en:
     edit_role: Edit role for [%{user_name}] successful.
     lock_user: Lock user [%{user_name}]
     unlock_user: Unlock user [%{user_name}]
+    create_user: Create System User [%{username}] successful!
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users

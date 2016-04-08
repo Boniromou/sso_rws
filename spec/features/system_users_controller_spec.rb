@@ -57,7 +57,7 @@ describe SystemUsersController do
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
 
-      users = [@root_user, @system_user_1, @system_user_2, @system_user_3]
+      users = [@root_user, @system_user_1, @system_user_2, @system_user_3, @system_user_4]
       expect(rows.length).to eq users.length
       users.each_with_index do |user, index|
         verify_system_user_table_record(index + 1, user)
@@ -518,7 +518,7 @@ describe SystemUsersController do
       visit new_system_user_path
       fill_in_user_info('abc', 'example.com')
       test_click_create_btn
-      expect(page).to have_content "Create abc@example.com success!"
+      expect(page).to have_content I18n.t("success.create_user", :username => 'abc@example.com')
       expect(current_path).to eq new_system_user_path
     end
 
@@ -558,7 +558,7 @@ describe SystemUsersController do
       visit new_system_user_path
       fill_in_user_info('abc', 'example.com')
       test_click_create_btn
-      check_success_audit_log("system_user", "create", "create_system_user", "portal.admin")
+      check_success_audit_log("system_user", "create", "create", "portal.admin")
     end
 
     it "[24.6] audit log for fail to create system user with incorrect mapping" do
@@ -570,7 +570,7 @@ describe SystemUsersController do
       visit new_system_user_path
       fill_in_user_info('abc', '1003.com')
       test_click_create_btn
-      check_fail_audit_log("system_user", "create", "create_system_user", "portal.admin")
+      check_fail_audit_log("system_user", "create", "create", "portal.admin")
     end
 
     it "[24.8] Create system user fail with invalid input" do
@@ -590,7 +590,7 @@ describe SystemUsersController do
 
     it "[24.10] audit log for fail to create system user with duplicated record in local DB" do
       mock_duplicated_user_create
-      check_fail_audit_log("system_user", "create", "create_system_user", "portal.admin")
+      check_fail_audit_log("system_user", "create", "create", "portal.admin")
     end
   end
 end
