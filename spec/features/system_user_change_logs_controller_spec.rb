@@ -25,6 +25,10 @@ describe SystemUserChangeLogsController do
   end
 
   describe "[16] User Change log" do
+    def expect_target_casino_id(change_log, system_user)
+      expect(change_log.target_casino_id).to eq system_user.active_casino_ids.first
+    end
+
     it "[16.1] 1000 user successfully edit 1003 user" do
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       visit edit_roles_system_user_path(@system_user_2)
@@ -41,7 +45,7 @@ describe SystemUserChangeLogsController do
       expect(cls[0].created_at).to be_kind_of(Time)
       expect(cls[0].action).to eq "edit_role"
       expect(cls[0].target_username).to eq @system_user_2.username
-      expect(cls[0].target_casino_id).to eq @system_user_2.active_casino_ids.first
+      expect_target_casino_id(cls[0], @system_user_2)
       expect(cls[0].change_detail['app_name']).to eq @app_1.name
       expect(cls[0].change_detail['from']).to eq @int_role_1.name
       expect(cls[0].change_detail['to']).to eq @int_role_2.name
@@ -63,7 +67,7 @@ describe SystemUserChangeLogsController do
       expect(cls[0].created_at).to be_kind_of(Time)
       expect(cls[0].action).to eq "edit_role"
       expect(cls[0].target_username).to eq @system_user_3.username
-      expect(cls[0].target_casino_id).to eq @system_user_3.active_casino_ids.first
+      expect_target_casino_id(cls[0], @system_user_3)
       expect(cls[0].change_detail['app_name']).to eq @app_1.name
       expect(cls[0].change_detail['from']).to eq @int_role_1.name
       expect(cls[0].change_detail['to']).to eq @int_role_2.name
@@ -140,19 +144,33 @@ describe SystemUserChangeLogsController do
       expect(cls[0].created_at).to be_kind_of(Time)
       expect(cls[0].action).to eq "edit_role"
       expect(cls[0].target_username).to eq @system_user_3.username
-      expect(cls[0].target_casino_id).to eq @system_user_3.active_casino_ids.first
+      expect_target_casino_id(cls[0], @system_user_3)
       expect(cls[0].change_detail['app_name']).to eq @app_1.name
       expect(cls[0].change_detail['from']).to eq @int_role_1.name
       expect(cls[0].change_detail['to']).to eq @int_role_2.name
     end
 
-    it "[16.6] 1000 user show all change log" do
+    def create_system_user_change_logs(created_ats = nil)
       content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name} }
-      create(:system_user_change_log, content.merge(:target_username => @system_user_1, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_2, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_3, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_casino_id => 1003))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_casino_id => 1007))
+      resources = [
+        [@system_user_1, 1000],
+        [@system_user_2, 1000],
+        [@system_user_3, 1000],
+        [@system_user_4, 1003],
+        [@system_user_4, 1007],
+      ]
+      resources.each_with_index do |resource, index|
+        change_log = create(:system_user_change_log, content.merge(:target_username => resource[0].username))
+        if created_ats
+          change_log.created_at = created_ats[index]
+          change_log.save
+        end
+        change_log.target_casinos.create(:target_casino_id => resource[1])
+      end
+    end
+
+    it "[16.6] 1000 user show all change log" do
+      create_system_user_change_logs
 
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       visit system_user_change_logs_path(:commit => true)
@@ -162,14 +180,9 @@ describe SystemUserChangeLogsController do
     end
 
     it "[16.7] 1003, 1007 user show target user casino 1003 and 1007 change log" do
-      content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name} }
-      create(:system_user_change_log, content.merge(:target_username => @system_user_1, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_2, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_3, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_casino_id => 1003))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_casino_id => 1007))
-
+      create_system_user_change_logs
       mock_ad_account_profile(true, [1003, 1007])
+
       login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
       visit system_user_change_logs_path(:commit => true)
 
@@ -178,12 +191,7 @@ describe SystemUserChangeLogsController do
     end
 
     it "[16.8] user change log authorized" do
-      content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name} }
-      create(:system_user_change_log, content.merge(:target_username => @system_user_1, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_2, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_3, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_casino_id => 1003))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_casino_id => 1007))
+      create_system_user_change_logs
 
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       visit system_user_change_logs_path(:commit => true)
@@ -193,12 +201,7 @@ describe SystemUserChangeLogsController do
     end
 
     it "[16.9] user change log unauthorized" do
-      content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name} }
-      create(:system_user_change_log, content.merge(:target_username => @system_user_1, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_2, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_3, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_casino_id => 1003))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4, :target_casino_id => 1007))
+      create_system_user_change_logs
 
       login("#{@system_user_7.username}@#{@system_user_7.domain.name}")
       visit system_user_change_logs_path(:commit => true)
@@ -209,12 +212,14 @@ describe SystemUserChangeLogsController do
 
     it "[16.10] Search change log by time range" do
       mock_time_at_now "2016-01-01 12:00:00"
-      content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name} }
-      create(:system_user_change_log, content.merge(:target_username => @system_user_1.username, :target_casino_id => 1000, :created_at => 1.day.ago))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_2.username, :target_casino_id => 1000, :created_at => 1.day.ago))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_3.username, :target_casino_id => 1000, :created_at => 1.day.ago))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4.username, :target_casino_id => 1003, :created_at => 1.day.ago))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4.username, :target_casino_id => 1007, :created_at => Time.now))
+      one_day_age = 1.day.ago
+      create_system_user_change_logs([
+        one_day_age,
+        one_day_age,
+        one_day_age,
+        one_day_age,
+        Time.now
+      ])
 
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       visit system_user_change_logs_path(:commit => true, :start_time => "2016-01-01", :end_start => "2016-01-01")
@@ -224,12 +229,7 @@ describe SystemUserChangeLogsController do
     end
 
     it "[16.11] search change log by target user" do
-      content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name} }
-      create(:system_user_change_log, content.merge(:target_username => @system_user_1.username, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_2.username, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_3.username, :target_casino_id => 1000))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4.username, :target_casino_id => 1003))
-      create(:system_user_change_log, content.merge(:target_username => @system_user_4.username, :target_casino_id => 1007))
+      create_system_user_change_logs
 
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       visit system_user_change_logs_path(:commit => true, :target_system_user_name => @system_user_4.username)
