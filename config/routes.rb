@@ -18,7 +18,7 @@ SsoRws::Application.routes.draw do
   get 'role_management' => 'dashboard#role_management', :as => :role_management_root
 
   resources :roles, :only => [:index, :show]
-  resources :system_users, :only => [:index, :show] do
+  resources :system_users, :only => [:index, :show, :new, :create] do
     member do
       #post 'lock'
       #post 'unlock'

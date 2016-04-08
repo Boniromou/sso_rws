@@ -40,7 +40,7 @@ class AuthSourceLdap < AuthSource
                   :password => self.account_password
                 }
               }
-
+              
     ldap = Net::LDAP.new(options)
 
     search_filter = Net::LDAP::Filter.eq("userPrincipalName", "#{username}@#{domain}")
@@ -76,6 +76,11 @@ class AuthSourceLdap < AuthSource
   #
   def retrieve_user_profile(username, domain, filter_groups=[])
     ldap_entry = search(username, domain).first
+    if ldap_entry.blank?
+      Rails.logger.info "[username=#{username}][filter_groups=#{filter_groups}] account is not in Ldap server "
+      return {}
+    end
+    
     dnames = ldap_entry[:distinguishedName]
     memberofs = ldap_entry[:memberOf]
     is_disable_account, is_admin_group = false, false

@@ -35,8 +35,10 @@ class SystemUserRegistrationsController < ActionController::Base
           if auth_source.authenticate(username_with_domain, password)
             casino_ids = domain_obj.get_casino_ids
             profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
-
-            if profile[:casino_ids].blank?
+            if profile.blank?
+              Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account is not in ldap server"
+              flash[:alert] = I18n.t("alert.account_not_in_ldap")
+            elsif profile[:casino_ids].blank?
               Rails.logger.info "SystemUser[username=#{username}] Registration failed. The account has no casinos"
               flash[:alert] = "alert.account_no_casino"
             else

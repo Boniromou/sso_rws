@@ -38,3 +38,8 @@ cashier:
   name: "cashier"
   app_id: 3
   role_type_id: 1
+it_support:
+  id: 9
+  name: "it_support"
+  app_id: 1
+  role_type_id: 1

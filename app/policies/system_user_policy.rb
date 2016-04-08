@@ -7,6 +7,14 @@ class SystemUserPolicy < ApplicationPolicy
     edit_roles?
   end
 
+  def new?
+    create?
+  end
+
+  def create?
+    permitted?(:system_user, :create)
+  end
+
   def index?
     permitted?(:system_user, :show) # && same_group?
   end

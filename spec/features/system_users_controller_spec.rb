@@ -9,6 +9,9 @@ describe SystemUsersController do
     @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
     @system_user_2 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003])
     @system_user_3 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007, 1014])
+
+    it_support_role = Role.find_by_name "it_support"
+    @system_user_4 = create(:system_user, :roles => [it_support_role], :with_casino_ids => [1003, 1007])
   end
 
   def format_time(time)
@@ -450,6 +453,144 @@ describe SystemUsersController do
       user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
       #find(user_manager_2_profile_link_selector).click
       expect(has_link?(I18n.t("user.unlock"))).to be false
+    end
+  end
+
+  describe "[24] Create System User" do
+    def id_array
+      [1003, 1007, 1014]
+    end
+
+    def domain_array
+      ['1003.com', '1007.com', '1014.com']
+    end
+
+    def mock_create_domain
+      arr = id_array
+      arr.each do |id|
+        create(:domain, :id => id, :name => id.to_s + ".com") unless Domain.exists?(:id => id)
+      end 
+    end
+
+    def mock_create_casino
+      licensee = Licensee.first || create(:licensee, name: "laxino")
+      arr = id_array
+      arr.each do |id| 
+        create(:casino, :id => id, :licensee_id => licensee.id) unless Casino.exists?(:id => id)
+      end
+    end
+
+    def mock_create_domain_casino
+      mock_create_domain
+      mock_create_casino
+      arr = id_array
+      arr.each do |id|  
+        create(:domains_casino, domain_id: id, casino_id: id) unless DomainsCasino.exists?(:domain_id => id, :casino_id => id)
+      end
+    end
+
+    def fill_in_user_info(username, domain)
+      fill_in "system_user_username", :with => username
+      select domain, :from => "system_user[domain]"
+    end
+
+    def test_click_create_btn
+      page.find("#modal_link").click
+      expect(page).to have_content I18n.t("general.cancel")
+      expect(page).to have_content I18n.t("general.confirm")
+      expect(page).to have_content I18n.t("alert.create_system_user_confirm")
+      click_button I18n.t("general.confirm")
+    end
+
+    def mock_duplicated_user_create
+      it_support_role = Role.find_by_name "it_support"
+      system_user = create(:system_user, :roles => [it_support_role], :with_casino_ids => [1003, 1007], :username => 'abc')  
+      mock_ad_account_profile(true, [1003])
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      visit new_system_user_path
+      fill_in_user_info('abc', 'example.com')
+      test_click_create_btn
+    end
+
+    it "[24.1] create system user success" do
+      mock_ad_account_profile(true, [1003])
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      visit new_system_user_path
+      fill_in_user_info('abc', 'example.com')
+      test_click_create_btn
+      expect(page).to have_content "Create abc@example.com success!"
+      expect(current_path).to eq new_system_user_path
+    end
+
+    it "[24.2] Display domains in create user page according to user domain casino mapping (1000)" do
+      mock_create_domain
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      visit new_system_user_path
+      expect(page).to have_select("domain", :with_options => domain_array)
+    end
+
+    it "[24.3] Display domains in create user page according to user domain casino mapping (1003,1007)" do
+      mock_create_domain_casino
+      mock_ad_account_profile(true, [1003, 1007])
+      login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
+      visit new_system_user_path
+      expect(page).not_to have_select("domain", :with_options => domain_array)
+      expect(page).to have_select("domain", :with_options => ["1003.com", "1007.com"])
+    end
+
+    it "[24.4] create system user fail with incorrect domain casino mapping" do
+      mock_ad_account_profile(true, [1003])
+      mock_create_domain
+      mock_create_casino
+      create(:domains_casino, domain_id: 1003, casino_id: 1007)
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      visit new_system_user_path
+      expect(page).to have_select("domain", :with_options => ["1003.com"])
+      fill_in_user_info('abc', '1003.com')
+      test_click_create_btn
+      expect(page).to have_content I18n.t("alert.account_no_casino")
+      expect(current_path).to eq new_system_user_path
+    end
+
+    it "[24.5] audit log for successfully create system user" do
+      mock_ad_account_profile(true, [1003])
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      visit new_system_user_path
+      fill_in_user_info('abc', 'example.com')
+      test_click_create_btn
+      check_success_audit_log("system_user", "create", "create_system_user", "portal.admin")
+    end
+
+    it "[24.6] audit log for fail to create system user with incorrect mapping" do
+      mock_ad_account_profile(true, [1003])
+      mock_create_domain
+      mock_create_casino
+      create(:domains_casino, domain_id: 1003, casino_id: 1007)
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      visit new_system_user_path
+      fill_in_user_info('abc', '1003.com')
+      test_click_create_btn
+      check_fail_audit_log("system_user", "create", "create_system_user", "portal.admin")
+    end
+
+    it "[24.8] Create system user fail with invalid input" do
+      mock_create_domain
+      mock_ad_account_profile(true, [1003])
+      login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
+      visit new_system_user_path
+      fill_in_user_info('', 'example.com')
+      page.find("#modal_link").click
+      expect(page).to have_content I18n.t("alert.invalid_username")
+    end
+
+    it "[24.9] Create system user fail with duplicated user in local DB" do
+      mock_duplicated_user_create
+      expect(page).to have_content I18n.t("alert.registered_account")
+    end
+
+    it "[24.10] audit log for fail to create system user with duplicated record in local DB" do
+      mock_duplicated_user_create
+      check_fail_audit_log("system_user", "create", "create_system_user", "portal.admin")
     end
   end
 end

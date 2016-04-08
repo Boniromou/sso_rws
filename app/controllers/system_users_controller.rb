@@ -1,6 +1,27 @@
 class SystemUsersController < ApplicationController
   layout proc {|controller| controller.request.xhr? ? false: "user_management" }
   respond_to :html, :js
+  
+  def new
+    authorize :system_users, :new?
+    @domains = policy_scope(Domain) 
+  end
+
+  def create
+    authorize :system_users, :create?
+
+    begin
+      auditing(:audit_action => "create_system_user") do
+        username = params[:system_user][:username].downcase
+        domain = params[:system_user][:domain].downcase 
+        create_system_user(username, domain)
+        raise flash[:alert] if flash[:alert].present?
+        redirect_to new_system_user_path
+      end 
+    rescue Exception => e
+      redirect_to new_system_user_path
+    end   
+  end
 
   def index
     @system_users = policy_scope(SystemUser.with_active_casino.includes(:casinos))
@@ -54,7 +75,7 @@ class SystemUsersController < ApplicationController
       v = params[app.name.to_sym]
       v ? v.to_i : nil
     end
-
+    
     role_ids.compact.uniq
   end
 
@@ -93,4 +114,35 @@ class SystemUsersController < ApplicationController
       cl.save!
     end
   end
+
+  def create_system_user(username, domain)
+    domain_obj = Domain.where(:name => domain).first
+    if !domain_obj
+      Rails.logger.info "Create SystemUser[username=#{username}@#{domain}] failed. The domain is Invalid"
+      flash[:alert] = I18n.t("alert.invalid_domain")
+    else
+      auth_source = AuthSource.first
+      sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id, :domain_id => domain_obj.id).first     
+      if sys_usr
+        Rails.logger.info "Create SystemUser[username=#{username}@#{domain}] failed. The system user is already created"
+        flash[:alert] = I18n.t("alert.registered_account")
+      else
+        auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+        casino_ids = domain_obj.get_casino_ids
+
+        profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
+        if profile.blank?
+          Rails.logger.info "Create SystemUser[username=#{username}@#{domain}] failed. The account is not in ldap server"
+          flash[:alert] = I18n.t("alert.account_not_in_ldap")
+        elsif profile[:casino_ids].blank?
+          Rails.logger.info "Create SystemUser[username=#{username}@#{domain}] failed. The account has no casinos"
+          flash[:alert] = I18n.t("alert.account_no_casino")
+        else
+          SystemUser.register!(username, domain, auth_source.id, profile[:casino_ids])
+          flash[:success] = "Create #{username}@#{domain} success!"
+        end
+      end
+    end
+  end
+
 end

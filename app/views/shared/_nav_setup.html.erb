@@ -3,12 +3,7 @@
   <% unless tab_to_activate.blank? %>
     $('nav li.active').removeClass("active");
   <% end %>
-<% case tab_to_activate 
-     when "search_audit_logs" %>
-    $('#nav_search_audit_logs').addClass("active");
-  <% when "list_system_users" %>
-    $('#nav_list_system_users').addClass("active");
-  <% else %>
-    $('#nav_<%= tab_to_activate %>').addClass("active");
-<% end %>
+
+  $('#nav_<%= tab_to_activate %>').addClass("active");
+
 </script>
