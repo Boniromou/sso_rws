@@ -79,11 +79,12 @@
             </li>
  	  <% end %>
 
-          <!-- TODO permission -->
           <!-- domain_management -->
-          <li class=<%= selected_page_tab == "domain_management" ? "active" : "" %>>
-            <%= link_to t("header.domain_management"), domain_management_root_path, :id => "domain_management_link" %>
-          </li>
+          <% if policy(:domain).index? %>
+            <li class=<%= selected_page_tab == "domain_management" ? "active" : "" %>>
+              <%= link_to t("header.domain_management"), domain_management_root_path, :id => "domain_management_link" %>
+            </li>
+          <% end %>
 
           <% if policy(:role).link? %>
             <li class=<%= selected_page_tab == "role_management" ? "active" : "" %>>

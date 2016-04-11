@@ -107,6 +107,7 @@ en:
     edit_role: Edit role for [%{user_name}] successful.
     lock_user: Lock user [%{user_name}]
     unlock_user: Unlock user [%{user_name}]
+    create_domain: Create domain [%{domain_name}] successful
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users
@@ -122,3 +123,12 @@ en:
     title: Property
   casino:
     title: Casino
+  domain:
+    name: Domain
+    list: Domains
+  domain_casino:
+    name: Domain_Casino
+    list: Domain-Casino Mappings
+    mapping: Domain-Casino Mappings
+  confirm:
+    create_domain: Do you confirm to create domain [%{domain_name}] ?

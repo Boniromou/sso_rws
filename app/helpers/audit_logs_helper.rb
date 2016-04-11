@@ -1,6 +1,6 @@
 module AuditLogsHelper
   def display_action_status(status_val)
-    case status_val 
+    case status_val
       when "success"
         "general.success"
       when "fail"
@@ -17,17 +17,30 @@ module AuditLogsHelper
   end
 
   def display_target(target_name)
-    Rigi::AUDIT_CONFIG[target_name.to_sym][:locale_key]
+    keys = [target_name.to_sym, :locale_key]
+    display(keys)
   end
 
   def display_action(target_name, action_name)
-    Rigi::AUDIT_CONFIG[target_name.to_sym][:action_name][action_name.to_sym][:locale_key]
+    keys = [target_name.to_sym, :action_name, action_name.to_sym, :locale_key]
+    display(keys)
+  end
+
+  def display(keys, value = Rigi::AUDIT_CONFIG)
+    keys.each do |key|
+      if value
+        value = value[key]
+      else
+        return nil
+      end
+    end
+    value
   end
 
   def gen_hidden_action_list(dom_id="action_lists_to_load")
     action_lists = {}
     action_lists[:all] = { :all => "general.all" }
-    
+
     Rigi::AUDIT_CONFIG.each do |audit_target, category|
       action_lists[audit_target] = {}
       action_lists[audit_target][:all] = "general.all"

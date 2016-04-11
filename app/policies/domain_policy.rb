@@ -1,4 +1,5 @@
 class DomainPolicy < ApplicationPolicy
+
   def index?
     permitted?(:domain, :list)
   end
@@ -6,4 +7,5 @@ class DomainPolicy < ApplicationPolicy
   def create?
     permitted?(:domain, :create)
   end
+
 end
