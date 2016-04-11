@@ -48,12 +48,12 @@
         </div>
         <!-- END AJAX-DROPDOWN -->
       </div>
-      
+
       <!-- #PROJECTS: projects dropdown -->
       <div class="project-context hidden-xs">
         <span class="label"></span>
         <span id="function_dropdown_toggle" class="project-selector dropdown-toggle" data-toggle="dropdown">
-        <% case selected_page_tab 
+        <% case selected_page_tab
           when "home" %>
             <%= t("header.home") %>
           <% when "user_management" %>
@@ -62,6 +62,8 @@
             <%= t("header.role_management") %>
           <% when "audit_log" %>
             <%= t("header.audit_log") %>
+          <% when "domain_management" %>
+            <%= t("header.domain_management") %>
         <% end %>
           <i class="fa fa-angle-down"></i>
         </span>
@@ -71,11 +73,19 @@
           <li class=<%= selected_page_tab == "home" ? "active" : "" %>>
             <%= link_to "Home", home_root_path, :id => "home_link" %>
           </li>
-          <% if policy(:system_user).index? %> 
+          <% if policy(:system_user).index? %>
             <li class=<%= selected_page_tab == "user_management" ? "active" : "" %>>
               <%= link_to t("header.user_management"), user_management_root_path, :id => "user_management_link" %>
             </li>
  	  <% end %>
+
+          <!-- domain_management -->
+          <% if policy(:domain).index? %>
+            <li class=<%= selected_page_tab == "domain_management" ? "active" : "" %>>
+              <%= link_to t("header.domain_management"), domain_management_root_path, :id => "domain_management_link" %>
+            </li>
+          <% end %>
+
           <% if policy(:role).link? %>
             <li class=<%= selected_page_tab == "role_management" ? "active" : "" %>>
               <%= link_to t("header.role_management"), role_management_root_path, :id => "role_management_link" %>
@@ -97,11 +107,11 @@
 
         <!-- logout button -->
         <div id="logout" class="btn-header transparent pull-right">
-          <span> 
+          <span>
             <%= link_to(logout_path, :title => t("general.logout"), "data-action" => "userLogout", "data-action-yes" => t("logout_page.action_yes"), "data-action-no" => t("logout_page.action_no")) do %>
               <i class="fa fa-sign-out"></i>
             <% end %>
-            <!--a href="login.html" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"></a--> 
+            <!--a href="login.html" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"></a-->
           </span>
         </div>
         <!-- end logout button -->
@@ -109,9 +119,9 @@
         <!-- multiple lang dropdown : find all flags in the flags page -->
         <ul class="header-dropdown-list hidden-xs">
           <li>
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <%= image_tag("blank.gif", :class => "flag flag-us") %>
-              <span> English (US) </span> <i class="fa fa-angle-down"></i> 
+              <span> English (US) </span> <i class="fa fa-angle-down"></i>
             </a>
             <ul class="dropdown-menu pull-right">
               <li class="active">

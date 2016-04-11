@@ -6,6 +6,14 @@ class DomainPolicy < ApplicationPolicy
     @admin_property_use_only = true
   end
 
+  def index?
+    permitted?(:domain, :list)
+  end
+
+  def create?
+    permitted?(:domain, :create)
+  end
+
   class Scope < Scope
     def resolve
       if system_user.is_admin? || system_user.has_admin_casino?
