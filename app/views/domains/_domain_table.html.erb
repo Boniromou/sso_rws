@@ -10,12 +10,11 @@
   <tbody>
     <!-- create domain -->
     <% if policy(:domain).create? %>
-      <tr align="center" class="form-group">
+      <tr align="center">
         <td>
-          <input type="text" id="domain_name" name="domain_name"></input>
+          <%= text_field(:domain, :name, required: true, pattern: "^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$") %>
         </td>
-        <td></td>
-        <td id="updated-at" class="hidden"><%= format_time(Time.now) %></td>
+        <td id="updated-at"><%= format_time(Time.now) %></td>
         <td>
           <%= button_tag("add", id: "create_domain", title: "Add", class: "btn btn-primary pop-up-confirm", remote: true) do %>
             <i class="fa fa-plus-square"></i>
@@ -40,47 +39,3 @@
 <div id="cancel" style="display:none"><i class='fa fa-times'><%= t("general.cancel") %></i></div>
 
 <% end %>
-
-<script type="text/javascript">
-  $(document).ready(function() {
-    $(".pop-up-confirm").click(function(e) {
-      e.preventDefault();
-      var domain_name = $("#domain_name")[0].value;
-      var submit_btn = $("button#create_domain");
-      var msg = "Do you confirm to create domain " + domain_name + " ?";
-
-      $("#confirm").css("display","block");
-      $("#cancel").css("display","block");
-      $('#dialog_simple').html(msg).dialog({
-        autoOpen : true,
-        resizable : true,
-        modal : true,
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        title : "Confirm",
-        buttons : [{ html : $("#confirm"),"class" : "btn btn-danger",
-          click : function() {
-            submit_btn.unbind('click').click();
-            $(this).dialog("close");
-            $("#confirm").css("display","none");
-            $("#cancel").css("display","none");
-          }
-        }, { html : $("#cancel"),"class" : "btn btn-default",
-          click : function() {
-            $(this).dialog("close");
-            $("#confirm").css("display","none");
-            $("#cancel").css("display","none");
-          }
-        }]
-      });
-    });
-
-    index = $('#updated-at').index();
-    $('#domain').dataTable({
-      "order": [[ index, "desc"]],
-      "pageLength": 50
-    });
-  });
-</script>

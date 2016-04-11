@@ -15,7 +15,6 @@ class DomainsController < ApplicationController
     authorize :domain, :create?
     actions do
       auditing(audit_action: "create") do
-        domain_name = params["domain_name"].downcase
         Domain.insert({name: domain_name})
         flash[:success] = I18n.t("success.create_domain", domain_name: domain_name)
       end
@@ -27,11 +26,12 @@ class DomainsController < ApplicationController
   def domain_name
     domain = Domain.find_by_id(domain_id)
     domain_name = domain && domain[:name]
-    domain_name ||= params[:domain_name]
+    domain_name ||= params['domain']['name']
+    domain_name.downcase
   end
 
   def domain_id
-    params[:domain_id]
+    params['domain']['id'] if params['domain']
   end
 
   def actions(locale_key = "domain.#{action_name}", &block)

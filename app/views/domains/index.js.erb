@@ -1,3 +1,45 @@
 $('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "domains/index", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
 
+$(document).ready(function() {
+  $(".pop-up-confirm").click(function(e) {
+    e.preventDefault();
+    var domain_name = $("#domain_name")[0].value;
+    var submit_btn = $("button#create_domain");
+    var msg = "Do you confirm to create domain " + domain_name + " ?";
+
+    $("#confirm").css("display","block");
+    $("#cancel").css("display","block");
+    $('#dialog_simple').html(msg).dialog({
+      autoOpen : true,
+      resizable : true,
+      modal : true,
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      title : "Confirm",
+      buttons : [{ html : $("#confirm"),"class" : "btn btn-danger",
+        click : function() {
+          submit_btn.unbind('click').click();
+          $(this).dialog("close");
+          $("#confirm").css("display","none");
+          $("#cancel").css("display","none");
+        }
+      }, { html : $("#cancel"),"class" : "btn btn-default",
+        click : function() {
+          $(this).dialog("close");
+          $("#confirm").css("display","none");
+          $("#cancel").css("display","none");
+        }
+      }]
+    });
+  });
+
+  index = $('#updated-at').index();
+  $('#domain').dataTable({
+    "order": [[ index, "desc"]],
+    "pageLength": 50
+  });
+});
+
 <%= render :partial => "shared/flash_message", :formats => [ :js ] %>
