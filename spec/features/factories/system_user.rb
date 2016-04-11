@@ -11,10 +11,13 @@ FactoryGirl.define do
     end
 
     transient do
-      with_casino_ids nil 
+      with_casino_ids nil
+      with_roles nil
     end
 
     after(:create) do |system_user, factory|
+      system_user.roles = factory.with_roles if factory.with_roles
+
       system_user.roles.each { |role| system_user.apps << role.app }
 
       if factory.with_casino_ids
