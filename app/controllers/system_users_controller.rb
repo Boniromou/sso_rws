@@ -12,10 +12,13 @@ class SystemUsersController < ApplicationController
     authorize :system_users, :create?
 
     begin
+      username = params[:system_user][:username]
+      domain = params[:system_user][:domain]
       auditing do
-        SystemUser.create_by_username_and_domain!(params[:system_user][:username], params[:system_user][:domain])       
-        flash[:success] = I18n.t("success.create_user", :username => (params[:system_user][:username] + '@' + params[:system_user][:domain])) 
+        SystemUser.create_by_username_and_domain!(username, domain)       
+        flash[:success] = I18n.t("success.create_user", :username => (username + '@' + domain)) 
       end 
+      SystemUserChangeLog.create_system_user(:current_user => current_system_user, :username => username, :domain => domain)
     rescue Rigi::InvalidUsername, Rigi::InvalidDomain => e
       Rails.logger.error "SystemUser[username=#{params[:system_user][:username]} , domain=#{params[:system_user][:domain]}] illegal format"
       @errors = e.error_message 

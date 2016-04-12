@@ -9,10 +9,11 @@ class ChangeLogsController < ApplicationController
     end
   end
 
-  def index_edit_role
-    # authorize :change_logs, :index_edit_role?
-    if params[:commit].present?
-      @system_user_change_logs = policy_scope(ChangeLog.search_edit_role(params))
-    end
+  def create_system_user
+    authorize :change_logs, :create_system_user?
+    
+    @create_user_change_logs = policy_scope(SystemUserChangeLog.by_action('create').search_query('', params[:start_time], params[:end_time])) if params[:commit].present?
+
   end
+
 end

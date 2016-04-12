@@ -1,4 +1,3 @@
----
 en:
   locale_category:
     locale_key: English
@@ -139,3 +138,8 @@ en:
     mapping: Domain-Casino Mappings
   confirm:
     create_domain: Do you confirm to create domain [%{domain_name}] ?
+  change_log:
+    user: User
+    action: Action
+    action_at: Action at
+    action_by: Action by

@@ -16,11 +16,9 @@ SsoRws::Application.routes.draw do
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root
   get 'role_management' => 'dashboard#role_management', :as => :role_management_root
-
   get 'domain_management' => 'dashboard#domain_management', :as => :domain_management_root
 
   resources :domains, :only => [:index, :create]
-
 
   resources :roles, :only => [:index, :show]
   resources :system_users, :only => [:index, :show, :new, :create] do
@@ -33,6 +31,12 @@ SsoRws::Application.routes.draw do
   end
 
   resources :system_user_change_logs, :only => [:index]
+
+  resources :change_logs, :only => [:index] do
+    collection do
+      get 'create_system_user'
+    end
+  end
 
   resources :dashboard, :only => [:index] do
     collection do
