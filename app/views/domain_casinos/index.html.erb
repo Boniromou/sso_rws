@@ -1,0 +1,16 @@
+<%= breadcrumbs([ t("domain_casino.list") ], 'fa fa-lg fa-fw fa-list') -%>
+<%= table_tabs(
+    t("domain_casino.list"),
+    ["Active", domain_casinos_path, true],
+    ["Log", domain_casinos_path, true]
+  )
+%>
+
+<div class="tab-content padding-10">
+  <div class="tab-pane fade in active" id="content">
+    <%= render partial: "domain_casinos/domain_casino_table" %>
+  </div>
+</div>
+
+<%= render "shared/page_setup" %>
+<%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_domain_casinos" } %>

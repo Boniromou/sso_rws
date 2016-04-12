@@ -9,6 +9,10 @@ class ApplicationPolicy
     @admin_casino_use_only ||= false
   end
 
+  def target_name
+    self.class.target_name
+  end
+
   def index?
     false
   end
