@@ -21,6 +21,9 @@ SsoRws::Application.routes.draw do
 
   resources :domains, :only => [:index, :create]
 
+  resources :domain_casinos, :only => [:index, :create]
+  post "domain_casinos/inactive/:id" => "domain_casinos#inactive", as: :domain_casino_inactive
+
 
   resources :roles, :only => [:index, :show]
   resources :system_users, :only => [:index, :show, :new, :create] do

@@ -28,14 +28,16 @@
             </li>
           <% end %>
 
-          <li id="nav_domain_casino_mapping">
-            <a>
-              <i class="fa fa-lg fa-fw fa fa-list"></i>
-              <span class="menu-item-parent">
-                <%= t("domain_casino.mapping") %>
-              </span>
-            </a>
-          </li>
+          <% if policy(:domain_casino).index? %>
+            <li id="nav_domain_casino_mapping">
+              <%= link_to(domain_casinos_path, title: t("domain_casino.list"), remote: true) do %>
+                <i class="fa fa-lg fa-fw fa fa-list"></i>
+                <span class="menu-item-parent">
+                  <%= t("domain_casino.list") %>
+                </span>
+              <% end %>
+            </li>
+          <% end %>
         </ul>
       </nav>
       <span class="minifyme" data-action="minifyMenu">
