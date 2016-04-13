@@ -1,8 +1,8 @@
-<%= breadcrumbs([ t("domain_casino.list") ], 'fa fa-lg fa-fw fa-list') -%>
+<%= breadcrumbs([t("domain_casino.list")], 'fa fa-lg fa-fw fa-list') -%>
 <%= table_tabs(
-    t("domain_casino.list"),
-    ["Active", domain_casinos_path, true],
-    ["Log", domain_casinos_path, true]
+    t("general.active"),
+    [t("general.active"), domain_casinos_path, true],
+    [t("general.log"), change_logs_create_domain_casinos_path, true]
   )
 %>
 

@@ -20,10 +20,10 @@ class ChangeLog < ActiveRecord::Base
   end
 
   def target_casino_name
-    Casino.find(target_casino_id).name if target_casino_id
+    self.target_casinos.first.target_casino_name if self.target_casinos.first
   end
 
   def target_casino_id
-    self.target_casinos.first.target_casino_id
+    self.target_casinos.first.target_casino_id if self.target_casinos.first
   end
 end

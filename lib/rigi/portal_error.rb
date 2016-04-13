@@ -31,4 +31,6 @@ module Rigi
   class AccountNotInLdap <  PortalError; end
   class AccountNoCasino < PortalError; end
 
+  class DomainCasinoNotFound < PortalError; end
+
 end

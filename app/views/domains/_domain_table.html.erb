@@ -12,7 +12,7 @@
     <% if policy(:domain).create? %>
       <tr align="center">
         <td>
-          <%= text_field(:domain, :name, required: true, pattern: "^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$") %>
+          <%= text_field(:domain, :name, required: true, pattern: "^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}[a-zA-Z0-9](\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62}[a-zA-Z0-9])+$") %>
         </td>
         <td id="updated-at"><%= format_time(Time.now) %></td>
         <td>

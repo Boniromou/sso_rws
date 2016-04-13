@@ -34,7 +34,7 @@
         <td><%= domain_casino.casino_name %></td>
         <td id="updated-at"><%= format_time(domain_casino.updated_at) %></td>
         <td>
-          <% if policy(:domain_casino).destroy? %>
+          <% if policy(:domain_casino).inactive? %>
             <%= link_to(domain_casino_inactive_path(id: domain_casino.id), method: :post, remote: true, title: "delete", class: "btn btn-primary", id: "delete_#{domain_casino.id}") do %>
               <i id="delete" class="fa fa-trash-o"></i>
             <% end %>

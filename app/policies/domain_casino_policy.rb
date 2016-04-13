@@ -1,19 +1,21 @@
 class DomainCasinoPolicy < ApplicationPolicy
-  policy_target :domain_casino_mapping
+  Target_name = :domain_casino_mapping
+
+  policy_target Target_name
 
   def index?
-    permitted?(target_name, :list)
+    permitted?(Target_name, :list)
   end
 
   def create?
-    permitted?(target_name, :create)
+    permitted?(Target_name, :create)
   end
 
-  def destroy?
-    permitted?(target_name, :inactive)
+  def inactive?
+    permitted?(Target_name, :inactive)
   end
 
   def index_log?
-    permitted?(target_name, :list_log)
+    permitted?(Target_name, :list_log)
   end
 end

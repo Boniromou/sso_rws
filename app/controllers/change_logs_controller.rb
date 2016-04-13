@@ -11,9 +11,13 @@ class ChangeLogsController < ApplicationController
 
   def create_system_user
     authorize :change_logs, :create_system_user?
-    
+
     @create_user_change_logs = policy_scope(SystemUserChangeLog.by_action('create').search_query('', params[:start_time], params[:end_time])) if params[:commit].present?
 
   end
 
+  def index_create_domain_casino
+    authorize :change_logs, :index_create_domain_casino?
+    @create_domain_casino_change_logs = policy_scope(DomainCasinoChangeLog)
+  end
 end
