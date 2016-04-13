@@ -16,7 +16,6 @@ SsoRws::Application.routes.draw do
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root
   get 'role_management' => 'dashboard#role_management', :as => :role_management_root
-
   get 'domain_management' => 'dashboard#domain_management', :as => :domain_management_root
 
   resources :domains, :only => [:index, :create]
@@ -37,6 +36,12 @@ SsoRws::Application.routes.draw do
 
   resources :system_user_change_logs, :only => [:index]
   get "change_logs/index_create_domain_casino" => "change_logs#index_create_domain_casino", as: :change_logs_create_domain_casinos
+
+  resources :change_logs, :only => [:index] do
+    collection do
+      get 'create_system_user'
+    end
+  end
 
   resources :dashboard, :only => [:index] do
     collection do

@@ -8,6 +8,9 @@ class SystemUserRegistrationsController < ActionController::Base
 
   def create
     begin
+      [:success, :alert].each do |key|
+        flash.delete(key)
+      end     
       @nav_app_link = params[:app]
       username_with_domain = params[:system_user][:username].downcase
       login = Rigi::Login.extract_login_name(username_with_domain)
@@ -22,7 +25,7 @@ class SystemUserRegistrationsController < ActionController::Base
       auth_source = auth_source.becomes(auth_source.auth_type.constantize)
       if auth_source.authenticate(username_with_domain, password)
         SystemUser.register_account!(username, domain)
-        flash[:success] = "alert.signup_completed"
+        flash[:success] = "alert.signup_completed"     
       else 
         raise Rigi::InvalidLogin
       end

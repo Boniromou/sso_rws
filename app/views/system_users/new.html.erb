@@ -2,7 +2,7 @@
 
 <%= table_tabs(t("user.create_system_user"), 
 [ t("user.create_system_user"), new_system_user_path, policy(:system_user).new? ],
-[ "Log", system_user_change_logs_path, policy(:system_user_change_log).index? ]) 
+[ "Log", create_system_user_change_logs_path, policy(:change_log).create_system_user? ]) 
 %>
 
 <%= form_tag({action: :'create'}, :id => 'create_system_user_form', :method => :post, :class => "form-inline") do %>
@@ -50,6 +50,7 @@
   </fieldset>
 <% end %>
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "create_system_user" } %>
+
 <script>
   $(document).ready(function() {
     $('#pop_up_dialog #cancel').click(hidePopUpPanel);
@@ -90,7 +91,7 @@
       }
 
       $('#pop_up_dialog #confirm').click(registerPopUpPanel('<%= t("alert.create_system_user_confirm") %>' +' '+ username + '@' + domain + '?'));
-    
+
       return false;
     });
   });
