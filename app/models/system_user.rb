@@ -141,6 +141,41 @@ class SystemUser < ActiveRecord::Base
     end
   end
 
+  def self.sync_user_info
+    begin
+      auth_source = AuthSource.first
+      auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+      system_users = SystemUser.all
+      
+      system_users.each do |system_user|   
+        profile = auth_source.retrieve_user_profile(system_user.username, system_user.domain.name, system_user.domain.get_casino_ids)
+        if system_user.status != profile[:status]
+          system_user.status = profile[:status] 
+          system_user.save! 
+        end
+        system_user.update_casinos(profile[:casino_ids])  
+        system_user.cache_profile 
+      end
+
+    rescue Exception => e
+      Rails.logger.error "#{e.message}"
+      Rails.logger.error "#{e.backtrace.inspect}"
+    end
+  end
+
+  def cache_profile
+    cache_key = "#{self.id}"
+    casinos = self.active_casino_ids
+    properties = Property.where(:casino_id => casino_ids).pluck(:id)
+    cache_hash = {
+      :status => self.status,
+      :admin => self.admin,
+      :casinos => casinos,
+      :properties => properties
+    }
+    Rails.cache.write(cache_key, cache_hash)
+  end
+
   private
   # a = [2, 4, 6, 8]
   # b = [1, 2, 3, 4]
@@ -174,19 +209,6 @@ class SystemUser < ActiveRecord::Base
   def remove_app_assignment(app_id)
     Rails.logger.info "Remove App (id=#{app_id}) for #{self.class.name} (id=#{self.id})"
     self.app_system_users.find_by_app_id(app_id).destroy
-  end
-
-  def cache_profile
-    cache_key = "#{self.id}"
-    casinos = self.active_casino_ids
-    properties = Property.where(:casino_id => casino_ids).pluck(:id)
-    cache_hash = {
-      :status => self.status,
-      :admin => self.admin,
-      :casinos => casinos,
-      :properties => properties
-    }
-    Rails.cache.write(cache_key, cache_hash)
   end
 
   def cache_revoke_permissions(app_name)

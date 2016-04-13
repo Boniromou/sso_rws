@@ -72,3 +72,4 @@ group :test do
 end
 
 gem "pundit",  '0.3.0'
+gem 'whenever', :require => false
