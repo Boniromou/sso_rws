@@ -14,7 +14,7 @@ class SystemUserRegistrationsController < ActionController::Base
       @nav_app_link = params[:app]
       username_with_domain = params[:system_user][:username].downcase
       login = Rigi::Login.extract_login_name(username_with_domain)
-      raise Rigi::InvalidLogin if login.nil?
+      raise Rigi::InvalidLogin.new("alert.invalid_login") if login.nil?
 
       username = login[:username]
       domain = login[:domain]
@@ -27,7 +27,7 @@ class SystemUserRegistrationsController < ActionController::Base
         SystemUser.register_account!(username, domain)
         flash[:success] = "alert.signup_completed"     
       else 
-        raise Rigi::InvalidLogin
+        raise Rigi::InvalidLogin.new("alert.invalid_login")
       end
     rescue Rigi::InvalidLogin, Rigi::InvalidUsername, Rigi::InvalidDomain
       Rails.logger.error "SystemUser[username=#{username_with_domain}] illegal login name format"

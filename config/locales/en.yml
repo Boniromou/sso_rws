@@ -15,10 +15,10 @@ en:
     time_conflict: The schedule conflicts with previous schedule [Maintenance id =%{maintenance_id}]
     invalid_property: property can not be null
     caps_lock: The Caps Lock is turn ON
-    account_no_casino: account no casino
-    invalid_username: invalid username
-    account_not_in_ldap: account is not in ldap server
-    invalid_domain: invalid domain
+    account_no_casino: "System error: Invalid Casino"
+    invalid_username: Invalid username format
+    account_not_in_ldap: User not found in database
+    invalid_domain: Invalid domain format
     create_system_user_confirm: Are you sure to create system user
   title:
     title: User Management
@@ -139,7 +139,7 @@ en:
   confirm:
     create_domain: Do you confirm to create domain [%{domain_name}] ?
   change_log:
-    user: User
+    user: System User
     action: Action
     action_at: Action at
     action_by: Action by

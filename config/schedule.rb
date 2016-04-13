@@ -17,9 +17,9 @@
 #   runner "AnotherModel.prune_old_records"
 # end
 
-every 1.minutes do
+every 5.minutes do
 #every 6.hours do
-  command "/opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/cronjob/sync_system_user.sh #{ENV['RAILS_ENV']} >> /opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/log/sync_system_user_#{ENV['RAILS_ENV']}.log 2>&1"
+  command "/opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/cronjob/sync_system_user.sh #{ENV['RAILS_ENV']}"
 end
 
 # Learn more: http://github.com/javan/whenever
