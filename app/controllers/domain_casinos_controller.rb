@@ -16,10 +16,14 @@ class DomainCasinosController < ApplicationController
   def create
     authorize :domain_casino, :create?
     actions do
+      info = {domain_id: domain_id, casino_id: casino_id}
+
       auditing(audit_action: "create") do
-        DomainsCasino.insert({domain_id: domain_id, casino_id: casino_id})
+        DomainsCasino.insert(info)
         flash[:success] = I18n.t("success.create_domain_casino", domain_name: domain_name, casino_name: casino_name)
       end
+
+      DomainCasinoChangeLog.insert_create_domain_casino(current_system_user, info)
     end
     redirect_to domain_casinos_path
   end
@@ -30,6 +34,8 @@ class DomainCasinosController < ApplicationController
         DomainsCasino.inactive(domain_casino_id)
         flash[:success] = I18n.t("success.inactive_domain_casino", domain_name: domain_name, casino_name: casino_name)
       end
+
+      DomainCasinoChangeLog.insert_inactive_domain_casino(current_system_user, domain_casino_id)
     end
     redirect_to domain_casinos_path
   end
@@ -70,7 +76,10 @@ class DomainCasinosController < ApplicationController
     begin
       yield
     rescue ActiveRecord::RecordNotUnique
-      locale_key = "duplicate.domain_casino"
+      locale_key = "alert.duplicate_domain_casino"
+      flash[:alert] = I18n.t(locale_key, info)
+    rescue Rigi::DomainCasinoNotFound
+      locale_key = "alert.domain_casino_not_found"
       flash[:alert] = I18n.t(locale_key, info)
     end
   end

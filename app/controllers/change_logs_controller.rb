@@ -15,4 +15,9 @@ class ChangeLogsController < ApplicationController
       @system_user_change_logs = policy_scope(ChangeLog.search_edit_role(params))
     end
   end
+
+  def index_create_domain_casino
+    authorize :change_logs, :index_create_domain_casino?
+    @create_domain_casino_change_logs = policy_scope(DomainCasinoChangeLog)
+  end
 end

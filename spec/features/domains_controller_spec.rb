@@ -45,18 +45,20 @@ describe DomainsController do
   end
 
   def user_with_domain_list
-    casino_ids = [1003, 1007]
+    casino_ids = [1007]
     create(:system_user, with_roles: [role_with_domain_list], with_casino_ids: casino_ids)
   end
 
   def user_without_domain_list
-    casinos_ids = [1003, 1007]
+    casinos_ids = [1007]
     create(:system_user, with_roles: [role_without_domain_list], with_casino_ids: casinos_ids)
   end
 
   def user_with_domain_create
-    casinos_ids = [1003, 1007]
-    create(:system_user, with_roles: [role_with_domain_create], with_casino_ids: casinos_ids)
+    return @current_user if @current_user
+
+    casinos_ids = [1007]
+    @current_user = create(:system_user, with_roles: [role_with_domain_create], with_casino_ids: casinos_ids)
   end
 
   def dropdown_domain_management?
@@ -100,7 +102,7 @@ describe DomainsController do
 
   describe "[19] Create Domain" do
     before :each do
-      @domain_1003 = "1003.com"
+      @domain_name = "1003.com"
       login(user_with_domain_create)
       visit domains_path
     end
@@ -109,7 +111,7 @@ describe DomainsController do
       find("#confirm").click
     end
 
-    def fill_domain(domain_name)
+    def fill_domain(domain_name = @domain_name)
       find("input#domain_name").set(domain_name)
     end
 
@@ -117,13 +119,16 @@ describe DomainsController do
       find("button#create_domain").click
     end
 
-    it "[19.1] Create domain success" do
-      fill_domain(@domain_1003)
+    def create_success
+      fill_domain
       click_create_domain
-      # check pop_up message
       click_confirm
-      # check flash message
-      # display domain record in table
+      check_flash_message(I18n.t('success.create_domain', {domain_name: @domain_name}))
+      expect(has_text?(@domain_1003)).to eq true
+    end
+
+    it "[19.1] Create domain success" do
+      create_success
     end
 
     it "[19.2] Create domain fail with invalid format case 1 input" do
@@ -133,9 +138,23 @@ describe DomainsController do
     end
 
     it "[19.4] Audit for Create domain" do
+      create_success
+      filters = {
+        audit_target: 'domain',
+        action_type: 'create',
+        action: 'create',
+        action_status: 'success',
+        action_by: user_with_domain_create.username
+      }
+      expect(AuditLog.where(filters)).not_to eq nil
     end
 
     it "[19.5] Create domain failed with duplicated domain" do
+      create(:domain, name: @domain_name)
+      fill_domain
+      click_create_domain
+      click_confirm
+      check_flash_message(I18n.t("alert.invalid_domain"), {domain_name: @domain_name})
     end
   end
 end

@@ -8,7 +8,7 @@ class Domain < ActiveRecord::Base
   validates_presence_of :name, :message => 'domain name can not be empty'
   validates_uniqueness_of :name
 
-  validates_format_of :name, :with => /^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/, :on => :create
+  validates_format_of :name, :with => /^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}[a-zA-Z0-9](\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62}[a-zA-Z0-9])+$/, :on => :create
 
   def get_casino_ids
     domains_casinos.pluck(:casino_id)

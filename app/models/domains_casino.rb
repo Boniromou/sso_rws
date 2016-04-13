@@ -11,8 +11,6 @@ class DomainsCasino < ActiveRecord::Base
     casino_id = params[:casino_id]
     domain_casino = DomainsCasino.where(domain_id: domain_id, casino_id: casino_id).first
 
-    puts domain_casino.inspect
-
     if domain_casino && domain_casino.status == false
       domain_casino.active
     else
@@ -21,9 +19,11 @@ class DomainsCasino < ActiveRecord::Base
   end
 
   def self.inactive(id)
-    domain_casino = find_by_id(id)
+    domain_casino = where(id: id, status: true).first
     if domain_casino
       domain_casino.inactive
+    else
+      raise Rigi::DomainCasinoNotFound
     end
   end
 

@@ -39,7 +39,7 @@ class DomainsController < ApplicationController
     begin
       yield
     rescue ActiveRecord::RecordInvalid
-      locale_key += ".failed.invalid_argument"
+      locale_key = "alert.invalid_domain"
       flash[:alert] = I18n.t(locale_key, info)
     end
   end

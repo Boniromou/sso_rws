@@ -1,4 +1,8 @@
 class ChangeLogPolicy < ApplicationPolicy
+  def index_create_domain_casino?
+    permitted?(:domain_casino_mapping, :list_log)
+  end
+
   class Scope < Scope
     def resolve
       if system_user.is_admin? || system_user.has_admin_casino?

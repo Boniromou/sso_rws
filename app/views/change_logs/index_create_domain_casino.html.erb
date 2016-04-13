@@ -1,0 +1,49 @@
+<%= breadcrumbs([t("domain_casino.list")], 'fa fa-lg fa-fw fa-list') -%>
+<%= table_tabs(
+  t("general.log"),
+  [t("general.active"), domain_casinos_path, policy(:domain_casino).index?],
+  [t("general.log"), change_logs_create_domain_casinos_path, policy(:change_log).index_create_domain_casino?])
+%>
+
+<div class="tab-content padding-10">
+  <div class="tab-pane fade in active" id="create_domain_casino_change_logs_content">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="col-md-1"><%= t("domain.title") %></th>
+            <th class="col-md-1"><%= t("casino.title") %></th>
+            <th class="col-md-1"><%= t("general.action") %></th>
+            <th class="col-md-1"><%= t("general.action_at") %></th>
+            <th class="col-md-1"><%= t("general.action_by") %></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if @create_domain_casino_change_logs.present? %>
+            <% @create_domain_casino_change_logs.each do |cl| %>
+              <tr align="center">
+                <td><%= cl.target_domain %></td>
+                <td><%= cl.target_casino_name %></td>
+                <td><%= display_text(cl.action) %></td>
+                <td><%= format_time(cl.created_at) %></td>
+                <td><%= cl.action_by %></td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr align="center">
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%= render "shared/page_setup" %>
+<%= render partial: "shared/nav_setup", locals: { tab_to_activate: t("general.log") } %>
