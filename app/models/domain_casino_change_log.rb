@@ -16,9 +16,15 @@ class DomainCasinoChangeLog < ChangeLog
 
   private
   def self.insert(current_system_user, action, domain, casino)
+    action_by = {
+      username: current_system_user.username,
+      casino_ids: current_system_user.active_casino_ids,
+      casino_id_names: current_system_user.active_casino_id_names
+    }
+
     info = {
       action: action,
-      action_by: current_system_user.username,
+      action_by: action_by,
       target_domain: domain.name,
     }
     cl = create(info)

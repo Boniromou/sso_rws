@@ -47,6 +47,13 @@ en:
     all: All
     dashboard: Dashboard
     create: Create
+    log: Log
+    active: Active
+    updated_at: Updated At
+    operations: Operations
+    action: Action
+    action_at: Action At
+    action_by: Action By
   user:
     user_name: User Name
     password: Password
@@ -69,6 +76,7 @@ en:
     home: Home
     audit_log: Audit Log
     role_management: Roles Management
+    domain_management: Domain Management
   role:
     role: Role
     na: No Permission

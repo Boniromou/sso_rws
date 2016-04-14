@@ -19,5 +19,10 @@ class ChangeLogsController < ApplicationController
   def index_create_domain_casino
     authorize :change_logs, :index_create_domain_casino?
     @create_domain_casino_change_logs = policy_scope(DomainCasinoChangeLog)
+
+    respond_to do |format|
+      format.html { render file: "change_logs/index_create_domain_casino", :layout => "domain_management", formats: [:html] }
+      format.js { render template: "change_logs/index_create_domain_casino", formats: [:js] }
+    end
   end
 end
