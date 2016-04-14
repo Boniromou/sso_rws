@@ -16,7 +16,7 @@ describe DomainCasinosController do
       login(user_with_domain_casino_list)
       visit domain_casinos_path
 
-      expect(has_css?("tr", count: DomainsCasino.active_domain_casinos.count)).to eq true
+      expect(has_css?("tbody tr", count: DomainsCasino.active_domain_casinos.count)).to eq true
       expect(has_css?("select#domain_id")).to eq false
       expect(has_css?("select#casino_id")).to eq false
       expect(has_css?("button#create_domain_casino")).to eq false
@@ -27,7 +27,7 @@ describe DomainCasinosController do
       login(user_with_domain_casino_create)
       visit domain_casinos_path
 
-      expect(has_css?("tr", count: (DomainsCasino.active_domain_casinos.count + 1))).to eq true
+      expect(has_css?("tbody tr", count: (DomainsCasino.active_domain_casinos.count))).to eq true
       expect(has_css?("select#domain_id")).to eq true
       expect(has_css?("select#casino_id")).to eq true
       expect(has_css?("button#create_domain_casino")).to eq true
