@@ -94,7 +94,7 @@ describe DomainsController do
       login(user_with_domain_create)
       visit domains_path
 
-      expect(has_css?("table#domain tbody tr", count: (Domain.count + 1))).to eq true
+      expect(has_css?("table#domain tbody tr", count: (Domain.count))).to eq true
       expect(has_css?("input#domain_name")).to eq true
       expect(has_css?("button#create_domain")).to eq true
     end

@@ -1,6 +1,6 @@
 require "feature_spec_helper"
 
-describe SystemUserChangeLogsController do
+describe ChangeLogsController do
   fixtures :licensees, :domains, :casinos
 
   before(:each) do
@@ -38,7 +38,7 @@ describe SystemUserChangeLogsController do
         click_button(I18n.t("general.confirm"))
       end
 
-      cls = SystemUserChangeLog.all
+      cls = ChangeLog.all
       expect(cls.length).to eq 1
       expect(cls[0].action_by['username']).to eq @system_user_1.username
       expect(cls[0].action_by['casino_ids']).to eq @system_user_1.active_casino_ids
@@ -60,7 +60,7 @@ describe SystemUserChangeLogsController do
         click_button(I18n.t("general.confirm"))
       end
 
-      cls = SystemUserChangeLog.all
+      cls = ChangeLog.all
       expect(cls.length).to eq 1
       expect(cls[0].action_by['username']).to eq @system_user_2.username
       expect(cls[0].action_by['casino_ids']).to eq @system_user_2.active_casino_ids
@@ -82,7 +82,7 @@ describe SystemUserChangeLogsController do
         click_button(I18n.t("general.confirm"))
       end
 
-      cls = SystemUserChangeLog.all
+      cls = ChangeLog.all
       expect(cls.length).to eq 2
       expect(cls[0].action_by['username']).to eq @system_user_1.username
       expect(cls[0].action_by['casino_ids']).to eq @system_user_1.active_casino_ids
@@ -114,7 +114,7 @@ describe SystemUserChangeLogsController do
         click_button(I18n.t("general.confirm"))
       end
 
-      cls = SystemUserChangeLog.all
+      cls = ChangeLog.all
       expect(cls.length).to eq 1
       expect(cls[0].action_by['username']).to eq @system_user_1.username
       expect(cls[0].action_by['casino_ids']).to eq @system_user_1.active_casino_ids
@@ -137,7 +137,7 @@ describe SystemUserChangeLogsController do
         click_button(I18n.t("general.confirm"))
       end
 
-      cls = SystemUserChangeLog.all
+      cls = ChangeLog.all
       expect(cls.length).to eq 1
       expect(cls[0].action_by['username']).to eq @system_user_4.username
       expect(cls[0].action_by['casino_ids']).to eq @system_user_4.active_casino_ids
@@ -151,7 +151,7 @@ describe SystemUserChangeLogsController do
     end
 
     def create_system_user_change_logs(created_ats = nil)
-      content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name} }
+      content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "edit_role", :change_detail => {:app_name => "user_management", :from => @int_role_1.name, :to => @int_role_2.name}, :type => 'SystemUserChangeLog' }
       resources = [
         [@system_user_1, 1000],
         [@system_user_2, 1000],
@@ -160,7 +160,7 @@ describe SystemUserChangeLogsController do
         [@system_user_4, 1007],
       ]
       resources.each_with_index do |resource, index|
-        change_log = create(:system_user_change_log, content.merge(:target_username => resource[0].username))
+        change_log = create(:change_log, content.merge(:target_username => resource[0].username))
         if created_ats
           change_log.created_at = created_ats[index]
           change_log.save
@@ -173,7 +173,7 @@ describe SystemUserChangeLogsController do
       create_system_user_change_logs
 
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
-      visit system_user_change_logs_path(:commit => true)
+      visit index_edit_role_change_logs_path(:commit => true)
 
       rc_rows = all("div#content table tbody tr")
       expect(rc_rows.length).to eq 5
@@ -184,7 +184,7 @@ describe SystemUserChangeLogsController do
       mock_ad_account_profile(true, [1003, 1007])
 
       login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
-      visit system_user_change_logs_path(:commit => true)
+      visit index_edit_role_change_logs_path(:commit => true)
 
       rc_rows = all("div#content table tbody tr")
       expect(rc_rows.length).to eq 2
@@ -194,7 +194,7 @@ describe SystemUserChangeLogsController do
       create_system_user_change_logs
 
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
-      visit system_user_change_logs_path(:commit => true)
+      visit index_edit_role_change_logs_path(:commit => true)
 
       rc_rows = all("div#content table tbody tr")
       expect(rc_rows.length).to eq 5
@@ -204,7 +204,7 @@ describe SystemUserChangeLogsController do
       create_system_user_change_logs
 
       login("#{@system_user_7.username}@#{@system_user_7.domain.name}")
-      visit system_user_change_logs_path(:commit => true)
+      visit index_edit_role_change_logs_path(:commit => true)
 
       rc_rows = all("div#content table tbody tr")
       expect(rc_rows.length).to eq 0
@@ -222,7 +222,7 @@ describe SystemUserChangeLogsController do
       ])
 
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
-      visit system_user_change_logs_path(:commit => true, :start_time => "2016-01-01", :end_start => "2016-01-01")
+      visit index_edit_role_change_logs_path(:commit => true, :start_time => "2016-01-01", :end_start => "2016-01-01")
 
       rc_rows = all("div#content table tbody tr")
       expect(rc_rows.length).to eq 1
@@ -232,7 +232,7 @@ describe SystemUserChangeLogsController do
       create_system_user_change_logs
 
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
-      visit system_user_change_logs_path(:commit => true, :target_system_user_name => @system_user_4.username)
+      visit index_edit_role_change_logs_path(:commit => true, :target_system_user_name => @system_user_4.username)
 
       rc_rows = all("div#content table tbody tr")
       expect(rc_rows.length).to eq 2

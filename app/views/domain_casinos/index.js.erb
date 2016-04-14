@@ -3,6 +3,7 @@ $('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :fil
 $(document).ready(function() {
   index = $('#updated-at').index();
   $('#domain').dataTable({
+    "bSortCellsTop": true,
     "order": [[ index, "desc"]],
     "pageLength": 50
   });
