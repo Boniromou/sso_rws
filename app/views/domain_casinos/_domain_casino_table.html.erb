@@ -8,9 +8,6 @@
       <th class="col-md-1" id="updated-at"><%= t("general.updated_at") %></th>
       <th class="col-md-1"><%= t("general.operations") %></th>
     </tr>
-  </thead>
-
-  <tbody>
     <!-- create domain_casino -->
     <% if policy(:domain_casino).create? %>
       <tr align="center">
