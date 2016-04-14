@@ -125,7 +125,7 @@ describe DomainCasinosController do
     it "[23.2] List Domain casino mapping change log" do
       login(user_with_domain_casino_change_log)
       visit change_logs_create_domain_casinos_path
-      locale_keys = ['domain.title', 'casino.title', 'general.action', 'general.action_at', 'general.action_by']
+      locale_keys = ['domain.name', 'casino.title', 'general.action', 'general.action_at', 'general.action_by']
       locale_keys.each do |lk|
         expect(has_text?(I18n.t(lk))).to eq true
       end

@@ -21,16 +21,16 @@
           </li>
 
           <% if policy(:domain).index? %>
-            <li id="nav_list_domains">
-              <%= link_to domains_path, :title => t("domain.list"), :remote => true do %>
+            <li id="nav_domain">
+              <%= link_to domains_path, :title => t("domain.name"), :remote => true do %>
                 <i class="fa fa-lg fa-fw fa fa-list"></i> <span class="menu-item-parent"><%= t("domain.list") %></span>
               <% end %>
             </li>
           <% end %>
 
           <% if policy(:domain_casino).index? %>
-            <li id="nav_domain_casino_mapping">
-              <%= link_to(domain_casinos_path, title: t("domain_casino.list"), remote: true) do %>
+            <li id="nav_domain_casino">
+              <%= link_to(domain_casinos_path, title: t("domain_casino.name"), remote: true) do %>
                 <i class="fa fa-lg fa-fw fa fa-list"></i>
                 <span class="menu-item-parent">
                   <%= t("domain_casino.list") %>

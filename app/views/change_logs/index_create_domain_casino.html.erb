@@ -11,7 +11,7 @@
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th class="col-md-1"><%= t("domain.title") %></th>
+            <th class="col-md-1"><%= t("domain.name") %></th>
             <th class="col-md-1"><%= t("casino.title") %></th>
             <th class="col-md-1"><%= t("general.action") %></th>
             <th class="col-md-1"><%= t("general.action_at") %></th>
@@ -27,7 +27,8 @@
                 <td><%= cl.target_casino_name %></td>
                 <td><%= display_text(cl.action) %></td>
                 <td><%= format_time(cl.created_at) %></td>
-                <td><%= cl.action_by %></td>
+                <td><%= popover(cl.action_by['username'], "Casinos", casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
+
               </tr>
             <% end %>
           <% else %>
@@ -46,4 +47,4 @@
 </div>
 
 <%= render "shared/page_setup" %>
-<%= render partial: "shared/nav_setup", locals: { tab_to_activate: t("general.log") } %>
+<%= render partial: "shared/nav_setup", locals: { tab_to_activate: "domain_casino" } %>
