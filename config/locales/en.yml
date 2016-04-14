@@ -19,6 +19,7 @@ en:
     invalid_username: Invalid username format
     account_not_in_ldap: User not found in database
     invalid_domain: Invalid domain format
+    duplicate_domain: Duplicate Domain
     create_system_user_confirm: Are you sure to create system user
     duplicate_domain_casino: Duplicate Domain-Casino Mapping
     domain_casino_not_found: Domain-Casino Mapping not found
@@ -124,6 +125,7 @@ en:
     unlock_user: Unlock user [%{user_name}]
     create_user: Create System User [%{username}] successful!
     create_domain: Create domain [%{domain_name}] successful
+    create_domain_casino: Create domain-casino mapping successful
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users

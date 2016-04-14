@@ -40,7 +40,7 @@ class DomainsController < ApplicationController
     begin
       yield
     rescue ActiveRecord::RecordNotUnique
-      locale_key = "alert.invalid_domain"
+      locale_key = "alert.duplicate_domain"
       flash[:alert] = I18n.t(locale_key, info)
     rescue ActiveRecord::RecordInvalid
       locale_key = "alert.invalid_domain"
