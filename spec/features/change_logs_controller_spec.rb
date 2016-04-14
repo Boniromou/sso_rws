@@ -1,6 +1,6 @@
 require "feature_spec_helper"
 
-describe SystemUserChangeLogsController do
+describe ChangeLogsController do
   fixtures :licensees, :domains, :casinos, :apps, :permissions, :role_permissions, :roles
 
   before(:each) do
@@ -45,7 +45,7 @@ describe SystemUserChangeLogsController do
     end
 
     def create_system_user_change_logs(created_ats = nil)
-      content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "create" }
+      content = { :action_by => {:username => 'user1', :casino_ids => [1000, 1003, 1007, 1014, 20000]}, :action => "create", :type => 'SystemUserChangeLog' }
       resources = [
         [@system_user_1, 1000],
         [@system_user_2, 1000],
@@ -55,7 +55,7 @@ describe SystemUserChangeLogsController do
         [@system_user_5, 1014]
       ]
       resources.each_with_index do |resource, index|
-        change_log = create(:system_user_change_log, content.merge(:target_username => resource[0].username))
+        change_log = create(:change_log, content.merge(:target_username => resource[0].username))
         if created_ats
           change_log.created_at = created_ats[index]
           change_log.save!

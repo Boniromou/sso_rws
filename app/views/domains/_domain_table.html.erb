@@ -3,7 +3,7 @@
 <table id="domain" class="table table-striped table-bordered table-hover" style="border-collapse:collapse;">
   <thead>
     <th class="col-md-1"><%= t("domain.domain_name") %></th>
-    <th class="col-md-1"><%= t("domain.updated_at") %></th>
+    <th class="col-md-1" id="updated-at"><%= t("domain.updated_at") %></th>
     <th class="col-md-1"><%= t("domain.operations") %></th>
   </thead>
 
@@ -14,7 +14,7 @@
         <td>
           <%= text_field(:domain, :name, required: true, pattern: "^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}[a-zA-Z0-9](\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62}[a-zA-Z0-9])+$") %>
         </td>
-        <td id="updated-at"><%= format_time(Time.now) %></td>
+        <td ><%= format_time(Time.now) %></td>
         <td>
           <%= button_tag("add", id: "create_domain", title: "Add", class: "btn btn-primary pop-up-confirm", remote: true) do %>
             <i class="fa fa-plus-square"></i>
@@ -27,7 +27,7 @@
     <% @domains.each do |domain| %>
       <tr align="center">
         <td><%= domain.name %></td>
-        <td id="updated-at"><%= format_time(domain.updated_at) %></td>
+        <td><%= format_time(domain.updated_at) %></td>
         <td></td>
       </tr>
     <% end %>

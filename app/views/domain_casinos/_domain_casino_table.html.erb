@@ -4,7 +4,7 @@
   <thead>
     <th class="col-md-1"><%= t("domain.title") %></th>
     <th class="col-md-1"><%= t("casino.title") %></th>
-    <th class="col-md-1"><%= t("general.updated_at") %></th>
+    <th class="col-md-1" id="updated-at"><%= t("general.updated_at") %></th>
     <th class="col-md-1"><%= t("general.operations") %></th>
   </thead>
 
@@ -18,7 +18,7 @@
         <td>
           <%= select_tag "casino_id", options_for_select(@list_casino), class: "select2", style: "text-align:center width:100%" %>
         </td>
-        <td id="updated-at"><%= format_time(Time.now) %></td>
+        <td><%= format_time(Time.now) %></td>
         <td>
           <%= button_tag("add", id: "create_domain_casino", title: "Add", class: "btn btn-primary", remote: true) do %>
             <i class="fa fa-plus-square"></i>
@@ -32,7 +32,7 @@
       <tr align="center">
         <td><%= domain_casino.domain_name %></td>
         <td><%= domain_casino.casino_name %></td>
-        <td id="updated-at"><%= format_time(domain_casino.updated_at) %></td>
+        <td><%= format_time(domain_casino.updated_at) %></td>
         <td>
           <% if policy(:domain_casino).inactive? %>
             <%= link_to(domain_casino_inactive_path(id: domain_casino.id), method: :post, remote: true, title: "delete", class: "btn btn-primary", id: "delete_#{domain_casino.id}") do %>

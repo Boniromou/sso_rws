@@ -34,12 +34,12 @@ SsoRws::Application.routes.draw do
     end
   end
 
-  resources :system_user_change_logs, :only => [:index]
   get "change_logs/index_create_domain_casino" => "change_logs#index_create_domain_casino", as: :change_logs_create_domain_casinos
 
   resources :change_logs, :only => [:index] do
     collection do
       get 'create_system_user'
+      get 'index_edit_role'
     end
   end
 

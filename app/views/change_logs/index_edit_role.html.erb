@@ -1,12 +1,12 @@
 <%= breadcrumbs([ t("user.list_users"), "Log"], 'fa fa-lg fa-fw fa-list') -%>
 <%= table_tabs("Log", 
 [ t("user.list_users"), system_users_path, policy(:system_user).index? ],
-[ "Log", system_user_change_logs_path, policy(:system_user_change_log).index? ]) %>
+[ "Log", index_edit_role_change_logs_path, policy(:change_log).index? ]) %>
 
 <div class="tab-content padding-10">
   <div class="tab-pane fade in active" id="system_user_change_logs_content">
     <!--form-->
-    <%= form_tag(system_user_change_logs_path, :remote => true, :method => 'get', :id => "search_form") do %>
+    <%= form_tag(index_edit_role_change_logs_path, :remote => true, :method => 'get', :id => "search_form") do %>
       <fieldset>
         <div class="row">
           <%= render partial: "shared/date_range_picker" , locals: {:default_start_time => params[:start_time], :default_end_time => params[:end_time] } %>
@@ -68,7 +68,7 @@
               <td><%= popover(cl.action_by['username'], "Casinos", casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
               <td><%= format_time(cl.created_at) %></td>
               <td><%= display_text(cl.action) %></td>
-              <td><%= "#{cl.target_username} [#{cl.target_casino_name}, #{cl.target_casino_id}]" %></td>
+              <td><%= popover(cl.target_username, "Casinos", target_casinos_format(cl.target_casinos), "popover-hover", "top") %></td>
               <td><%= display_text(cl.change_detail['app_name']) %></td>
               <td><%= display_text(cl.change_detail['from']) %></td>
               <td><%= display_text(cl.change_detail['to']) %></td>
