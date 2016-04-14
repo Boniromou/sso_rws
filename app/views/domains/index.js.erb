@@ -22,7 +22,7 @@ $(document).ready(function() {
     $('#pop_up_dialog #confirm').focus();
 
     $('#pop_up_dialog #confirm').click(function() {
-      $("#create_domain").unbind("click").click();
+      $("#real_create_domain").click();
       hidePopUpPanel();
       return false;
     });
@@ -31,7 +31,7 @@ $(document).ready(function() {
   $('#create_domain').click(function() {
     var domain_name = $("#domain_name").val();
     var msg = "Do you confirm to create domain " + domain_name + " ?";
-    $('#pop_up_dialog #confirm').click(registerPopUpPanel(msg));
+    registerPopUpPanel(msg);
     return false;
   });
 

@@ -96,7 +96,7 @@ describe DomainsController do
 
       expect(has_css?("table#domain tbody tr", count: (Domain.count))).to eq true
       expect(has_css?("input#domain_name")).to eq true
-      expect(has_css?("button#create_domain")).to eq true
+      expect(has_css?("#create_domain")).to eq true
     end
   end
 
@@ -104,11 +104,16 @@ describe DomainsController do
     before :each do
       @domain_name = "1003.com"
       login(user_with_domain_create)
-      visit domains_path
+
+      click_link(I18n.t("header.domain_management"))
+      click_link('Domains')
+
+      expect(current_path).to eq(domains_path)
     end
 
     def click_confirm
-      find("button#confirm").click
+      expect(has_css?("#pop_up_confirm_btn #confirm")).to eq true
+      find("#pop_up_confirm_btn #confirm").click
     end
 
     def fill_domain(domain_name = @domain_name)
@@ -116,7 +121,8 @@ describe DomainsController do
     end
 
     def click_create_domain
-      find("button#create_domain").click
+      expect(has_css?("#create_domain")).to eq true
+      find("#create_domain").click
     end
 
     def create_success
@@ -132,9 +138,19 @@ describe DomainsController do
     end
 
     it "[19.2] Create domain fail with invalid format case 1 input" do
+      invalid_domain_name = '1003'
+      fill_domain(invalid_domain_name)
+      click_create_domain
+      click_confirm
+      expect(has_text?(I18n.t("alert.invalid_domain"))).to eq true
     end
 
     it "[19.3] Create domain fail with invalid format case 2 input" do
+      invalid_domain_name = '.com'
+      fill_domain(invalid_domain_name)
+      click_create_domain
+      click_confirm
+      expect(has_text?(I18n.t("alert.invalid_domain"))).to eq true
     end
 
     it "[19.4] Audit for Create domain" do
@@ -154,7 +170,7 @@ describe DomainsController do
       fill_domain
       click_create_domain
       click_confirm
-      check_flash_message(I18n.t("alert.invalid_domain"), {domain_name: @domain_name})
+      check_flash_message(I18n.t("alert.duplicate_domain"))
     end
   end
 end
