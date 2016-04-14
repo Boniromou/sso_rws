@@ -76,35 +76,35 @@ module DomainCasinosControllerSpecHelper
   def user_without_domain_casino_list
     return @current_user if @current_user
 
-    casinos_ids = [1003, 1007]
+    casinos_ids = [1000, 1003, 1007]
     @current_user = create(:system_user, with_roles: [role_without_domain_casino_list], with_casino_ids: casinos_ids)
   end
 
   def user_with_domain_casino_list
     return @current_user if @current_user
 
-    casino_ids = [1003, 1007]
+    casino_ids = [1000, 1003, 1007]
     @current_user = create(:system_user, with_roles: [role_with_domain_casino_list], with_casino_ids: casino_ids)
   end
 
   def user_with_domain_casino_create
     return @current_user if @current_user
 
-    casinos_ids = [1003, 1007]
+    casinos_ids = [1000, 1003, 1007]
     @current_user = create(:system_user, with_roles: [role_with_domain_casino_create], with_casino_ids: casinos_ids)
   end
 
   def user_with_domain_casino_inactive
     return @current_user if @current_user
 
-    casinos_ids = [1003, 1007]
+    casinos_ids = [1000, 1003, 1007]
     @current_user = create(:system_user, with_roles: [role_with_domain_casino_inactive], with_casino_ids: casinos_ids)
   end
 
   def user_with_domain_casino_change_log
     return @current_user if @current_user
 
-    casinos_ids = [1003, 1007]
+    casinos_ids = [1000, 1003, 1007]
     @current_user = create(:system_user, with_roles: [role_with_domain_casino_change_log], with_casino_ids: casinos_ids)
   end
 
@@ -128,7 +128,7 @@ module DomainCasinosControllerSpecHelper
     login(user_with_domain_casino_create)
 
     @domain_name = '1003.com'
-    @casino_ids = [1003, 1007]
+    @casino_ids = [1000, 1003, 1007]
     @casino_name = 'MockUp'
 
     info = {name: @domain_name}
@@ -173,7 +173,7 @@ module DomainCasinosControllerSpecHelper
     login(user_with_domain_casino_inactive)
 
     @domain_name = '1003.com'
-    @casino_ids = [1003, 1007]
+    @casino_ids = [1000, 1003, 1007]
     @casino_name = 'MockUp'
 
     info = {name: @domain_name}

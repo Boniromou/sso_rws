@@ -45,19 +45,19 @@ describe DomainsController do
   end
 
   def user_with_domain_list
-    casino_ids = [1007]
+    casino_ids = [1000, 1007]
     create(:system_user, with_roles: [role_with_domain_list], with_casino_ids: casino_ids)
   end
 
   def user_without_domain_list
-    casinos_ids = [1007]
+    casinos_ids = [1000, 1007]
     create(:system_user, with_roles: [role_without_domain_list], with_casino_ids: casinos_ids)
   end
 
   def user_with_domain_create
     return @current_user if @current_user
 
-    casinos_ids = [1007]
+    casinos_ids = [1000, 1007]
     @current_user = create(:system_user, with_roles: [role_with_domain_create], with_casino_ids: casinos_ids)
   end
 
@@ -108,7 +108,7 @@ describe DomainsController do
     end
 
     def click_confirm
-      find("#confirm").click
+      find("button#confirm").click
     end
 
     def fill_domain(domain_name = @domain_name)
