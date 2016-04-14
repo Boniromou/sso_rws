@@ -2,13 +2,12 @@
 
 <table id="domain" class="table table-striped table-bordered table-hover" style="border-collapse:collapse;">
   <thead>
-    <th class="col-md-1"><%= t("domain.name") %></th>
-    <th class="col-md-1"><%= t("casino.title") %></th>
-    <th class="col-md-1" id="updated-at"><%= t("general.updated_at") %></th>
-    <th class="col-md-1"><%= t("general.operations") %></th>
-  </thead>
-
-  <tbody>
+    <tr>
+      <th class="col-md-1"><%= t("domain.name") %></th>
+      <th class="col-md-1"><%= t("casino.title") %></th>
+      <th class="col-md-1" id="updated-at"><%= t("general.updated_at") %></th>
+      <th class="col-md-1"><%= t("general.operations") %></th>
+    </tr>
     <!-- create domain_casino -->
     <% if policy(:domain_casino).create? %>
       <tr align="center">
@@ -18,7 +17,7 @@
         <td>
           <%= select_tag "casino_id", options_for_select(@list_casino), class: "select2", style: "text-align:center width:100%" %>
         </td>
-        <td><%= format_time(Time.now) %></td>
+        <td></td>
         <td>
           <%= button_tag("add", id: "create_domain_casino", title: "Add", class: "btn btn-primary", remote: true) do %>
             <i class="fa fa-plus-square"></i>
@@ -26,7 +25,9 @@
         </td>
       </tr>
     <% end %>
+  </thead>
 
+  <tbody>
     <!-- list_domain_casino -->
     <% @domain_casinos.each do |domain_casino| %>
       <tr align="center">
