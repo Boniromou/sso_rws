@@ -1,21 +1,26 @@
 class DomainCasinoPolicy < ApplicationPolicy
-  Target_name = :domain_casino_mapping
+  @@target_name = :domain_casino_mapping
 
-  policy_target Target_name
+  policy_target @@target_name
+
+  def initialize(system_user_context, record)
+    super(system_user_context, record)
+    @admin_casino_use_only = true
+  end
 
   def index?
-    permitted?(Target_name, :list)
+    permitted?(@@target_name, :list)
   end
 
   def create?
-    permitted?(Target_name, :create)
+    permitted?(@@target_name, :create)
   end
 
   def inactive?
-    permitted?(Target_name, :inactive)
+    permitted?(@@target_name, :inactive)
   end
 
   def index_log?
-    permitted?(Target_name, :list_log)
+    permitted?(@@target_name, :list_log)
   end
 end

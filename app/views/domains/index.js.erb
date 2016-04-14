@@ -1,38 +1,38 @@
 $('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "domains/index", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
 
 $(document).ready(function() {
-  $(".pop-up-confirm").click(function(e) {
-    e.preventDefault();
-    var domain_name = $("#domain_name")[0].value;
-    var submit_btn = $("button#create_domain");
-    var msg = "Do you confirm to create domain " + domain_name + " ?";
+  $('#pop_up_dialog #cancel').click(hidePopUpPanel);
 
-    $("#confirm").css("display","block");
-    $("#cancel").css("display","block");
-    $('#dialog_simple').html(msg).dialog({
-      autoOpen : true,
-      resizable : true,
-      modal : true,
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      title : "Confirm",
-      buttons : [{ html : $("#confirm"),"class" : "btn btn-danger",
-        click : function() {
-          submit_btn.unbind('click').click();
-          $(this).dialog("close");
-          $("#confirm").css("display","none");
-          $("#cancel").css("display","none");
-        }
-      }, { html : $("#cancel"),"class" : "btn btn-default",
-        click : function() {
-          $(this).dialog("close");
-          $("#confirm").css("display","none");
-          $("#cancel").css("display","none");
-        }
-      }]
+  function hidePopUpPanel(){
+    $('#pop_up_dialog #confirm').unbind("click");
+    $('#pop_up_content').html('');
+    $('#pop_up_dialog').removeClass("fadeIn");
+    $('#pop_up_dialog').addClass("fadeOut");
+    setTimeout(function(){
+      $('#pop_up_dialog').css("display", "none");
+    },300);
+    return false;
+  }
+
+  function registerPopUpPanel(content){
+    $('#pop_up_content').html(content);
+    $('#pop_up_dialog').css("display", "block");
+    $('#pop_up_dialog').removeClass("fadeOut");
+    $('#pop_up_dialog').addClass("fadeIn");
+    $('#pop_up_dialog #confirm').focus();
+
+    $('#pop_up_dialog #confirm').click(function() {
+      $("#create_domain").unbind("click").click();
+      hidePopUpPanel();
+      return false;
     });
+  }
+
+  $('#create_domain').click(function() {
+    var domain_name = $("#domain_name").val();
+    var msg = "Do you confirm to create domain " + domain_name + " ?";
+    $('#pop_up_dialog #confirm').click(registerPopUpPanel(msg));
+    return false;
   });
 
   index = $('#updated-at').index();

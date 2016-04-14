@@ -9,6 +9,7 @@ class DomainsController < ApplicationController
   def index
     authorize :domain, :index?
     @domains = Domain.all
+    @errors = params[:errors] if params[:errors].present?
   end
 
   def create
@@ -19,7 +20,7 @@ class DomainsController < ApplicationController
         flash[:success] = I18n.t("success.create_domain", domain_name: domain_name)
       end
     end
-    redirect_to domains_path
+    redirect_to domains_path({:errors => @errors})
   end
 
   private
@@ -38,10 +39,12 @@ class DomainsController < ApplicationController
     info = {domain_name: domain_name}
     begin
       yield
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordNotUnique
       locale_key = "alert.invalid_domain"
       flash[:alert] = I18n.t(locale_key, info)
+    rescue ActiveRecord::RecordInvalid
+      locale_key = "alert.invalid_domain"
+      @errors = I18n.t(locale_key, info)
     end
   end
-
 end

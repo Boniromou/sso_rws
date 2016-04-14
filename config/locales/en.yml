@@ -20,6 +20,8 @@ en:
     account_not_in_ldap: User not found in database
     invalid_domain: Invalid domain format
     create_system_user_confirm: Are you sure to create system user
+    duplicate_domain_casino: Duplicate Domain-Casino Mapping
+    domain_casino_not_found: Domain-Casino Mapping not found
   title:
     title: User Management
     login_title: Login

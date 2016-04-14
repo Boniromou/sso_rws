@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160412032231) do
+ActiveRecord::Schema.define(:version => 20160414022028) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(:version => 20160412032231) do
     t.datetime "created_at",                                        :null => false
     t.datetime "updated_at",                                        :null => false
     t.string   "target_domain",   :limit => 45
-    t.string   "type",            :limit => 45
+    t.string   "type",            :limit => 45,                     :null => false
   end
 
   create_table "domains", :force => true do |t|
