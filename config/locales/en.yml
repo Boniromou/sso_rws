@@ -126,6 +126,7 @@ en:
     create_user: Create System User [%{username}] successful!
     create_domain: Create domain [%{domain_name}] successful
     create_domain_casino: Create domain-casino mapping successful
+    inactive_domain_casino: Delete domain-casino mapping successful
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users

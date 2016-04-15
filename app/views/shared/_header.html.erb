@@ -73,16 +73,17 @@
           <li class=<%= selected_page_tab == "home" ? "active" : "" %>>
             <%= link_to "Home", home_root_path, :id => "home_link" %>
           </li>
-          <% if policy(:system_user).index? %>
-            <li class=<%= selected_page_tab == "user_management" ? "active" : "" %>>
-              <%= link_to t("header.user_management"), user_management_root_path, :id => "user_management_link" %>
-            </li>
- 	  <% end %>
 
           <!-- domain_management -->
           <% if policy(:domain).index? || policy(:domain_casino).index? %>
             <li class=<%= selected_page_tab == "domain_management" ? "active" : "" %>>
               <%= link_to t("header.domain_management"), domain_management_root_path, :id => "domain_management_link" %>
+            </li>
+          <% end %>
+
+          <% if policy(:system_user).index? %>
+            <li class=<%= selected_page_tab == "user_management" ? "active" : "" %>>
+              <%= link_to t("header.user_management"), user_management_root_path, :id => "user_management_link" %>
             </li>
           <% end %>
 
