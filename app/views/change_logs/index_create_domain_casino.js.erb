@@ -7,4 +7,6 @@ $(document).ready(function() {
   });
 });
 
+$("[data-content][data-original-title]").popover({trigger: "hover"});
+
 <%= render :partial => "shared/flash_message", :formats => [ :js ] %>

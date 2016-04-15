@@ -121,7 +121,7 @@ class SystemUser < ActiveRecord::Base
   end
 
   def update_ad_profile
-    casino_ids = self.domain.get_casino_ids
+    casino_ids = self.domain.active_casino_ids
     profile = self.auth_source.retrieve_user_profile(username, self.domain.name, casino_ids)
     self.status = profile[:status]
     update_casinos(profile[:casino_ids])
@@ -146,15 +146,15 @@ class SystemUser < ActiveRecord::Base
       auth_source = AuthSource.first
       auth_source = auth_source.becomes(auth_source.auth_type.constantize)
       system_users = SystemUser.all
-      
-      system_users.each do |system_user|   
+
+      system_users.each do |system_user|
         profile = auth_source.retrieve_user_profile(system_user.username, system_user.domain.name, system_user.domain.get_casino_ids)
         if system_user.status != profile[:status]
-          system_user.status = profile[:status] 
-          system_user.save! 
+          system_user.status = profile[:status]
+          system_user.save!
         end
-        system_user.update_casinos(profile[:casino_ids])  
-        system_user.cache_profile 
+        system_user.update_casinos(profile[:casino_ids])
+        system_user.cache_profile
       end
 
     rescue Exception => e
@@ -265,7 +265,7 @@ class SystemUser < ActiveRecord::Base
     auth_source = auth_source.becomes(auth_source.auth_type.constantize)
     casino_ids = domain_obj.get_casino_ids
 
-    profile = auth_source.retrieve_user_profile(username, domain, casino_ids) 
+    profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
     raise Rigi::AccountNotInLdap.new(I18n.t("alert.account_not_in_ldap")) if profile.blank?
     raise Rigi::AccountNoCasino.new(I18n.t("alert.account_no_casino")) if profile[:casino_ids].blank?
     SystemUser.register!(username, domain, auth_source.id, profile[:casino_ids])

@@ -13,6 +13,10 @@ class Domain < ActiveRecord::Base
     domains_casinos.pluck(:casino_id)
   end
 
+  def active_casino_ids
+    domains_casinos.where(status: true).pluck(:casino_id)
+  end
+
   def self.validate_domain!(domain)
     raise Rigi::InvalidDomain.new(I18n.t("alert.invalid_domain")) if domain.blank? || !Domain.where(:name => domain).first
   end
