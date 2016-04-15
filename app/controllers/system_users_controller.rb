@@ -30,7 +30,7 @@ class SystemUsersController < ApplicationController
   end
 
   def index
-    @system_users = policy_scope(SystemUser.with_active_casino.includes(:casinos))
+    @system_users = policy_scope(SystemUser.includes(:casinos))
     authorize :system_users, :index?
   end
 
