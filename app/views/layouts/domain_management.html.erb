@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%= render "shared/head" %>
+</head>
+<body>
+  <%= render partial: "shared/header", locals: { selected_page_tab: "domain_management" } %>
+  <%= render "layouts/domain_management/left_panel" %>
+  <%= render partial: "shared/main_panel" %>
+  <%= render partial: "shared/footer" %>
+  <%= javascript_include_tag "application" %>
+</body>
+</html>

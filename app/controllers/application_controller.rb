@@ -43,19 +43,19 @@ class ApplicationController < ActionController::Base
       format.js { render partial: "shared/error404", formats: [:js], status: :not_found }
     end
   end
- 
+
   protected
   class SystemUserContext
-    attr_reader :system_user, :request_property_id
+    attr_reader :system_user, :request_casino_id
 
-    def initialize(system_user, request_property_id)
+    def initialize(system_user, request_casino_id)
       @system_user = system_user
-      @request_property_id = request_property_id
+      @request_casino_id = request_casino_id
     end
   end
 
   # e.g.
-  # 
+  #
   #   auditing(:audit_target => "system_user", :audit_action => "edit_roles") do
   #     # edit roles logic goes here...
   #   end
@@ -63,7 +63,7 @@ class ApplicationController < ActionController::Base
   # without any argument, it follows convention as controller name and action name become audit_target and audit_action respectively
   #   auditing { ... }
   # => same as auditing(:audit_target => controller_name, :audit_action => action_name) { ... }
-  #  
+  #
   def auditing(*args, &block)
     options = args.extract_options!
     audit_target = options[:audit_target] || controller_name.singularize
@@ -80,7 +80,7 @@ class ApplicationController < ActionController::Base
     Rails.logger.info 'handle_inactive_status'
     sign_out current_system_user if current_system_user
     flash[:alert] = "alert.inactive_account"  # login page want raw locale key due to devise behavior
-    
+
     if request.xhr?
       render :nothing => true, :status => :unauthorized
     else
@@ -91,7 +91,7 @@ class ApplicationController < ActionController::Base
   def get_sid
     request.session_options[:id]
   end
-  
+
   def handle_unauthorize
     Rails.logger.info 'handle_unauthorize'
     flash[:alert] = I18n.t("flash_message.not_authorize")
@@ -102,7 +102,7 @@ class ApplicationController < ActionController::Base
       redirect_to home_root_path
     end
   end
-  
+
   def render_content(options={})
     @main_content = options[:file] || "#{params[:controller]}/#{params[:action]}"
     @sub_layout = options[:layout]
@@ -132,7 +132,7 @@ class ApplicationController < ActionController::Base
   #   policy action name as controller action/api name
   #
   # e.g.
-  # 
+  #
   # MaintenancesController#index
   # => policy_target = "maintenance"
   # => action_name = "index"
@@ -142,7 +142,7 @@ class ApplicationController < ActionController::Base
   #
   def authorize_action(record=nil, policy_def=nil)
     policy_def ||= "#{action_name}?".to_sym
-    policy_target = 
+    policy_target =
       if record.nil?
         controller_name.singularize.to_sym
       elsif record.is_a?(Array)
@@ -156,17 +156,17 @@ class ApplicationController < ActionController::Base
   end
 
   def pundit_user
-    SystemUserContext.new(current_system_user, params[:property_id])
+    SystemUserContext.new(current_system_user, params[:casino_id])
   end
 
   def verify_request_scope
-    property_ids = []
-    property_ids << params[:property_id] if params[:property_id]
-    property_ids += params[:selected_properties] if params[:selected_properties]
+    casino_ids = []
+    casino_ids << params[:casino_id] if params[:casino_id]
+    casino_ids += params[:selected_casinos] if params[:selected_casinos]
 
-    property_ids.each do |property_id|
-      property = Property.find_by_id(property_id)
-      authorize property, :same_group?
+    casino_ids.each do |casino_id|
+      casino = Casino.find_by_id(casino_id)
+      authorize casino, :same_group?
     end
   end
 end

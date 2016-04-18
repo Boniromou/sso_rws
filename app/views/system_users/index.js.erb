@@ -1,3 +1,11 @@
 $('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "system_users/index", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
 
+$(document).ready(function() {
+  index = $('#updated_at').index()
+  $('#system_user').dataTable({
+    "order": [[ index, "desc"]],
+    "pageLength" : 50
+  });
+})
+
 <%= render :partial => "shared/flash_message", :formats => [ :js ] %>

@@ -1,4 +1,3 @@
----
 en:
   locale_category:
     locale_key: English
@@ -16,7 +15,14 @@ en:
     time_conflict: The schedule conflicts with previous schedule [Maintenance id =%{maintenance_id}]
     invalid_property: property can not be null
     caps_lock: The Caps Lock is turn ON
-    account_no_property: account no property
+    account_no_casino: "System error: Invalid Casino"
+    invalid_username: Invalid username format
+    account_not_in_ldap: User not found in database
+    invalid_domain: Invalid domain format
+    duplicate_domain: Duplicate Domain
+    create_system_user_confirm: Are you sure to create system user
+    duplicate_domain_casino: Duplicate Domain-Casino Mapping
+    domain_casino_not_found: Domain-Casino Mapping not found
   title:
     title: User Management
     login_title: Login
@@ -43,11 +49,20 @@ en:
     fail: Fail
     all: All
     dashboard: Dashboard
+    create: Create
+    log: Log
+    active: Active
+    updated_at: Updated At
+    operations: Operations
+    action: Action
+    action_at: Action At
+    action_by: Action By
   user:
     user_name: User Name
     password: Password
     list_users: System User
     system_user: System User
+    create_system_user: Create System User
     name: Name
     status: Status
     active: Active
@@ -64,6 +79,7 @@ en:
     home: Home
     audit_log: Audit Log
     role_management: Roles Management
+    domain_management: Domain Management
   role:
     role: Role
     na: No Permission
@@ -107,6 +123,10 @@ en:
     edit_role: Edit role for [%{user_name}] successful.
     lock_user: Lock user [%{user_name}]
     unlock_user: Unlock user [%{user_name}]
+    create_user: Create System User [%{username}] successful!
+    create_domain: Create domain [%{domain_name}] successful
+    create_domain_casino: Create domain-casino mapping successful
+    inactive_domain_casino: Delete domain-casino mapping successful
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users
@@ -120,3 +140,19 @@ en:
     search_range_error: The search range is limited to [%{config_value}] days
   property:
     title: Property
+  casino:
+    title: Casino
+  domain:
+    name: Domain
+    list: Domains
+  domain_casino:
+    name: Domain_Casino
+    list: Domain-Casino Mappings
+    mapping: Domain-Casino Mappings
+  confirm:
+    create_domain: Do you confirm to create domain [%{domain_name}] ?
+  change_log:
+    user: System User
+    action: Action
+    action_at: Action at
+    action_by: Action by

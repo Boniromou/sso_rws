@@ -2,11 +2,11 @@
 <div class="row">
 <div id="breadcrumbs" class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
   <h2 class="page-title txt-color-blueDark">
-    <i class="fa-fw fa fa-list"></i> 
+    <i class="fa-fw fa fa-list"></i>
     <%= t("user.list_users") %>
     <span> &gt; </span>
     <i><%= @system_user.username %></i>
-    <small>(<%= t("#{system_user_status_format(@system_user.status)}") %>)</small>  
+    <small>(<%= t("#{system_user_status_format(@system_user.status)}") %>)</small>
   </h2>
 </div>
 </div>
@@ -21,7 +21,7 @@
         <div id="systems_and_roles" class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
           <header>
             <h2><strong><%= t("role.systems_and_roles") %></strong></h2>
-            
+
             <% if policy(@system_user).edit_roles?  %>
             <div class="widget-toolbar" role="menu">
               <div class="btn-group">
@@ -39,7 +39,7 @@
                     <th class="col-md-2"><%= t("roles.title") %></th>
                   </thead>
                   <tbody>
-                     <% @system_user.roles.each do |role| %>
+                     <% @system_user.roles.includes(:app).each do |role| %>
                        <tr align="center">
                        <td><%= "#{role.app.name.titleize}" %></td>
                        <td><%= "#{role.name.titleize}" %></td>

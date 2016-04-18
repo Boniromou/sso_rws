@@ -13,17 +13,17 @@ module StepHelper
     end
   end
 
-  def mock_ldap_query(account_status, property_ids)
+  def mock_ldap_query(account_status, casino_ids)
     dn = account_status ? ["OU=Licensee"] : ["OU=Licensee,OU=Disabled Accounts"]
-    memberof = property_ids.map { |property_id| "CN=#{property_id}iportal" }
+    memberof = casino_ids.map { |casino_id| "CN=#{casino_id}casinoid" }
     entry = [{ :distinguishedName => dn, :memberOf => memberof }]
     allow_any_instance_of(AuthSourceLdap).to receive(:search).and_return(entry)
   end
 
-  def mock_ad_account_profile(status, property_ids)
+  def mock_ad_account_profile(status, casino_ids)
     allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
     #allow(Rigi::Ldap).to receive(:retrieve_user_profile).and_return(:account_status => status, :groups => property_ids)
-    mock_ldap_query(status, property_ids)
+    mock_ldap_query(status, casino_ids)
   end
 
   def mock_time_at_now(time_in_str)
@@ -103,6 +103,14 @@ module StepHelper
 
   def click_header_link(title)
     first('ul.dropdown-menu').find('a', :text => title).click
+  end
+
+  def mock_authenticate(rtn = true)
+    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(rtn)
+  end
+
+  def expect_have_content(content)
+    expect(page).to have_content content
   end
 end
 

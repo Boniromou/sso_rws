@@ -1,0 +1,97 @@
+<%= breadcrumbs([ t("user.create_system_user") ], 'fa fa-lg fa-fw fa-list') -%>
+
+<%= table_tabs(t("user.create_system_user"), 
+[ t("user.create_system_user"), new_system_user_path, policy(:system_user).new? ],
+[ "Log", create_system_user_change_logs_path, policy(:change_log).create_system_user? ]) 
+%>
+
+<%= form_tag({action: :'create'}, :id => 'create_system_user_form', :method => :post, :class => "form-inline") do %>
+  <fieldset>
+    <div class="form-group" >
+      </br>
+      <label for="username">Username:</label> 
+      <%= text_field :system_user, :username, class: "form-control", autofocus: true %>
+      <label>@</label>
+      <select class="form-control input-sm" name="system_user[domain]" id="domain">
+        <% @domains.each do |domain| %>
+          <% if domain[:name].present? %>
+            <option value="<%= domain[:name] %>"><%= domain[:name] %></option> 
+          <% end %>       
+        <% end %>   
+      </select>  
+      <a id="modal_link" class="btn btn-primary"><%= t("general.create") %></a>    
+      <%= submit_tag "",:id => "create_btn", :class => "btn btn-primary hidden" %>
+    </div>
+
+    <div class="row" >
+      <div class='col-md-5'>  
+        <span id="invalid_error" style="color: #D56161; padding-left: 67px"><%= @errors if @errors %></span> 
+      </div>
+    </div>
+
+  <div class="divMessageBox animated fadeOut fast" id="pop_up_dialog" style=" display: none;">
+    <div class="ui-dialog" id="pop_up_ui_dialog" style="width: 600px; top: 50%; left: 50%; margin-top: -75px; margin-left: -300px;">
+      <div id="pop_up_content" style="height: 60%; vertical-align: middle; padding: 20px; padding-bottom: 0px;" align="center">
+      </div>
+      <div id="pop_up_confirm_btn" align="center" style="margin-top: 10px; margin-bottom: 20px;">
+        <table>
+          <tr>
+            <td><button id="cancel" class="btn btn-default"><%= t("general.cancel") %></button></td>
+            <td width='20%'></td>
+            <td><button id="confirm" class="btn btn-primary"><%= t("general.confirm") %></button></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  </fieldset>
+<% end %>
+<%= render partial: "shared/nav_setup", locals: { tab_to_activate: "create_system_user" } %>
+
+<script>
+  $(document).ready(function() {
+    $('#pop_up_dialog #cancel').click(hidePopUpPanel);
+    $('input[autofocus="autofocus"]').focus();
+    if ($("#domain").length == 0) $("#modal_link").addClass("disabled");
+
+    function hidePopUpPanel(){
+      $('#pop_up_dialog #confirm').unbind("click");
+      $('#pop_up_content').html('');
+      $('#pop_up_dialog').removeClass("fadeIn");
+      $('#pop_up_dialog').addClass("fadeOut");
+      setTimeout(function(){
+        $('#pop_up_dialog').css("display", "none");
+      },300);
+      return false;
+    }
+
+    function registerPopUpPanel(content){
+      $('#pop_up_content').html(content);
+      $('#pop_up_dialog').css("display", "block");
+      $('#pop_up_dialog').removeClass("fadeOut");
+      $('#pop_up_dialog').addClass("fadeIn");
+      $('#pop_up_dialog #confirm').focus();
+    
+      $('#pop_up_dialog #confirm').click(function() {
+        $("#create_btn").click();
+        hidePopUpPanel();
+        return false;
+      });
+    }
+
+    $('#modal_link').click(function() {    
+      username = $("input[name='system_user[username]']").val();
+      domain = $("#domain").val();
+      if (!username) { 
+        $('input[autofocus="autofocus"]').focus();
+        $("#invalid_error").text("<%= t("alert.invalid_username") %>");
+        return false;
+      }
+
+      $('#pop_up_dialog #confirm').click(registerPopUpPanel('<%= t("alert.create_system_user_confirm") %>' +' '+ username + '@' + domain + '?'));
+
+      return false;
+    });
+  });
+</script>

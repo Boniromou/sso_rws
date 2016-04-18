@@ -3,10 +3,17 @@ require "feature_spec_helper"
 describe SystemUserRegistrationsController do
   fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
 
+  before(:each) do
+    mock_authenticate
+    domain = Domain.find_by_name("example.com") || create(:domain, :name => "example.com") 
+    licensee = Licensee.first || create(:licensee, name: "laxino")
+    [1000, 1001, 1002, 1003].each do |id|
+      create(:casino, :id => id, :licensee_id => licensee.id) unless Casino.exists?(:id => id, :licensee_id => licensee.id)
+      create(:domains_casino, domain_id: domain.id, casino_id: id) unless DomainsCasino.exists?(:domain_id => domain.id, :casino_id => id)
+    end   
+  end
+
   describe "[3] Self Registration" do
-    before(:each) do
-      create(:property, :id => 1000)
-    end
 
     def go_signup_page_and_register(username)
       visit new_system_user_registration_path
@@ -16,24 +23,23 @@ describe SystemUserRegistrationsController do
     end
 
     it "[3.1] Register Successful" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1000])
       go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.signup_completed")
       system_user = SystemUser.find_by_username('test_user')
-      property_system_user_1000 = PropertiesSystemUser.where(:property_id => 1000, :system_user_id => system_user.id).first
+      casino_system_user_1000 = CasinosSystemUser.where(:casino_id => 1000, :system_user_id => system_user.id).first
       expect(system_user.status).to eq true
-      expect(property_system_user_1000.status).to eq true
+      expect(casino_system_user_1000.status).to eq true
     end
-    
+
     it "[3.2] Register fail with wrong password" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(false)
+      mock_authenticate(false)
       go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
 
     it "[3.3] Register fail with wrong account" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(false)
+      mock_authenticate(false)
       go_signup_page_and_register('test_user@example.com')
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
@@ -45,41 +51,43 @@ describe SystemUserRegistrationsController do
       expect(page).to have_content I18n.t("alert.registered_account")
     end
 
-    it "[3.11] Register system user fail with AD property not match with MDS" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-      mock_ad_account_profile(true, [1003])
+    it "[3.11] Register system user fail with AD casino not match with MDS" do
+      mock_ad_account_profile(true, [1100])
       go_signup_page_and_register('test_user@example.com')
-      expect(page).to have_content I18n.t("alert.account_no_property")
+      expect(page).to have_content I18n.t("alert.account_no_casino")
     end
 
-    it "[3.12] Register system user fail with null property in AD." do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+    it "[3.12] Register system user fail with null casino in AD." do
       mock_ad_account_profile(true, [])
       go_signup_page_and_register('test_user@example.com')
-      expect(page).to have_content I18n.t("alert.account_no_property")
+      expect(page).to have_content I18n.t("alert.account_no_casino")
     end
 
     it "[3.13] Register user with upper case." do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       mock_ad_account_profile(true, [1000])
       go_signup_page_and_register('TEST_USER@EXAMPLE.COM')
       expect(page).to have_content I18n.t("alert.signup_completed")
       system_user = SystemUser.find_by_username('test_user')
-      property_system_user_1000 = PropertiesSystemUser.where(:property_id => 1000, :system_user_id => system_user.id).first
+      casino_system_user_1000 = CasinosSystemUser.where(:casino_id => 1000, :system_user_id => system_user.id).first
       expect(system_user.status).to eq true
-      expect(property_system_user_1000.status).to eq true      
+      expect(casino_system_user_1000.status).to eq true
+    end
+
+    it "[3.14] Register with incorrect domain" do
+      mock_ad_account_profile(true, [1000])
+      go_signup_page_and_register('test_user@other.com')
+      expect(page).to have_content I18n.t("alert.invalid_login")
     end
   end
 
   describe "[1] Login/Logout" do
     before(:each) do
-      @registered_account = create(:system_user, :username => 'test_user', :status => true, :with_property_ids => [1000])
+      @registered_account = create(:system_user, :username => 'test_user', :status => true, :with_casino_ids => [1000])
     end
 
     it "[1.7] unexpected login (click login link)" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       visit '/register'
-      fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain}"
+      fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain.name}"
       fill_in "system_user_password", :with => 'secret'
       click_button I18n.t("general.sign_up")
       expect(page).to have_content I18n.t("alert.registered_account")
@@ -88,13 +96,12 @@ describe SystemUserRegistrationsController do
     end
 
     it "[1.8] unexpected login (click register)" do
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
       visit '/register'
-      fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain}"
+      fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain.name}"
       fill_in "system_user_password", :with => 'secret'
       click_button I18n.t("general.sign_up")
       expect(page).to have_content I18n.t("alert.registered_account")
-      fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain}"
+      fill_in "system_user_username", :with => "#{@registered_account.username}@#{@registered_account.domain.name}"
       fill_in "system_user_password", :with => 'secret'
       click_button I18n.t("general.sign_up")
       expect(current_path).to eq register_path

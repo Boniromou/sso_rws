@@ -1,12 +1,16 @@
 class ApplicationPolicy
   include Rigi::PunditHelper::Policy
-  attr_reader :system_user, :record, :request_property_id, :admin_property_use_only
+  attr_reader :system_user, :record, :request_casino_id, :admin_casino_use_only
 
   def initialize(system_user_context, record)
     @system_user = system_user_context.system_user
-    @request_property_id = system_user_context.request_property_id
+    @request_casino_id = system_user_context.request_casino_id
     @record = record
-    @admin_property_use_only ||= false
+    @admin_casino_use_only ||= false
+  end
+
+  def target_name
+    self.class.target_name
   end
 
   def index?
@@ -58,7 +62,7 @@ class ApplicationPolicy
   def permitted?(target_name, action_names)
     return true if @system_user.is_admin?
     role_has_permission = found_permission?(@system_user.id, target_name, action_names)
-    return false if @admin_property_use_only && !system_user.has_admin_property?
+    return false if @admin_casino_use_only && !system_user.has_admin_casino?
 
     role_has_permission
   end

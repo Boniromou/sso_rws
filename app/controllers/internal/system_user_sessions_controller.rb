@@ -1,5 +1,5 @@
 class Internal::SystemUserSessionsController < ApplicationController
-  skip_before_filter :authenticate_system_user!
+  skip_before_filter :set_locale, :authenticate_system_user!, :check_activation_status, :verify_request_scope
   respond_to :json
 
   def create

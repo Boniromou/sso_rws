@@ -4,7 +4,7 @@ require 'timeout'
 
 class AuthSourceLdap < AuthSource
   DISABLED_ACCOUNT_KEY = 'Disabled Accounts'
-  MATCH_PATTERN_REGEXP = /CN=\d+iportal/
+  MATCH_PATTERN_REGEXP = /CN=\d+casinoid/
 
   def initialize(attributes=nil, *args)
     super
@@ -40,11 +40,11 @@ class AuthSourceLdap < AuthSource
                   :password => self.account_password
                 }
               }
-
+              
     ldap = Net::LDAP.new(options)
 
     search_filter = Net::LDAP::Filter.eq("userPrincipalName", "#{username}@#{domain}")
-    
+
 =begin ... do |entry|
       Rails.logger.debug "DN: #{entry.dn}"
 
@@ -76,6 +76,11 @@ class AuthSourceLdap < AuthSource
   #
   def retrieve_user_profile(username, domain, filter_groups=[])
     ldap_entry = search(username, domain).first
+    if ldap_entry.blank?
+      Rails.logger.info "[username=#{username}][filter_groups=#{filter_groups}] account is not in Ldap server "
+      return {}
+    end
+    
     dnames = ldap_entry[:distinguishedName]
     memberofs = ldap_entry[:memberOf]
     is_disable_account, is_admin_group = false, false
@@ -87,7 +92,7 @@ class AuthSourceLdap < AuthSource
 #    is_admin_group = dnames.any? { |dn| dn_has_admin_group?(dn) }
 
 #    if is_admin_group
-#      groups << ADMIN_PROPERTY_ID
+#      groups << ADMIN_CASINO_ID
 #    else
       memberofs.each do |memberof|
         filter_groups.each do |filter|
@@ -96,7 +101,7 @@ class AuthSourceLdap < AuthSource
       end
 #    end
 
-    res = { :status => !is_disable_account, :property_ids => groups.uniq }
+    res = { :status => !is_disable_account, :casino_ids => groups.uniq }
     Rails.logger.info "[username=#{username}][filter_groups=#{filter_groups}] account result => #{res.inspect}"
 
     res

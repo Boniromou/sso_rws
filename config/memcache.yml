@@ -4,7 +4,7 @@ development:
   servers:
     - int-cons-vapp01.rnd.laxino.com:11211
     - int-cons-vapp01.rnd.laxino.com:11212
-  expires: 20
+  expires: 86400
   namespace: s3_dev
   no_block: false
   timeout: 30

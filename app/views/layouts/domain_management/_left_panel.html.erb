@@ -1,0 +1,48 @@
+<!-- Left panel : Navigation area -->
+    <!-- Note: This width of the aside area can be adjusted through LESS variables -->
+    <aside id="left-panel">
+
+      <!-- NAVIGATION : This navigation is also responsive
+
+      To make this navigation dynamic please make sure to link the node
+      (the reference to the nav > ul) after page load. Or the navigation
+      will not initialize.
+      -->
+      <nav>
+        <!-- NOTE: Notice the gaps after each icon usage <i></i>..
+        Please note that these links work a bit different than
+        traditional href="" links. See documentation for details.
+        -->
+        <ul>
+          <li id="nav_dashboard">
+            <%= link_to domain_management_root_path, :title => t("general.dashboard"), :remote => true do %>
+              <i class="fa fa-lg fa-fw fa fa-home"></i> <span class="menu-item-parent"><%= t("general.dashboard") %></span>
+            <% end %>
+          </li>
+
+          <% if policy(:domain).index? %>
+            <li id="nav_domain">
+              <%= link_to domains_path, :title => t("domain.name"), :remote => true do %>
+                <i class="fa fa-lg fa-fw fa fa-list"></i> <span class="menu-item-parent"><%= t("domain.list") %></span>
+              <% end %>
+            </li>
+          <% end %>
+
+          <% if policy(:domain_casino).index? %>
+            <li id="nav_domain_casino">
+              <%= link_to(domain_casinos_path, title: t("domain_casino.name"), remote: true) do %>
+                <i class="fa fa-lg fa-fw fa fa-list"></i>
+                <span class="menu-item-parent">
+                  <%= t("domain_casino.list") %>
+                </span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </nav>
+      <span class="minifyme" data-action="minifyMenu">
+        <i class="fa fa-arrow-circle-left hit"></i>
+      </span>
+
+    </aside>
+    <!-- END NAVIGATION -->

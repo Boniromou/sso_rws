@@ -17,10 +17,17 @@
       <% if policy(:system_user).index? %>
         <ul>
           <li id="nav_dashboard">
-            <%= link_to user_management_dashboard_index_path, :title => t("general.dashboard"), :remote => true do %>
+            <%= link_to user_management_root_path, :title => t("general.dashboard"), :remote => true do %>
               <i class="fa fa-lg fa-fw fa fa-home"></i> <span class="menu-item-parent"><%= t("general.dashboard") %></span>
             <% end %>
           </li>
+          <% if policy(:system_user).new? %>
+            <li id="nav_create_system_user">
+              <%= link_to new_system_user_path, :title => t("user.create_system_user"), :remote => true do %>
+                <i class="fa fa-lg fa-fw fa fa-edit"></i> <span class="menu-item-parent"><%= t("user.create_system_user") %></span>
+              <% end %>
+            </li>
+          <% end %>
           <li id="nav_list_system_users">
             <%= link_to system_users_path, :title => t("user.list_users"), :remote => true do %>
               <i class="fa fa-lg fa-fw fa fa-list"></i> <span class="menu-item-parent"><%= t("user.list_users") %></span>
@@ -29,8 +36,8 @@
         </ul>
       <% end %>
       </nav>
-      <span class="minifyme" data-action="minifyMenu"> 
-        <i class="fa fa-arrow-circle-left hit"></i> 
+      <span class="minifyme" data-action="minifyMenu">
+        <i class="fa fa-arrow-circle-left hit"></i>
       </span>
 
     </aside>

@@ -141,3 +141,13 @@ withdraw:
   name: "withdraw"
   action: "withdraw"
   target: "player_transaction"
+create_system_user:
+  id: 29
+  name: "create_system_user"
+  action: "create"
+  target: "system_user"
+list_create_user_change_log:
+  id: 30
+  name: "list_create_user_change_log"
+  action: "list_create_user_change_log"
+  target: "system_user"

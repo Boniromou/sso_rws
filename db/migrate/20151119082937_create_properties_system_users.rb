@@ -15,6 +15,6 @@ class CreatePropertiesSystemUsers < ActiveRecord::Migration
   def down
     execute "ALTER TABLE properties_system_users DROP FOREIGN KEY fk_PropertiesSystemUsers_PropertyId;"
     execute "ALTER TABLE properties_system_users DROP FOREIGN KEY fk_PropertiesSystemUsers_SystemUserId;"
-    drop_table :property_game_configs
+    drop_table :properties_system_users
   end
 end

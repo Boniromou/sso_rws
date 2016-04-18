@@ -74,6 +74,7 @@ module SsoRws
 
     config.before_initialize do
       require 'rigi/portal_error'
+      require 'rigi/utils/format'
       require 'rigi/utils/load_constant'
       require 'rigi/core_ext/string'
 

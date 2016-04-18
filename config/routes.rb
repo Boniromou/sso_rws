@@ -16,9 +16,16 @@ SsoRws::Application.routes.draw do
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root
   get 'role_management' => 'dashboard#role_management', :as => :role_management_root
+  get 'domain_management' => 'dashboard#domain_management', :as => :domain_management_root
+
+  resources :domains, :only => [:index, :create]
+
+  resources :domain_casinos, :only => [:index, :create]
+  post "domain_casinos/inactive/:id" => "domain_casinos#inactive", as: :domain_casino_inactive
+
 
   resources :roles, :only => [:index, :show]
-  resources :system_users, :only => [:index, :show] do
+  resources :system_users, :only => [:index, :show, :new, :create] do
     member do
       #post 'lock'
       #post 'unlock'
@@ -27,7 +34,14 @@ SsoRws::Application.routes.draw do
     end
   end
 
-  resources :system_user_change_logs, :only => [:index]
+  get "change_logs/index_create_domain_casino" => "change_logs#index_create_domain_casino", as: :change_logs_create_domain_casinos
+
+  resources :change_logs, :only => [:index] do
+    collection do
+      get 'create_system_user'
+      get 'index_edit_role'
+    end
+  end
 
   resources :dashboard, :only => [:index] do
     collection do

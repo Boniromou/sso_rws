@@ -3,6 +3,7 @@ set :default_stage, 'integration0'
 require 'capistrano/ext/multistage'
 require 'lax-capistrano-recipes/rws'
 require 'bundler/capistrano'
+require 'whenever/capistrano'
 
 set :app_server, "thin"
 set :application, "sso_rws"
@@ -20,6 +21,9 @@ set :script_templates, "#{template_home}/script"
 set :nginx, "#{third_party_home}/nginx/sbin/nginx"
 set :crontab, '/usr/bin/crontab'
 set :bundle_cmd, "source #{envrc_script}; bundle"
+set :whenever_command, defer {"source #{envrc_script} && bundle install && RAILS_ENV=#{stage} bundle exec whenever"}
+set :whenever_environment, defer { stage }
+set :whenever_roles, "app"
 # If you aren't using Subversion to manage your source code, specify
 # your SCM below:
 # set :scm, :subversion

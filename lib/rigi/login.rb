@@ -7,7 +7,7 @@ module Rigi
     #
     # triggle ldap call, update system_user profile, and then write role permission data to cache
     # when failed, error code indicates the reason
-    # e.g. 
+    # e.g.
     #   authenticate('portal.admin@mo.laxino.com')
     # => SystemUser with username as 'portal.admin'
     #
@@ -23,7 +23,13 @@ module Rigi
         raise InvalidLogin.new("alert.invalid_login")
       end
 
-      system_user = SystemUser.where(:username => login[:username], :domain => login[:domain], :auth_source_id => auth_source.id).first
+      domain = Domain.where(:name => login[:domain]).first
+      if domain.nil?
+        Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. Not a registered account with existing domain"
+        raise InvalidLogin.new("alert.invalid_login")
+      end
+
+      system_user = SystemUser.where(:username => login[:username], :domain_id => domain.id, :auth_source_id => auth_source.id).first
 
       if system_user.nil?
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. Not a registered account"
@@ -36,7 +42,7 @@ module Rigi
         system_user.update_ad_profile
         validate_role_status!(system_user, app_name)
         validate_account_status!(system_user)
-        validate_account_properties!(system_user)
+        validate_account_casinos!(system_user)
         system_user.cache_info(app_name)
       else
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. Authentication failed"
@@ -69,10 +75,10 @@ module Rigi
       end
     end
 
-    def validate_account_properties!(system_user)
-      if !system_user.is_admin? && system_user.active_property_ids.blank?
-        Rails.logger.error "SystemUser[username=#{system_user.username}] Login failed. The account has no properties"
-        raise InvalidLogin.new("alert.account_no_property")
+    def validate_account_casinos!(system_user)
+      if !system_user.is_admin? && system_user.active_casino_ids.blank?
+        Rails.logger.error "SystemUser[username=#{system_user.username}] Login failed. The account has no casinos"
+        raise InvalidLogin.new("alert.account_no_casino")
       end
     end
   end
