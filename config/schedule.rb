@@ -17,8 +17,7 @@
 #   runner "AnotherModel.prune_old_records"
 # end
 
-every 5.minutes do
-#every 6.hours do
+every 6.hours do
   command "/opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/cronjob/sync_system_user.sh #{ENV['RAILS_ENV']}"
 end
 
