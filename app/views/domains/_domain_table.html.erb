@@ -19,9 +19,9 @@
         </td>
         <td ></td>
         <td>
-          <div id="create_domain" class="btn btn-primary">
+          <button id="create_domain" class="btn btn-primary" type="submit">
             <i class="fa fa-plus-square"></i>
-          </div>
+          </button>
           <%= submit_tag "", id: "real_create_domain", class: "hidden", remote: true %>
         </td>
       </tr>
@@ -40,9 +40,7 @@
   </tbody>
 </table>
 
-<!-- <div id="dialog_simple" title="Dialog Simple Title"></div>
-<div id="confirm" style="display:none"><%= t("general.confirm") %></i></div>
-<div id="cancel" style="display:none"><%= t("general.cancel") %></i></div> -->
+<% end %>
 
 <div class="divMessageBox animated fadeOut fast" id="pop_up_dialog" style=" display: none;">
   <div class="ui-dialog" id="pop_up_ui_dialog" style="width: 600px; top: 50%; left: 50%; margin-top: -75px; margin-left: -300px;">
@@ -59,5 +57,3 @@
     </div>
   </div>
 </div>
-
-<% end %>

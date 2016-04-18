@@ -28,6 +28,15 @@ $(document).ready(function() {
     });
   }
 
+  function blockEnter(event){
+    if (event.keyCode == 13) {
+      $('#create_domain').click();
+      return false;
+    }
+  }
+
+  $('form').keydown(blockEnter);
+
   $('#create_domain').click(function() {
     var domain_name = $("#domain_name").val();
     var msg = "Do you confirm to create domain " + domain_name + " ?";
