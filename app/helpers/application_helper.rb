@@ -140,9 +140,9 @@ module ApplicationHelper
 
         if visible
           li_div = content_tag(:li, nil, :class => selected == title ? "active" : "" ) do
-            concat link_to(title, path, :remote => true, "data-toggle" => "tab")
+            concat link_to(title, path, "data-target" => "#", :remote => true, "data-toggle" => "tab")
           end
-          
+
           concat li_div
         end
       end
