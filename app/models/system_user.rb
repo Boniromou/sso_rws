@@ -25,8 +25,8 @@ class SystemUser < ActiveRecord::Base
 
   def active_casino_id_names
     rtn = []
-    self.casinos.each do |casino|
-      rtn.push({:id => casino.id, :name => casino.name})
+    self.casinos_system_users.includes(:casino).where(status: true).each do |casino_system_user|
+      rtn.push({id: casino_system_user.casino.id, name: casino_system_user.casino.name})
     end
     rtn
   end
