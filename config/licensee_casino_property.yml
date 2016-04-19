@@ -1,0 +1,188 @@
+hqidc_domain: &hqidc_domain
+  licensees:
+    - {id: 1000, name: 'LAXINO'}
+    - {id: 1003, name: '1003'}
+    - {id: 1007, name: '1007'}
+    - {id: 1011, name: '1011'}
+    - {id: 1012, name: '1012'}
+    - {id: 1014, name: '1014'}
+    - {id: 1016, name: '1016'}
+    - {id: 1017, name: '1017'}
+    - {id: 1018, name: '1018'}
+    - {id: 1021, name: '1021'}
+    - {id: 1035, name: '1035'}
+    - {id: 1036, name: '1036'}
+    - {id: 1037, name: '1037'}
+    - {id: 1038, name: '1038'}
+    - {id: 1039, name: '1039'}
+    - {id: 1040, name: '1040'}
+    - {id: 1041, name: '1041'}
+    - {id: 1042, name: '1042'}
+    - {id: 1043, name: '1043'}
+    - {id: 1045, name: '1045'}
+    - {id: 1046, name: '1046'}
+    - {id: 1047, name: '1047'}
+    - {id: 1048, name: '1048'}
+    - {id: 1052, name: '1052'}  
+    - {id: 20000, name: 'MockUp'}
+    - {id: 20001, name: 'Licensee1'}
+    
+  casinos:
+    - {id: 1000, name: 'LAXINO', licensee_id: 1000}
+    - {id: 1003, name: '1003', licensee_id: 1003}
+    - {id: 1007, name: '1007', licensee_id: 1007}
+    - {id: 1011, name: '1011', licensee_id: 1011}
+    - {id: 1012, name: '1012', licensee_id: 1012}
+    - {id: 1014, name: '1014', licensee_id: 1014}
+    - {id: 1016, name: '1016', licensee_id: 1016}
+    - {id: 1017, name: '1017', licensee_id: 1017}
+    - {id: 1018, name: '1018', licensee_id: 1018}
+    - {id: 1021, name: '1021', licensee_id: 1021}
+    - {id: 1035, name: '1035', licensee_id: 1035}
+    - {id: 1036, name: '1036', licensee_id: 1036}
+    - {id: 1037, name: '1037', licensee_id: 1037}
+    - {id: 1038, name: '1038', licensee_id: 1038}
+    - {id: 1039, name: '1039', licensee_id: 1039}
+    - {id: 1040, name: '1040', licensee_id: 1040}
+    - {id: 1041, name: '1041', licensee_id: 1041}
+    - {id: 1042, name: '1042', licensee_id: 1042}
+    - {id: 1043, name: '1043', licensee_id: 1043}
+    - {id: 1045, name: '1045', licensee_id: 1045}
+    - {id: 1046, name: '1046', licensee_id: 1046}
+    - {id: 1047, name: '1047', licensee_id: 1047}
+    - {id: 1048, name: '1048', licensee_id: 1048}
+    - {id: 1052, name: '1052', licensee_id: 1052}
+    - {id: 20000, name: 'MockUp', licensee_id: 20000}
+    - {id: 20001, name: 'casino1', licensee_id: 20000}
+    - {id: 20002, name: 'casino2', licensee_id: 20001}
+
+  properties:
+    - {id: 1000, name: 'LAXINO', casino_id: 1000}
+    - {id: 1003, name: 'Suncity', casino_id: 1003}
+    - {id: 1007, name: 'Sungame', casino_id: 1007}
+    - {id: 1011, name: 'SmartOcean', casino_id: 1011}
+    - {id: 1012, name: 'Silver Goose', casino_id: 1012}
+    - {id: 1014, name: 'SG988', casino_id: 1014}
+    - {id: 1016, name: 'TLC', casino_id: 1016}
+    - {id: 1017, name: 'RB88', casino_id: 1017}
+    - {id: 1018, name: 'Fun88', casino_id: 1018}
+    - {id: 1021, name: 'CagayanCasino', casino_id: 1021}
+    - {id: 1035, name: 'Sheng', casino_id: 1035}
+    - {id: 1036, name: 'Sheng', casino_id: 1036}
+    - {id: 1037, name: 'BluePearl', casino_id: 1037}
+    - {id: 1038, name: '188bet', casino_id: 1038}
+    - {id: 1039, name: 'KyuShu', casino_id: 1039}
+    - {id: 1040, name: 'LT118', casino_id: 1040}
+    - {id: 1041, name: '96.com', casino_id: 1041}
+    - {id: 1042, name: 'Allbet2', casino_id: 1042}
+    - {id: 1043, name: 'Boyaa', casino_id: 1043}
+    - {id: 1045, name: 'Allbet3', casino_id: 1045}
+    - {id: 1046, name: 'TLC', casino_id: 1046}
+    - {id: 1047, name: 'RB88', casino_id: 1047}
+    - {id: 1048, name: 'Fun88', casino_id: 1048}
+    - {id: 1052, name: 'Silver Goose', casino_id: 1052}
+    - {id: 20000, name: 'MockUp', casino_id: 20000}
+    - {id: 20001, name: 'property1', casino_id: 20000}
+    - {id: 20002, name: 'property2', casino_id: 20001}  
+    - {id: 20003, name: 'property3', casino_id: 20002}
+
+mockup_domain: &mockup_domain
+  licensees:
+    - {id: 1000, name: 'LAXINO'}
+    - {id: 20000, name: 'MockUp'}
+    - {id: 20001, name: 'Licensee1'}
+  casinos:
+    - {id: 1000, name: 'LAXINO', licensee_id: 1000}
+    - {id: 20000, name: 'MockUp', licensee_id: 20000}
+    - {id: 20001, name: 'casino1', licensee_id: 20000}
+    - {id: 20002, name: 'casino2', licensee_id: 20001}
+  properties:
+    - {id: 1000, name: 'LAXINO', casino_id: 1000}
+    - {id: 20000, name: 'MockUp', casino_id: 20000}
+    - {id: 20001, name: 'property1', casino_id: 20000}
+    - {id: 20002, name: 'property2', casino_id: 20001}  
+    - {id: 20003, name: 'property3', casino_id: 20002}    
+            
+twidc_domain: &twidc_domain
+  licensees:
+    - {id: 1000, name: 'LAXINO'}
+    - {id: 20000, name: 'MockUp'}
+    - {id: 20001, name: 'Licensee1'}
+  casinos:
+    - {id: 1000, name: 'LAXINO', licensee_id: 1000}
+    - {id: 20000, name: 'MockUp', licensee_id: 20000}
+    - {id: 20001, name: 'casino1', licensee_id: 20000}
+    - {id: 20002, name: 'casino2', licensee_id: 20001}
+  properties:
+    - {id: 1000, name: 'LAXINO', casino_id: 1000}
+    - {id: 20000, name: 'MockUp', casino_id: 20000}
+    - {id: 20001, name: 'property1', casino_id: 20000}
+    - {id: 20002, name: 'property2', casino_id: 20001}  
+    - {id: 20003, name: 'property3', casino_id: 20002}
+
+phidc_domain: &phidc_domain
+  licensees:
+    - {id: 1000, name: 'LAXINO'}
+    - {id: 20000, name: 'MockUp'}
+    - {id: 20001, name: 'Licensee1'}
+  casinos:
+    - {id: 1000, name: 'LAXINO', licensee_id: 1000}
+    - {id: 20000, name: 'MockUp', licensee_id: 20000}
+    - {id: 20001, name: 'casino1', licensee_id: 20000}
+    - {id: 20002, name: 'casino2', licensee_id: 20001}
+  properties:
+    - {id: 1000, name: 'LAXINO', casino_id: 1000}
+    - {id: 20000, name: 'MockUp', casino_id: 20000}
+    - {id: 20001, name: 'property1', casino_id: 20000}
+    - {id: 20002, name: 'property2', casino_id: 20001}  
+    - {id: 20003, name: 'property3', casino_id: 20002}
+
+moidc_domain: &moidc_domain
+  licensees:
+    - {id: 1000, name: 'LAXINO'}
+    - {id: 20000, name: 'MockUp'}
+    - {id: 20001, name: 'Licensee1'}
+  casinos:
+    - {id: 1000, name: 'LAXINO', licensee_id: 1000}
+    - {id: 20000, name: 'MockUp', licensee_id: 20000}
+    - {id: 20001, name: 'casino1', licensee_id: 20000}
+    - {id: 20002, name: 'casino2', licensee_id: 20001}
+  properties:
+    - {id: 1000, name: 'LAXINO', casino_id: 1000}
+    - {id: 20000, name: 'MockUp', casino_id: 20000}
+    - {id: 20001, name: 'property1', casino_id: 20000}
+    - {id: 20002, name: 'property2', casino_id: 20001}  
+    - {id: 20003, name: 'property3', casino_id: 20002}
+    
+test:
+  <<: *hqidc_domain
+
+development:
+  <<: *hqidc_domain
+
+integration0:
+  <<: *hqidc_domain
+
+staging0:
+  <<: *hqidc_domain
+
+sandbox0:
+  <<: *phidc_domain
+
+production0:
+  <<: *phidc_domain
+
+mockup0:
+  <<: *mockup_domain
+
+sandbox2:
+  <<: *twidc_domain
+
+smartocean2:
+  <<: *twidc_domain
+
+sandbox3: 
+  <<: *moidc_domain
+
+production3:
+  <<: *moidc_domain

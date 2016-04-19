@@ -7,7 +7,7 @@ describe ChangeLogsController do
     @app_1 = App.find_by_name("user_management") || create(:app, :id => 1, :name => "user_management")
     perm_1 = create(:permission, :action => "show", :target => "system_user", :app => @app_1)
     perm_2 = create(:permission, :action => "grant_roles", :target => "system_user", :app => @app_1)
-    perm_3 = create(:permission, :action => "list_change_log", :target => "system_user", :app => @app_1)
+    perm_3 = create(:permission, :action => "list_edit_role_change_log", :target => "system_user", :app => @app_1)
     int_role_type = create(:role_type, :name => 'internal')
     ext_role_type = create(:role_type, :name => 'external')
     @int_role_1 = create(:role, :name => "int_role_a", :with_permissions => [perm_1, perm_2, perm_3], :role_type => int_role_type, :app => @app_1)
