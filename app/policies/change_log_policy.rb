@@ -4,7 +4,7 @@ class ChangeLogPolicy < ApplicationPolicy
   end
 
   def index?
-    permitted?(:system_user, :list_change_log)
+    permitted?(:system_user, :list_edit_role_change_log)
   end
 
   def create_system_user?
