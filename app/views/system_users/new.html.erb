@@ -7,7 +7,7 @@
 
 <%= form_tag({action: :'create'}, :id => 'create_system_user_form', :method => :post, :class => "form-inline") do %>
   <fieldset>
-    <div class="form-group" >
+    <div class="form-group" id='create_user_div'>
       </br>
       <label for="username">Username:</label> 
       <%= text_field :system_user, :username, class: "form-control", autofocus: true %>
@@ -28,28 +28,28 @@
         <span id="invalid_error" style="color: #D56161; padding-left: 67px"><%= @errors if @errors %></span> 
       </div>
     </div>
-
-  <div class="divMessageBox animated fadeOut fast" id="pop_up_dialog" style=" display: none;">
-    <div class="ui-dialog" id="pop_up_ui_dialog" style="width: 600px; top: 50%; left: 50%; margin-top: -75px; margin-left: -300px;">
-      <div id="pop_up_content" style="height: 60%; vertical-align: middle; padding: 20px; padding-bottom: 0px;" align="center">
-      </div>
-      <div id="pop_up_confirm_btn" align="center" style="margin-top: 10px; margin-bottom: 20px;">
-        <table>
-          <tr>
-            <td><button id="cancel" class="btn btn-default"><%= t("general.cancel") %></button></td>
-            <td width='20%'></td>
-            <td><button id="confirm" class="btn btn-primary"><%= t("general.confirm") %></button></td>
-          </tr>
-        </table>
+  
+    <div class="divMessageBox animated fadeOut fast" id="pop_up_dialog" style=" display: none;">
+      <div class="ui-dialog" id="pop_up_ui_dialog" style="width: 600px; top: 50%; left: 50%; margin-top: -75px; margin-left: -300px;">
+        <div id="pop_up_content" style="height: 60%; vertical-align: middle; padding: 20px; padding-bottom: 0px;" align="center">
+        </div>
+        <div id="pop_up_confirm_btn" align="center" style="margin-top: 10px; margin-bottom: 20px;">
+          <table>
+            <tr>
+              <td><button id="cancel" class="btn btn-default"><%= t("general.cancel") %></button></td>
+              <td width='20%'></td>
+              <td><button id="confirm" class="btn btn-primary"><%= t("general.confirm") %></button></td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-
   </fieldset>
 <% end %>
+
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "create_system_user" } %>
 
-<script>
+<script type="text/javascript">
   $(document).ready(function() {
     $('#pop_up_dialog #cancel').click(hidePopUpPanel);
     $('input[autofocus="autofocus"]').focus();
@@ -60,6 +60,7 @@
       $('#pop_up_content').html('');
       $('#pop_up_dialog').removeClass("fadeIn");
       $('#pop_up_dialog').addClass("fadeOut");
+      $('input[autofocus="autofocus"]').focus();
       setTimeout(function(){
         $('#pop_up_dialog').css("display", "none");
       },300);
@@ -93,5 +94,22 @@
 
       return false;
     });
+
+    function InputEnter(event){
+      if (event.keyCode == 13) {
+        $('#modal_link').click();
+        return false;
+      }
+    }
+
+    function PopupEnter(event){
+      if (event.keyCode == 13) {
+        $('#pop_up_dialog #confirm').click();
+        return false;
+      }
+    }
+
+    $('#create_user_div').keydown(InputEnter);
+    $('#pop_up_dialog').keydown(PopupEnter);
   });
 </script>
