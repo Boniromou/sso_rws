@@ -20,7 +20,8 @@ apps_info = {
               :CAGE => { :id => 3, :name => 'cage' }, 
               :SM => { :id => 4, :name => 'station_management' },
               :GRMS => { :id => 5, :name => 'game_recall' },
-              :SV => { :id => 6, :name => 'signature_verifier' }
+              :SV => { :id => 6, :name => 'signature_verifier' },
+              :AUDP => { :id => 7, :name => 'audit_portal' }
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }
