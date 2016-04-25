@@ -9,7 +9,7 @@ class CasinosSystemUser < ActiveRecord::Base
 
   def self.update_casinos_by_system_user(system_user_id, casino_ids)
     transaction do
-      casino_ids.each { |casino_id| grant(system_user_id, casino_id) }
+      casino_ids.each { |casino_id| grant(system_user_id, casino_id) } if casino_ids.present?
       handle_exclusion(system_user_id, casino_ids)
     end
   end

@@ -142,25 +142,29 @@ class SystemUser < ActiveRecord::Base
   end
 
   def self.sync_user_info
-    begin
-      auth_source = AuthSource.first
-      auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-      system_users = SystemUser.all
+    Rails.logger.info "Begin to Sync system user info"
+    auth_source = AuthSource.first
+    auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+    system_users = SystemUser.all
 
+    if system_users.present?
       system_users.each do |system_user|
-        profile = auth_source.retrieve_user_profile(system_user.username, system_user.domain.name, system_user.domain.get_casino_ids)
-        if system_user.status != profile[:status]
-          system_user.status = profile[:status]
-          system_user.save!
+        begin
+          profile = auth_source.retrieve_user_profile(system_user.username, system_user.domain.name, system_user.domain.get_casino_ids)
+          if system_user.status != profile[:status]
+            system_user.status = profile[:status]
+            system_user.save!
+          end
+          system_user.update_casinos(profile[:casino_ids])
+          system_user.cache_profile
+        rescue Exception => e
+          Rails.logger.error "Sync system user [#{system_user.inspect}] Exception: #{e.message}"
+          Rails.logger.error "#{e.backtrace.inspect}"
+          next
         end
-        system_user.update_casinos(profile[:casino_ids])
-        system_user.cache_profile
       end
-
-    rescue Exception => e
-      Rails.logger.error "#{e.message}"
-      Rails.logger.error "#{e.backtrace.inspect}"
     end
+    Rails.logger.info "End to Sync system user info"
   end
 
   def cache_profile

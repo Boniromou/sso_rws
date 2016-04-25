@@ -43,13 +43,13 @@ twidc_domain: &twidc_domain
   domains:
     - {id: 1, name: '777iportal.local'}
   domains_casinos:
-    - {id: 1, domain_id: 1, casino_id: 20000}
+    - {id: 1, domain_id: 1, casino_id: 1000}
 
 phidc_domain: &phidc_domain
   domains:
     - {id: 1, name: '888iportal.local'}
   domains_casinos:
-    - {id: 1, domain_id: 1, casino_id: 20000}
+    - {id: 1, domain_id: 1, casino_id: 1000}
 
 moidc_domain: &moidc_domain
   domains:
