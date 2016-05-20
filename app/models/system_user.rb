@@ -180,6 +180,10 @@ class SystemUser < ActiveRecord::Base
     Rails.cache.write(cache_key, cache_hash)
   end
 
+  def self.get_export_system_users
+    SystemUser.includes(:roles).joins(:domain).select("system_users.*, domains.name as domain_name").order("system_users.updated_at desc")
+  end
+
   private
   # a = [2, 4, 6, 8]
   # b = [1, 2, 3, 4]

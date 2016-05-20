@@ -28,6 +28,7 @@ describe RolesController do
       expect(find("#{role_table_selector} header")).to have_content("User Management")
       expect(find("#{role_table_selector}")).to have_content("User Manager")
       expect(find("#{role_table_selector}")).to_not have_link(I18n.t("role.show_permission"))
+      expect(find('a#exportRolePermission').text).to eq I18n.t("general.export")
       logout(@root_user)
     end
 
@@ -52,6 +53,20 @@ describe RolesController do
       find("#{role_table_selector}").first('a', :text => I18n.t("role.show_permission")).click
       expect(find("div#content div#show_permission")).to have_content(I18n.t("role.permissions"))
       logout(@root_user)
+    end
+  end
+
+  describe "[27] Export permission list" do
+    it "[27.1] successfully export", :js => true do
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      visit roles_path
+      expect(find('a#exportRolePermission').text).to eq I18n.t("general.export")
+      expect(page.has_css?('div#pop_up_dialog', visible: false)).to eq true
+      page.find("#exportRolePermission").click
+      expect(page.has_css?('div#pop_up_dialog', visible: true)).to eq true
+      expect(find("div#pop_up_content").text).to eq I18n.t("confirm.export_role_permission")
+      find("button#confirm").click
+      expect(page.has_css?('div#pop_up_dialog', visible: false)).to eq true
     end
   end
 end

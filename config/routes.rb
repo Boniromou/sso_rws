@@ -23,7 +23,8 @@ SsoRws::Application.routes.draw do
   resources :domain_casinos, :only => [:index, :create]
   post "domain_casinos/inactive/:id" => "domain_casinos#inactive", as: :domain_casino_inactive
 
-
+  get '/system_users/export' => 'system_users#export'
+  get '/roles/export' => 'roles#export'
   resources :roles, :only => [:index, :show]
   resources :system_users, :only => [:index, :show, :new, :create] do
     member do

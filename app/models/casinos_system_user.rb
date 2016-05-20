@@ -14,6 +14,12 @@ class CasinosSystemUser < ActiveRecord::Base
     end
   end
 
+  def self.get_users_active_casinos
+    casinos = CasinosSystemUser.includes(:casino).where(status: true)
+    casinos = casinos.map {|casino| {casino.system_user_id => {"id" => casino.casino.id, "name" => casino.casino.name}}}
+    casinos.flat_map(&:entries).group_by(&:first).map{|k,v| Hash[k, v.map(&:last)]}.inject(:merge) || {}
+  end
+
   private
   def self.grant(system_user_id, casino_id)
     if exists?(:system_user_id => system_user_id, :casino_id => casino_id)

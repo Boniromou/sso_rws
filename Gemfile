@@ -64,8 +64,8 @@ gem 'dalli', "~> 2.0.3"
 group :test do
   gem 'database_cleaner', '1.4.1'
   gem 'capybara', '2.4.3'
-  gem 'poltergeist'
-  gem 'phantomjs', :require => 'phantomjs/poltergeist'
+  gem 'poltergeist', '1.9.0'
+  gem 'phantomjs', '2.1.1', :require => 'phantomjs/poltergeist'
   gem 'simplecov'
   gem 'factory_girl', '4.5.0'
   #gem 'capybara-webkit'
@@ -73,3 +73,4 @@ end
 
 gem "pundit",  '0.3.0'
 gem 'whenever', :require => false
+gem 'spreadsheet', '1.1.2'

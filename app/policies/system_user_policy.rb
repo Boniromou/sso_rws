@@ -40,7 +40,7 @@ class SystemUserPolicy < ApplicationPolicy
       if system_user.is_admin? || system_user.has_admin_casino?
         scope.all
       else
-        users = scope.joins(:casinos_system_users).where("casinos_system_users.casino_id in (?)", system_user.active_casino_ids).select("DISTINCT(system_users.id), system_users.*")
+        users = scope.joins(:casinos_system_users).where("casinos_system_users.casino_id in (?)", system_user.active_casino_ids).group("system_users.id").all
 
         users.delete_if do |user|
           (user.active_casino_ids - system_user.active_casino_ids).any?

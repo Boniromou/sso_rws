@@ -23,12 +23,16 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, :type => :controller
   config.extend ControllerHelpers, :type => :controller
   config.fixture_path = "#{::Rails.root}/spec/features/fixtures"
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
 
   config.before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:get_client_ip).and_return("192.1.1.1")
     #allow(Rigi::Ldap).to receive(:retrieve_user_profile).and_return(:account_status => true, :groups => [1000])
     mock_ad_account_profile(true, [1000])
+  end
+
+  config.before(:each, js: true) do
+    DatabaseCleaner.strategy = :truncation
   end
 
   config.infer_spec_type_from_file_location!
@@ -37,6 +41,15 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
     Rails.cache.clear
     #FileUtils.rm_rf(Dir["#{Rails.root}/log/test.log"])
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+ 
+  config.after(:each) do
+    DatabaseCleaner.clean
+    Rails.cache.clear
   end
 
   config.after(:suite) do
