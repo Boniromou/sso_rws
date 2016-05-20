@@ -50,8 +50,8 @@ class Role < ActiveRecord::Base
     excel = Spreadsheet::Workbook.new
     apps.each do |app|
       title = [I18n.t("general.action"), I18n.t("permission.target")]
-      permissions_targets = apps_permissions[app["id"]]
-      roles = apps_roles[app["id"]]
+      permissions_targets = apps_permissions[app["id"]] || {}
+      roles = apps_roles[app["id"]] || []
       roles.each do |role|
         title << role['name'].titleize
       end
@@ -64,6 +64,7 @@ class Role < ActiveRecord::Base
 
       index = 3
       permissions_targets.each do |target, permissions|
+        permissions = permissions || []
         sheet1.merge_cells(index, 1, (index + permissions.size - 1), 1) if permissions.size > 1
         permissions.each do |permission|
           row_columns = []
