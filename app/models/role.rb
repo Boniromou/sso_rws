@@ -35,7 +35,7 @@ class Role < ActiveRecord::Base
     role_types = RoleType.get_all_role_types
     Role.includes(:permissions).each do |role|
       rtn[role.app_id] = [] if rtn[role.app_id].blank?
-      rtn[role.app_id].push({"name" => "#{role.name.titleize}(#{role_types[role.role_type_id]})", "permissions" => role.permissions.map(&:id)})
+      rtn[role.app_id].push({"name" => "#{role.name.titleize} (#{role_types[role.role_type_id]})", "permissions" => role.permissions.map(&:id)})
     end
     rtn
   end

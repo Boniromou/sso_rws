@@ -153,14 +153,14 @@ class SystemUsersController < ApplicationController
       row_columns << I18n.t(ApplicationController.helpers.system_user_status_format(su["status"]))
       row_columns << ApplicationController.helpers.casino_id_names_format(casinos[su["id"]])
       row_columns << ApplicationController.helpers.format_time(su.updated_at)
-      roles = su.roles.map {|role| {role.app_id => "#{role.name.titleize}(#{role_types[role.role_type_id]})"}}.inject(:merge) || {}
+      roles = su.roles.map {|role| {role.app_id => "#{role.name.titleize} (#{role_types[role.role_type_id]})"}}.inject(:merge) || {}
       apps.keys.each do |app_id|
         row_columns << (roles[app_id] || '-')
       end
 
-      sheet1.row(index+2).concat row_columns
+      sheet1.row(index + 2).concat row_columns
       columns_count.times do |col|
-        sheet1.row(index+2).set_format(col, format_row)
+        sheet1.row(index + 2).set_format(col, format_row)
       end
     end
 
