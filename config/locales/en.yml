@@ -57,6 +57,7 @@ en:
     action: Action
     action_at: Action At
     action_by: Action By
+    export: Export
   user:
     user_name: User Name
     password: Password
@@ -72,6 +73,9 @@ en:
     preferred_language: Preferred Language
     edit_role: Edit Role
     no_role: No roles assigned to this user
+    casino_groups: Casinos
+    export_file_name: System User List report.xls
+    export_role_type_tip: "**[Ext.] = External Role, [Int.] = Internal Role"
   header:
     user_management: User Management
     property_management: Property Management
@@ -87,6 +91,11 @@ en:
     systems_and_roles: Systems and Roles
     show_permission: show permissions
     permissions: Permissions
+    system: "System:"
+    has_permission: Y
+    export_file_name: Permission List report.xls
+  permission:
+    target: Target
   auditlog:
     search_audit: Search Audit Log
     audit_time: Time
@@ -141,7 +150,7 @@ en:
   property:
     title: Property
   casino:
-    title: Casino
+    title: Casinos
   domain:
     name: Domain
     list: Domains
@@ -151,8 +160,13 @@ en:
     mapping: Domain-Casino Mappings
   confirm:
     create_domain: Do you confirm to create domain [%{domain_name}] ?
+    export_user_role: Are you sure to export System User List report ?
+    export_role_permission: Are you sure to export Permission List report ?
   change_log:
     user: System User
     action: Action
     action_at: Action at
     action_by: Action by
+  role_type:
+    internal: " [Int.]"
+    external: " [Ext.]"

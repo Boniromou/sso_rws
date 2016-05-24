@@ -34,6 +34,15 @@ class SystemUsersController < ApplicationController
     authorize :system_users, :index?
   end
 
+  def export
+    authorize :system_users, :index?
+    respond_to do |format|
+      format.xls do
+        send_data get_export_user_role_info, :type => :xls, :filename => I18n.t("user.export_file_name")
+      end
+    end
+  end
+
   def show
     @system_user = SystemUser.find_by_id(params[:id])
     authorize @system_user, :show?
@@ -123,4 +132,50 @@ class SystemUsersController < ApplicationController
     end
   end
 
+  def get_export_user_role_info
+    apps = App.get_all_apps
+    role_types = RoleType.get_all_role_types
+    system_users = policy_scope(SystemUser.get_export_system_users)
+    casinos = CasinosSystemUser.get_users_active_casinos
+    
+    excel = Spreadsheet::Workbook.new
+    sheet1 = excel.create_worksheet
+    sheet1.row(0).concat ["#{I18n.t("user.export_role_type_tip")}"]
+    title = [I18n.t("user.user_name"), I18n.t("user.status"), I18n.t("user.casino_groups"), I18n.t("general.updated_at")].concat(apps.values)
+    sheet1.row(1).concat title
+    
+    format_row = Spreadsheet::Format.new :horizontal_align => :center, :border => :thin
+    columns_count = title.size
+    
+    system_users.each_with_index do |su, index|
+      row_columns = []
+      row_columns << "#{su['username']}@#{su['domain_name']}"
+      row_columns << I18n.t(ApplicationController.helpers.system_user_status_format(su["status"]))
+      row_columns << ApplicationController.helpers.casino_id_names_format(casinos[su["id"]])
+      row_columns << ApplicationController.helpers.format_time(su.updated_at)
+      roles = su.roles.map {|role| {role.app_id => "#{role.name.titleize}#{role_types[role.role_type_id]}"}}.inject(:merge) || {}
+      apps.keys.each do |app_id|
+        row_columns << (roles[app_id] || '-')
+      end
+
+      sheet1.row(index + 2).concat row_columns
+      columns_count.times do |col|
+        sheet1.row(index + 2).set_format(col, format_row)
+      end
+    end
+
+    set_title_format(sheet1)
+    blob = StringIO.new('')
+    excel.write blob
+    blob.string
+  end
+
+  def set_title_format(sheet1)
+    format_title = Spreadsheet::Format.new :weight => :bold, :horizontal_align => :center, :border => :thin
+    col_widths = [30, 10, 50, 20]
+    sheet1.column_count.times do |col|
+      sheet1.row(1).set_format(col, format_title)
+      sheet1.column(col).width = col > 3 ? 22 : col_widths[col]
+    end
+  end
 end

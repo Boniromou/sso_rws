@@ -5,6 +5,11 @@
 
 <div class="tab-content padding-10">
   <div class="tab-pane fade in active" id="system_user_change_logs_content">
+    <div class="row pull-right padding-10">
+      <div class="col-md-12">
+        <a id="exportUserRole" class="btn btn-primary"><%= t("general.export") %></a>
+      </div>
+    </div>
     <%= render :partial => "system_users/system_user_table" %>
   </div>
 </div>
@@ -12,3 +17,21 @@
         
 <%= render "shared/page_setup" %>
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_system_users" } %>
+<%= render partial: "shared/pop_up_panel" %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    index = $('#updated_at').index()
+    $('#system_user').dataTable({
+      "order": [[ index, "desc"]],
+      "pageLength" : 50
+    });
+
+    $("#exportUserRole").click(function () {
+      registerPopUpPanel("<%= t('confirm.export_user_role') %>", function(){
+        var baseUrl = "/system_users/export.xls"
+        window.location.href = baseUrl;
+      });
+    });
+  });
+</script>

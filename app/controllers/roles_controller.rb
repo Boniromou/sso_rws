@@ -23,4 +23,13 @@ class RolesController < ApplicationController
     @app = App.find_by_id(app_id)
     @permissions_by_app = @app.permissions_with_groups
   end
+
+  def export
+    authorize :role, :index?
+    respond_to do |format|
+      format.xls do
+        send_data Role.get_export_role_pessmission, :type => :xls, :filename => I18n.t("role.export_file_name")
+      end
+    end
+  end
 end

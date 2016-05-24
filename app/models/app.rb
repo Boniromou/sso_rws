@@ -30,4 +30,8 @@ class App < ActiveRecord::Base
 
     perm_hash
   end
+
+  def self.get_all_apps
+    App.all.map {|app| {app.id => app.name.titleize}}.inject(:merge) || {}
+  end
 end

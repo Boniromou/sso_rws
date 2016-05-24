@@ -4,6 +4,7 @@
       <h2 class="page-title txt-color-blueDark">
         <i class="fa-fw fa fa-list"></i>
         <%= t("role.list_roles") %>
+        <a id="exportRolePermission" class="btn btn-primary pull-right"><%= t("general.export") %></a>
       </h2>
     </div>
   </div>
@@ -43,3 +44,15 @@
 <!-- end pannel -->
 
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_roles" } %>
+<%= render partial: "shared/pop_up_panel" %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#exportRolePermission").click(function () {
+      registerPopUpPanel("<%= t('confirm.export_role_permission') %>", function(){
+        var baseUrl = "/roles/export.xls"
+        window.location.href = baseUrl;
+      });
+    });
+  });
+</script>

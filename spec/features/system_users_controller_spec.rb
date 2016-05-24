@@ -342,6 +342,8 @@ describe SystemUsersController do
       visit user_management_root_path
       assert_left_panel_item I18n.t("general.dashboard")
       assert_left_panel_item I18n.t("user.list_users")
+      click_link I18n.t("user.list_users")
+      expect(find('a#exportUserRole').text).to eq I18n.t("general.export")
     end
 
     it "[14.6] List System User (unauthorized)" do
@@ -591,6 +593,20 @@ describe SystemUsersController do
     it "[24.10] audit log for fail to create system user with duplicated record in local DB" do
       mock_duplicated_user_create
       check_fail_audit_log("system_user", "create", "create", "portal.admin")
+    end
+  end
+
+  describe "[28] Export system user list" do
+    it "[28.1] successfully export", :js => true do
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      visit system_users_path
+      expect(find("#exportUserRole").text).to eq I18n.t("general.export")
+      expect(page.has_css?('div#pop_up_dialog', visible: false)).to eq true
+      page.find("#exportUserRole").click
+      expect(page.has_css?('div#pop_up_dialog', visible: true)).to eq true
+      expect(find("div#pop_up_content").text).to eq I18n.t("confirm.export_user_role")
+      find("button#confirm").click
+      expect(page.has_css?('div#pop_up_dialog', visible: false)).to eq true
     end
   end
 end
