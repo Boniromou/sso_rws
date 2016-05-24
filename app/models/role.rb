@@ -35,7 +35,7 @@ class Role < ActiveRecord::Base
     role_types = RoleType.get_all_role_types
     Role.includes(:permissions).each do |role|
       rtn[role.app_id] = [] if rtn[role.app_id].blank?
-      rtn[role.app_id].push({"name" => "#{role.name.titleize} (#{role_types[role.role_type_id]})", "permissions" => role.permissions.map(&:id)})
+      rtn[role.app_id].push({"name" => "#{role.name.titleize}#{role_types[role.role_type_id]}", "permissions" => role.permissions.map(&:id)})
     end
     rtn
   end
@@ -57,8 +57,8 @@ class Role < ActiveRecord::Base
       end
 
       sheet1 = excel.create_worksheet :name => app['name'].titleize
-      sheet1.row(0).concat ["#{I18n.t("role.system")}: #{app['name'].titleize}"]
-      sheet1.row(1).concat ["**#{I18n.t("user.export_role_type_tip")}"]
+      sheet1.row(0).concat ["#{I18n.t("role.system")} #{app['name'].titleize}"]
+      sheet1.row(1).concat ["#{I18n.t("user.export_role_type_tip")}"]
       sheet1.row(2).concat title
       columns_count = title.size
 

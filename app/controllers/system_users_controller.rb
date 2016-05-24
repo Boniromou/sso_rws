@@ -140,7 +140,7 @@ class SystemUsersController < ApplicationController
     
     excel = Spreadsheet::Workbook.new
     sheet1 = excel.create_worksheet
-    sheet1.row(0).concat ["**#{I18n.t("user.export_role_type_tip")}"]
+    sheet1.row(0).concat ["#{I18n.t("user.export_role_type_tip")}"]
     title = [I18n.t("user.user_name"), I18n.t("user.status"), I18n.t("user.casino_groups"), I18n.t("general.updated_at")].concat(apps.values)
     sheet1.row(1).concat title
     
@@ -153,7 +153,7 @@ class SystemUsersController < ApplicationController
       row_columns << I18n.t(ApplicationController.helpers.system_user_status_format(su["status"]))
       row_columns << ApplicationController.helpers.casino_id_names_format(casinos[su["id"]])
       row_columns << ApplicationController.helpers.format_time(su.updated_at)
-      roles = su.roles.map {|role| {role.app_id => "#{role.name.titleize} (#{role_types[role.role_type_id]})"}}.inject(:merge) || {}
+      roles = su.roles.map {|role| {role.app_id => "#{role.name.titleize}#{role_types[role.role_type_id]}"}}.inject(:merge) || {}
       apps.keys.each do |app_id|
         row_columns << (roles[app_id] || '-')
       end
