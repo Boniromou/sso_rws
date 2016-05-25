@@ -4,150 +4,181 @@ search_audit_log:
   name: "search"
   action: "search"
   target: "audit_log"
+  app_id: 2
 # user
 list_system_user:
   id: 2
   name: "show"
   action: "show"
   target: "system_user"
+  app_id: 1
 grant_roles:
   id: 3
   name: "grant_roles"
   action: "grant_roles"
   target: "system_user"
+  app_id: 1
 lock_system_user:
   id: 4
   name: "lock"
   action: "lock"
   target: "system_user"
+  app_id: 1
 unlock_system_user:
   id: 5
   name: "unlock"
   action: "unlock"
   target: "system_user"
+  app_id: 1
 lock_root:
   id: 6
   name: "lock_root"
   action: "lock_root"
   target: "system_user"
+  app_id: 1
 unlock_root:
   id: 7
   name: "unlock_root"
   action: "unlock_root"
   target: "system_user"
+  app_id: 1
 # operations
 create_maintenance:
   id: 8
   name: "create"
   action: "create"
   target: "maintenance"
+  app_id: 2
 search_maintenance:
   id: 9
   name: "search"
   action: "search"
   target: "maintenance"
+  app_id: 2
 cancel_maintenance:
   id: 10
   name: "cancel"
   action: "cancel"
   target: "maintenance"
+  app_id: 2
 complete_maintenance:
   id: 11
   name: "complete"
   action: "complete"
   target: "maintenance"
+  app_id: 2
 extend_maintenance:
   id: 12
   name: "extend"
   action: "extend"
   target: "maintenance"
+  app_id: 2
 reschedule_maintenance:
   id: 13
   name: "reschedule"
   action: "reschedule"
   target: "maintenance"
+  app_id: 2
 resume_propagation:
   id: 14
   name: "resume_propagation"
   action: "resume"
   target: "maintenance"
+  app_id: 2
 list_test_player:
   id: 15
   name: "list_test_player"
   action: "list"
   target: "test_player"
+  app_id: 2
 add_test_player:
   id: 16
   name: "add_test_player"
   action: "add"
   target: "test_player"
+  app_id: 2
 enable_test_player:
   id: 17
   name: "enable_test_player"
   action: "enable"
   target: "test_player"
+  app_id: 2
 disable_test_player:
   id: 18
   name: "disable_test_player"
   action: "disable"
   target: "test_player"
+  app_id: 2
 deprecate_test_player:
   id: 19
   name: "deprecate_test_player"
   action: "deprecate"
   target: "test_player"
+  app_id: 2
 resume_test_player:
   id: 20
   name: "resume_test_player"
   action: "resume"
   target: "test_player"
+  app_id: 2
 sync_test_players:
   id: 21
   name: "sync"
   action: "sync"
   target: "test_player"
+  app_id: 2
 list_deprecate_test_player:
   id: 22
   name: "list_deprecate_player"
   action: "list_deprecated"
   target: "test_player"
+  app_id: 2
 recover_test_player:
   id: 23
   name: "recover_test_player"
   action: "recover"
   target: "test_player"
+  app_id: 2
 list_test_player_log:
   id: 24
   name: "list_log_history"
   action: "list_log"
   target: "test_player"
+  app_id: 2
 create_player:
   id: 25
   name: "create"
   action: "create"
   target: "player"
+  app_id: 3
 player_balance:
   id: 26
   name: "balance"
   action: "balance"
   target: "player"
+  app_id: 3
 deposit:
   id: 27
   name: "deposit"
   action: "deposit"
   target: "player_transaction"
+  app_id: 3
 withdraw:
   id: 28
   name: "withdraw"
   action: "withdraw"
   target: "player_transaction"
+  app_id: 3
 create_system_user:
   id: 29
   name: "create_system_user"
   action: "create"
   target: "system_user"
+  app_id: 1
 list_create_user_change_log:
   id: 30
   name: "list_create_user_change_log"
   action: "list_create_user_change_log"
   target: "system_user"
+  app_id: 1
+  
