@@ -14,6 +14,18 @@ describe Role do
   #   end
   # end
 
+  describe "test validate" do
+    it "role name cannot be null" do
+      count = Role.count
+      role = Role.new
+      role.app_id = 1
+      role.role_type_id = 1
+      role.save
+      expect(role.errors[:name]).to include("can't be blank")
+      expect(Role.count).to eq count
+    end
+  end
+
   describe "test get_apps_roles" do
     fixtures :roles, :permissions, :role_permissions, :role_types
     

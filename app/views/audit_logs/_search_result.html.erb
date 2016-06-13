@@ -30,7 +30,7 @@
                   <td><%= t(display_target(al.audit_target)) %></td>
                   <td><%= t(display_action_status(al.action_status)) %></td>
                   <!--td><%= al.action_type %></td-->
-                  <td><%= al.session_id%></td>
+                  <td><%= format_session_id(al.session_id)%></td>
                   <td><%= al.ip %></td>
                 </tr>
               <% end %>

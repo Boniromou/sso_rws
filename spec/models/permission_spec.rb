@@ -3,8 +3,19 @@ require "rails_helper"
 describe Permission do
   fixtures :permissions
   
-  describe "test get_all_permissions" do
+  describe "test validate" do
+    it "permission name,action,target cannot be null" do
+      count = Permission.count
+      permission = Permission.new
+      permission.save
+      expect(permission.errors[:name]).to include("can't be blank")
+      expect(permission.errors[:action]).to include("can't be blank")
+      expect(permission.errors[:target]).to include("can't be blank")
+      expect(Permission.count).to eq count
+    end
+  end
 
+  describe "test get_all_permissions" do
     def check_permissions app_id, target_permissions, targets
       expect(target_permissions.length).to eq targets.length
       targets.each do |target|

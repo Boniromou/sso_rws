@@ -1,4 +1,5 @@
 class App < ActiveRecord::Base
+  validates_presence_of :name
   has_many :roles
   has_many :app_system_users
   has_many :system_users, :through => :app_system_users

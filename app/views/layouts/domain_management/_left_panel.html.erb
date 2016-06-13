@@ -22,7 +22,7 @@
 
           <% if policy(:domain).index? %>
             <li id="nav_domain">
-              <%= link_to domains_path, :title => t("domain.name"), :remote => true do %>
+              <%= link_to domains_path, :title => t("domain.list"), :remote => true do %>
                 <i class="fa fa-lg fa-fw fa fa-list"></i> <span class="menu-item-parent"><%= t("domain.list") %></span>
               <% end %>
             </li>
@@ -30,7 +30,7 @@
 
           <% if policy(:domain_casino).index? %>
             <li id="nav_domain_casino">
-              <%= link_to(domain_casinos_path, title: t("domain_casino.name"), remote: true) do %>
+              <%= link_to(domain_casinos_path, title: t("domain_casino.list"), remote: true) do %>
                 <i class="fa fa-lg fa-fw fa fa-list"></i>
                 <span class="menu-item-parent">
                   <%= t("domain_casino.list") %>

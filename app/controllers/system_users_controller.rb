@@ -38,7 +38,8 @@ class SystemUsersController < ApplicationController
     authorize :system_users, :index?
     respond_to do |format|
       format.xls do
-        send_data get_export_user_role_info, :type => :xls, :filename => I18n.t("user.export_file_name")
+        current_time = Time.now.strftime("%Y-%m-%d %H-%M-%S")
+        send_data get_export_user_role_info, :type => :xls, :filename => I18n.t("user.export_file_name", :current_time => current_time)
       end
     end
   end
@@ -66,6 +67,11 @@ class SystemUsersController < ApplicationController
   def update_roles
     @system_user = SystemUser.find_by_id(params[:id])
     authorize @system_user, :update_roles?
+    unless @system_user.active_casino_ids.any?
+      flash[:alert] = I18n.t("alert.account_no_casino")
+      redirect_to system_user_path(@system_user)
+      return
+    end
 
     roles = Role.find(role_ids_param)
 

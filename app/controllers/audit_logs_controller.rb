@@ -30,9 +30,9 @@ class AuditLogsController < ApplicationController
   def handle_search_with_result
     start_time, end_time, remark = search_time_range_limitation(params[:start_time], params[:end_time], SEARCH_RANGE_FOR_AUDIT_LOG)
     if start_time.nil? && end_time.nil?
-      @search_time_range_error = I18n.t("audit_log.search_range_error", :config_value => SEARCH_RANGE_FOR_AUDIT_LOG)
+      @search_time_range_error = I18n.t("auditlog.search_range_error", :config_value => SEARCH_RANGE_FOR_AUDIT_LOG)
     else
-      @search_time_range_remark = I18n.t("audit_log.search_range_remark", :config_value => SEARCH_RANGE_FOR_AUDIT_LOG) if remark
+      @search_time_range_remark = I18n.t("auditlog.search_range_remark", :config_value => SEARCH_RANGE_FOR_AUDIT_LOG) if remark
       action_by = params[:action_by] unless params[:action_by].blank?
       action_type = params[:action_type] unless params[:action_type].blank?
       audit_target = params[:target_name] unless params[:target_name].blank? || params[:target_name] == "all"

@@ -34,7 +34,7 @@ describe AuditLogsController do
       fill_in "from", :with => start_str
       fill_in "from", :with => end_str
       click_button I18n.t("general.search")
-      expect(page.source).to have_content(I18n.t("audit_log.search_range_error", :config_value => SEARCH_RANGE_FOR_AUDIT_LOG))
+      expect(page.source).to have_content(I18n.t("auditlog.search_range_error", :config_value => SEARCH_RANGE_FOR_AUDIT_LOG))
     end
 
     it '[9.3] search audit log without time range' do
@@ -88,6 +88,8 @@ describe AuditLogsController do
       click_button I18n.t("general.search")
       expect(page.source).to have_selector("tr#audit#{@al1.id}_body")
       expect(page.source).to have_selector("tr#audit#{@al2.id}_body")
+      al1_session_id = @al1.session_id.chars.each_slice(4).map(&:join).join("-")
+      within("tr#audit#{@al1.id}_body"){ expect(page).to have_content(al1_session_id) }
     end
   end
 

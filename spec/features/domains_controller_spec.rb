@@ -25,23 +25,23 @@ describe DomainsController do
   end
 
   def permission_with_domain_list
-    create(:permission, target: "domain", action: "list", app_id: app_id)
+    create(:permission, target: "domain", name: "list", action: "list", app_id: app_id)
   end
 
   def permission_with_domain_create
-    create(:permission, target: "domain", action: "create", app_id: app_id)
+    create(:permission, target: "domain", name: "create", action: "create", app_id: app_id)
   end
 
   def role_with_domain_list
-    create(:role, app_id: app_id, with_permissions: [permission_with_domain_list])
+    create(:role, name: 'role_with_domain_list', app_id: app_id, with_permissions: [permission_with_domain_list])
   end
 
   def role_without_domain_list
-    create(:role, app_id: app_id)
+    create(:role, name: 'role_without_domain_list', app_id: app_id)
   end
 
   def role_with_domain_create
-    create(:role, app_id: app_id, with_permissions: [permission_with_domain_list, permission_with_domain_create])
+    create(:role, name: 'role_with_domain_create', app_id: app_id, with_permissions: [permission_with_domain_list, permission_with_domain_create])
   end
 
   def user_with_domain_list

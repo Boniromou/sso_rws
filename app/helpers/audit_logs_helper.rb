@@ -59,4 +59,9 @@ module AuditLogsHelper
     end
   end
 
+  def format_session_id(session_id)
+    return '' if session_id.blank?
+    session_id.to_s.scan(/.{1,4}/).join('-')
+  end
+
 end
