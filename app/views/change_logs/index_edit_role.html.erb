@@ -41,13 +41,13 @@
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th class="col-md-1"><%= t("auditlog.action_by") %></th>
-            <th class="col-md-1">Action At</th>
-            <th class="col-md-1"><%= t("general.action") %></th>
-            <th class="col-md-1">User</th>
-            <th class="col-md-1">System</th>
-            <th class="col-md-1">From</th>
-            <th class="col-md-1">To</th>
+            <th class="col-md-1"><%= t("change_log.action_by") %></th>
+            <th class="col-md-1"><%= t("change_log.action_at") %></th>
+            <th class="col-md-1"><%= t("change_log.action") %></th>
+            <th class="col-md-1"><%= t("change_log.user") %></th>
+            <th class="col-md-1"><%= t("change_log.system") %></th>
+            <th class="col-md-1"><%= t("change_log.from") %></th>
+            <th class="col-md-1"><%= t("change_log.to") %></th>
           </tr>
         </thead>
 
@@ -65,10 +65,10 @@
           <% else %>
             <% @system_user_change_logs.each do |cl| %>
             <tr align="center">
-              <td><%= popover(cl.action_by['username'], "Casinos", casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
+              <td><%= popover(cl.action_by['username'], t("casino.title"), casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
               <td><%= format_time(cl.created_at) %></td>
               <td><%= display_text(cl.action) %></td>
-              <td><%= popover((cl.target_username || "") + (cl.target_domain ? ('@'+cl.target_domain) : "") , "Casinos", target_casinos_format(cl.target_casinos), "popover-hover", "top") %></td>
+              <td><%= popover((cl.target_username || "") + (cl.target_domain ? ('@'+cl.target_domain) : "") , t("casino.title"), target_casinos_format(cl.target_casinos), "popover-hover", "top") %></td>
               <td><%= display_text(cl.change_detail['app_name']) %></td>
               <td><%= display_text(cl.change_detail['from']) %></td>
               <td><%= display_text(cl.change_detail['to']) %></td>

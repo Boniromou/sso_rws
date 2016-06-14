@@ -27,7 +27,7 @@
                 <td><%= cl.target_casino_name %></td>
                 <td><%= display_text(cl.action) %></td>
                 <td><%= format_time(cl.created_at) %></td>
-                <td><%= popover(cl.action_by['username'], "Casinos", casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
+                <td><%= popover(cl.action_by['username'], t("casino.title"), casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
 
               </tr>
             <% end %>
