@@ -2,7 +2,17 @@ require "rails_helper"
 
 describe App do
   fixtures :apps
-  
+
+  describe "test validate" do
+    it "app name cannot be null" do
+      count = App.count
+      app = App.new
+      app.save
+      expect(app.errors[:name]).to include("can't be blank")
+      expect(App.count).to eq count
+    end
+  end
+
   describe "test get_all_apps" do
   	it "success" do
   	  apps = App.get_all_apps

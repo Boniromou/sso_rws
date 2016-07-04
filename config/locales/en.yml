@@ -1,3 +1,4 @@
+---
 en:
   locale_category:
     locale_key: English
@@ -15,12 +16,12 @@ en:
     time_conflict: The schedule conflicts with previous schedule [Maintenance id =%{maintenance_id}]
     invalid_property: property can not be null
     caps_lock: The Caps Lock is turn ON
-    account_no_casino: "System error: Invalid Casino"
+    account_no_casino: ! 'System error : Invalid Casino'
     invalid_username: Invalid username format
     account_not_in_ldap: User not found in database
     invalid_domain: Invalid domain format
     duplicate_domain: Duplicate Domain
-    create_system_user_confirm: Are you sure to create system user
+    create_system_user_confirm: Are you sure to create system user ?
     duplicate_domain_casino: Duplicate Domain-Casino Mapping
     domain_casino_not_found: Domain-Casino Mapping not found
   title:
@@ -40,7 +41,6 @@ en:
     no_result_found: No Record Found
     error_message: Error Message
     sign_up: Sign Up
-    operation: Operation
     start_time: Start Time
     end_time: End Time
     search: Search
@@ -52,12 +52,15 @@ en:
     create: Create
     log: Log
     active: Active
-    updated_at: Updated At
-    operations: Operations
+    updated_at: Updated at
+    operation: Operation
     action: Action
-    action_at: Action At
-    action_by: Action By
+    action_at: Action at
+    action_by: Action by
     export: Export
+    last_updated_at: ! 'Last Updated at : '
+    delete: Delete
+    add: Add
   user:
     user_name: User Name
     password: Password
@@ -72,10 +75,11 @@ en:
     unlock: un-lock
     preferred_language: Preferred Language
     edit_role: Edit Role
-    no_role: No roles assigned to this user
+    no_role: No role was assigned to this user
     casino_groups: Casinos
-    export_file_name: System User List report.xls
-    export_role_type_tip: "**[Ext.] = External Role, [Int.] = Internal Role"
+    export_file_name: System User List report (%{current_time}).xls
+    export_role_type_tip: ! '**[Ext.] = External Role,  [Int.] = Internal Role'
+    username: ! 'Username:'
   header:
     user_management: User Management
     property_management: Property Management
@@ -91,9 +95,9 @@ en:
     systems_and_roles: Systems and Roles
     show_permission: show permissions
     permissions: Permissions
-    system: "System:"
+    system: ! 'System:'
     has_permission: Y
-    export_file_name: Permission List report.xls
+    export_file_name: Permission List report (%{current_time}).xls
   permission:
     target: Target
   auditlog:
@@ -113,6 +117,8 @@ en:
     remove_type: Remove
     update_type: Update
     delete_type: Delete
+    search_range_remark: The search range is limited to [%{config_value}] days
+    search_range_error: The search range is limited to [%{config_value}] days
   login_page:
     username_tooltip: please enter username
     password_tooltip: Enter your password
@@ -129,13 +135,13 @@ en:
     gameing_operation: Gaming Operation
     cage: Cage
   success:
-    edit_role: Edit role for [%{user_name}] successful.
+    edit_role: Edit role for [%{user_name}] successful !
     lock_user: Lock user [%{user_name}]
     unlock_user: Unlock user [%{user_name}]
-    create_user: Create System User [%{username}] successful!
-    create_domain: Create domain [%{domain_name}] successful
-    create_domain_casino: Create domain-casino mapping successful
-    inactive_domain_casino: Delete domain-casino mapping successful
+    create_user: Create System User [%{username}] successful !
+    create_domain: Create Domain [%{domain_name}] successful !
+    create_domain_casino: Create Domain-Casino mapping successful !
+    inactive_domain_casino: Delete Domain-Casino mapping successful !
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users
@@ -144,9 +150,6 @@ en:
     title: Systems
   roles:
     title: Roles
-  audit_log:
-    search_range_remark: The search range is limited to [%{config_value}] days
-    search_range_error: The search range is limited to [%{config_value}] days
   property:
     title: Property
   casino:
@@ -154,12 +157,11 @@ en:
   domain:
     name: Domain
     list: Domains
+    domain_name: Domain Name
   domain_casino:
-    name: Domain_Casino
     list: Domain-Casino Mappings
-    mapping: Domain-Casino Mappings
   confirm:
-    create_domain: Do you confirm to create domain [%{domain_name}] ?
+    create_domain: Do you confirm to create Domain [%{domain_name}] ?
     export_user_role: Are you sure to export System User List report ?
     export_role_permission: Are you sure to export Permission List report ?
   change_log:
@@ -167,6 +169,9 @@ en:
     action: Action
     action_at: Action at
     action_by: Action by
+    system: System
+    from: From
+    to: To
   role_type:
-    internal: " [Int.]"
-    external: " [Ext.]"
+    internal: ! ' [Int.]'
+    external: ! ' [Ext.]'

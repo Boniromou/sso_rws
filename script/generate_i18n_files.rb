@@ -4,7 +4,7 @@ require 'fileutils'
 
 if ARGV.length != 3
         puts "Usage: ruby script/generate_i18n_files.rb <translation_file_name> <sheet_name> <output_folder>"
-        puts "Example: ruby script/generate_i18n_files.rb tranlsation_files/Keno_Admin_Portal_Translation_V0.8.xlsx admin_portal config/locales"
+        puts "Example: ruby script/generate_i18n_files.rb translation_files/userManagement_Translation_v1.0.xlsx Locale config/locales"
     Process.exit
 end
 

@@ -9,7 +9,7 @@
   <fieldset>
     <div class="form-group" id='create_user_div'>
       </br>
-      <label for="username">Username:</label> 
+      <label for="username"><%= t("user.username") %></label> 
       <%= text_field :system_user, :username, class: "form-control", autofocus: true %>
       <label>@</label>
       <select class="form-control input-sm" name="system_user[domain]" id="domain">

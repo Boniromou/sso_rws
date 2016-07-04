@@ -6,7 +6,7 @@
       <th class="col-md-1"><%= t("domain.name") %></th>
       <th class="col-md-1"><%= t("casino.title") %></th>
       <th class="col-md-1" id="updated-at"><%= t("general.updated_at") %></th>
-      <th class="col-md-1"><%= t("general.operations") %></th>
+      <th class="col-md-1"><%= t("general.operation") %></th>
     </tr>
     <!-- create domain_casino -->
     <% if policy(:domain_casino).create? %>
@@ -19,7 +19,7 @@
         </td>
         <td></td>
         <td>
-          <%= button_tag("add", id: "create_domain_casino", title: "Add", class: "btn btn-primary", remote: true) do %>
+          <%= button_tag("add", id: "create_domain_casino", title: t("general.add"), class: "btn btn-primary", remote: true) do %>
             <i class="fa fa-plus-square"></i>
           <% end %>
         </td>
@@ -36,7 +36,7 @@
         <td><%= format_time(domain_casino.updated_at) %></td>
         <td>
           <% if policy(:domain_casino).inactive? %>
-            <%= link_to(domain_casino_inactive_path(id: domain_casino.id), method: :post, remote: true, title: "delete", class: "btn btn-primary", id: "delete_#{domain_casino.id}") do %>
+            <%= link_to(domain_casino_inactive_path(id: domain_casino.id), method: :post, remote: true, title: t("general.delete"), class: "btn btn-primary", id: "delete_#{domain_casino.id}") do %>
               <i id="delete" class="fa fa-trash-o"></i>
             <% end %>
           <% end %>

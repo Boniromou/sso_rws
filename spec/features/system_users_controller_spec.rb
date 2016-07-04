@@ -12,6 +12,7 @@ describe SystemUsersController do
 
     it_support_role = Role.find_by_name "it_support"
     @system_user_4 = create(:system_user, :roles => [it_support_role], :with_casino_ids => [1003, 1007])
+    @system_user_5 = create(:system_user, :roles => [it_support_role], :with_casino_ids => [])
   end
 
   def format_time(time)
@@ -57,7 +58,7 @@ describe SystemUsersController do
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
 
-      users = [@root_user, @system_user_1, @system_user_2, @system_user_3, @system_user_4]
+      users = [@root_user, @system_user_1, @system_user_2, @system_user_3, @system_user_4, @system_user_5]
       expect(rows.length).to eq users.length
       users.each_with_index do |user, index|
         verify_system_user_table_record(index + 1, user)
@@ -109,9 +110,9 @@ describe SystemUsersController do
       tbl = find("div#content div#systems_and_roles")
 
       if assert_edit_btn
-        expect(tbl).to have_button(I18n.t("general.edit"))
+        expect(tbl).to have_link(I18n.t("general.edit"))
       else
-        expect(tbl).to have_no_button(I18n.t("general.edit"))
+        expect(tbl).to have_no_link(I18n.t("general.edit"))
       end
     end
 
@@ -131,6 +132,19 @@ describe SystemUsersController do
       login("#{@root_user.username}@#{@root_user.domain.name}")
       verify_system_user_profile_page(@root_user, false)
       logout(@root_user)
+    end
+
+    it '[5.4] Cannot see the edit buttons if the targeted users have no casino group' do
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      verify_system_user_profile_page(@system_user_5, false)
+      logout(@root_user)
+    end
+
+    it '[5.5] Not allowed to edit targeted users without casino group (policy check on the confirm button)' do
+      login("#{@root_user.username}@#{@root_user.domain.name}")
+      visit edit_roles_system_user_path(:id => @system_user_5.id)
+      within("div#content form"){ click_button I18n.t("general.confirm") }
+      check_flash_message I18n.t("alert.account_no_casino")
     end
   end
 

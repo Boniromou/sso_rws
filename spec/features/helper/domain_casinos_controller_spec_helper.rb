@@ -33,44 +33,44 @@ module DomainCasinosControllerSpecHelper
   end
 
   def permission_with_domain_casino_list
-    info = {target: target, action: "list", app_id: app_id}
+    info = {target: target, name: "list", action: "list", app_id: app_id}
     find_create_permission(info)
   end
 
 
   def permission_with_domain_casino_create
-    info = {target: target, action: "create", app_id: app_id}
+    info = {target: target, name: "create", action: "create", app_id: app_id}
     find_create_permission(info)
   end
 
   def permission_with_domain_casino_inactive
-    info = {target: target, action: "inactive", app_id: app_id}
+    info = {target: target, name: "inactive", action: "inactive", app_id: app_id}
     find_create_permission(info)
   end
 
   def permission_with_domain_casino_change_log
-    info = {target: target, action: 'list_log', app_id: app_id}
+    info = {target: target, name: "list_log", action: 'list_log', app_id: app_id}
     find_create_permission(info)
   end
 
   def role_without_domain_casino_list
-    create(:role, app_id: app_id)
+    create(:role, name: 'role_without_domain_casino_list', app_id: app_id)
   end
 
   def role_with_domain_casino_list
-    create(:role, app_id: app_id, with_permissions: [permission_with_domain_casino_list])
+    create(:role, name: 'role_with_domain_casino_list', app_id: app_id, with_permissions: [permission_with_domain_casino_list])
   end
 
   def role_with_domain_casino_create
-    create(:role, app_id: app_id, with_permissions: [permission_with_domain_casino_list, permission_with_domain_casino_create])
+    create(:role, name: 'role_with_domain_casino_create', app_id: app_id, with_permissions: [permission_with_domain_casino_list, permission_with_domain_casino_create])
   end
 
   def role_with_domain_casino_inactive
-    create(:role, app_id: app_id, with_permissions: [permission_with_domain_casino_list, permission_with_domain_casino_inactive])
+    create(:role, name: 'role_with_domain_casino_inactive', app_id: app_id, with_permissions: [permission_with_domain_casino_list, permission_with_domain_casino_inactive])
   end
 
   def role_with_domain_casino_change_log
-    create(:role, app_id: app_id, with_permissions: [permission_with_domain_casino_list, permission_with_domain_casino_change_log])
+    create(:role, name: 'role_with_domain_casino_change_log', app_id: app_id, with_permissions: [permission_with_domain_casino_list, permission_with_domain_casino_change_log])
   end
 
   def user_without_domain_casino_list

@@ -44,10 +44,10 @@
           <% else %>
             <% @create_user_change_logs.each do |cl| %>
             <tr align="center">
-              <td><%= popover((cl.target_username || "") + (cl.target_domain ? ('@'+cl.target_domain) : ""), "Casinos", target_casinos_format(cl.target_casinos), "popover-hover", "top") %></td>
+              <td><%= popover((cl.target_username || "") + (cl.target_domain ? ('@'+cl.target_domain) : ""), t("casino.title"), target_casinos_format(cl.target_casinos), "popover-hover", "top") %></td>
               <td><%= display_text(cl.action) %></td>
               <td><%= format_time(cl.created_at) %></td>
-              <td><%= popover(cl.action_by['username'], "Casinos", casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
+              <td><%= popover(cl.action_by['username'], t("casino.title"), casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
             </tr>
             <% end %>
           <% end %>

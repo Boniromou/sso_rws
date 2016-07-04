@@ -1,4 +1,5 @@
 class Permission < ActiveRecord::Base
+  validates_presence_of :name, :action, :target
   has_many :role_permissions
   has_many :roles, :through => :role_permissions
   belongs_to :app
