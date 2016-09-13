@@ -98,7 +98,7 @@ sandbox3:
   database: rigi_sso_sandbox
   username: rigi
   password: rigi.pa$$w0rd123
-  host: mo-snd-sso-vdb01.laxigames.local
+  host: mo-snd-sso-vdb01.lb.laxigames.local
   port: 6034
 
 production3:

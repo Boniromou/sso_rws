@@ -88,8 +88,8 @@ mockup0:
 
 sandbox3:
   servers:
-    - mo-snd-s3-vapp01.laxigames.local:11211
-    - mo-snd-s3-vapp01.laxigames.local:11212
+    - mo-snd-s3-vapp01.lb.laxigames.local:11211
+    - mo-snd-s3-vapp01.lb.laxigames.local:11212
   expires: 86400
   namespace: s3_snd
   no_block: true
