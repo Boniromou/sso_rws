@@ -55,7 +55,8 @@ moidc_domain: &moidc_domain
   domains:
     - {id: 1, name: 'gamesourcecloud.local'}
   domains_casinos:
-    - {id: 1, domain_id: 1, casino_id: 20000}
+    - {id: 1, domain_id: 1, casino_id: 10000}
+    - {id: 2, domain_id: 1, casino_id: 1000}
 
 test:
   <<: *hqidc_domain
