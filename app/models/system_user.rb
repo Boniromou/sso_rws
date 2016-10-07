@@ -174,6 +174,7 @@ class SystemUser < ActiveRecord::Base
     cache_hash = {
       :status => self.status,
       :admin => self.admin,
+      :username_with_domain => "#{self.username}@#{self.domain.name}",
       :casinos => casinos,
       :properties => properties
     }
