@@ -110,3 +110,13 @@ production3:
   password: rigi.pa$$w0rd123
   host: mo-prd-sso-vdb01.laxigames.local
   port: 6033
+
+production4:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_production
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: mo-prd-sso-vdb01.ol.laxigames.local
+  port: 6033
