@@ -59,3 +59,7 @@ sandbox3:
 production3:
   <<: *default
   site_domain: 'laxigames.local'
+
+production4:
+  <<: *default
+  site_domain: 'laxigames.local'
