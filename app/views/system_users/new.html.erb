@@ -84,7 +84,7 @@
     $('#modal_link').click(function() {    
       username = $("input[name='system_user[username]']").val();
       domain = $("#domain").val();
-      if (!username || /\s/g.test(username)) { 
+      if (!username) { 
         $('input[autofocus="autofocus"]').focus();
         $("#invalid_error").text("<%= t("alert.invalid_username") %>");
         return false;
