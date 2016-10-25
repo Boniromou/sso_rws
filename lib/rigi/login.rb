@@ -44,6 +44,7 @@ module Rigi
         validate_account_status!(system_user)
         validate_account_casinos!(system_user)
         system_user.cache_info(app_name)
+        system_user.insert_login_history(app_name)
       else
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. Authentication failed"
         raise InvalidLogin.new("alert.invalid_login")

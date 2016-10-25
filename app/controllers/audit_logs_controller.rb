@@ -18,7 +18,7 @@ class AuditLogsController < ApplicationController
   private
   
   def handle_search
-    @default_start_time = Date.parse(Time.now.to_s)-SEARCH_DAY_RANGE.days
+    @default_start_time = Date.parse(Time.now.to_s) - (SEARCH_DAY_RANGE - 1).days
     @default_end_time = Date.parse(Time.now.to_s)
 
     respond_to do |format|

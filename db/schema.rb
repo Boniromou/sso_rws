@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160610063028) do
+ActiveRecord::Schema.define(:version => 20161014042731) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -119,6 +119,21 @@ ActiveRecord::Schema.define(:version => 20160610063028) do
   end
 
   add_index "licensees", ["name"], :name => "index_licensees_on_name", :unique => true
+
+  create_table "login_histories", :force => true do |t|
+    t.integer  "system_user_id",                                   :null => false
+    t.integer  "domain_id",                                        :null => false
+    t.integer  "app_id",                                           :null => false
+    t.string   "detail",         :limit => 1024, :default => "{}"
+    t.datetime "sign_in_at",                                       :null => false
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+  end
+
+  add_index "login_histories", ["app_id"], :name => "index_login_histories_on_app_id"
+  add_index "login_histories", ["domain_id"], :name => "index_login_histories_on_domain_id"
+  add_index "login_histories", ["sign_in_at"], :name => "index_login_histories_on_sign_in_at"
+  add_index "login_histories", ["system_user_id"], :name => "index_login_histories_on_system_user_id"
 
   create_table "permissions", :force => true do |t|
     t.string   "name",       :null => false

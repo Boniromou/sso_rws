@@ -48,8 +48,6 @@ class SystemUser < ActiveRecord::Base
   end
 
   def self.create_by_username_and_domain!(username, domain)
-    username = username.downcase
-    domain = domain.downcase
     SystemUser.validate_account!(username, domain)
     SystemUser.register_account!(username, domain)
   end
@@ -185,6 +183,22 @@ class SystemUser < ActiveRecord::Base
     SystemUser.includes(:roles).joins(:domain).select("system_users.*, domains.name as domain_name").order("system_users.updated_at desc")
   end
 
+  def insert_login_history(app_name)
+    app = App.find_by_name(app_name || APP_NAME)
+    params = {}
+    params[:system_user_id] = self.id
+    params[:domain_id] = self.domain_id
+    params[:app_id] = app.id
+    params[:detail] = {:casino_ids => self.active_casino_ids, :casino_id_names => self.active_casino_id_names}
+    LoginHistory.insert(params)
+  end
+
+  def self.find_by_username_with_domain(username_with_domain)
+    username, domain = username_with_domain.split('@', 2)
+    return nil if username.nil? || domain.nil?
+    SystemUser.includes(:domain).where('system_users.username = ? and domains.name = ?', username, domain).first
+  end
+
   private
   # a = [2, 4, 6, 8]
   # b = [1, 2, 3, 4]
@@ -255,7 +269,7 @@ class SystemUser < ActiveRecord::Base
   end
 
   def self.validate_username!(username)
-    raise Rigi::InvalidUsername.new(I18n.t("alert.invalid_username")) if username.blank?
+    raise Rigi::InvalidUsername.new(I18n.t("alert.invalid_username")) if username.blank? || username.index(/\s/)
   end
 
   def self.validate_account!(username, domain)

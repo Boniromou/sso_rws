@@ -12,8 +12,8 @@ class SystemUsersController < ApplicationController
     authorize :system_users, :create?
 
     begin
-      username = params[:system_user][:username]
-      domain = params[:system_user][:domain]
+      username = params[:system_user][:username].strip.downcase if params[:system_user][:username].present?
+      domain = params[:system_user][:domain].downcase if params[:system_user][:domain].present?
       auditing do
         SystemUser.create_by_username_and_domain!(username, domain)       
         flash[:success] = I18n.t("success.create_user", :username => (username + '@' + domain)) 

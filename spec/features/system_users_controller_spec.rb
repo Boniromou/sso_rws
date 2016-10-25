@@ -532,7 +532,7 @@ describe SystemUsersController do
       mock_ad_account_profile(true, [1003])
       login("#{@root_user.username}@#{@root_user.domain.name}")
       visit new_system_user_path
-      fill_in_user_info('abc', 'example.com')
+      fill_in_user_info('   abc   ', 'example.com')
       test_click_create_btn
       expect(page).to have_content I18n.t("success.create_user", :username => 'abc@example.com')
       expect(current_path).to eq new_system_user_path
@@ -607,6 +607,16 @@ describe SystemUsersController do
     it "[24.10] audit log for fail to create system user with duplicated record in local DB" do
       mock_duplicated_user_create
       check_fail_audit_log("system_user", "create", "create", "portal.admin")
+    end
+
+    it "[24.11] Create system user fail with invalid input (space in system user name)" do
+      mock_create_domain
+      mock_ad_account_profile(true, [1003])
+      login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
+      visit new_system_user_path
+      fill_in_user_info('ab    c', 'example.com')
+      page.find("#modal_link").click
+      expect(page).to have_content I18n.t("alert.invalid_username")
     end
   end
 

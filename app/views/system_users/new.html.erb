@@ -84,13 +84,13 @@
     $('#modal_link').click(function() {    
       username = $("input[name='system_user[username]']").val();
       domain = $("#domain").val();
-      if (!username) { 
+      if (!username || /\s/g.test(username)) { 
         $('input[autofocus="autofocus"]').focus();
         $("#invalid_error").text("<%= t("alert.invalid_username") %>");
         return false;
       }
 
-      $('#pop_up_dialog #confirm').click(registerPopUpPanel('<%= t("alert.create_system_user_confirm") %>' +' '+ username + '@' + domain + '?'));
+      $('#pop_up_dialog #confirm').click(registerPopUpPanel('<%= t("alert.create_system_user_confirm") %>' +' '+ username.trim() + '@' + domain + '?'));
 
       return false;
     });

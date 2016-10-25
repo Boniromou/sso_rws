@@ -30,8 +30,18 @@ describe SystemUserSessionsController do
     end
 
     it "[1.1] Login successful" do
+      count = LoginHistory.count
       go_login_page_and_login(@root_user)
       expect(page.current_path).to eq home_root_path
+      expect(LoginHistory.count).to eq count + 1
+      login_history = LoginHistory.last
+      expect(login_history.system_user_id).to eq @root_user.id
+      expect(login_history.domain_id).to eq @root_user.domain.id
+      expect(login_history.app_id).to eq App.find_by_name(APP_NAME).id
+      detail = {}
+      detail['casino_ids'] = [1000]
+      detail['casino_id_names'] = [{'id' => 1000, 'name' => Casino.find(1000).name}]
+      expect(login_history.detail).to eq detail
     end
 
     it "[1.2] login fail with wrong password" do

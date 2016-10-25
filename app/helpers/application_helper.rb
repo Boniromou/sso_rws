@@ -160,4 +160,10 @@ module ApplicationHelper
   def display_text(text, empty_indicator='-')
     text.nil? ? '-' : text.titleize
   end
+
+  def gen_select_options(targets)
+    selection = targets.map { |target| [ target.name.titleize, target.id.to_s ] }
+    selection.unshift([ t("general.all"), "all" ])
+    options_for_select selection
+  end
 end

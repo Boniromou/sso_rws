@@ -1,0 +1,32 @@
+<% if defined? @search_error %>
+  <p> <%= @search_error %> </p>
+<% elsif @login_histories.blank? %>
+  <% if defined? @search_time_range_remark %> <p> <%= @search_time_range_remark %> </p> <% end %>
+  <p> <%= t("general.no_result_found") %> </p>
+<% else %>
+  <% if defined? @search_time_range_remark %>
+    <p> <%= @search_time_range_remark %> </p>
+  <% else %>
+    <br></br>
+  <% end %>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <th><%= t("change_log.user") %></th>
+        <th><%= t("change_log.system") %></th>
+        <th><%= t("login_history.login_time") %></th>
+      </thead>
+      <tbody>
+        <% @login_histories.each do |history| %>
+          <tr align="center">
+            <td><%= popover("#{history.system_user.username if history.system_user.present?}@#{history.domain.name if history.domain.present?}", t("casino.title"), casino_id_names_format(history.detail['casino_id_names']), "popover-hover", "top") %></td>
+            <td><%= history.app.name.titleize if history.app.present?%></td>
+            <td id="sign_in_at"><%= format_time(history.sign_in_at) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<%= render "shared/page_setup" %>

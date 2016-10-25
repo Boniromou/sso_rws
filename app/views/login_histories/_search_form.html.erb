@@ -1,0 +1,38 @@
+<%= form_tag(login_histories_path, :remote => true, :method => 'get', :id => "login_search_form") do %>
+  <fieldset>
+    <div class="row">
+      <%= render partial: "shared/date_range_picker" , locals: {:default_start_time => @default_start_time, :default_end_time => @default_end_time } %>
+    </div>
+    
+    <div class="row">
+      <div class="col-sm-6">
+        <section class="smart-form">
+          <label class="label"><%= t("change_log.user") %></label>
+          <label class="input">
+            <%= text_field_tag(:username) %>
+          </label>
+        </section>
+      </div>
+      
+      <div class="col-sm-6">
+        <section class="smart-form">
+          <label class="label"><%= t("change_log.system") %></label>
+          <label class="select">
+            <select class="input-sm" name="app_id" id="app_id">
+              <%= gen_select_options(@apps) %>
+            </select>
+          </label>
+        </section>
+      </div>
+    </div>
+    
+  </fieldset>
+    
+  <div class="form-actions">
+    <div class="row">
+      <div class="col-md-12">
+        <%= submit_tag t("general.search"), :class => "btn btn-primary", :remote => true  %>
+      </div>
+    </div>
+  </div>
+<% end %>

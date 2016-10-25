@@ -175,3 +175,9 @@ en:
   role_type:
     internal: ! ' [Int.]'
     external: ! ' [Ext.]'
+  login_history:
+    list: Login History
+    login_time: Login Time
+    search_range_remark: The search range is limited to [%{config_value}] days
+    search_range_error: The search range is limited to [%{config_value}] days
+    search_system_user_error: The search system user not exist
