@@ -22,6 +22,10 @@ module DomainCasinosControllerSpecHelper
     create(:app, name: app_name)
   end
 
+  def mock_app_sso
+    create(:app, :name => 'user_management') unless App.find_by_name('user_management')
+  end
+
   def app_id
     app_sso.id
   end
@@ -114,6 +118,7 @@ module DomainCasinosControllerSpecHelper
   end
 
   def login(system_user)
+    mock_app_sso
     mock_authenticate
     mock_retrieve_user_profile(system_user)
     visit login_path
@@ -127,6 +132,7 @@ module DomainCasinosControllerSpecHelper
   def before_create_domain_casino
     login(user_with_domain_casino_create)
 
+    create(:app, :name => 'user_management')
     @domain_name = '1003.com'
     @casino_ids = [1000, 1003, 1007]
     @casino_name = 'MockUp'
@@ -171,7 +177,6 @@ module DomainCasinosControllerSpecHelper
 
   def before_inactive_domain_casino
     login(user_with_domain_casino_inactive)
-
     @domain_name = '1003.com'
     @casino_ids = [1000, 1003, 1007]
     @casino_name = 'MockUp'
@@ -191,7 +196,7 @@ module DomainCasinosControllerSpecHelper
     end
 
     @domain_casino = create(:domains_casino, domain_id: @domain_1003.id, casino_id: @casino_mockup.id)
-
+    
     visit domain_casinos_path
   end
 

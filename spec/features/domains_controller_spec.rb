@@ -65,7 +65,12 @@ describe DomainsController do
     page.has_css?("#domain_management_link")
   end
 
+  def mock_app_sso
+    create(:app, :name => 'user_management') unless App.find_by_name('user_management')
+  end
+
   def login(system_user)
+    mock_app_sso
     mock_authenticate
     mock_retrieve_user_profile(system_user)
     visit login_path

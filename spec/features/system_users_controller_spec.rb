@@ -472,7 +472,7 @@ describe SystemUsersController do
     end
   end
 
-  describe "[24] Create System User" do
+  describe "[24] Create System User", :js => true do
     def id_array
       [1003, 1007, 1014]
     end
@@ -510,11 +510,12 @@ describe SystemUsersController do
       select domain, :from => "system_user[domain]"
     end
 
-    def test_click_create_btn
+    def test_click_create_btn(username)
       page.find("#modal_link").click
+      wait_for_ajax
       expect(page).to have_content I18n.t("general.cancel")
       expect(page).to have_content I18n.t("general.confirm")
-      expect(page).to have_content I18n.t("alert.create_system_user_confirm")
+      expect(page).to have_content I18n.t("alert.create_system_user_confirm", :username => username)
       click_button I18n.t("general.confirm")
     end
 
@@ -525,7 +526,7 @@ describe SystemUsersController do
       login("#{@root_user.username}@#{@root_user.domain.name}")
       visit new_system_user_path
       fill_in_user_info('abc', 'example.com')
-      test_click_create_btn
+      test_click_create_btn('abc@example.com')
     end
 
     it "[24.1] create system user success" do
@@ -533,7 +534,7 @@ describe SystemUsersController do
       login("#{@root_user.username}@#{@root_user.domain.name}")
       visit new_system_user_path
       fill_in_user_info('   abc   ', 'example.com')
-      test_click_create_btn
+      test_click_create_btn('abc@example.com')
       expect(page).to have_content I18n.t("success.create_user", :username => 'abc@example.com')
       expect(current_path).to eq new_system_user_path
     end
@@ -563,7 +564,7 @@ describe SystemUsersController do
       visit new_system_user_path
       expect(page).to have_select("domain", :with_options => ["1003.com"])
       fill_in_user_info('abc', '1003.com')
-      test_click_create_btn
+      test_click_create_btn('abc@1003.com')
       expect(page).to have_content I18n.t("alert.account_no_casino")
       expect(current_path).to eq new_system_user_path
     end
@@ -573,7 +574,7 @@ describe SystemUsersController do
       login("#{@root_user.username}@#{@root_user.domain.name}")
       visit new_system_user_path
       fill_in_user_info('abc', 'example.com')
-      test_click_create_btn
+      test_click_create_btn('abc@example.com')
       check_success_audit_log("system_user", "create", "create", "portal.admin")
     end
 
@@ -585,7 +586,7 @@ describe SystemUsersController do
       login("#{@root_user.username}@#{@root_user.domain.name}")
       visit new_system_user_path
       fill_in_user_info('abc', '1003.com')
-      test_click_create_btn
+      test_click_create_btn('abc@1003.com')
       check_fail_audit_log("system_user", "create", "create", "portal.admin")
     end
 
