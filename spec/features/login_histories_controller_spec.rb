@@ -44,7 +44,7 @@ describe LoginHistoriesController do
 
   describe "[29] Check login history permission", :js => true do
   	it "[29.1] verify the list login history" do
-      login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
+      login("#{@root_user.username}@#{@root_user.domain.name}")
   		visit login_histories_path
   		expect(find("input[name='start_time']").value).to eq (Time.now - (SEARCH_RANGE_FOR_LOGIN_HISTORY-1).days).strftime("%Y-%m-%d")
   		expect(find("input[name='end_time']").value).to eq Time.now.strftime("%Y-%m-%d")

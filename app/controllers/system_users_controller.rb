@@ -90,6 +90,10 @@ class SystemUsersController < ApplicationController
     redirect_to system_user_path(@system_user)
   end
 
+  def create_system_user_message
+    render :json => I18n.t("alert.create_system_user_confirm", :username => params[:username])
+  end
+
   private
   def role_ids_param
     role_ids = App.all.map do |app|

@@ -1,5 +1,5 @@
 <% if defined? @search_error %>
-  <p> <%= @search_error %> </p>
+  <p style="color: red"> <%= @search_error %> </p>
 <% elsif @login_histories.blank? %>
   <% if defined? @search_time_range_remark %> <p> <%= @search_time_range_remark %> </p> <% end %>
   <p> <%= t("general.no_result_found") %> </p>

@@ -25,11 +25,10 @@ SsoRws::Application.routes.draw do
 
   get '/system_users/export' => 'system_users#export'
   get '/roles/export' => 'roles#export'
+  get '/system_users/create_system_user_message' => 'system_users#create_system_user_message', as: :create_system_user_message
   resources :roles, :only => [:index, :show]
   resources :system_users, :only => [:index, :show, :new, :create] do
     member do
-      #post 'lock'
-      #post 'unlock'
       get 'edit_roles'
       post 'update_roles'
     end

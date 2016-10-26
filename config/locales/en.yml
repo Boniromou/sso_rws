@@ -17,11 +17,11 @@ en:
     invalid_property: property can not be null
     caps_lock: The Caps Lock is turn ON
     account_no_casino: ! 'System error : Invalid Casino'
-    invalid_username: Invalid username format
+    invalid_username: Invalid username format. Space and Special Character is not allowed.
     account_not_in_ldap: User not found in database
     invalid_domain: Invalid domain format
     duplicate_domain: Duplicate Domain
-    create_system_user_confirm: Are you sure to create system user ?
+    create_system_user_confirm: Are you sure to create system user [%{username}]?
     duplicate_domain_casino: Duplicate Domain-Casino Mapping
     domain_casino_not_found: Domain-Casino Mapping not found
   title:
@@ -179,5 +179,5 @@ en:
     list: Login History
     login_time: Login Time
     search_range_remark: The search range is limited to [%{config_value}] days
-    search_range_error: The search range is limited to [%{config_value}] days
-    search_system_user_error: The search system user not exist
+    search_range_error: The search range cannot be empty and limited to [%{config_value}] days
+    search_system_user_error: System User not found

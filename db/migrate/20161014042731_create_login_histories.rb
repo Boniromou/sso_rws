@@ -6,7 +6,6 @@ class CreateLoginHistories < ActiveRecord::Migration
       t.integer  :app_id, 				:null => false
       t.string   :detail, 				:limit => 1024, :default => '{}'
       t.datetime :sign_in_at, 		:null => false
-      t.datetime :purge_at
       t.timestamps
     end
 
