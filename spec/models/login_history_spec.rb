@@ -42,4 +42,26 @@ describe LoginHistory do
       expect(LoginHistory.count).to eq count
     end
   end
+
+  describe "test clean_login_history" do
+    def create_login_history(sign_in_at)
+      LoginHistory.create(system_user_id: 1, domain_id: 1, app_id: 1, sign_in_at: sign_in_at)
+    end
+
+    before(:each) do
+      @his1 = create_login_history(Time.now)
+      @his2 = create_login_history((Time.now - REMAIN_LOGIN_HISTORY_DAYS.days).end_of_day.utc)
+      @his3 = create_login_history((Time.now - (REMAIN_LOGIN_HISTORY_DAYS - 1).days).beginning_of_day.utc)
+      @his4 = create_login_history(Time.now - (REMAIN_LOGIN_HISTORY_DAYS + 1 ).days)
+    end
+
+    it "clean_login_history successfully" do
+      LoginHistory.clean_login_history
+      expect(LoginHistory.count).to eq 2
+      expect(LoginHistory.where(id: @his1.id).blank?).to eq false
+      expect(LoginHistory.where(id: @his2.id).blank?).to eq true
+      expect(LoginHistory.where(id: @his3.id).blank?).to eq false
+      expect(LoginHistory.where(id: @his4.id).blank?).to eq true
+    end
+  end
 end

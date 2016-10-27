@@ -22,4 +22,9 @@ class LoginHistory < ActiveRecord::Base
   	params[:sign_in_at] = Time.now.utc
   	create!(params)
 	end
+
+  def self.clean_login_history
+    last_time = Time.now - (REMAIN_LOGIN_HISTORY_DAYS - 1).days
+    self.where("sign_in_at < ?", last_time.beginning_of_day.utc).delete_all
+  end
 end

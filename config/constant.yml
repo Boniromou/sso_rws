@@ -14,6 +14,7 @@ default: &default
   search_range_for_login_history: 7
   admin_casino_id: 1000
   admin_role_type_name: 'internal'
+  remain_login_history_days: 100
 
 test:
   <<: *default
