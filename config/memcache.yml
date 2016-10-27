@@ -105,3 +105,14 @@ production3:
   namespace: s3_prd
   no_block: true
   timeout: 30
+
+production4:
+  servers:
+    - mo-prd-s3-vapp01.ol.laxigames.local:7000
+    - mo-prd-s3-vapp01.ol.laxigames.local:7001
+    - mo-prd-s3-vapp02.ol.laxigames.local:7000
+    - mo-prd-s3-vapp02.ol.laxigames.local:7001
+  expires: 86400
+  namespace: s3_prd
+  no_block: true
+  timeout: 30
