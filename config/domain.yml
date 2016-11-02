@@ -58,6 +58,12 @@ moidc_domain: &moidc_domain
     - {id: 1, domain_id: 1, casino_id: 10000}
     - {id: 2, domain_id: 1, casino_id: 1000}
 
+vcidc_domain: &vcidc_domain
+  domains:
+    - {id: 1, name: 'laxigames.local'}
+  domains_casinos:
+    - {id: 1, domain_id: 1, casino_id: 1000}
+
 test:
   <<: *hqidc_domain
 
@@ -90,3 +96,6 @@ sandbox3:
 
 production3:
   <<: *moidc_domain
+
+production4:
+  <<: *vcidc_domain

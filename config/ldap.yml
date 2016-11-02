@@ -30,6 +30,14 @@ moidc_ldap: &moidc_ldap
   password: '$vc_1dc_1daP'
   base_dn: 'dc=gamesourcecloud, dc=local'
 
+vcidc_ldap: &vcidc_ldap
+  name: 'vcidc_ldap'
+  host: 'mo-mgt-vdc01.laxigames.local'
+  port: 3268
+  account: 'svc_idc_ldap@laxigames.local'
+  password: '$vc_1dc_1daP'
+  base_dn: 'dc=laxigames, dc=local'
+
 test:
   <<: *hqidc_ldap
 
@@ -62,3 +70,6 @@ sandbox3:
 
 production3:
   <<: *moidc_ldap
+
+production4:
+  <<: *vcidc_ldap
