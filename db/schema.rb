@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161102073112) do
+ActiveRecord::Schema.define(:version => 20161108024447) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -45,17 +45,18 @@ ActiveRecord::Schema.define(:version => 20161102073112) do
   end
 
   create_table "auth_sources", :force => true do |t|
-    t.string  "auth_type",        :limit => 30, :default => "",    :null => false
-    t.string  "name",             :limit => 60, :default => "",    :null => false
+    t.string  "auth_type",        :limit => 30, :default => "", :null => false
+    t.string  "name",             :limit => 60, :default => "", :null => false
     t.string  "host",             :limit => 60
     t.integer "port"
     t.string  "account",          :limit => 60
     t.string  "account_password", :limit => 60
     t.string  "base_dn"
-    t.boolean "is_internal",                    :default => false, :null => false
     t.string  "encryption"
     t.string  "method"
     t.string  "search_scope"
+    t.string  "admin_account",    :limit => 60
+    t.string  "admin_password",   :limit => 60
   end
 
   create_table "casinos", :force => true do |t|
@@ -99,7 +100,7 @@ ActiveRecord::Schema.define(:version => 20161102073112) do
     t.integer  "licensee_id"
   end
 
-  add_index "domains", ["licensee_id"], :name => "fk_Domains_LicenseeId"
+  add_index "domains", ["licensee_id"], :name => "index_domains_on_licensee_id", :unique => true
   add_index "domains", ["name"], :name => "index_domains_on_name", :unique => true
 
   create_table "domains_casinos", :force => true do |t|

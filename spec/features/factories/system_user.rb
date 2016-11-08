@@ -5,7 +5,7 @@ FactoryGirl.define do
     admin     false
 
     before(:create) do |system_user|
-      system_user.auth_source = AuthSource.first || create(:auth_source, :internal)
+      system_user.auth_source = AuthSource.first || create(:auth_source)
       domain = Domain.find_by_name("example.com") || create(:domain, name: "example.com")
       system_user.domain_id = domain.id
     end
