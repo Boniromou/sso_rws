@@ -25,6 +25,8 @@ class LoginHistory < ActiveRecord::Base
 
   def self.clean_login_history
     last_time = Time.now - (REMAIN_LOGIN_HISTORY_DAYS - 1).days
+    Rails.logger.info "Begin to clean login histories: clean sign_in_at before #{last_time}"
     self.where("sign_in_at < ?", last_time.beginning_of_day.utc).delete_all
+    Rails.logger.info "End to clean login histories"
   end
 end

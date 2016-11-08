@@ -38,6 +38,17 @@
               <% end %>
             </li>
           <% end %>
+
+          <% if policy(:domain).index_domain_licensee? %>
+            <li id="nav_domain_licensee">
+              <%= link_to(domain_licensees_path, title: t("domain_licensee.list"), remote: true) do %>
+                <i class="fa fa-lg fa-fw fa fa-list"></i>
+                <span class="menu-item-parent">
+                  <%= t("domain_licensee.list") %>
+                </span>
+              <% end %>
+            </li>
+          <% end %>
         </ul>
       </nav>
       <span class="minifyme" data-action="minifyMenu">

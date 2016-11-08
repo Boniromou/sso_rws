@@ -75,7 +75,7 @@
           </li>
 
           <!-- domain_management -->
-          <% if policy(:domain).index? || policy(:domain_casino).index? %>
+          <% if policy(:domain).index? || policy(:domain).index_domain_licensee? %>
             <li class=<%= selected_page_tab == "domain_management" ? "active" : "" %>>
               <%= link_to t("header.domain_management"), domain_management_root_path, :id => "domain_management_link" %>
             </li>

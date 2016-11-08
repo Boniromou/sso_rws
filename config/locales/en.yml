@@ -160,6 +160,19 @@ en:
     domain_name: Domain Name
   domain_casino:
     list: Domain-Casino Mappings
+  domain_licensee:
+    name: Domain Licensee
+    list: Domain-Licensee Mappings
+    licensee: Licensee
+    active: Active
+    create: Create
+    delete: Delete
+    create_mapping_successfully: Create Domain-Licensee mapping successful !
+    invalid_params: Domain or Licensee not found
+    create_mapping_fail_domain_used: Create Domain-Licensee mapping error, doamin has binded licensee
+    create_mapping_fail_licensee_used: Create Domain-Licensee mapping error, licensee has binded doamin
+    delete_mapping_successfully: Delete Domain-Licensee mapping successful !
+    delete_mapping_fail: Delete Domain-Licensee mapping error, Domain-Licensee mapping not exist
   confirm:
     create_domain: Do you confirm to create Domain [%{domain_name}] ?
     export_user_role: Are you sure to export System User List report ?

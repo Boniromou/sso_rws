@@ -25,4 +25,14 @@ class ChangeLogsController < ApplicationController
       format.js { render template: "change_logs/index_create_domain_casino", formats: [:js] }
     end
   end
+
+  def create_domain_licensee
+    authorize :change_logs, :index_create_domain_licensee?
+    @domain_licensee_change_logs = policy_scope(DomainLicenseeChangeLog)
+
+    respond_to do |format|
+      format.html { render file: "change_logs/index_create_domain_licensee", :layout => "domain_management", formats: [:html] }
+      format.js { render template: "change_logs/index_create_domain_licensee", formats: [:js] }
+    end
+  end
 end

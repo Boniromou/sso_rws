@@ -22,6 +22,12 @@ SsoRws::Application.routes.draw do
 
   resources :domain_casinos, :only => [:index, :create]
   post "domain_casinos/inactive/:id" => "domain_casinos#inactive", as: :domain_casino_inactive
+  resources :domain_licensees, :only => [:index, :create] do
+    collection do
+      get 'get_casinos'
+      post 'remove'
+    end
+  end
 
   get '/system_users/export' => 'system_users#export'
   get '/roles/export' => 'roles#export'
@@ -40,6 +46,7 @@ SsoRws::Application.routes.draw do
     collection do
       get 'create_system_user'
       get 'index_edit_role'
+      get 'create_domain_licensee'
     end
   end
 

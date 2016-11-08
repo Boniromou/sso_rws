@@ -14,6 +14,18 @@ class DomainPolicy < ApplicationPolicy
     permitted?(:domain, :create)
   end
 
+  def index_domain_licensee?
+    permitted?(:domain_licensee_mapping, :list)
+  end
+
+  def create_domain_licensee?
+    permitted?(:domain_licensee_mapping, :create)
+  end
+
+  def delete_domain_licensee?
+    permitted?(:domain_licensee_mapping, :delete)
+  end
+
   class Scope < Scope
     def resolve
       if system_user.is_admin? || system_user.has_admin_casino?

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161014042731) do
+ActiveRecord::Schema.define(:version => 20161102073112) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -93,11 +93,13 @@ ActiveRecord::Schema.define(:version => 20161014042731) do
   end
 
   create_table "domains", :force => true do |t|
-    t.string   "name",       :limit => 45, :null => false
-    t.datetime "created_at",               :null => false
-    t.datetime "updated_at",               :null => false
+    t.string   "name",        :limit => 45, :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.integer  "licensee_id"
   end
 
+  add_index "domains", ["licensee_id"], :name => "fk_Domains_LicenseeId"
   add_index "domains", ["name"], :name => "index_domains_on_name", :unique => true
 
   create_table "domains_casinos", :force => true do |t|
@@ -112,12 +114,14 @@ ActiveRecord::Schema.define(:version => 20161014042731) do
   add_index "domains_casinos", ["domain_id", "casino_id"], :name => "index_domains_casinos_on_domain_id_and_casino_id", :unique => true
 
   create_table "licensees", :force => true do |t|
-    t.string   "name",        :limit => 45, :null => false
+    t.string   "name",           :limit => 45, :null => false
     t.string   "description"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.integer  "auth_source_id"
   end
 
+  add_index "licensees", ["auth_source_id"], :name => "fk_Licensees_AuthSourceId"
   add_index "licensees", ["name"], :name => "index_licensees_on_name", :unique => true
 
   create_table "login_histories", :force => true do |t|
