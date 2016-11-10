@@ -22,7 +22,7 @@ class SystemUsersController < ApplicationController
     rescue Rigi::InvalidUsername, Rigi::InvalidDomain => e
       Rails.logger.error "SystemUser[username=#{params[:system_user][:username]} , domain=#{params[:system_user][:domain]}] illegal format"
       @errors = e.error_message 
-    rescue Rigi::RegisteredAccount, Rigi::AccountNotInLdap, Rigi::AccountNoCasino => e
+    rescue Rigi::InvalidLicensee, Rigi::InvalidAuthSource, Rigi::RegisteredAccount, Rigi::AccountNotInLdap, Rigi::AccountNoCasino => e
       Rails.logger.error "SystemUser[username=#{params[:system_user][:username]} , domain=#{params[:system_user][:domain]}] create failed: #{e.error_message}"
       flash[:alert] = e.error_message
     end  

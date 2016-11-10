@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :auth_source do
-    id 1
+    sequence(:id)
     auth_type "AuthSourceLdap"
     name "Laxino LDAP"
     host "0.0.0.0"

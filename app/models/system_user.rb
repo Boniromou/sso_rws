@@ -119,7 +119,7 @@ class SystemUser < ActiveRecord::Base
   end
 
   def update_ad_profile
-    casino_ids = self.domain.active_casino_ids
+    casino_ids = self.domain.get_casino_ids
     profile = self.auth_source.retrieve_user_profile(username, self.domain.name, casino_ids)
     self.status = profile[:status]
     update_casinos(profile[:casino_ids])
@@ -141,21 +141,23 @@ class SystemUser < ActiveRecord::Base
 
   def self.sync_user_info
     Rails.logger.info "Begin to Sync system user info"
-    auth_source = AuthSource.first
-    auth_source = auth_source.becomes(auth_source.auth_type.constantize)
     system_users = SystemUser.all
 
     if system_users.present?
       system_users.each do |system_user|
         begin
-          profile = auth_source.retrieve_user_profile(system_user.username, system_user.domain.name, system_user.domain.get_casino_ids)
+          domain = system_user.domain
+          auth_source = domain.auth_source
+          raise "domain[#{domain.name}] auth_source not exist" if auth_source.blank?
+          auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+          profile = auth_source.retrieve_user_profile(system_user.username, domain.name, domain.get_casino_ids)
           if system_user.status != profile[:status]
             system_user.status = profile[:status]
             system_user.save!
           end
           system_user.update_casinos(profile[:casino_ids])
           system_user.cache_profile
-        rescue Exception => e
+        rescue StandardError => e
           Rails.logger.error "Sync system user [#{system_user.inspect}] Exception: #{e.message}"
           Rails.logger.error "#{e.backtrace.inspect}"
           next
@@ -276,15 +278,19 @@ class SystemUser < ActiveRecord::Base
     SystemUser.validate_username!(username)
     Domain.validate_domain!(domain)
 
-    auth_source = AuthSource.first
     domain_obj = Domain.where(:name => domain).first
+    raise Rigi::InvalidLicensee.new(I18n.t("alert.invalid_licensee_mapping")) if domain_obj.licensee.blank?
+    auth_source = domain_obj.licensee.auth_source
+    raise Rigi::InvalidAuthSource.new(I18n.t("alert.invalid_ldap_mapping")) if auth_source.blank?
+
     sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id, :domain_id => domain_obj.id).first
     raise Rigi::RegisteredAccount.new(I18n.t("alert.registered_account")) if sys_usr
+    auth_source
   end
 
   def self.register_account!(username, domain)
-    auth_source = AuthSource.first
     domain_obj = Domain.where(:name => domain).first
+    auth_source = domain_obj.auth_source
     auth_source = auth_source.becomes(auth_source.auth_type.constantize)
     casino_ids = domain_obj.get_casino_ids
 

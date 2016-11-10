@@ -24,6 +24,8 @@ en:
     create_system_user_confirm: Are you sure to create system user [%{username}]?
     duplicate_domain_casino: Duplicate Domain-Casino Mapping
     domain_casino_not_found: Domain-Casino Mapping not found
+    invalid_licensee_mapping: Invalid Domain Licensee Mapping
+    invalid_ldap_mapping: Invalid Licensee Ldap Mapping
   title:
     title: User Management
     login_title: Login

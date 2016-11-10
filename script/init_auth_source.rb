@@ -54,7 +54,7 @@ if prompt.casecmp('Y') == 0
     auth_source_info.delete(:licensee_id)
 
     auth_source = auth_sources_table.where(:host => auth_source_info[:host]).first
-    if auth_source.empty?
+    if auth_source.nil?
       auth_source_id = auth_sources_table.insert(auth_source_info)
     else
       auth_source_id = auth_source[:id]

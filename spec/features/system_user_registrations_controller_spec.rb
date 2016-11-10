@@ -1,19 +1,24 @@
 require "feature_spec_helper"
 
 describe SystemUserRegistrationsController do
-  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
-
-  before(:each) do
-    mock_authenticate
-    domain = Domain.find_by_name("example.com") || create(:domain, :name => "example.com") 
-    licensee = Licensee.first || create(:licensee, name: "laxino")
-    [1000, 1001, 1002, 1003].each do |id|
-      create(:casino, :id => id, :licensee_id => licensee.id) unless Casino.exists?(:id => id, :licensee_id => licensee.id)
-      create(:domains_casino, domain_id: domain.id, casino_id: id) unless DomainsCasino.exists?(:domain_id => domain.id, :casino_id => id)
-    end   
+  def create_casinos_with_licensee(casino_ids, licensee_id)
+    casino_ids.each do |casino_id|
+      create(:casino, :id => casino_id, :licensee_id => licensee_id)
+    end
   end
-
+  
   describe "[3] Self Registration" do
+    before(:each) do
+      mock_authenticate
+      auth_source = create(:auth_source)
+      licensee = create(:licensee, :auth_source_id => auth_source.id)
+      create_casinos_with_licensee([1000, 1003, 1007], licensee.id)
+      domain = create(:domain, :name => "example.com", :licensee_id => licensee.id)
+      
+      licensee1 = create(:licensee)
+      create(:domain, :name => "invalid.ldap.com", :licensee_id => licensee1.id)
+      create(:domain, :name => "invalid.licensee.com")
+    end
 
     def go_signup_page_and_register(username)
       visit new_system_user_registration_path
@@ -78,10 +83,29 @@ describe SystemUserRegistrationsController do
       go_signup_page_and_register('test_user@other.com')
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
+
+    it "[3.15] Register system user fail with domain-licensee mapping not exist" do
+      mock_ad_account_profile(true, [1000])
+      go_signup_page_and_register('test_user@invalid.licensee.com')
+      expect(page).to have_content I18n.t("alert.invalid_licensee_mapping")
+    end
+
+    it "[3.16] Register system user fail with auth_source-licensee mapping not exist" do
+      mock_ad_account_profile(true, [1000])
+      go_signup_page_and_register('test_user@invalid.ldap.com')
+      expect(page).to have_content I18n.t("alert.invalid_ldap_mapping")
+    end
   end
 
   describe "[1] Login/Logout" do
+    fixtures :apps, :permissions, :role_permissions, :roles
+
     before(:each) do
+      mock_authenticate
+      auth_source = create(:auth_source)
+      licensee = create(:licensee, :auth_source_id => auth_source.id)
+      create_casinos_with_licensee([1000, 1001, 1002, 1003], licensee.id)
+      domain = create(:domain, :name => "example.com", :licensee_id => licensee.id)
       @registered_account = create(:system_user, :username => 'test_user', :status => true, :with_casino_ids => [1000])
     end
 

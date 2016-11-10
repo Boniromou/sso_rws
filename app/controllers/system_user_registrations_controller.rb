@@ -19,9 +19,8 @@ class SystemUserRegistrationsController < ActionController::Base
       username = login[:username]
       domain = login[:domain]
       password = params[:system_user][:password]
-      SystemUser.validate_account!(username, domain)
-
-      auth_source = AuthSource.first
+      
+      auth_source = SystemUser.validate_account!(username, domain)
       auth_source = auth_source.becomes(auth_source.auth_type.constantize)
       if auth_source.authenticate(username_with_domain, password)
         SystemUser.register_account!(username, domain)
@@ -32,6 +31,9 @@ class SystemUserRegistrationsController < ActionController::Base
     rescue Rigi::InvalidLogin, Rigi::InvalidUsername, Rigi::InvalidDomain
       Rails.logger.error "SystemUser[username=#{username_with_domain}] illegal login name format"
       flash[:alert] = "alert.invalid_login"
+    rescue Rigi::InvalidLicensee, Rigi::InvalidAuthSource => e
+      Rails.logger.error "SystemUser[username=#{username_with_domain}] invalid licensee, auth_source"
+      flash[:alert] = e.error_message
     rescue Rigi::RegisteredAccount
       Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {The account has been registered}"
       flash[:alert] = "alert.registered_account"

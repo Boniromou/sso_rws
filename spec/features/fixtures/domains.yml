@@ -1,6 +1,8 @@
 1:
   id: 1
   name: 'mo.laxino.com'
+  licensee_id: 1
 2:
   id: 2
   name: 'example.com'
+  licensee_id: 1

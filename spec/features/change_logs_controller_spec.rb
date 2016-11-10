@@ -1,7 +1,7 @@
 require "feature_spec_helper"
 
 describe ChangeLogsController do
-  fixtures :licensees, :domains, :casinos, :apps, :permissions, :role_permissions, :roles
+  fixtures :apps, :permissions, :role_permissions, :roles
 
   before(:each) do
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000])

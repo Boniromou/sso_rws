@@ -1,6 +1,11 @@
 require "feature_spec_helper"
 
 describe DomainLicenseesController do
+  def auth_source_id
+    auth_source = AuthSource.first || create(:auth_source)
+    auth_source.id
+  end
+
 	def app_id
 		app = App.find_by_name('user_management')
     return app.id if app
@@ -9,7 +14,7 @@ describe DomainLicenseesController do
 	end
 
 	def login_root
-		@root_user = create(:system_user, :admin, :with_casino_ids => [1000, 1003, 1007])
+		@root_user = create(:system_user, :admin, :with_casino_ids => [1000])
 		login("#{@root_user.username}@#{@root_user.domain.name}")
 	end
 
@@ -22,15 +27,17 @@ describe DomainLicenseesController do
 
   def login_user_without_permissions
   	role_without_permission = create(:role, name: 'role_without_permission', app_id: app_id)
-    casinos_ids = [1000, 1003, 1007]
-    @current_user = create(:system_user, with_roles: [role_without_permission], with_casino_ids: casinos_ids)
+    casino_ids = [1003, 1007]
+    mock_ad_account_profile(true, casino_ids)
+    @current_user = create(:system_user, with_roles: [role_without_permission], with_casino_ids: casino_ids)
     login("#{@current_user.username}@#{@current_user.domain.name}")
   end
 
   def login_user_with_permissions(permissions, casino_ids=[1000, 1003, 1007])
   	role_with_permission = create(:role, name: 'role_with_permission', app_id: app_id, with_permissions: permissions)
-    @current_user = create(:system_user, with_roles: [role_with_permission], with_casino_ids: casino_ids)
     mock_ad_account_profile(true, casino_ids)
+    @current_user = create(:system_user, with_roles: [role_with_permission], with_casino_ids: casino_ids)
+    Casino.where(:id => casino_ids).update_all(licensee_id: @current_user.domain.licensee_id)
     login("#{@current_user.username}@#{@current_user.domain.name}")
   end
 
@@ -53,7 +60,8 @@ describe DomainLicenseesController do
 
 	describe "[20] List Domain Licensee mapping" do
 		before(:each) do
-			create(:domain, with_licensee: true)
+      licensee = create(:licensee, :auth_source_id => auth_source_id)
+			create(:domain, :licensee_id => licensee.id)
 		end
 
     it "[20.1] No permission for list domain licensee mapping" do
@@ -102,11 +110,12 @@ describe DomainLicenseesController do
   	end
 
     before :each do
-      @domain1 = create(:domain)
-      @domain2 = create(:domain, with_licensee: true)
-      @domain3 = create(:domain)
+      @licensee = create(:licensee, :auth_source_id => auth_source_id)
       @licensee1 = create(:licensee, with_casino_ids: [1003, 1007])
       @licensee2 = create(:licensee)
+      @domain1 = create(:domain)
+      @domain2 = create(:domain, :licensee_id => @licensee.id)
+      @domain3 = create(:domain)
     end
 
     after :each do
@@ -175,7 +184,8 @@ describe DomainLicenseesController do
 
   describe "[22] Delete Domain Licensee Mapping" do
     before :each do
-      @domain1 = create(:domain, with_licensee: true)
+      @licensee = create(:licensee, :auth_source_id => auth_source_id)
+      @domain1 = create(:domain, :licensee_id => @licensee.id)
     end
 
     it "[22.1] Delete Domain Licensee Mapping success" do
@@ -226,8 +236,9 @@ describe DomainLicenseesController do
   		visit create_domain_licensee_change_logs_path
   	end
 
-  	def check_change_logs(domain, licensee, action)
-  		licensee.casinos.each_with_index do |casino, index|
+  	def check_change_logs(domain, licensee, casino_ids, action)
+  		casino_ids.each_with_index do |casino_id, index|
+        casino = Casino.find(casino_id)
 	      within("div#domain_licensee_change_logs table tbody tr:nth-child(#{index + 1})") {
 			  	expect(page).to have_content(domain.name)
 			  	expect(page).to have_content("#{licensee.name}[#{licensee.id}]")
@@ -239,9 +250,10 @@ describe DomainLicenseesController do
   	end
 
   	before :each do
+      @licensee = create(:licensee, :auth_source_id => auth_source_id, with_casino_ids: [20000])
+      @licensee1 = create(:licensee, with_casino_ids: [1003, 1007, 1014])
       @domain1 = create(:domain)
-      @domain2 = create(:domain, with_licensee: true)
-      @licensee1 = create(:licensee, with_casino_ids: [1000, 1003, 1007])
+      @domain2 = create(:domain, :licensee_id => @licensee.id)
       @permission_list_log = create_permission('domain_licensee_mapping', 'list_log')
     end
 
@@ -263,7 +275,7 @@ describe DomainLicenseesController do
       visit_domain_licensee
       general_create_domain_licensee(@domain1.name, "#{@licensee1.name}[#{@licensee1.id}]")
       visit create_domain_licensee_change_logs_path
-      check_change_logs(@domain1, @licensee1, "Create")
+      check_change_logs(@domain1, @licensee1, [1003, 1007, 1014], "Create")
     end
 
     it "[23.4] Create change log for delete Domain Licensee mapping" do
@@ -271,7 +283,7 @@ describe DomainLicenseesController do
       licensee2 = @domain2.licensee
       find("#delete_#{@domain2.id}").click
       visit create_domain_licensee_change_logs_path
-      check_change_logs(@domain2, licensee2, "Delete")
+      check_change_logs(@domain2, licensee2, [20000], "Delete")
     end
 
     it "[23.5] 1000 user show all change log" do
@@ -281,7 +293,7 @@ describe DomainLicenseesController do
       login_user_with_permissions([@permission_list_log])
       visit create_domain_licensee_change_logs_path
       expect(page.all('div#domain_licensee_change_logs table tbody tr').count).to eq 3
-      check_change_logs(@domain1, @licensee1, "Create")
+      check_change_logs(@domain1, @licensee1, [1003, 1007, 1014], "Create")
     end
 
     it "[23.6] 1003, 1007 user show target user casino 1003 and 1007 change log" do
@@ -290,18 +302,8 @@ describe DomainLicenseesController do
       click_link I18n.t("general.logout")
       login_user_with_permissions([@permission_list_log], [1003, 1007])
       visit create_domain_licensee_change_logs_path
-      
       expect(page.all('div#domain_licensee_change_logs table tbody tr').count).to eq 2
-      [1003, 1007].each_with_index do |casino_id, index|
-      	casino = Casino.find(casino_id)
-	      within("div#domain_licensee_change_logs table tbody tr:nth-child(#{index + 1})") {
-			  	expect(page).to have_content(@domain1.name)
-			  	expect(page).to have_content("#{@licensee1.name}[#{@licensee1.id}]")
-			  	expect(page).to have_content("[#{casino.name}, #{casino.id}]")
-			  	expect(page).to have_content("Create")
-			  	expect(page).to have_content(@root_user.username)
-			  }
-	    end
+      check_change_logs(@domain1, @licensee1, [1003, 1007], "Create")
     end
   end
 end

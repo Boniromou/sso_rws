@@ -11,12 +11,7 @@ FactoryGirl.define do
     	casino_ids = evaluator.with_casino_ids
       if casino_ids
         casino_ids.each do |casino_id|
-          casino = Casino.find_by_id(casino_id)
-          if !casino
-            create(:casino, :id => casino_id, :licensee_id => licensee.id)
-          elsif casino.licensee_id != licensee.id
-            casino.update_attributes(licensee_id: licensee.id)
-          end
+          create(:casino, :id => casino_id, :licensee_id => licensee.id) unless Casino.exists?(:id => casino_id, :licensee_id => licensee.id)
         end
       end
     end

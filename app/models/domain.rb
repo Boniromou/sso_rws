@@ -16,11 +16,7 @@ class Domain < ActiveRecord::Base
   scope :get_by_domain_licensee, -> id, licensee_id {where(id: id, licensee_id: licensee_id)}
 
   def get_casino_ids
-    domains_casinos.pluck(:casino_id)
-  end
-
-  def active_casino_ids
-    domains_casinos.where(status: true).pluck(:casino_id)
+    casinos.pluck(:id)
   end
 
   def self.validate_domain!(domain)
