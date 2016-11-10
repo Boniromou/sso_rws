@@ -22,10 +22,8 @@ en:
     invalid_domain: Invalid domain format
     duplicate_domain: Duplicate Domain
     create_system_user_confirm: Are you sure to create system user [%{username}]?
-    duplicate_domain_casino: Duplicate Domain-Casino Mapping
-    domain_casino_not_found: Domain-Casino Mapping not found
-    invalid_licensee_mapping: Invalid Domain Licensee Mapping
-    invalid_ldap_mapping: Invalid Licensee Ldap Mapping
+    invalid_licensee_mapping: Create System User failed; Domain-Licensee Mapping not found. Please contact technical support.
+    invalid_ldap_mapping: Create System User failed; Authentication Source-Licensee Mapping not found.Please contact technical support.
   title:
     title: User Management
     login_title: Login
@@ -159,22 +157,22 @@ en:
     list: Domains
     domain_name: Domain Name
   domain_casino:
-    name: Domain Casino
+    name: Domain-Licensee Mappings
     create: Create
     inactive: Inactive
   domain_licensee:
-    name: Domain Licensee
+    name: Domain-Licensee Mappings
     list: Domain-Licensee Mappings
     licensee: Licensee
-    active: List
+    active: Mappings
     create: Create
     delete: Delete
-    create_mapping_successfully: Create Domain-Licensee mapping successful !
-    invalid_params: Domain or Licensee not found
-    create_mapping_fail_domain_used: Create Domain-Licensee mapping error, doamin has binded licensee
-    create_mapping_fail_licensee_used: Create Domain-Licensee mapping error, licensee has binded doamin
+    create_mapping_successfully: Create Domain-Licensee Mapping successful !
+    invalid_params: Create Domain-Licensee Mapping failed; Domain or Licensee not found or empty.
+    create_mapping_fail_domain_used: Create Domain-Licensee mapping failed; Domain had been used.
+    create_mapping_fail_licensee_used: Create Domain-Licensee mapping failed; Licensee had been used.
     delete_mapping_successfully: Delete Domain-Licensee mapping successful !
-    delete_mapping_fail: Delete Domain-Licensee mapping error, Domain-Licensee mapping not exist
+    delete_mapping_fail: Delete Domain-Licensee mapping error, Domain-Licensee mapping not found.
   confirm:
     create_domain: Do you confirm to create Domain [%{domain_name}] ?
     export_user_role: Are you sure to export System User List report ?

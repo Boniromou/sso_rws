@@ -21,7 +21,7 @@
         <td id="licensee_casinos"></td>
         <td></td>
         <td>
-          <%= button_tag("add", id: "create_domain_licensee", title: t("general.add"), class: "btn btn-primary", remote: true) do %>
+          <%= button_tag("add", id: "create_domain_licensee", title: t("general.add"), class: "btn btn-primary", remote: true, disabled: (@list_domain.blank? || @list_licensee.blank?)) do %>
             <i class="fa fa-plus-square"></i>
           <% end %>
         </td>

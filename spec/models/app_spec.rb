@@ -14,6 +14,15 @@ describe App do
   end
 
   describe "test get_all_apps" do
+    def delete_apps
+      AppSystemUser.delete_all
+      RolePermission.delete_all
+      Permission.delete_all
+      RoleAssignment.delete_all
+      Role.delete_all
+      App.delete_all
+    end
+
   	it "success" do
   	  apps = App.get_all_apps
   	  expect(apps.length).to eq 3
@@ -23,7 +32,7 @@ describe App do
   	end
 
   	it "apps no data" do
-  	  App.delete_all
+      delete_apps
   	  apps = App.get_all_apps
   	  expect(apps).not_to be_nil
   	  expect(apps.length).to eq 0

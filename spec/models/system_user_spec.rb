@@ -1,6 +1,16 @@
 require "rails_helper"
 
 describe SystemUser do
+  before(:each) do
+    AppSystemUser.delete_all
+    CasinosSystemUser.delete_all
+    SystemUser.delete_all
+    Casino.delete_all
+    Domain.delete_all
+    Licensee.delete_all
+    AuthSource.delete_all
+  end
+
   describe '[26] Conjob for updating system user status and casino group' do
     before(:each) do
       auth_source = AuthSource.create(:auth_type => "AuthSourceLdap", :name => "Laxino LDAP",:host => "0.0.0.0", :port => 389, :account => "", :account_password => "", :base_dn => "DC=test,DC=example,DC=com") 
@@ -9,15 +19,6 @@ describe SystemUser do
       [1000, 1003, 1007].each do |casino|
         Casino.create(:id => casino, :name => casino, :licensee_id => licensee.id)
       end
-    end
-
-    after(:each) do
-      CasinosSystemUser.delete_all
-      SystemUser.delete_all
-      Casino.delete_all
-      Domain.delete_all
-      Licensee.delete_all
-      AuthSource.delete_all
     end
   
     def mock_ldap_query(account_status, casino_ids)
