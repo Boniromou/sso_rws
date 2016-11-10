@@ -19,9 +19,6 @@ SsoRws::Application.routes.draw do
   get 'domain_management' => 'dashboard#domain_management', :as => :domain_management_root
 
   resources :domains, :only => [:index, :create]
-
-  resources :domain_casinos, :only => [:index, :create]
-  post "domain_casinos/inactive/:id" => "domain_casinos#inactive", as: :domain_casino_inactive
   resources :domain_licensees, :only => [:index, :create] do
     collection do
       get 'get_casinos'
@@ -39,8 +36,6 @@ SsoRws::Application.routes.draw do
       post 'update_roles'
     end
   end
-
-  get "change_logs/index_create_domain_casino" => "change_logs#index_create_domain_casino", as: :change_logs_create_domain_casinos
 
   resources :change_logs, :only => [:index] do
     collection do

@@ -142,8 +142,6 @@ en:
     unlock_user: Unlock user [%{user_name}]
     create_user: Create System User [%{username}] successful !
     create_domain: Create Domain [%{domain_name}] successful !
-    create_domain_casino: Create Domain-Casino mapping successful !
-    inactive_domain_casino: Delete Domain-Casino mapping successful !
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users
@@ -161,12 +159,14 @@ en:
     list: Domains
     domain_name: Domain Name
   domain_casino:
-    list: Domain-Casino Mappings
+    name: Domain Casino
+    create: Create
+    inactive: Inactive
   domain_licensee:
     name: Domain Licensee
     list: Domain-Licensee Mappings
     licensee: Licensee
-    active: Active
+    active: List
     create: Create
     delete: Delete
     create_mapping_successfully: Create Domain-Licensee mapping successful !

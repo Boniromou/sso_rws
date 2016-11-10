@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161108024447) do
+ActiveRecord::Schema.define(:version => 20161110033655) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -102,17 +102,6 @@ ActiveRecord::Schema.define(:version => 20161108024447) do
 
   add_index "domains", ["licensee_id"], :name => "index_domains_on_licensee_id", :unique => true
   add_index "domains", ["name"], :name => "index_domains_on_name", :unique => true
-
-  create_table "domains_casinos", :force => true do |t|
-    t.integer  "domain_id",                    :null => false
-    t.integer  "casino_id",                    :null => false
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
-    t.boolean  "status",     :default => true
-  end
-
-  add_index "domains_casinos", ["casino_id"], :name => "fk_DomainsCasinos_CasinoId"
-  add_index "domains_casinos", ["domain_id", "casino_id"], :name => "index_domains_casinos_on_domain_id_and_casino_id", :unique => true
 
   create_table "licensees", :force => true do |t|
     t.string   "name",           :limit => 45, :null => false

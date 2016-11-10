@@ -1,8 +1,4 @@
 class ChangeLogPolicy < ApplicationPolicy
-  def index_create_domain_casino?
-    permitted?(:domain_casino_mapping, :list_log)
-  end
-
   def index?
     permitted?(:system_user, :list_edit_role_change_log)
   end

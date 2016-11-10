@@ -2,13 +2,11 @@ class Domain < ActiveRecord::Base
   attr_accessible :id, :name, :licensee_id
 
   has_many :system_users
-  has_many :domains_casinos
   belongs_to :licensee
   has_many :casinos, :through => :licensee
   has_one :auth_source, :through => :licensee
 
   validates_presence_of :name, :message => I18n.t("alert.invalid_domain")
-  # validates_uniqueness_of :name
   validates_format_of :name, :with => /^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/, :on => :create, :message => I18n.t("alert.invalid_domain")
 
   scope :active_domain_licensee, -> {where("licensee_id is not null")}

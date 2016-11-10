@@ -1,3 +1,7 @@
+user_manager:
+  id: 1
+  name: "user_manager"
+  app_id: 1
 cashier:
   id: 8
   name: "cashier"
