@@ -22,8 +22,8 @@ en:
     invalid_domain: Invalid domain format
     duplicate_domain: Duplicate Domain
     create_system_user_confirm: Are you sure to create system user [%{username}]?
-    invalid_licensee_mapping: Create System User failed; Domain-Licensee Mapping not found. Please contact technical support.
-    invalid_ldap_mapping: Create System User failed; Authentication Source-Licensee Mapping not found.Please contact technical support.
+    invalid_licensee_mapping: Domain-Licensee Mapping not found; Please contact technical support.
+    invalid_ldap_mapping: Authentication Source-Licensee Mapping not found; Please contact technical support.
   title:
     title: User Management
     login_title: Login

@@ -30,12 +30,12 @@ module Rigi
 
       if domain.licensee.blank?
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. invalid domain licensee mapping"
-        raise Rigi::InvalidLogin.new(I18n.t("alert.invalid_licensee_mapping"))
+        raise InvalidLogin.new(I18n.t("alert.invalid_licensee_mapping"))
       end
       auth_source = domain.licensee.auth_source
       if auth_source.blank?
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. invalid licensee ldap mapping"
-        raise Rigi::InvalidLogin.new(I18n.t("alert.invalid_ldap_mapping"))
+        raise InvalidLogin.new(I18n.t("alert.invalid_ldap_mapping"))
       end
 
       system_user = SystemUser.where(:username => login[:username], :domain_id => domain.id, :auth_source_id => auth_source.id).first
