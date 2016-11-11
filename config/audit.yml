@@ -14,6 +14,15 @@ audit_target:
       create:
         action_type: "create"
         locale_key: "domain.create"
+  domain_casino:
+    locale_key: "domain_casino.name"
+    action_name:
+      create:
+        action_type: "create"
+        locale_key: "domain_casino.create"
+      inactive:
+        action_type: "inactive"
+        locale_key: "domain_casino.inactive"
   domain_licensee:
     locale_key: "domain_licensee.name"
     action_name:

@@ -157,7 +157,7 @@ en:
     list: Domains
     domain_name: Domain Name
   domain_casino:
-    name: Domain-Licensee Mappings
+    name: Domain-Casino Mappings
     create: Create
     inactive: Inactive
   domain_licensee:
