@@ -13,6 +13,9 @@ $(document).ready(function() {
 	  $('#licensee_casinos').html(get_casinos(this.value));
 	});
 
+  $("#domain_id").select2({width: '100%'});
+  $("#licensee_id").select2({width: '100%'});
+
 	function get_casinos(licensee_id){
 		if(!licensee_id){
 			return '';

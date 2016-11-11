@@ -18,7 +18,7 @@ class ChangeLogsController < ApplicationController
 
   def create_domain_licensee
     authorize :change_logs, :index_create_domain_licensee?
-    @domain_licensee_change_logs = policy_scope(DomainLicenseeChangeLog)
+    @domain_licensee_change_logs = policy_scope(DomainLicenseeChangeLog.includes(:target_casinos))
 
     respond_to do |format|
       format.html { render file: "change_logs/index_create_domain_licensee", :layout => "domain_management", formats: [:html] }

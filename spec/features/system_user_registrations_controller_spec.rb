@@ -87,13 +87,15 @@ describe SystemUserRegistrationsController do
     it "[3.15] Register system user fail with domain-licensee mapping not exist" do
       mock_ad_account_profile(true, [1000])
       go_signup_page_and_register('test_user@invalid.licensee.com')
-      expect(page).to have_content I18n.t("alert.invalid_licensee_mapping")
+      # expect(page).to have_content I18n.t("alert.invalid_licensee_mapping")
+      expect(page).to have_content "Domain-Licensee Mapping Not Found; Please Contact Technical Support"
     end
 
     it "[3.16] Register system user fail with auth_source-licensee mapping not exist" do
       mock_ad_account_profile(true, [1000])
       go_signup_page_and_register('test_user@invalid.ldap.com')
-      expect(page).to have_content I18n.t("alert.invalid_ldap_mapping")
+      # expect(page).to have_content I18n.t("alert.invalid_ldap_mapping")
+      expect(page).to have_content "Authentication Source-Licensee Mapping Not Found; Please Contact Technical Support"
     end
   end
 
