@@ -9,6 +9,8 @@ SsoRws::Application.routes.draw do
     get "/logout" => "system_user_sessions#destroy", :as => :logout
     get "/register" => "system_user_registrations#new", :as => :new_system_user_registration
     post "/register" => "system_user_registrations#create"
+    get "/passwords" => "system_user_registrations#edit", :as => :edit_system_user_passwords
+    post "/passwords" => "system_user_registrations#update"
   end
 
   post "/internal/system_user_sessions" => "internal/system_user_sessions#create"

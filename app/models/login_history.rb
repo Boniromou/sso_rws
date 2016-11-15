@@ -15,7 +15,7 @@ class LoginHistory < ActiveRecord::Base
   def self.search_query(*args)
     args.extract_options!
     system_user_id, domain_id, app_id, start_time, end_time = args
-    self.includes(:system_user, :domain, :app).by_system_user_id(system_user_id).by_domain_id(domain_id).by_app_id(app_id).since(start_time).until(end_time).select('system_users.username, domains.name as domain_name, apps.name as app_name, login_histories.detail, login_histories.sign_in_at')
+    self.includes(:system_user, :domain, :app).by_system_user_id(system_user_id).by_domain_id(domain_id).by_app_id(app_id).since(start_time).until(end_time)
   end
 
   def self.insert(params)

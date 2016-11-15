@@ -8,7 +8,7 @@ class DomainLicenseesController < ApplicationController
 
   def index
     authorize :domain, :index_domain_licensee?
-    @domain_licensees = Domain.includes(:licensee, :casinos).active_domain_licensee.as_json(:include => ['licensee', 'casinos'])
+    @domain_licensees = Domain.includes(licensee: :casinos).active_domain_licensee.as_json(:include => {'licensee' => {:include => 'casinos'}})
     @list_domain = Domain.inactive_domain_licensee.map {|domain| [domain[:name], domain[:id]]}
     licensee_ids = @domain_licensees.map {|domain| domain['licensee_id']}
     @list_licensee = Licensee.unbind_licensees(licensee_ids).map {|licensee| ["#{licensee['name']}[#{licensee['id']}]", licensee['id']]}

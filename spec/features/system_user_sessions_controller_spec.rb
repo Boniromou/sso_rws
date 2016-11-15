@@ -100,6 +100,22 @@ describe SystemUserSessionsController do
       expect_have_content(I18n.t("alert.account_no_casino"))
     end
 
+    it '[1.14] Login fail with domain- licensee mapping not exist' do
+      domain = @u1.domain
+      domain.licensee_id = nil
+      domain.save!
+      go_login_page_and_login(@u1)
+      expect_have_content_downcase(I18n.t("alert.invalid_licensee_mapping"), '.')
+    end
+
+    it '[1.15] Login fail with auth_source- licensee mapping not exist' do
+      licensee = @u1.domain.licensee
+      licensee.auth_source_id = nil
+      licensee.save!
+      go_login_page_and_login(@u1)
+      expect_have_content_downcase(I18n.t("alert.invalid_ldap_mapping"), '.')
+    end
+
     it "login user with role permission value" do
       @system_user_1.roles[0].role_permissions.each do |rp|
         rp.value = "1"

@@ -626,7 +626,7 @@ describe SystemUsersController do
       expect(page).to have_content I18n.t("alert.invalid_username")
     end
 
-    it "Create system user fail  with domain - licensee mapping not exist" do
+    it "[24.12] Create system user fail  with domain - licensee mapping not exist" do
       create(:domain, :name => "1003.com")
       mock_ad_account_profile(true, [1000])
       login("#{@root_user.username}@#{@root_user.domain.name}")
@@ -636,7 +636,7 @@ describe SystemUsersController do
       expect(page).to have_content I18n.t("alert.invalid_licensee_mapping")
     end
 
-    it "Create system user fail with auth_source - licensee mapping not exist" do
+    it "[24.13] Create system user fail with auth_source - licensee mapping not exist" do
       create(:licensee, :id => 1003)
       create(:domain, :name => "1003.com", :licensee_id => 1003)
       mock_ad_account_profile(true, [1000])

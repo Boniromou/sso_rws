@@ -38,7 +38,7 @@ class LoginHistoriesController < ApplicationController
 
 	    if @search_error.blank?
 	      app_id = params[:app_id] unless params[:app_id].blank? || params[:app_id] == "all"
-		    @login_histories = policy_scope(LoginHistory.search_query(system_user_id, domain_id, app_id, start_time, end_time))
+		    @login_histories = policy_scope(LoginHistory.search_query(system_user_id, domain_id, app_id, start_time, end_time)).as_json(:include => ['system_user', 'domain', 'app'])
 		  end
     end
   end

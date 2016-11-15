@@ -31,6 +31,32 @@ class AuthSourceLdap < AuthSource
     Net::LDAP.new options
   end
 
+  def str2unicodePwd(str)
+    ('"' + str + '"').encode("utf-16le").force_encoding("utf-8")
+  end
+
+  def reset_password!(login, new_password)
+    pwd = str2unicodePwd(new_password)
+    options = { :host => self.host,
+                :port => 636,
+                :encryption => :simple_tls,
+                :auth => {
+                  :method => :simple,
+                  :username => self.admin_account,
+                  :password => self.admin_password
+                }
+              }
+
+    Net::LDAP.open(options) do |ldap|
+      search_filter = Net::LDAP::Filter.eq("userPrincipalName", login)
+      result = ldap.search( :base => self.base_dn, :filter => search_filter, :return_result => true, :scope => self.search_scope || Net::LDAP::SearchScope_WholeSubtree)
+      ad_user = result.first
+      rst = ldap.modify :dn => ad_user.dn, :operations => [[:replace, :unicodePwd, pwd]]
+      raise Rigi::InvalidResetPassword.new(ldap.get_operation_result) unless rst
+      rst
+    end
+  end
+
   def search(username, domain)
     options = { :host => self.host,
                 :port => self.port || 3268,

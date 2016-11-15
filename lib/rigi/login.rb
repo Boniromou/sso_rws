@@ -14,7 +14,7 @@ module Rigi
     #   authenticate('licuser01@mo.laxino.com')
     # => raise InvalidLogin.new('alert.account_no_role')
     #
-    def authenticate!(username_with_domain, password, app_name)
+    def authenticate!(username_with_domain, password, app_name, is_cache=true)
       login = extract_login_name(username_with_domain)
 
       if login.nil?
@@ -52,14 +52,23 @@ module Rigi
         validate_role_status!(system_user, app_name)
         validate_account_status!(system_user)
         validate_account_casinos!(system_user)
-        system_user.cache_info(app_name)
-        system_user.insert_login_history(app_name)
+        if is_cache
+          system_user.cache_info(app_name)
+          system_user.insert_login_history(app_name)
+        end
       else
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. Authentication failed"
         raise InvalidLogin.new("alert.invalid_login")
       end
 
       system_user
+    end
+
+    def reset_password!(username_with_domain, old_password, new_password, app_name)
+      system_user = authenticate!(username_with_domain, old_password, app_name, false)
+      auth_source = system_user.domain.auth_source
+      auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+      auth_source.reset_password!(username_with_domain, new_password)
     end
 
     def extract_login_name(login_name)

@@ -19,9 +19,9 @@
       <tbody>
         <% @login_histories.each do |history| %>
           <tr align="center">
-            <td><%= popover("#{history.system_user.username if history.system_user.present?}@#{history.domain.name if history.domain.present?}", t("casino.title"), casino_id_names_format(history.detail['casino_id_names']), "popover-hover", "top") %></td>
-            <td><%= history.app.name.titleize if history.app.present?%></td>
-            <td id="sign_in_at"><%= format_time(history.sign_in_at) %></td>
+            <td><%= popover("#{history['system_user']['username'] if history['system_user'].present?}@#{history['domain']['name'] if history['domain'].present?}", t("casino.title"), casino_id_names_format(history['detail']['casino_id_names']), "popover-hover", "top") %></td>
+            <td><%= history['app']['name'].titleize if history['app'].present?%></td>
+            <td id="sign_in_at"><%= format_time(history['sign_in_at']) %></td>
           </tr>
         <% end %>
       </tbody>

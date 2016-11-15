@@ -28,6 +28,7 @@ en:
     title: User Management
     login_title: Login
     signup_title: Registration
+    reset_password_title: Reset Password
   general:
     login: Login
     logout: logout
@@ -41,6 +42,7 @@ en:
     no_result_found: No Record Found
     error_message: Error Message
     sign_up: Sign Up
+    reset_password: Reset Password
     start_time: Start Time
     end_time: End Time
     search: Search
@@ -125,6 +127,16 @@ en:
   logout_page:
     action_yes: 'Yes'
     action_no: 'No'
+  password_page:
+    old_password: Old Password
+    new_password: New Password
+    confirm_password: Password Confirmation
+    password_tooltip: Enter old password
+    new_password_tooltip: Enter new password
+    confirm_password_tooltip: Enter new password again
+    update_password: Update Password
+    unkown_system: Unkown system
+    confirm_password_fail: Password did not match
   propagation:
     title: Propagation
     error: Error
@@ -140,6 +152,7 @@ en:
     unlock_user: Unlock user [%{user_name}]
     create_user: Create System User [%{username}] successful !
     create_domain: Create Domain [%{domain_name}] successful !
+    reset_password: Reset Password Successful !
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users
