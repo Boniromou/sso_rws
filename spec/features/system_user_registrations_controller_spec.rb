@@ -237,10 +237,15 @@ describe SystemUserRegistrationsController do
       expect_have_content_downcase("password format error")
     end
 
+    it "Reset password fail with new password is nil" do
+      goto_reset_password_and_update(nil, nil)
+      expect_have_content_downcase(I18n.t("password_page.invalid_password"), '.')
+    end
+
     it "Reset password fail with app is nil" do
       visit edit_system_user_passwords_path
       click_button I18n.t("password_page.update_password")
-      expect_have_content_downcase(I18n.t("password_page.unkown_system"))
+      expect_have_content_downcase(I18n.t("password_page.invalid_system"))
     end
   end
 end

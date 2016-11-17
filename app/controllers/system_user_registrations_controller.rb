@@ -65,8 +65,9 @@ class SystemUserRegistrationsController < ActionController::Base
       password = params[:system_user][:old_password]
       new_password = params[:system_user][:new_password]
       password_confirmation = params[:system_user][:password_confirmation]
-      raise Rigi::InvalidResetPassword.new(I18n.t("password_page.unkown_system")) if @app_name.blank?
-      raise Rigi::InvalidResetPassword.new(I18n.t("password_page.confirm_password_fail")) if new_password.blank? || new_password != password_confirmation
+      raise Rigi::InvalidResetPassword.new(I18n.t("password_page.invalid_system")) if @app_name.blank?
+      raise Rigi::InvalidResetPassword.new(I18n.t("password_page.invalid_password")) if new_password.blank?
+      raise Rigi::InvalidResetPassword.new(I18n.t("password_page.confirm_password_fail")) if new_password != password_confirmation
       Rigi::Login.reset_password!(username_with_domain, password, new_password, @app_name)
       flash[:success] = I18n.t("success.reset_password")
     rescue Rigi::InvalidLogin => e

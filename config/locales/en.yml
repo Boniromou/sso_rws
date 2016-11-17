@@ -135,7 +135,8 @@ en:
     new_password_tooltip: Enter new password
     confirm_password_tooltip: Enter new password again
     update_password: Update Password
-    unkown_system: Unkown system
+    invalid_system: System can not be null
+    invalid_password: New password can not be null
     confirm_password_fail: Password did not match
   propagation:
     title: Propagation
