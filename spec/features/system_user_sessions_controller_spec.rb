@@ -10,7 +10,6 @@ describe SystemUserSessionsController do
 
   describe "[1] Login" do
     before(:each) do
-      #@u1 = SystemUser.create!(:username => 'lulu', :status => true, :admin => false, :auth_source_id => 1)
       @u1 = create(:system_user)
       user_manager_role = Role.find_by_name "user_manager"
       @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007])
@@ -100,18 +99,10 @@ describe SystemUserSessionsController do
       expect_have_content(I18n.t("alert.account_no_casino"))
     end
 
-    it '[1.14] Login fail with domain- licensee mapping not exist' do
+    it '[1.15] Login fail with auth_source - domain mapping not exist' do
       domain = @u1.domain
-      domain.licensee_id = nil
+      domain.auth_source_id = nil
       domain.save!
-      go_login_page_and_login(@u1)
-      expect_have_content_downcase(I18n.t("alert.invalid_licensee_mapping"), '.')
-    end
-
-    it '[1.15] Login fail with auth_source- licensee mapping not exist' do
-      licensee = @u1.domain.licensee
-      licensee.auth_source_id = nil
-      licensee.save!
       go_login_page_and_login(@u1)
       expect_have_content_downcase(I18n.t("alert.invalid_ldap_mapping"), '.')
     end

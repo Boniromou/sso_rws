@@ -279,8 +279,7 @@ class SystemUser < ActiveRecord::Base
     Domain.validate_domain!(domain)
 
     domain_obj = Domain.where(:name => domain).first
-    raise Rigi::InvalidLicensee.new(I18n.t("alert.invalid_licensee_mapping")) if domain_obj.licensee.blank?
-    auth_source = domain_obj.licensee.auth_source
+    auth_source = domain_obj.auth_source
     raise Rigi::InvalidAuthSource.new(I18n.t("alert.invalid_ldap_mapping")) if auth_source.blank?
 
     sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id, :domain_id => domain_obj.id).first

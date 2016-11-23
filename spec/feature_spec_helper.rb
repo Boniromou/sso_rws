@@ -27,8 +27,6 @@ RSpec.configure do |config|
 
   config.before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:get_client_ip).and_return("192.1.1.1")
-    #allow(Rigi::Ldap).to receive(:retrieve_user_profile).and_return(:account_status => true, :groups => [1000])
-    mock_ad_account_profile(true, [1000])
   end
 
   config.before(:each, js: true) do

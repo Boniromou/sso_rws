@@ -1,13 +1,11 @@
 require 'rails_helper'
 
 describe SystemUsersControllerHelper do
-  before(:all) do
+  fixtures :roles, :system_users
+  before(:each) do
     @root_user = SystemUser.find_by_admin(1)
     @user_manager = Role.find_by_name("user_manager")
-    @system_operator = Role.find_by_name("system_operator")
-  end
-
-  after(:all) do
+    @system_auditor = Role.find_by_name("system_auditor")
   end
 
   describe 'system_user_status_format' do
@@ -50,12 +48,6 @@ describe SystemUsersControllerHelper do
       @su2 = SystemUser.create!(:username => 'lucy2', :status => true, :admin => false)
       @su2.role_assignments.create!({:role_id => @user_manager.id}) 
     end
- 
-    after(:each) do
-      @su1.destroy
-      @su2.destroy
-      RoleAssignment.delete_all
-    end
 
     it 'should return root user if system user is root user' do
       result = helper.roles_format(@root_user)
@@ -73,70 +65,57 @@ describe SystemUsersControllerHelper do
     end
   end
 
-  describe 'disable_lock_button?' do
-    before(:each) do
-      @su1 = SystemUser.create!(:username => 'lucy', :status => true, :admin => false)
-    end
+  # describe 'disable_lock_button?' do
+  #   before(:each) do
+  #     @su1 = SystemUser.create!(:username => 'lucy', :status => true, :admin => false)
+  #   end
 
-    after(:each) do
-      @su1.destroy
-    end
+  #   it 'should disable lock/unlock button for root user' do
+  #     result = helper.disable_lock_button?(@root_user)
+  #     expect(result).to eq(true)
+  #   end
 
-    it 'should disable lock/unlock button for root user' do
-      result = helper.disable_lock_button?(@root_user)
-      expect(result).to eq(true)
-    end
+  #   it 'should disable lock/unlock button for current user himself' do
+  #     allow(helper).to receive(:current_system_user).and_return(@su1)
+  #     result = helper.disable_lock_button?(@su1)
+  #     expect(result).to eq(true)
+  #   end
 
-    it 'should disable lock/unlock button for current user himself' do
-      allow(helper).to receive(:current_system_user).and_return(@su1)
-      result = helper.disable_lock_button?(@su1)
-      expect(result).to eq(true)
-    end
+  #   it 'should not disable lock/unlock button for non-current user' do
+  #     allow(helper).to receive(:current_system_user).and_return(@root_user)
+  #     result = helper.disable_lock_button?(@su1)
+  #     expect(result).to eq(false)
+  #   end
+  # end
 
-    it 'should not disable lock/unlock button for non-current user' do
-      allow(helper).to receive(:current_system_user).and_return(@root_user)
-      result = helper.disable_lock_button?(@su1)
-      expect(result).to eq(false)
-    end
-  end
+  # describe 'disable_edit_roles_button?' do
+  #   before(:each) do
+  #     @su1 = SystemUser.create!(:username => 'lucy', :status => true, :admin => false)
+  #   end
 
-  describe 'disable_edit_roles_button?' do
-    before(:each) do
-      @su1 = SystemUser.create!(:username => 'lucy', :status => true, :admin => false)
-    end
-
-    after(:each) do
-      @su1.destroy
-    end
-
-    it 'should disable edit roles button for root user' do
-      result = helper.disable_edit_roles_button?(@root_user)
-      expect(result).to eq(true)
-    end
+  #   it 'should disable edit roles button for root user' do
+  #     result = helper.disable_edit_roles_button?(@root_user)
+  #     expect(result).to eq(true)
+  #   end
    
-    it 'should disable edit roles button for current user himself' do
-      allow(helper).to receive(:current_system_user).and_return(@su1)
-      result = helper.disable_edit_roles_button?(@su1)
-      expect(result).to eq(true)
-    end
+  #   it 'should disable edit roles button for current user himself' do
+  #     allow(helper).to receive(:current_system_user).and_return(@su1)
+  #     result = helper.disable_edit_roles_button?(@su1)
+  #     expect(result).to eq(true)
+  #   end
 
-    it 'should not disable edit roles button for non-current user' do
-      allow(helper).to receive(:current_system_user).and_return(@root_user)
-      result = helper.disable_edit_roles_button?(@su1)
-      expect(result).to eq(false)
-    end
-  end
+  #   it 'should not disable edit roles button for non-current user' do
+  #     allow(helper).to receive(:current_system_user).and_return(@root_user)
+  #     result = helper.disable_edit_roles_button?(@su1)
+  #     expect(result).to eq(false)
+  #   end
+  # end
 
   describe 'current_role?' do
     before(:each) do
       @su1 = SystemUser.create!(:username => 'lucy', :status => true, :admin => false)
       @su1.role_assignments.create!({:role_id => @user_manager.id})
       @su2 = SystemUser.create!(:username => 'lucy1', :status => true, :admin => false)
-    end
-
-    after(:each) do
-      @su1.destroy
-      @su2.destroy
     end
 
     it 'should be true if this role user current role' do
@@ -150,7 +129,7 @@ describe SystemUsersControllerHelper do
     end
 
     it 'should be false if not user current role' do
-      result = helper.current_role?(@su1, @system_operator.id)
+      result = helper.current_role?(@su1, @system_auditor.id)
       expect(result).to eq(false)
     end
   end

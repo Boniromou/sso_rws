@@ -11,13 +11,11 @@ describe SystemUserRegistrationsController do
     before(:each) do
       mock_authenticate
       auth_source = create(:auth_source)
-      licensee = create(:licensee, :auth_source_id => auth_source.id)
+      domain = create(:domain, :name => "example.com", :auth_source_id => auth_source.id)
+      licensee = create(:licensee, :domain_id => domain.id)
       create_casinos_with_licensee([1000, 1003, 1007], licensee.id)
-      domain = create(:domain, :name => "example.com", :licensee_id => licensee.id)
       
-      licensee1 = create(:licensee)
-      create(:domain, :name => "invalid.ldap.com", :licensee_id => licensee1.id)
-      create(:domain, :name => "invalid.licensee.com")
+      create(:domain, :name => "invalid.ldap.com")
     end
 
     def go_signup_page_and_register(username)
@@ -84,12 +82,6 @@ describe SystemUserRegistrationsController do
       expect(page).to have_content I18n.t("alert.invalid_login")
     end
 
-    it "[3.15] Register system user fail with domain-licensee mapping not exist" do
-      mock_ad_account_profile(true, [1000])
-      go_signup_page_and_register('test_user@invalid.licensee.com')
-      expect_have_content_downcase(I18n.t("alert.invalid_licensee_mapping"), '.')
-    end
-
     it "[3.16] Register system user fail with auth_source-licensee mapping not exist" do
       mock_ad_account_profile(true, [1000])
       go_signup_page_and_register('test_user@invalid.ldap.com')
@@ -103,9 +95,9 @@ describe SystemUserRegistrationsController do
     before(:each) do
       mock_authenticate
       auth_source = create(:auth_source)
-      licensee = create(:licensee, :auth_source_id => auth_source.id)
+      domain = create(:domain, :name => "example.com", :auth_source_id => auth_source.id)
+      licensee = create(:licensee, :domain_id => domain.id)
       create_casinos_with_licensee([1000, 1001, 1002, 1003], licensee.id)
-      domain = create(:domain, :name => "example.com", :licensee_id => licensee.id)
       @registered_account = create(:system_user, :username => 'test_user', :status => true, :with_casino_ids => [1000])
     end
 
@@ -141,7 +133,7 @@ describe SystemUserRegistrationsController do
     end
 
     def goto_reset_password_and_update(username=nil, new_password='newsecret', password_confirm=nil)
-      username = username || "#{@system_user_1.username}@#{@system_user_1.domain.name}"
+      username = username || "#{@root_user.username}@#{@root_user.domain.name}"
       visit edit_system_user_passwords_path(app_name: APP_NAME)
       fill_in 'system_user_username', :with => username
       fill_in 'system_user_old_password', :with => 'secret'
@@ -151,11 +143,9 @@ describe SystemUserRegistrationsController do
     end
 
     before(:each) do
-      mock_ad_account_profile(true, [1003])
       mock_reset_password
-      @u1 = create(:system_user, :with_casino_ids => [1003, 1007])
-      user_manager_role = Role.find_by_name "user_manager"
-      @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007])
+      @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
+      @user_manager_role = Role.find_by_name "user_manager"
     end
 
     it "[33.1] Reset password successful" do
@@ -176,62 +166,60 @@ describe SystemUserRegistrationsController do
     end
 
     it "[33.4] Reset password without role assigned" do
-      goto_reset_password_and_update("#{@u1.username}@#{@u1.domain.name}")
+      system_user = create(:system_user, :with_casino_ids => [1003])
+      goto_reset_password_and_update("#{system_user.username}@#{system_user.domain.name}")
       expect_have_content(I18n.t("alert.account_no_role"))
     end
 
-    it "[33.5] Reset password fail with user AD casino group null" do
+    it "[33.6] Reset password fail with user AD casino group null" do
+      system_user = create(:system_user, :roles => [@user_manager_role], :with_casino_ids => [1003])
       mock_ad_account_profile(true, [])
-      goto_reset_password_and_update
-      casino_system_user_1003 = CasinosSystemUser.where(:casino_id => 1003, :system_user_id => @system_user_1.id).first
-      casino_system_user_1007 = CasinosSystemUser.where(:casino_id => 1007, :system_user_id => @system_user_1.id).first
+      goto_reset_password_and_update("#{system_user.username}@#{system_user.domain.name}")
+      casino_system_user_1003 = CasinosSystemUser.where(:casino_id => 1003, :system_user_id => system_user.id).first
       expect(casino_system_user_1003.status).to eq false
-      expect(casino_system_user_1007.status).to eq false
       expect_have_content(I18n.t("alert.account_no_casino"))
     end
 
-    it "[33.6] Reset password successful and update the User lock/unlock status" do
+    it "[33.7] Reset password fail  and update the User active/inactive status" do
+      system_user = create(:system_user, :roles => [@user_manager_role], :with_casino_ids => [1003])
       mock_ad_account_profile(false, [])
-      goto_reset_password_and_update
-      @system_user_1.reload
-      expect(@system_user_1.status).to eq false
+      goto_reset_password_and_update("#{system_user.username}@#{system_user.domain.name}")
+      system_user.reload
+      expect(system_user.status).to eq false
       expect_have_content(I18n.t("alert.inactive_account"))
     end
 
-    it "[33.7] Reset password user with upper case" do
-      goto_reset_password_and_update("#{@system_user_1.username.upcase}@#{@system_user_1.domain.name}")
+    it "[33.8] Reset password user with upper case" do
+      system_user = create(:system_user, :roles => [@user_manager_role], :with_casino_ids => [1003])
+      mock_ad_account_profile(true, [1003])
+      goto_reset_password_and_update("#{system_user.username.upcase}@#{system_user.domain.name}")
       expect(page.current_path).to eq edit_system_user_passwords_path
       expect_have_content(I18n.t("success.reset_password"))
     end
 
-    it "[33.8] Reset password fail with AD casino not match with local" do
-      mock_ad_account_profile(true, [rand(9999)])
-      goto_reset_password_and_update
+    it "[33.9] Reset password fail with AD casino not match with local" do
+      system_user = create(:system_user, :roles => [@user_manager_role], :with_casino_ids => [1003])
+      mock_ad_account_profile(true, [1007])
+      goto_reset_password_and_update("#{system_user.username.upcase}@#{system_user.domain.name}")
       expect_have_content(I18n.t("alert.account_no_casino"))
     end
 
-    it "[33.9] Reset password fail with domain - licensee mapping not exist" do
-      domain = @u1.domain
-      domain.licensee_id = nil
+    it "[33.11] Reset password fail with auth_source - domain mapping not exist" do
+      system_user = create(:system_user, :roles => [@user_manager_role], :with_casino_ids => [1003])
+      domain = system_user.domain
+      domain.auth_source_id = nil
       domain.save!
-      goto_reset_password_and_update("#{@u1.username}@#{@u1.domain.name}")
-      expect_have_content_downcase(I18n.t("alert.invalid_licensee_mapping"), '.')
-    end
-
-    it "[33.10] Reset password fail with auth_source - licensee mapping not exist" do
-      licensee = @u1.domain.licensee
-      licensee.auth_source_id = nil
-      licensee.save!
-      goto_reset_password_and_update("#{@u1.username}@#{@u1.domain.name}")
+      mock_ad_account_profile(true, [1003])
+      goto_reset_password_and_update("#{system_user.username}@#{system_user.domain.name}")
       expect_have_content_downcase(I18n.t("alert.invalid_ldap_mapping"), '.')
     end
 
-    it "[33.11] Confirm new password fail" do
+    it "[33.12] Confirm new password fail" do
       goto_reset_password_and_update(nil, 'new_password', 'wrong_password_confirm')
       expect_have_content_downcase(I18n.t("password_page.confirm_password_fail"), '.')
     end
 
-    it "[33.12] Reset password fail with illegal new password format" do
+    it "[33.13] Reset password fail with illegal new password format" do
       allow_any_instance_of(AuthSourceLdap).to receive(:reset_password!).and_raise(Rigi::InvalidResetPassword.new("password format error"))
       goto_reset_password_and_update(nil, '0000')
       expect_have_content_downcase("password format error")
@@ -239,7 +227,7 @@ describe SystemUserRegistrationsController do
 
     it "Reset password fail with new password is nil" do
       goto_reset_password_and_update(nil, nil)
-      expect_have_content_downcase(I18n.t("password_page.invalid_password"), '.')
+      expect_have_content_downcase(I18n.t("password_page.invalid_password_format"), '.')
     end
 
     it "Reset password fail with app is nil" do

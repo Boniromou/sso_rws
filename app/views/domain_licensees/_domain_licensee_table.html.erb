@@ -31,15 +31,15 @@
 
   <tbody>
     <!-- list_domain_casino -->
-    <% @domain_licensees.each do |domain_licensee| %>
+    <% @domain_licensees.each do |licensee| %>
       <tr align="center">
-        <td><%= domain_licensee['name'] %></td>
-        <td><%= "#{domain_licensee['licensee']['name']}[#{domain_licensee['licensee']['id']}]" if domain_licensee['licensee'].present? %></td>
-        <td><%= casino_id_names_format(domain_licensee['licensee']['casinos']) if domain_licensee['licensee'].present? %></td>
-        <td><%= format_time(domain_licensee['updated_at']) %></td>
+        <td><%= licensee['domain']['name'] %></td>
+        <td><%= "#{licensee['name']}[#{licensee['id']}]" %></td>
+        <td><%= casino_id_names_format(licensee['casinos']) %></td>
+        <td><%= format_time(licensee['updated_at']) %></td>
         <td>
           <% if policy(:domain).delete_domain_licensee? %>
-            <%= link_to(remove_domain_licensees_path(domain_id: domain_licensee['id'], licensee_id: domain_licensee['licensee_id']), method: :post, remote: true, title: t("general.delete"), class: "btn btn-primary", id: "delete_#{domain_licensee['id']}") do %>
+            <%= link_to(remove_domain_licensees_path(domain_id: licensee['domain']['id'], licensee_id: licensee['id']), method: :post, remote: true, title: t("general.delete"), class: "btn btn-primary", id: "delete_#{licensee['id']}") do %>
               <i id="delete" class="fa fa-trash-o"></i>
             <% end %>
           <% end %>

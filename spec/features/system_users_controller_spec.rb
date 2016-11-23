@@ -7,6 +7,10 @@ describe SystemUsersController do
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
   end
 
+  def login_as_root
+    login("#{@root_user.username}@#{@root_user.domain.name}")
+  end
+
   def format_time(time)
     time.getlocal.strftime("%Y-%m-%d %H:%M:%S") if time.present?
   end
@@ -127,7 +131,7 @@ describe SystemUsersController do
     end
 
     it '[5.1] Check Single user content' do
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       verify_system_user_profile_page(@root_user, false)
       logout(@root_user)
     end
@@ -139,19 +143,19 @@ describe SystemUsersController do
     end
 
     it '[5.3] Edit button is alwawys disabled in Root user' do
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       verify_system_user_profile_page(@root_user, false)
       logout(@root_user)
     end
 
     it '[5.4] Cannot see the edit buttons if the targeted users have no casino group' do
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       verify_system_user_profile_page(@system_user_2, false)
       logout(@root_user)
     end
 
     it '[5.5] Not allowed to edit targeted users without casino group (policy check on the confirm button)' do
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       visit edit_roles_system_user_path(:id => @system_user_2.id)
       within("div#content form"){ click_button I18n.t("general.confirm") }
       check_flash_message I18n.t("alert.account_no_casino")
@@ -274,7 +278,7 @@ describe SystemUsersController do
 
     it '[7.5] Current user cannot edit role for himself (view system user)' do
       root_user = SystemUser.find_by_admin(1)
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       visit system_user_path(root_user)
       expect(page).to have_content(root_user.username)
       #expect(page).to have_content(I18n.t("user.status"))
@@ -288,7 +292,7 @@ describe SystemUsersController do
 
   describe "[13] Switch main functional tab" do
     it "[13.1] Select User Management" do
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       visit '/home'
       first('ul.dropdown-menu').find('a', :text => I18n.t("header.user_management")).click
       expect(current_path).to eq(user_management_root_path)
@@ -296,14 +300,14 @@ describe SystemUsersController do
     end
 
     it "[13.2] Click Audit log" do
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       visit '/home'
       first('ul.dropdown-menu').find('a', :text => I18n.t("header.audit_log")).click
       expect(current_path).to eq(search_audit_logs_path)
     end
 
     it "[13.3] Select Role Management" do
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       visit '/home'
       first('ul.dropdown-menu').find('a', :text => I18n.t("header.role_management")).click
       expect(current_path).to eq(role_management_root_path)
@@ -488,25 +492,8 @@ describe SystemUsersController do
   end
 
   describe "[24] Create System User", :js => true do
-    def id_array
-      [1003, 1007, 1014]
-    end
-
     def domain_array
-      ['1003.com', '1007.com', '1014.com']
-    end
-
-    def mock_licensee_domain_casino(licensee_ids)
-      licensee_ids.each do |licensee_id|
-        licensee = create(:licensee, :id => licensee_id)
-        create(:domain, :name => "#{licensee_id}.com", :licensee_id => licensee_id)
-        create(:casino, :id => licensee_id, :licensee_id => licensee_id)
-      end
-    end
-
-    def mock_system_user
-      it_support_role = Role.find_by_name "it_support"
-      create(:system_user, :roles => [it_support_role], :licensee_id => 1003, :domain_name => "1003.com", :with_casino_ids => [1003, 1007])
+      ['example.com', '1003.com', '1007.com', '1014.com']
     end
 
     def fill_in_user_info(username, domain)
@@ -524,51 +511,54 @@ describe SystemUsersController do
     end
 
     def mock_duplicated_user_create
-      it_support_role = Role.find_by_name "it_support"
-      system_user = create(:system_user, :roles => [it_support_role], :with_casino_ids => [1003, 1007], :username => 'abc')  
-      mock_ad_account_profile(true, [1000])
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      create(:system_user, :username => 'abc', :domain_name => '1003.com', :with_casino_ids => [1003])
+      login_as_root
       visit new_system_user_path
-      fill_in_user_info('abc', 'example.com')
-      test_click_create_btn('abc@example.com')
+      fill_in_user_info('abc', '1003.com')
+      test_click_create_btn('abc@1003.com')
+    end
+
+    before(:each) do
+      @it_support_role = Role.find_by_name "it_support"
     end
 
     it "[24.1] create system user success" do
-      mock_ad_account_profile(true, [1000])
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      create(:system_user, :domain_name => '1003.com', :with_casino_ids => [1003])
+      login_as_root
       visit new_system_user_path
-      fill_in_user_info('   abc   ', 'example.com')
-      test_click_create_btn('abc@example.com')
-      expect(page).to have_content I18n.t("success.create_user", :username => 'abc@example.com')
+      fill_in_user_info('   abc   ', '1003.com')
+      mock_ad_account_profile(true, [1003])
+      test_click_create_btn('abc@1003.com')
+      expect(page).to have_content I18n.t("success.create_user", :username => 'abc@1003.com')
       expect(current_path).to eq new_system_user_path
     end
 
-    it "[24.2] Display domains in create user page according to user domain licensee mapping (1000)" do
-      mock_licensee_domain_casino(id_array)
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+    it "[24.2] Display domains in create user page according to user domain casino mapping (1000)" do
+      create(:domain, :name => '1003.com', :with_casino_ids => [1003])
+      create(:domain, :name => '1007.com', :with_casino_ids => [1007])
+      create(:domain, :name => '1014.com', :with_casino_ids => [1014])
+      system_user = create(:system_user, :roles => [@it_support_role], :with_casino_ids => [1000])
+      login("#{system_user.username}@#{system_user.domain.name}")
       visit new_system_user_path
       expect(page).to have_select("domain", :with_options => domain_array)
     end
 
-    it "[24.3] Display domains in create user page according to user domain licensee mapping (1003, 1007)" do
-      mock_licensee_domain_casino([1014])
-      mock_ad_account_profile(true, [1003, 1007])
-      system_user_1 = mock_system_user
-      login("#{system_user_1.username}@#{system_user_1.domain.name}")
+    it "[24.3] Display domains in create user page according to user domain casino mapping (1003,1007)" do
+      system_user = create(:system_user, :roles => [@it_support_role], :domain_name => '1003.com', :with_casino_ids => [1003])
+      create(:domain, :name => '1014.com', :with_casino_ids => [1014])
+      mock_ad_account_profile(true, [1003])
+      login("#{system_user.username}@#{system_user.domain.name}")
       visit new_system_user_path
       expect(page).not_to have_select("domain", :with_options => domain_array)
       expect(page).to have_select("domain", :with_options => ["1003.com"])
     end
 
     it "[24.4] create system user fail with incorrect licensee casino group" do
-      auth_source = AuthSource.first || create(:auth_source)
-      create(:licensee, :id => 1003, :auth_source_id => auth_source.id)
-      create(:domain, :name => "1003.com", :licensee_id => 1003)
-      create(:casino, :id => 1007, :licensee_id => 1003)
-      mock_ad_account_profile(true, [1000])
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      create(:system_user, :domain_name => '1003.com', :with_casino_ids => [1007])
+      login_as_root
       visit new_system_user_path
       expect(page).to have_select("domain", :with_options => ["1003.com"])
+      mock_ad_account_profile(true, [1003])
       fill_in_user_info('abc', '1003.com')
       test_click_create_btn('abc@1003.com')
       expect(page).to have_content I18n.t("alert.account_no_casino")
@@ -576,8 +566,7 @@ describe SystemUsersController do
     end
 
     it "[24.5] audit log for successfully create system user" do
-      mock_ad_account_profile(true, [1000])
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       visit new_system_user_path
       fill_in_user_info('abc', 'example.com')
       test_click_create_btn('abc@example.com')
@@ -585,23 +574,20 @@ describe SystemUsersController do
     end
 
     it "[24.6] audit log for fail to create system user with incorrect licensee casino group" do
-      auth_source = AuthSource.first || create(:auth_source)
-      create(:licensee, :id => 1003, :auth_source_id => auth_source.id)
-      create(:domain, :name => "1003.com", :licensee_id => 1003)
-      create(:casino, :id => 1007, :licensee_id => 1003)
-      mock_ad_account_profile(true, [1000])
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      create(:system_user, :domain_name => '1003.com', :with_casino_ids => [1007])
+      login_as_root
       visit new_system_user_path
+      mock_ad_account_profile(true, [1003])
       fill_in_user_info('abc', '1003.com')
       test_click_create_btn('abc@1003.com')
       check_fail_audit_log("system_user", "create", "create", "portal.admin")
     end
 
     it "[24.8] Create system user fail with invalid input" do
-      mock_ad_account_profile(true, [1000])
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      create(:domain, :name => '1003.com')
+      login_as_root
       visit new_system_user_path
-      fill_in_user_info('', 'example.com')
+      fill_in_user_info('', '1003.com')
       page.find("#modal_link").click
       expect(page).to have_content I18n.t("alert.invalid_username")
     end
@@ -617,30 +603,18 @@ describe SystemUsersController do
     end
 
     it "[24.11] Create system user fail with invalid input (space in system user name)" do
-      system_user_1 = mock_system_user
+      system_user = create(:system_user, :roles => [@it_support_role], :domain_name => '1003.com', :with_casino_ids => [1003])
       mock_ad_account_profile(true, [1003])
-      login("#{system_user_1.username}@#{system_user_1.domain.name}")
+      login("#{system_user.username}@#{system_user.domain.name}")
       visit new_system_user_path
       fill_in_user_info('ab    c', '1003.com')
       page.find("#modal_link").click
       expect(page).to have_content I18n.t("alert.invalid_username")
     end
 
-    it "[24.12] Create system user fail  with domain - licensee mapping not exist" do
-      create(:domain, :name => "1003.com")
-      mock_ad_account_profile(true, [1000])
-      login("#{@root_user.username}@#{@root_user.domain.name}")
-      visit new_system_user_path
-      fill_in_user_info('abc', '1003.com')
-      test_click_create_btn('abc@1003.com')
-      expect(page).to have_content I18n.t("alert.invalid_licensee_mapping")
-    end
-
     it "[24.13] Create system user fail with auth_source - licensee mapping not exist" do
-      create(:licensee, :id => 1003)
-      create(:domain, :name => "1003.com", :licensee_id => 1003)
-      mock_ad_account_profile(true, [1000])
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      create(:domain, :name => '1003.com')
+      login_as_root
       visit new_system_user_path
       fill_in_user_info('abc', '1003.com')
       test_click_create_btn('abc@1003.com')
@@ -650,7 +624,7 @@ describe SystemUsersController do
 
   describe "[28] Export system user list" do
     it "[28.1] successfully export", :js => true do
-      login("#{@root_user.username}@#{@root_user.domain.name}")
+      login_as_root
       visit system_users_path
       expect(find("#exportUserRole").text).to eq I18n.t("general.export")
       expect(page.has_css?('div#pop_up_dialog', visible: false)).to eq true

@@ -32,8 +32,8 @@ class SystemUserRegistrationsController < ActionController::Base
     rescue Rigi::InvalidLogin, Rigi::InvalidUsername, Rigi::InvalidDomain
       Rails.logger.error "SystemUser[username=#{username_with_domain}] illegal login name format"
       flash[:alert] = "alert.invalid_login"
-    rescue Rigi::InvalidLicensee, Rigi::InvalidAuthSource => e
-      Rails.logger.error "SystemUser[username=#{username_with_domain}] invalid licensee, auth_source"
+    rescue Rigi::InvalidAuthSource => e
+      Rails.logger.error "SystemUser[username=#{username_with_domain}] invalid domain - auth_source mapping"
       flash[:alert] = e.error_message
     rescue Rigi::RegisteredAccount
       Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {The account has been registered}"
@@ -66,7 +66,7 @@ class SystemUserRegistrationsController < ActionController::Base
       new_password = params[:system_user][:new_password]
       password_confirmation = params[:system_user][:password_confirmation]
       raise Rigi::InvalidResetPassword.new(I18n.t("password_page.invalid_system")) if @app_name.blank?
-      raise Rigi::InvalidResetPassword.new(I18n.t("password_page.invalid_password")) if new_password.blank?
+      raise Rigi::InvalidResetPassword.new(I18n.t("password_page.invalid_password_format")) if new_password.blank?
       raise Rigi::InvalidResetPassword.new(I18n.t("password_page.confirm_password_fail")) if new_password != password_confirmation
       Rigi::Login.reset_password!(username_with_domain, password, new_password, @app_name)
       flash[:success] = I18n.t("success.reset_password")

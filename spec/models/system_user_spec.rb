@@ -1,21 +1,11 @@
 require "rails_helper"
 
 describe SystemUser do
-  before(:each) do
-    AppSystemUser.delete_all
-    CasinosSystemUser.delete_all
-    SystemUser.delete_all
-    Casino.delete_all
-    Domain.delete_all
-    Licensee.delete_all
-    AuthSource.delete_all
-  end
-
   describe '[26] Conjob for updating system user status and casino group' do
     before(:each) do
       auth_source = AuthSource.create(:auth_type => "AuthSourceLdap", :name => "Laxino LDAP",:host => "0.0.0.0", :port => 389, :account => "", :account_password => "", :base_dn => "DC=test,DC=example,DC=com") 
-      licensee = Licensee.create(:name => 'laxino', :auth_source_id => auth_source.id) 
-      domain = Domain.create(:name => 'example.com', :licensee_id => licensee.id) 
+      domain = Domain.create(:name => 'example.com', :auth_source_id => auth_source.id) 
+      licensee = Licensee.create(:name => 'laxino', :domain_id => domain.id) 
       [1000, 1003, 1007].each do |casino|
         Casino.create(:id => casino, :name => casino, :licensee_id => licensee.id)
       end
@@ -85,14 +75,6 @@ describe SystemUser do
       @su3 = SystemUser.create!(:username => 'lucy3', :status => true, :admin => false)
       @su3.role_assignments.create!({:role_id => @user_manager.id})
       @su3.app_system_users.create!({:app_id => @user_manager.app_id})
-    end
-
-    after(:each) do
-      AppSystemUser.delete_all
-      RoleAssignment.delete_all
-      @su1.destroy
-      @su2.destroy
-      @su3.destroy
     end
 
     it 'should add a new role to a system user with no role' do

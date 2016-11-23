@@ -52,7 +52,10 @@ class AuthSourceLdap < AuthSource
       result = ldap.search( :base => self.base_dn, :filter => search_filter, :return_result => true, :scope => self.search_scope || Net::LDAP::SearchScope_WholeSubtree)
       ad_user = result.first
       rst = ldap.modify :dn => ad_user.dn, :operations => [[:replace, :unicodePwd, pwd]]
-      raise Rigi::InvalidResetPassword.new(ldap.get_operation_result) unless rst
+      unless rst
+        Rails.logger.error "reset password error: #{ldap.get_operation_result}"
+        raise Rigi::InvalidResetPassword.new(I18n.t("alert.invalid_password_format"))
+      end
       rst
     end
   end

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe CasinosSystemUser do
-  fixtures :casinos
+  fixtures :casinos, :system_users
   
   describe "test get_users_active_casinos" do
 

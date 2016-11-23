@@ -122,4 +122,8 @@ end
 
 RSpec.configure do |config|
   config.include StepHelper, type: :feature
+  
+  config.before(:each, type: :feature) do
+    mock_ad_account_profile(true, [1000])
+  end
 end

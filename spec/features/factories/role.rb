@@ -1,5 +1,7 @@
 FactoryGirl.define do
   factory :role do
+    sequence(:name) { |n| "role#{n}" }
+
     transient do
       with_permissions nil
     end

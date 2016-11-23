@@ -22,8 +22,7 @@ en:
     invalid_domain: Invalid domain format
     duplicate_domain: Duplicate Domain
     create_system_user_confirm: Are you sure to create system user [%{username}]?
-    invalid_licensee_mapping: Domain-Licensee Mapping not found; Please contact technical support.
-    invalid_ldap_mapping: Authentication Source-Licensee Mapping not found; Please contact technical support.
+    invalid_ldap_mapping: Authentication Source-Domain Mapping not found; Please contact technical support.
   title:
     title: User Management
     login_title: Login
@@ -136,7 +135,7 @@ en:
     confirm_password_tooltip: Enter new password again
     update_password: Update Password
     invalid_system: System can not be null
-    invalid_password: New password can not be null
+    invalid_password_format: Unable to update the password; The value provided for the new password does not meet the length, complexity, or history requirements of the domain.
     confirm_password_fail: Password did not match
   propagation:
     title: Propagation
@@ -183,7 +182,6 @@ en:
     delete: Delete
     create_mapping_successfully: Create Domain-Licensee Mapping successful !
     invalid_params: Create Domain-Licensee Mapping failed; Domain or Licensee not found or empty.
-    create_mapping_fail_domain_used: Create Domain-Licensee mapping failed; Domain had been used.
     create_mapping_fail_licensee_used: Create Domain-Licensee mapping failed; Licensee had been used.
     delete_mapping_successfully: Delete Domain-Licensee mapping successful !
     delete_mapping_fail: Delete Domain-Licensee mapping error, Domain-Licensee mapping not found.

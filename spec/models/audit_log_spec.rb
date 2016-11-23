@@ -1,21 +1,13 @@
 require "rails_helper"
 
 describe AuditLog do
-  before(:all) do
-    AuditLog.delete_all
-  end
-
-  after(:each) do
-    AuditLog.delete_all
-  end
-
   describe "#system_user_log" do
     it 'should create an audit log for system_user correctly' do
-      AuditLog.system_user_log("lock", "portal.admin", "qwer1234", "127.0.0.1", { :action_at => Time.now })
+      AuditLog.system_user_log("system_user", "create", "portal.admin", "qwer1234", "127.0.0.1", { :action_at => Time.now })
       al = AuditLog.first
       expect(al.audit_target).to eq("system_user")
-      expect(al.action_type).to eq("update")
-      expect(al.action).to eq("lock")
+      expect(al.action_type).to eq("create")
+      expect(al.action).to eq("create")
       expect(al.action_status).to eq("success")
       expect(al.action_error).to be_nil 
       expect(al.session_id).to eq("qwer1234")
@@ -29,14 +21,14 @@ describe AuditLog do
   describe "audit error message" do
     it 'should create an audit log if the action to audit raises an exception' do
       expect { 
-        AuditLog.system_user_log("lock", "portal.admin", "qwer1234", "127.0.0.1", { :action_at => Time.now }) do
+        AuditLog.system_user_log("system_user", "create", "portal.admin", "qwer1234", "127.0.0.1", { :action_at => Time.now }) do
           raise "mock exception"
         end
       }.to raise_error
       al = AuditLog.first
       expect(al.audit_target).to eq("system_user")
-      expect(al.action_type).to eq("update")
-      expect(al.action).to eq("lock")
+      expect(al.action_type).to eq("create")
+      expect(al.action).to eq("create")
       expect(al.action_status).to eq("fail")
       expect(al.action_error).to eq("mock exception") 
       expect(al.session_id).to eq("qwer1234")

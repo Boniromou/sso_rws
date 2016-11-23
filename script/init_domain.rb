@@ -14,27 +14,34 @@ env = ARGV[0]
 file_name = ARGV[1]
 config_data = YAML.load_file(file_name)[env]
 domains = config_data['domains']
+licensees = config_data['licensees']
 
 sso_db = Database.connect(env)
 domain_table = sso_db[:domains]
+licensee_table = sso_db[:licensees]
 
+domain_info = []
 if domains
-  domain_info = []
   domains.each do |domain|
-    domain_info.push({:id => domain['id'], :name => domain['name'], :licensee_id => domain['licensee_id']})
+    domain_info.push({:id => domain['id'], :name => domain['name']})
   end
 end
 puts "domain_info: #{domain_info}"
+puts "licensee_info: #{licensees}"
 
 print "Overwrite? (Y/n): "
 prompt = STDIN.gets.chomp
 if prompt.casecmp('Y') == 0
   domain_info.each do |domain|
-    domain_condition = {:id => domain[:id], :name => domain[:name]}
-    if domain_table.where(domain_condition).count == 0
-      domain_table.insert(domain.merge(:created_at => Time.now.utc, :updated_at => Time.now.utc))
-    else
-      domain_table.where(domain_condition).update(:licensee_id => domain[:licensee_id], :updated_at => Time.now.utc)
+    domain_table.insert(domain.merge(:created_at => Time.now.utc, :updated_at => Time.now.utc)) if domain_table.where(domain).count == 0
+  end
+
+  if licensees
+    licensees.each do |licensee|
+      if licensee_table.where(id: licensee['id']).count == 0
+        raise "update domain-licensee mapping error: licensee[#{licensee['id']}] not exist."
+      end
+      licensee_table.where(id: licensee['id']).update(domain_id: licensee['domain_id'])
     end
   end
 end

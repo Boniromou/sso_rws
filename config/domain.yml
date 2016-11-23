@@ -1,26 +1,38 @@
 hqidc_domain: &hqidc_domain
   domains:
-    - {id: 1, name: 'mo.laxino.com', licensee_id: 1000}
+    - {id: 1, name: 'mo.laxino.com'}
+  licensees:
+    - {id: 1000, domain_id: 1}
 
 mockup_domain: &mockup_domain
   domains:
-    - {id: 1, name: 'mo.laxino.com', licensee_id: 1000}    
+    - {id: 1, name: 'mo.laxino.com'}
+  licensees:
+    - {id: 1000, domain_id: 1}
 
 twidc_domain: &twidc_domain
   domains:
-    - {id: 1, name: '777iportal.local', licensee_id: 1000}
+    - {id: 1, name: '777iportal.local'}
+  licensees:
+    - {id: 1000, domain_id: 1}
 
 phidc_domain: &phidc_domain
   domains:
-    - {id: 1, name: '888iportal.local', licensee_id: 1000}
+    - {id: 1, name: '888iportal.local'}
+  licensees:
+    - {id: 1000, domain_id: 1}
 
 moidc_domain: &moidc_domain
   domains:
-    - {id: 1, name: 'gamesourcecloud.local', licensee_id: 1000}
+    - {id: 1, name: 'gamesourcecloud.local'}
+  licensees:
+    - {id: 1000, domain_id: 1}
 
 vcidc_domain: &vcidc_domain
   domains:
-    - {id: 1, name: 'laxigames.local', licensee_id: 1000}
+    - {id: 1, name: 'laxigames.local'}
+  licensees:
+    - {id: 1000, domain_id: 1}
 
 test:
   <<: *hqidc_domain

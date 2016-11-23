@@ -31,7 +31,7 @@ class DomainPolicy < ApplicationPolicy
       if system_user.is_admin? || system_user.has_admin_casino?
         scope.all
       else
-        scope.where("domains.licensee_id in (?)", Casino.where(:id => system_user.active_casino_ids).select(:licensee_id).uniq.pluck(:licensee_id))
+        scope.includes(:casinos).where("casinos.id in (?)", system_user.active_casino_ids)
       end
     end
   end

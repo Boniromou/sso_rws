@@ -8,10 +8,9 @@ class DomainLicenseesController < ApplicationController
 
   def index
     authorize :domain, :index_domain_licensee?
-    @domain_licensees = Domain.includes(licensee: :casinos).active_domain_licensee.as_json(:include => {'licensee' => {:include => 'casinos'}})
-    @list_domain = Domain.inactive_domain_licensee.map {|domain| [domain[:name], domain[:id]]}
-    licensee_ids = @domain_licensees.map {|domain| domain['licensee_id']}
-    @list_licensee = Licensee.unbind_licensees(licensee_ids).map {|licensee| ["#{licensee['name']}[#{licensee['id']}]", licensee['id']]}
+    @domain_licensees = Licensee.includes(:domain, :casinos).active_domain_licensee.as_json(:include => ['domain', 'casinos'])
+    @list_domain = Domain.all.map {|domain| [domain[:name], domain[:id]]}
+    @list_licensee = Licensee.inactive_domain_licensee.map {|licensee| ["#{licensee['name']}[#{licensee['id']}]", licensee['id']]}
   end
 
   def get_casinos
@@ -24,7 +23,7 @@ class DomainLicenseesController < ApplicationController
     info = {domain_id: params[:domain_id], licensee_id: params[:licensee_id]}
     begin
       auditing(audit_action: "create") do
-        Domain.create_domain_licensee(info)
+        Licensee.create_domain_licensee(info)
         flash[:success] = I18n.t("domain_licensee.create_mapping_successfully")
       end
       DomainLicenseeChangeLog.insert_create_domain_licensee(current_system_user, info)
@@ -40,7 +39,7 @@ class DomainLicenseesController < ApplicationController
     info = {domain_id: params[:domain_id], licensee_id: params[:licensee_id]}
     begin
       auditing(audit_action: "delete") do
-        Domain.remove_domain_licensee(info)
+        Licensee.remove_domain_licensee(info)
         flash[:success] = I18n.t("domain_licensee.delete_mapping_successfully")
       end
       DomainLicenseeChangeLog.insert_delete_domain_licensee(current_system_user, info)
