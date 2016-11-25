@@ -22,12 +22,12 @@ en:
     invalid_domain: Invalid domain format
     duplicate_domain: Duplicate Domain
     create_system_user_confirm: Are you sure to create system user [%{username}]?
-    invalid_ldap_mapping: Authentication Source-Domain Mapping not found; Please contact technical support.
+    invalid_ldap_mapping: Domain-LDAP Configuration not found; Please contact technical support.
   title:
     title: User Management
     login_title: Login
     signup_title: Registration
-    reset_password_title: Reset Password
+    reset_password_title: Change Password
   general:
     login: Login
     logout: logout
@@ -41,7 +41,7 @@ en:
     no_result_found: No Record Found
     error_message: Error Message
     sign_up: Sign Up
-    reset_password: Reset Password
+    reset_password: Change Password
     start_time: Start Time
     end_time: End Time
     search: Search
@@ -129,14 +129,14 @@ en:
   password_page:
     old_password: Old Password
     new_password: New Password
-    confirm_password: Password Confirmation
-    password_tooltip: Enter old password
-    new_password_tooltip: Enter new password
-    confirm_password_tooltip: Enter new password again
-    update_password: Update Password
+    confirm_password: Confirm Password
+    password_tooltip: Please enter Old Password
+    new_password_tooltip: Please enter New Password
+    confirm_password_tooltip: Please enter your New Password again
+    update_password: Confirm
     invalid_system: System can not be null
-    invalid_password_format: Unable to update the password; The value provided for the new password does not meet the length, complexity, or history requirements of the domain.
-    confirm_password_fail: Password did not match
+    invalid_password_format: Unable to update password; The value provided for the new password does not meet the length, complexity, or history requirements of the domain configuration.
+    confirm_password_fail: The New Password entered does not match
   propagation:
     title: Propagation
     error: Error
@@ -152,7 +152,7 @@ en:
     unlock_user: Unlock user [%{user_name}]
     create_user: Create System User [%{username}] successful !
     create_domain: Create Domain [%{domain_name}] successful !
-    reset_password: Reset Password Successful !
+    reset_password: Your password have been changed successfully !
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users
