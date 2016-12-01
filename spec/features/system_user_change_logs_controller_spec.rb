@@ -39,7 +39,7 @@ describe ChangeLogsController do
 
       cls = ChangeLog.all
       expect(cls.length).to eq 1
-      expect(cls[0].action_by['username']).to eq @system_user_1.username
+      expect(cls[0].action_by['username']).to eq "#{@system_user_1.username}@#{@system_user_1.domain.name}"
       expect(cls[0].action_by['casino_ids']).to eq @system_user_1.active_casino_ids
       expect(cls[0].created_at).to be_kind_of(Time)
       expect(cls[0].action).to eq "edit_role"
@@ -61,7 +61,7 @@ describe ChangeLogsController do
 
       cls = ChangeLog.all
       expect(cls.length).to eq 1
-      expect(cls[0].action_by['username']).to eq @system_user_2.username
+      expect(cls[0].action_by['username']).to eq "#{@system_user_2.username}@#{@system_user_2.domain.name}"
       expect(cls[0].action_by['casino_ids']).to eq @system_user_2.active_casino_ids
       expect(cls[0].created_at).to be_kind_of(Time)
       expect(cls[0].action).to eq "edit_role"
@@ -83,7 +83,7 @@ describe ChangeLogsController do
 
       cls = ChangeLog.all
       expect(cls.length).to eq 2
-      expect(cls[0].action_by['username']).to eq @system_user_1.username
+      expect(cls[0].action_by['username']).to eq "#{@system_user_1.username}@#{@system_user_1.domain.name}"
       expect(cls[0].action_by['casino_ids']).to eq @system_user_1.active_casino_ids
       expect(cls[0].created_at).to be_kind_of(Time)
       expect(cls[0].action).to eq "edit_role"
@@ -93,7 +93,7 @@ describe ChangeLogsController do
       expect(cls[0].change_detail['from']).to eq @int_role_1.name
       expect(cls[0].change_detail['to']).to eq @int_role_2.name
 
-      expect(cls[1].action_by['username']).to eq @system_user_1.username
+      expect(cls[1].action_by['username']).to eq "#{@system_user_1.username}@#{@system_user_1.domain.name}"
       expect(cls[1].action_by['casino_ids']).to eq @system_user_1.active_casino_ids
       expect(cls[1].created_at).to be_kind_of(Time)
       expect(cls[1].action).to eq "edit_role"
@@ -115,7 +115,7 @@ describe ChangeLogsController do
 
       cls = ChangeLog.all
       expect(cls.length).to eq 1
-      expect(cls[0].action_by['username']).to eq @system_user_1.username
+      expect(cls[0].action_by['username']).to eq "#{@system_user_1.username}@#{@system_user_1.domain.name}"
       expect(cls[0].action_by['casino_ids']).to eq @system_user_1.active_casino_ids
       expect(cls[0].created_at).to be_kind_of(Time)
       expect(cls[0].action).to eq "edit_role"
@@ -138,7 +138,7 @@ describe ChangeLogsController do
 
       cls = ChangeLog.all
       expect(cls.length).to eq 1
-      expect(cls[0].action_by['username']).to eq @system_user_4.username
+      expect(cls[0].action_by['username']).to eq "#{@system_user_4.username}@#{@system_user_4.domain.name}"
       expect(cls[0].action_by['casino_ids']).to eq @system_user_4.active_casino_ids
       expect(cls[0].created_at).to be_kind_of(Time)
       expect(cls[0].action).to eq "edit_role"

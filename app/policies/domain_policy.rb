@@ -6,14 +6,6 @@ class DomainPolicy < ApplicationPolicy
     @admin_casino_use_only = true
   end
 
-  def index?
-    permitted?(:domain, :list)
-  end
-
-  def create?
-    permitted?(:domain, :create)
-  end
-
   def index_domain_licensee?
     permitted?(:domain_licensee_mapping, :list)
   end
@@ -24,6 +16,18 @@ class DomainPolicy < ApplicationPolicy
 
   def delete_domain_licensee?
     permitted?(:domain_licensee_mapping, :delete)
+  end
+
+  def index_domain_ldap?
+    permitted?(:domain_ldap, :list)
+  end
+
+  def create_domain_ldap?
+    permitted?(:domain_ldap, :create)
+  end
+
+  def update_domain_ldap?
+    permitted?(:domain_ldap, :update)
   end
 
   class Scope < Scope

@@ -105,9 +105,9 @@ describe DomainLicenseesController do
 
   	def check_domain_licensee(domain, licensee)
   		within("table#domain_licensees tbody tr:nth-child(1)") {
-		  	expect(page).to have_content(domain.name)
-		  	expect(page).to have_content("#{licensee.name}[#{licensee.id}]")
-		  	expect(page).to have_content(get_casinos(licensee))
+		  	expect_have_content(domain.name)
+		  	expect_have_content("#{licensee.name}[#{licensee.id}]")
+		  	expect_have_content(get_casinos(licensee))
 		  }
   	end
 
@@ -146,14 +146,7 @@ describe DomainLicenseesController do
     	visit_domain_licensee
       general_create_domain_licensee('1003.com', "#{licensee.name}[#{licensee.id}]")
       wait_for_ajax
-      filters = {
-        audit_target: 'domain_licensee',
-        action_type: 'create',
-        action: 'create',
-        action_status: 'success',
-        action_by: @root_user.username
-      }
-      expect(AuditLog.where(filters)).not_to eq []
+      check_success_audit_log("domain_licensee", 'create', 'create', "#{@root_user.username}@#{@root_user.domain.name}")
     end
 
     it "[21.4] Create domain licensee mapping fail audit log" do
@@ -163,14 +156,7 @@ describe DomainLicenseesController do
     	licensee.update_attributes(domain_id: domain.id)
     	general_create_domain_licensee('1007.com', "#{licensee.name}[#{licensee.id}]")
       wait_for_ajax
-      filters = {
-        audit_target: 'domain_licensee',
-        action_type: 'create',
-        action: 'create',
-        action_status: 'fail',
-        action_by: @root_user.username
-      }
-      expect(AuditLog.where(filters)).not_to eq []
+      check_fail_audit_log("domain_licensee", 'create', 'create', "#{@root_user.username}@#{@root_user.domain.name}")
     end
   end
 
@@ -195,28 +181,14 @@ describe DomainLicenseesController do
     it "[22.3] delete Domain Licensee Mapping success audit log" do
       visit_domain_licensee
       find("#delete_#{@licensee.id}").click
-      filters = {
-        audit_target: 'domain_licensee',
-        action_type: 'delete',
-        action: 'delete',
-        action_status: 'success',
-        action_by: @root_user.username
-      }
-      expect(AuditLog.where(filters)).not_to eq []
+      check_success_audit_log("domain_licensee", 'delete', 'delete', "#{@root_user.username}@#{@root_user.domain.name}")
     end
 
     it "[22.4] delete Domain Licensee Mapping fail audit log" do
       visit_domain_licensee
     	@licensee.update_attributes(domain_id: nil)
       find("#delete_#{@licensee.id}").click
-      filters = {
-        audit_target: 'domain_licensee',
-        action_type: 'delete',
-        action: 'delete',
-        action_status: 'fail',
-        action_by: @root_user.username
-      }
-      expect(AuditLog.where(filters)).not_to eq []
+      check_fail_audit_log("domain_licensee", 'delete', 'delete', "#{@root_user.username}@#{@root_user.domain.name}")
     end
   end
 
@@ -236,11 +208,11 @@ describe DomainLicenseesController do
   		casino_ids.each_with_index do |casino_id, index|
         casino = Casino.find(casino_id)
 	      within("div#domain_licensee_change_logs table tbody tr:nth-child(#{index + 1})") {
-			  	expect(page).to have_content(domain.name)
-			  	expect(page).to have_content("#{licensee.name}[#{licensee.id}]")
-			  	expect(page).to have_content("[#{casino.name}, #{casino.id}]")
-			  	expect(page).to have_content(action)
-			  	expect(page).to have_content(@root_user.username)
+			  	expect_have_content(domain.name)
+			  	expect_have_content("#{licensee.name}[#{licensee.id}]")
+			  	expect_have_content("[#{casino.name}, #{casino.id}]")
+			  	expect_have_content(action)
+			  	expect_have_content(@root_user.username)
 			  }
 	    end
   	end

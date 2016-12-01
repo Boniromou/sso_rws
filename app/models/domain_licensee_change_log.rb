@@ -20,7 +20,7 @@ class DomainLicenseeChangeLog < ChangeLog
         cl = self.new
         cl.target_domain = domain.name
         cl.action = action
-        cl.action_by[:username] = current_system_user.username
+        cl.action_by[:username] = "#{current_system_user.username}@#{current_system_user.domain.name}"
         cl.action_by[:casino_ids] = active_casino_ids
         cl.action_by[:casino_id_names] = active_casino_id_names
         cl.change_detail[:licensee_name] = licensee.name

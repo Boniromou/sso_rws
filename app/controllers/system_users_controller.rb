@@ -25,12 +25,12 @@ class SystemUsersController < ApplicationController
     rescue Rigi::InvalidAuthSource, Rigi::RegisteredAccount, Rigi::AccountNotInLdap, Rigi::AccountNoCasino => e
       Rails.logger.error "SystemUser[username=#{params[:system_user][:username]} , domain=#{params[:system_user][:domain]}] create failed: #{e.error_message}"
       flash[:alert] = e.error_message
-    end  
+    end
     redirect_to new_system_user_path({:errors => @errors}) 
   end
 
   def index
-    @system_users = policy_scope(SystemUser.includes(:casinos))
+    @system_users = policy_scope(SystemUser.includes(:casinos, :domain))
     authorize :system_users, :index?
   end
 
@@ -130,7 +130,7 @@ class SystemUsersController < ApplicationController
       cl.target_username = system_user.username
       cl.target_domain = system_user.domain.name
       cl.action = action
-      cl.action_by[:username] = current_system_user.username
+      cl.action_by[:username] = "#{current_system_user.username}@#{current_system_user.domain.name}"
       cl.action_by[:casino_ids] = current_system_user.active_casino_ids
       cl.action_by[:casino_id_names] = current_system_user.active_casino_id_names
       cl.change_detail[:app_name] = app_name

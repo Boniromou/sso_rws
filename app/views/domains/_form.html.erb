@@ -1,0 +1,80 @@
+<div class='form-horizontal col-sm-10 col-md-9 col-lg-8'>
+  <div class="form-group" >
+    <div class="col-sm-12 col-md-12 col-lg-12">
+      <%= button_to t('general.back'), domains_path, method:'get', remote: true, class: 'btn btn-primary', style: "float: right; width: 70px;" %>
+    </div>
+  </div>
+</div>
+<br/>
+<%= form_for(@domain, :remote => true, :html => {class: 'form-horizontal', style: 'margin-top:20px'}) do |f| %>
+  <div class='col-sm-10 col-md-9 col-lg-8'>
+    <div class="form-group" >
+    <%= f.fields_for :domain do |field| %>
+      <%= field.label :name, t('domain.name'), class: 'col-sm-2 col-md-2 col-lg-2 control-label text-font-bold' %>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <%= field.hidden_field(:id, :value => @domain.id) %>
+          <%= field.text_field(:name, :class => 'form-control', :value => @domain.name, :disabled => (!@domain.new_record?)) %>
+        </div>
+      </div>
+    <% end %>
+
+    <%= f.fields_for :auth_source do |field| %>
+      <div class="form-group">
+        <%= field.label :name, t('domain_ldap.ldap_name'), class: 'col-sm-2 col-md-2 col-lg-2 control-label text-font-bold'%>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <%= field.hidden_field(:id, :value => @auth_source.id) %>
+          <%= field.text_field(:name, :class => 'form-control', :value => @auth_source.name) %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= field.label :host, t('domain_ldap.host'), class: 'col-sm-2 col-md-2 col-lg-2 control-label text-font-bold'%>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <%= field.text_field(:host, :class => 'form-control', :value => @auth_source.host) %>
+        </div>
+
+        <%= field.label :port, t('domain_ldap.port'), class: 'col-sm-2 col-md-2 col-lg-2 control-label text-font-bold'%>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <%= field.text_field(:port, :class => 'form-control', :value => @auth_source.port) %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= field.label :account, t('domain_ldap.account'), class: 'col-sm-2 col-md-2 col-lg-2 control-label text-font-bold'%>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <%= field.text_field(:account, :class => 'form-control', :value => @auth_source.account) %>
+        </div>
+
+        <%= field.label :account_password, t('domain_ldap.account_password'), class: 'col-sm-2 col-md-2 col-lg-2 control-label text-font-bold'%>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <%= field.text_field(:account_password, :class => 'form-control', :value => @auth_source.account_password) %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= field.label :base_dn, t('domain_ldap.base_dn'), class: 'col-sm-2 col-md-2 col-lg-2 control-label text-font-bold'%>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <%= field.text_field(:base_dn, :class => 'form-control', :value => @auth_source.base_dn) %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= field.label :admin_account, t('domain_ldap.admin_account'), class: 'col-sm-2 col-md-2 col-lg-2 control-label text-font-bold'%>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <%= field.text_field(:admin_account, :class => 'form-control', :value => @auth_source.admin_account) %>
+        </div>
+
+        <%= field.label :admin_password, t('domain_ldap.admin_password'), class: 'col-sm-2 col-md-2 col-lg-2 control-label text-font-bold'%>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <%= field.text_field(:admin_password, :class => 'form-control', :value => @auth_source.admin_password) %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="form-group" >
+      <div class="col-sm-12 col-md-12 col-lg-12">
+        <%= f.button  t('general.confirm'), class: 'btn btn-primary', id: 'confirm_btn', type: 'submit', style: "float: right; width: 70px;" %>
+      </div>
+    </div>
+  </div>
+<% end %>

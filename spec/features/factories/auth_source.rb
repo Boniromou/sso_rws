@@ -5,8 +5,10 @@ FactoryGirl.define do
     sequence(:name) { |n| "Laxino LDAP#{n}" }
     host "0.0.0.0"
     port 389
-    account ''
-    account_password ""
+    account "test@example.com"
+    account_password "cc123456"
     base_dn "DC=test,DC=example,DC=com"
+    admin_account "admin@example.com"
+    admin_password "cc123456"
   end
 end

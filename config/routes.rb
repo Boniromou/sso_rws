@@ -20,7 +20,7 @@ SsoRws::Application.routes.draw do
   get 'role_management' => 'dashboard#role_management', :as => :role_management_root
   get 'domain_management' => 'dashboard#domain_management', :as => :domain_management_root
 
-  resources :domains, :only => [:index, :create]
+  resources :domains,  :except => [:destroy, :show]
   resources :domain_licensees, :only => [:index, :create] do
     collection do
       get 'get_casinos'
@@ -44,6 +44,7 @@ SsoRws::Application.routes.draw do
       get 'create_system_user'
       get 'index_edit_role'
       get 'create_domain_licensee'
+      get 'index_domain_ldap'
     end
   end
 

@@ -37,7 +37,7 @@ describe SystemUsersController do
     def verify_system_user_table_record(row_number, system_user)
       row_cells = all("div#content table#system_user tbody tr:nth-child(#{row_number}) td")
       expect(row_cells.length).to eq 4
-      expect(row_cells[0].text).to eq system_user.username
+      expect(row_cells[0].text).to eq "#{system_user.username}@#{system_user.domain.name}"
       if system_user.activated?
         expect(row_cells[1].text).to eq I18n.t("user.active")
       else
@@ -267,7 +267,7 @@ describe SystemUsersController do
 
     it '[7.3] Audit edit role' do
       verify_grant_role
-      check_success_audit_log("system_user", "update", "edit_role", "portal.admin")
+      check_success_audit_log("system_user", "update", "edit_role", "portal.admin@example.com")
     end
 
     it '[7.4] Cancel edit role' do
@@ -570,7 +570,7 @@ describe SystemUsersController do
       visit new_system_user_path
       fill_in_user_info('abc', 'example.com')
       test_click_create_btn('abc@example.com')
-      check_success_audit_log("system_user", "create", "create", "portal.admin")
+      check_success_audit_log("system_user", "create", "create", "portal.admin@example.com")
     end
 
     it "[24.6] audit log for fail to create system user with incorrect licensee casino group" do
@@ -580,7 +580,7 @@ describe SystemUsersController do
       mock_ad_account_profile(true, [1003])
       fill_in_user_info('abc', '1003.com')
       test_click_create_btn('abc@1003.com')
-      check_fail_audit_log("system_user", "create", "create", "portal.admin")
+      check_fail_audit_log("system_user", "create", "create", "portal.admin@example.com")
     end
 
     it "[24.8] Create system user fail with invalid input" do
@@ -599,7 +599,7 @@ describe SystemUsersController do
 
     it "[24.10] audit log for fail to create system user with duplicated record in local DB" do
       mock_duplicated_user_create
-      check_fail_audit_log("system_user", "create", "create", "portal.admin")
+      check_fail_audit_log("system_user", "create", "create", "portal.admin@example.com")
     end
 
     it "[24.11] Create system user fail with invalid input (space in system user name)" do
