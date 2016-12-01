@@ -14,7 +14,7 @@ class SystemUserChangeLog < ChangeLog
     cl.target_username = params[:username]
     cl.target_domain = params[:domain]
     cl.action = 'create'
-    cl.action_by[:username] = current_user.username
+    cl.action_by[:username] = "#{current_user.username}@#{current_user.domain.name}"
     cl.action_by[:casino_ids] = current_user.active_casino_ids
     cl.action_by[:casino_id_names] = current_user.active_casino_id_names
 

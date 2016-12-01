@@ -90,7 +90,7 @@ describe ChangeLogsController do
       expect(cls[0].action).to eq "create"
       expect(cls[0].target_username).to eq 'abc'
       expect(cls[0].target_domain).to eq 'example.com'
-      expect(cls[0].action_by['username']).to eq @system_user_4.username
+      expect(cls[0].action_by['username']).to eq "#{@system_user_4.username}@#{@system_user_4.domain.name}"
       expect(cls[0].action_by['casino_ids']).to eq @system_user_4.active_casino_ids  
       system_user = SystemUser.where(:username => 'abc').first
       test_target_casinos(system_user, cls[0])

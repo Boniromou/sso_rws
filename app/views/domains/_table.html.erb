@@ -1,0 +1,38 @@
+<table id="domain_ldap" class="table table-striped table-bordered table-hover" style="border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th><%= t("domain.name") %></th>
+      <th><%= t("domain_ldap.ldap_name") %></th>
+      <th><%= t("domain_ldap.host") %></th>
+      <th><%= t("domain_ldap.port") %></th>
+      <th><%= t("domain_ldap.account") %></th>
+      <th><%= t("domain_ldap.base_dn") %></th>
+      <th><%= t("domain_ldap.admin_account") %></th>
+      <th id="updated-at"><%= t("general.updated_at") %></th>
+      <th><%= t("general.operation") %></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <!-- domain list -->
+    <% @domains.each do |domain| %>
+      <tr align="center">
+        <td><%= domain.name %></td>
+        <td><%= domain.auth_source.name if domain.auth_source%></td>
+        <td><%= domain.auth_source.host if domain.auth_source %></td>
+        <td><%= domain.auth_source.port if domain.auth_source %></td>
+        <td><%= domain.auth_source.account if domain.auth_source %></td>
+        <td><%= domain.auth_source.base_dn if domain.auth_source %></td>
+        <td><%= domain.auth_source.admin_account if domain.auth_source %></td>
+        <td><%= format_time(domain.updated_at) %></td>
+        <td> 
+          <% if policy(:domain).update_domain_ldap? %>
+            <%= link_to(edit_domain_path(domain.id), remote: true, title: t("general.edit"), class: "btn btn-primary", id: "edit_#{domain.id}") do %>
+              <i id="edit" class="fa fa-pencil-square-o"></i>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

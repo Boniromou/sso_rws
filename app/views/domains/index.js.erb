@@ -1,51 +1,8 @@
 $('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "domains/index", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
 
 $(document).ready(function() {
-  $('#pop_up_dialog #cancel').click(hidePopUpPanel);
-
-  function hidePopUpPanel(){
-    $('#pop_up_dialog #confirm').unbind("click");
-    $('#pop_up_content').html('');
-    $('#pop_up_dialog').removeClass("fadeIn");
-    $('#pop_up_dialog').addClass("fadeOut");
-    setTimeout(function(){
-      $('#pop_up_dialog').css("display", "none");
-    },300);
-    return false;
-  }
-
-  function registerPopUpPanel(content){
-    $('#pop_up_content').html(content);
-    $('#pop_up_dialog').css("display", "block");
-    $('#pop_up_dialog').removeClass("fadeOut");
-    $('#pop_up_dialog').addClass("fadeIn");
-    $('#pop_up_dialog #confirm').focus();
-
-    $('#pop_up_dialog #confirm').click(function() {
-      $("#real_create_domain").click();
-      hidePopUpPanel();
-      return false;
-    });
-  }
-
-  function blockEnter(event){
-    if (event.keyCode == 13) {
-      $('#create_domain').click();
-      return false;
-    }
-  }
-
-  $('form').keydown(blockEnter);
-
-  $('#create_domain').click(function() {
-    var domain_name = $("#domain_name").val();
-    var msg = "Do you confirm to create domain " + domain_name + " ?";
-    registerPopUpPanel(msg);
-    return false;
-  });
-
   index = $('#updated-at').index();
-  $('#domain').dataTable({
+  $('#domain_ldap').dataTable({
     "bSortCellsTop": true,
     "order": [[ index, "desc"]],
     "pageLength": 50

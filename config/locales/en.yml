@@ -20,9 +20,12 @@ en:
     invalid_username: Invalid username format. Space and Special Character is not allowed.
     account_not_in_ldap: User not found in database
     invalid_domain: Invalid domain format
-    duplicate_domain: Duplicate Domain
+    domain_duplicated: Duplicate Domain
     create_system_user_confirm: Are you sure to create system user [%{username}]?
     invalid_ldap_mapping: Domain-LDAP Configuration not found; Please contact technical support.
+    ldap_duplicated: Duplicate LDAP
+    invalid_ldap_name: Invalid LDAP name
+    invalid_params: Input cannot be blank
   title:
     title: User Management
     login_title: Login
@@ -62,6 +65,7 @@ en:
     last_updated_at: ! 'Last Updated at : '
     delete: Delete
     add: Add
+    list: List
   user:
     user_name: User Name
     password: Password
@@ -167,8 +171,23 @@ en:
     title: Casinos
   domain:
     name: Domain
-    list: Domains
     domain_name: Domain Name
+  domain_ldap:
+    name: Domain-LDAP
+    list: Domain-LDAP
+    ldap_name: LDAP Name
+    host: Host
+    port: Port
+    account: Account
+    base_dn: Base Dn
+    admin_account: Admin Account
+    create_new: Create New
+    account_password: Account Password
+    admin_password: Admin Password
+    create_domain_ldap_success: Create Domain, LDAP successfully !
+    edit_domain_ldap_success: Edit Domain, LDAP successfully !
+    create: Create
+    edit: Edit
   domain_casino:
     name: Domain-Casino Mappings
     create: Create

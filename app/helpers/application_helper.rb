@@ -161,6 +161,16 @@ module ApplicationHelper
     text.nil? ? '-' : text.titleize
   end
 
+  def display_from_to(hash)
+    return '' if hash.blank?
+    text = ''
+    hash.each do |key, value|
+      value = '******' if key.include?('password')
+      text += "#{key}:#{value}; "
+    end
+    text.chomp('; ')
+  end
+
   def gen_select_options(targets)
     selection = targets.map { |target| [ target.name.titleize, target.id.to_s ] }
     selection.unshift([ t("general.all"), "all" ])

@@ -11,6 +11,10 @@ class ChangeLogPolicy < ApplicationPolicy
     permitted?(:domain_licensee_mapping, :list_log)
   end
 
+  def index_domain_ldap?
+    permitted?(:domain_ldap, :list_log)
+  end
+
   class Scope < Scope
     def resolve
       if system_user.is_admin? || system_user.has_admin_casino?

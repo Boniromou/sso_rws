@@ -17,8 +17,6 @@ FactoryGirl.define do
       system_user.domain_id = domain.id
     end
 
-
-
     after(:create) do |system_user, factory|
       system_user.roles = factory.with_roles if factory.with_roles
       system_user.roles.each { |role| system_user.apps << role.app }

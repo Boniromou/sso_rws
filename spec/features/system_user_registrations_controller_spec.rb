@@ -151,7 +151,7 @@ describe SystemUserRegistrationsController do
     it "[33.1] Reset password successful" do
       goto_reset_password_and_update
       expect(page.current_path).to eq edit_system_user_passwords_path
-      expect_have_content(I18n.t("success.reset_password"))
+      expect_have_content(I18n.t("success.reset_password").titleize)
     end
 
     it "[33.2] Reset password fail with wrong password" do
@@ -194,7 +194,7 @@ describe SystemUserRegistrationsController do
       mock_ad_account_profile(true, [1003])
       goto_reset_password_and_update("#{system_user.username.upcase}@#{system_user.domain.name}")
       expect(page.current_path).to eq edit_system_user_passwords_path
-      expect_have_content(I18n.t("success.reset_password"))
+      expect_have_content(I18n.t("success.reset_password").titleize)
     end
 
     it "[33.9] Reset password fail with AD casino not match with local" do

@@ -1,0 +1,10 @@
+$('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "change_logs/index_domain_ldap", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
+$(document).ready(function() {
+  index = $('#action-at').index();
+  $('#domain_ldap_change_logs_table').dataTable({
+    "bSortCellsTop": true,
+    "order": [[ index, "desc"]],
+    "pageLength": 50
+  });
+  $("[data-content][data-original-title]").popover({trigger: "hover"});
+});
