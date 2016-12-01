@@ -47,3 +47,5 @@ set(:deploy_to) { "#{env_path}/app_#{stage}" }
 set(:repository) { "ssh://#{repo_host}/opt/laxino/git_repos/#{project.sub('.', '/')}/#{application}.git" }
 
 # Define your cron jobs here
+set :keep_releases, 2
+after 'deploy', 'deploy:cleanup'
