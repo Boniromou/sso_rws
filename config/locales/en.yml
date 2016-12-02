@@ -20,14 +20,13 @@ en:
     invalid_username: Invalid username format. Space and Special Character is not allowed.
     account_not_in_ldap: User not found in database
     invalid_domain: Invalid domain format
-    domain_duplicated: Duplicate Domain
+    domain_duplicated: Create Domain failed; Domain duplicated.
     create_system_user_confirm: Are you sure to create system user [%{username}]?
     invalid_ldap_mapping: Domain-LDAP Configuration not found; Please contact technical support.
-    ldap_duplicated: Duplicate LDAP
-    invalid_ldap_name: Invalid LDAP name
-    invalid_params: Input cannot be blank
+    ldap_duplicated: Operation failed; LDAP duplicated.
+    invalid_ldap_name: Operation failed; Invalid LDAP name.
+    invalid_params: Operation failed; Missing required parameter.
   title:
-    title: User Management
     login_title: Login
     signup_title: Registration
     reset_password_title: Change Password
@@ -66,6 +65,8 @@ en:
     delete: Delete
     add: Add
     list: List
+    product_portfolio: GameSource
+    product_name: User Management
   user:
     user_name: User Name
     password: Password
@@ -179,13 +180,13 @@ en:
     host: Host
     port: Port
     account: Account
-    base_dn: Base Dn
+    base_dn: base_dn
     admin_account: Admin Account
-    create_new: Create New
+    create_new: Create Domain-LDAP
     account_password: Account Password
     admin_password: Admin Password
-    create_domain_ldap_success: Create Domain, LDAP successfully !
-    edit_domain_ldap_success: Edit Domain, LDAP successfully !
+    create_domain_ldap_success: Create Domain-LDAP successfully !
+    edit_domain_ldap_success: Edit Domain-LDAP successfully !
     create: Create
     edit: Edit
   domain_casino:
