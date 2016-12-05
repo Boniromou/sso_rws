@@ -31,7 +31,7 @@
           <% if policy(:login_history).list? %>
             <li id="nav_list_login_histories">
               <%= link_to login_histories_path, :title => t("login_history.list"), :remote => true do %>
-                <i class="fa fa-lg fa-fw fa fa-list"></i> <span class="menu-item-parent"><%= t("login_history.list") %></span>
+                <i class="fa fa-lg fa-fw fa fa-history"></i> <span class="menu-item-parent"><%= t("login_history.list") %></span>
               <% end %>
             </li>
           <% end %>

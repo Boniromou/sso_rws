@@ -31,7 +31,7 @@ module Rigi
       auth_source = domain.auth_source
       if auth_source.blank?
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. invalid domain ldap mapping"
-        raise InvalidLogin.new(I18n.t("alert.invalid_ldap_mapping"))
+        raise InvalidLogin.new("alert.invalid_ldap_mapping")
       end
 
       system_user = SystemUser.where(:username => login[:username], :domain_id => domain.id, :auth_source_id => auth_source.id).first
@@ -60,7 +60,14 @@ module Rigi
       system_user
     end
 
-    def reset_password!(username_with_domain, old_password, new_password, app_name)
+    def reset_password!(params, app_name)
+      username_with_domain = params[:username].downcase
+      old_password = params[:old_password]
+      new_password = params[:new_password]
+      raise Rigi::InvalidResetPassword.new("password_page.invalid_system") if app_name.blank?
+      raise Rigi::InvalidLogin.new("alert.invalid_login") if username_with_domain.blank? || old_password.blank?
+      raise Rigi::InvalidResetPassword.new("password_page.invalid_password_format") if new_password.blank?
+      raise Rigi::InvalidResetPassword.new("password_page.confirm_password_fail") if new_password != params[:password_confirmation]
       system_user = authenticate!(username_with_domain, old_password, app_name, false)
       auth_source = system_user.domain.auth_source
       auth_source = auth_source.becomes(auth_source.auth_type.constantize)

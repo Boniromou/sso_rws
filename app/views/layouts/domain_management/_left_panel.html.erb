@@ -23,7 +23,7 @@
           <% if policy(:domain).index_domain_ldap? %>
             <li id="nav_domain">
               <%= link_to domains_path, :title => t("domain_ldap.list"), :remote => true do %>
-                <i class="fa fa-lg fa-fw fa fa-list"></i> <span class="menu-item-parent"><%= t("domain_ldap.list") %></span>
+                <i class="fa fa-lg fa-fw fa fa-edit"></i> <span class="menu-item-parent"><%= t("domain_ldap.list") %></span>
               <% end %>
             </li>
           <% end %>

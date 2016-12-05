@@ -164,11 +164,12 @@ module ApplicationHelper
   def display_from_to(hash)
     return '' if hash.blank?
     text = ''
-    hash.each do |key, value|
-      value = '******' if key.include?('password')
+    hash.each_with_index do |(key, value), index|
+      value = '******' if key.include?('password') && value.present?
       text += "#{key}:#{value}; "
+      text += "<br/>" if index % 2 != 0
     end
-    text.chomp('; ')
+    text
   end
 
   def gen_select_options(targets)
