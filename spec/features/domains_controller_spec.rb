@@ -152,7 +152,7 @@ describe DomainsController do
     end
   end
 
-  describe "[23] Domain-LDAP change log" do
+  describe "[34] Domain-LDAP change log" do
     def check_change_log(domain, action, from, to, action_by)
       within("table#domain_ldap_change_logs_table tbody tr:nth-child(1)") {
         expect_have_content(domain)
@@ -167,13 +167,13 @@ describe DomainsController do
       @domain_data = domain_data
     end
 
-    it "[23.1] No Premission for List Domain Licensee mapping change log" do
+    it "[34.1] No Premission for List Domain Licensee mapping change log" do
       login_user([@permission_list, @permission_create, @permission_update])
       visit domains_path
       expect(has_text?(I18n.t("general.log"))).to eq false
     end
 
-    it "[23.2] List Domain Licensee mapping change log" do
+    it "[34.2] List Domain Licensee mapping change log" do
       login_with_permission
       visit index_domain_ldap_change_logs_path
       titles = [I18n.t('domain.name'), I18n.t('change_log.action'), I18n.t('change_log.from'), I18n.t('change_log.to'), I18n.t('change_log.action_at'), I18n.t('change_log.action_by')]
@@ -182,7 +182,7 @@ describe DomainsController do
       end
     end
 
-    it "[23.3] Create change log for create Domain Licensee mapping" do
+    it "[34.3] Create change log for create Domain Licensee mapping" do
       login_with_permission
       visit new_domain_path
       fill_in_form
@@ -191,7 +191,7 @@ describe DomainsController do
       check_change_log(@domain_data["domain_name"].strip, "Create", "", to, "#{@system_user.username}@#{@system_user.domain.name}")
     end
 
-    it "[23.4] Create change log for edit Domain Licensee mapping" do
+    it "[34.4] Create change log for edit Domain Licensee mapping" do
       auth_source = create(:auth_source)
       domain = create(:domain, name: "1003.com", auth_source_id: auth_source.id)
       login_with_permission
@@ -207,7 +207,7 @@ describe DomainsController do
     end
   end
 
-  describe "[24] Edit Domain-LDAP" do
+  describe "[35] Edit Domain-LDAP" do
     def edit_form(ldap_name="hqidc_ldap")
       fill_in "domain_auth_source_name", :with => ldap_name
       click_link_or_button I18n.t("general.confirm")
@@ -221,7 +221,7 @@ describe DomainsController do
       find("#edit_#{@domain.id}").click
     end
 
-    it "[24.1] Edit domain-LDAP success" do
+    it "[35.1] Edit domain-LDAP success" do
       edit_form
       check_flash_message I18n.t('domain_ldap.edit_domain_ldap_success')
       expect(current_path).to eq(domains_path)
@@ -233,23 +233,23 @@ describe DomainsController do
       }
     end
 
-    it "[24.2] Audit for Edit domain-LDAP" do
+    it "[35.2] Audit for Edit domain-LDAP" do
       edit_form
       check_success_audit_log("domain_ldap", 'edit', 'edit', "#{@system_user.username}@#{@system_user.domain.name}")
     end
 
-    it "[24.3] Edit domain-LDAP fail with duplicated LDAP" do
+    it "[35.3] Edit domain-LDAP fail with duplicated LDAP" do
       create(:auth_source, name: "hqidc_ldap")
       edit_form
       check_flash_message I18n.t('alert.ldap_duplicated')
     end
 
-    it "[24.4] Edit domain-LDAP fail with missing input" do
+    it "[35.4] Edit domain-LDAP fail with missing input" do
       edit_form("")
       check_flash_message I18n.t('alert.invalid_params')
     end
 
-    it "[24.5] Retrieve domain-LDAP data success and disable the domain textbox" do
+    it "[35.5] Retrieve domain-LDAP data success and disable the domain textbox" do
       domain = {
                  "domain_domain_name" => @domain.name,
                  "domain_auth_source_name" => @auth_source.name,

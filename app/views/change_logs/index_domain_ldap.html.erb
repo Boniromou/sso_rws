@@ -1,4 +1,4 @@
-<%= breadcrumbs([ t("domain_ldap.list"), t("general.log")], 'fa fa-lg fa-fw fa-list') -%>
+<%= breadcrumbs([ t("domain_ldap.list"), t("general.log")], 'fa fa-lg fa-fw fa-edit') -%>
 <%= table_tabs(t("general.log"), 
 [ t("general.list"), domains_path, policy(:domain).index_domain_ldap? ],
 [ t("general.log"), index_domain_ldap_change_logs_path, policy(:change_log).index_domain_ldap? ]) %>
@@ -9,12 +9,12 @@
       <table id="domain_ldap_change_logs_table" class="table table-bordered table-striped fit_table">
         <thead>
           <tr>
-            <th class="col-md-1"><%= t("domain.name") %></th>
-            <th class="col-md-3"><%= t("change_log.from") %></th>
-            <th class="col-md-3"><%= t("change_log.to") %></th>
-            <th class="col-md-1"><%= t("change_log.action") %></th>
-            <th class="col-md-1" id="action-at"><%= t("change_log.action_at") %></th>
-            <th class="col-md-1"><%= t("change_log.action_by") %></th>
+            <th style="width: 10%;"><%= t("domain.name") %></th>
+            <th style="width: 30%;"><%= t("change_log.from") %></th>
+            <th style="width: 30%;"><%= t("change_log.to") %></th>
+            <th style="width: 7%;"><%= t("change_log.action") %></th>
+            <th style="width: 11%;" id="action-at"><%= t("change_log.action_at") %></th>
+            <th style="width: 12%;"><%= t("change_log.action_by") %></th>
           </tr>
         </thead>
 

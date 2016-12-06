@@ -18,7 +18,7 @@
         <td>
           <%= select_tag "licensee_id", options_for_select(@list_licensee), class: "select2", style: "text-align:center width:100%" %>
         </td>
-        <td id="licensee_casinos"></td>
+        <td id="licensee_casinos" style="font-size: 13px;"></td>
         <td></td>
         <td>
           <%= button_tag("add", id: "create_domain_licensee", title: t("general.add"), class: "btn btn-primary", remote: true, disabled: (@list_domain.blank? || @list_licensee.blank?)) do %>
