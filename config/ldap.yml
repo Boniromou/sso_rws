@@ -1,13 +1,13 @@
 hqidc_ldap: &hqidc_ldap
   domain_name: 'mo.laxino.com'
   name: 'hqidc_ldap'
-  host: 'dc02.laxino.com'
+  host: 'modc03.mo.laxino.com'
   port: 3268
-  account: 'ldap@laxino.com'
-  password: 'P@ssword'
-  admin_account: ''
-  admin_password: ''
-  base_dn: 'dc=laxino, dc=com'
+  account: 'svc_idc_ldap@mo.laxino.com'
+  password: '$vc_1dc_1daP'
+  admin_account: 'svc_idc_ldap@mo.laxino.com'
+  admin_password: '$vc_1dc_1daP'
+  base_dn: 'dc=mo, dc=laxino, dc=com'
 
 twidc_ldap: &twidc_ldap
   domain_name: '777iportal.local'

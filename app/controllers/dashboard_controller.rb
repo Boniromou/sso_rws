@@ -7,7 +7,7 @@ class DashboardController < ApplicationController
   end
 
   def user_management
-    @system_users = SystemUser.includes(:domain).inactived
+    @system_users = policy_scope(SystemUser.includes(:domain).inactived)
     @unshow_operation = true
     authorize :dashboard, :user_management?
     response_client

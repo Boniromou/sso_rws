@@ -59,7 +59,7 @@ class SystemUser < ActiveRecord::Base
   end
 
   def self.inactived
-    where("status = ?", "inactived")
+    where(status: "inactived")
   end
 
   def update_roles(role_ids)

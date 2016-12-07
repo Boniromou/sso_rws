@@ -43,7 +43,11 @@ class SystemUserPolicy < ApplicationPolicy
         users = scope.joins(:casinos_system_users).where("casinos_system_users.casino_id in (?)", system_user.active_casino_ids).group("system_users.id").all
 
         users.delete_if do |user|
-          (user.active_casino_ids - system_user.active_casino_ids).any?
+          if user.activated?
+            (user.active_casino_ids - system_user.active_casino_ids).any?
+          else
+            (user.casino_ids - system_user.active_casino_ids).any?
+          end
         end
       end
     end
