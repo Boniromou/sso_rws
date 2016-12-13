@@ -108,7 +108,7 @@ production3:
   database: rigi_sso_production
   username: rigi
   password: rigi.pa$$w0rd123
-  host: mo-prd-sso-vdb01.laxigames.local
+  host: mo-prd-sso-vdb01.lb.laxigames.local
   port: 6033
 
 production4:
