@@ -35,8 +35,9 @@ class AuthSourceLdap < AuthSource
     ('"' + str + '"').encode("utf-16le").force_encoding("utf-8")
   end
 
-  def reset_password!(login, new_password)
+  def reset_password!(login, new_password, old_password)
     pwd = str2unicodePwd(new_password)
+    old_pwd = str2unicodePwd(old_password)
     options = { :host => self.host,
                 :port => 636,
                 :encryption => :simple_tls,
@@ -51,7 +52,11 @@ class AuthSourceLdap < AuthSource
       search_filter = Net::LDAP::Filter.eq("userPrincipalName", login)
       result = ldap.search( :base => self.base_dn, :filter => search_filter, :return_result => true, :scope => self.search_scope || Net::LDAP::SearchScope_WholeSubtree)
       ad_user = result.first
-      rst = ldap.modify :dn => ad_user.dn, :operations => [[:replace, :unicodePwd, pwd]]
+      opts = [
+        [:delete, :unicodePwd, [old_pwd]],
+        [:add, :unicodePwd, [pwd]]
+      ]
+      rst = ldap.modify :dn => ad_user.dn, :operations => opts
       unless rst
         Rails.logger.error "reset password error: #{ldap.get_operation_result}"
         raise Rigi::InvalidResetPassword.new(I18n.t("password_page.invalid_password_format"))

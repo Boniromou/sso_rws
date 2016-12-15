@@ -71,7 +71,7 @@ module Rigi
       system_user = authenticate!(username_with_domain, old_password, app_name, false)
       auth_source = system_user.domain.auth_source
       auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-      auth_source.reset_password!(username_with_domain, new_password)
+      auth_source.reset_password!(username_with_domain, new_password, old_password)
     end
 
     def extract_login_name(login_name)
