@@ -11,7 +11,7 @@ $('div#audit_logs_result').css({ opacity: "0.0" }).html("<%= escape_javascript(r
 
 $(document).ready(function() {
   $('.table').dataTable({
-    "order": [[ 0, "asc"]],
+    "order": [[ 0, "desc"]],
     "pageLength" : 50
   });
 });

@@ -27,7 +27,7 @@ class AuditLog < ActiveRecord::Base
     #
     Rigi::AUDIT_CONFIG.each do |audit_target, _|
       define_method("#{audit_target}_log") do |*args, &block|
-        send(:compose_log, audit_target, *args, &block)
+        send(:compose, *args, &block)
       end
     end
 

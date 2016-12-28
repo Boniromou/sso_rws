@@ -1,0 +1,15 @@
+<%= breadcrumbs([t("domain_licensee.list")], 'fa fa-lg fa-fw fa-list') -%>
+<%= table_tabs(
+  t("domain_licensee.active"),
+  [t("domain_licensee.active"), domain_licensees_path, policy(:domain).index_domain_licensee?],
+  [t("general.log"), create_domain_licensee_change_logs_path, policy(:change_log).index_create_domain_licensee?])
+%>
+
+<div class="tab-content padding-10">
+  <div class="tab-pane fade in active" id="content">
+    <%= render partial: "domain_licensees/domain_licensee_table" %>
+  </div>
+</div>
+
+<%= render "shared/page_setup" %>
+<%= render partial: "shared/nav_setup", locals: { tab_to_activate: "domain_licensee" } %>

@@ -16,13 +16,23 @@ class ChangeLogsController < ApplicationController
 
   end
 
-  def index_create_domain_casino
-    authorize :change_logs, :index_create_domain_casino?
-    @create_domain_casino_change_logs = policy_scope(DomainCasinoChangeLog)
+  def create_domain_licensee
+    authorize :change_logs, :index_create_domain_licensee?
+    @domain_licensee_change_logs = policy_scope(DomainLicenseeChangeLog.includes(:target_casinos))
 
     respond_to do |format|
-      format.html { render file: "change_logs/index_create_domain_casino", :layout => "domain_management", formats: [:html] }
-      format.js { render template: "change_logs/index_create_domain_casino", formats: [:js] }
+      format.html { render file: "change_logs/index_create_domain_licensee", :layout => "domain_management", formats: [:html] }
+      format.js { render template: "change_logs/index_create_domain_licensee", formats: [:js] }
+    end
+  end
+
+  def index_domain_ldap
+    authorize :change_logs, :index_domain_ldap?
+    @domain_ldap_change_logs = DomainChangeLog.all
+
+    respond_to do |format|
+      format.html { render file: "change_logs/index_domain_ldap", :layout => "domain_management", formats: [:html] }
+      format.js { render template: "change_logs/index_domain_ldap", formats: [:js] }
     end
   end
 end

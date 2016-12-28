@@ -22,7 +22,8 @@ apps_info = {
               :GRMS => { :id => 5, :name => 'game_recall' },
               :SV => { :id => 6, :name => 'signature_verifier' },
               :AUDP => { :id => 7, :name => 'audit_portal' },
-              :DAM => {:id => 8, :name => 'asset_management'}
+              :DAM => {:id => 8, :name => 'asset_management'},
+              :TPMS => {:id => 9, :name => 'trade_promotion'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }

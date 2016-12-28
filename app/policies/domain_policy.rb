@@ -6,12 +6,28 @@ class DomainPolicy < ApplicationPolicy
     @admin_casino_use_only = true
   end
 
-  def index?
-    permitted?(:domain, :list)
+  def index_domain_licensee?
+    permitted?(:domain_licensee_mapping, :list)
   end
 
-  def create?
-    permitted?(:domain, :create)
+  def create_domain_licensee?
+    permitted?(:domain_licensee_mapping, :create)
+  end
+
+  def delete_domain_licensee?
+    permitted?(:domain_licensee_mapping, :delete)
+  end
+
+  def index_domain_ldap?
+    permitted?(:domain_ldap, :list)
+  end
+
+  def create_domain_ldap?
+    permitted?(:domain_ldap, :create)
+  end
+
+  def update_domain_ldap?
+    permitted?(:domain_ldap, :update)
   end
 
   class Scope < Scope
@@ -19,7 +35,7 @@ class DomainPolicy < ApplicationPolicy
       if system_user.is_admin? || system_user.has_admin_casino?
         scope.all
       else
-        scope.where("domains.id in (?)", DomainsCasino.where(:casino_id => system_user.active_casino_ids).select(:domain_id).uniq.pluck(:domain_id))
+        scope.includes(:casinos).where("casinos.id in (?)", system_user.active_casino_ids)
       end
     end
   end

@@ -14,8 +14,7 @@ module Rigi
     #   authenticate('licuser01@mo.laxino.com')
     # => raise InvalidLogin.new('alert.account_no_role')
     #
-    def authenticate!(username_with_domain, password, app_name)
-      auth_source = AuthSource.first
+    def authenticate!(username_with_domain, password, app_name, is_cache=true)
       login = extract_login_name(username_with_domain)
 
       if login.nil?
@@ -27,6 +26,12 @@ module Rigi
       if domain.nil?
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. Not a registered account with existing domain"
         raise InvalidLogin.new("alert.invalid_login")
+      end
+
+      auth_source = domain.auth_source
+      if auth_source.blank?
+        Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. invalid domain ldap mapping"
+        raise InvalidLogin.new("alert.invalid_ldap_mapping")
       end
 
       system_user = SystemUser.where(:username => login[:username], :domain_id => domain.id, :auth_source_id => auth_source.id).first
@@ -43,13 +48,30 @@ module Rigi
         validate_role_status!(system_user, app_name)
         validate_account_status!(system_user)
         validate_account_casinos!(system_user)
-        system_user.cache_info(app_name)
+        if is_cache
+          system_user.cache_info(app_name)
+          system_user.insert_login_history(app_name)
+        end
       else
         Rails.logger.error "SystemUser[username=#{username_with_domain}] Login failed. Authentication failed"
         raise InvalidLogin.new("alert.invalid_login")
       end
 
       system_user
+    end
+
+    def reset_password!(params, app_name)
+      username_with_domain = params[:username].downcase
+      old_password = params[:old_password]
+      new_password = params[:new_password]
+      raise Rigi::InvalidResetPassword.new("password_page.invalid_system") if app_name.blank?
+      raise Rigi::InvalidLogin.new("alert.invalid_login") if username_with_domain.blank? || old_password.blank?
+      raise Rigi::InvalidResetPassword.new("password_page.invalid_password_format") if new_password.blank?
+      raise Rigi::InvalidResetPassword.new("password_page.confirm_password_fail") if new_password != params[:password_confirmation]
+      system_user = authenticate!(username_with_domain, old_password, app_name, false)
+      auth_source = system_user.domain.auth_source
+      auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+      auth_source.reset_password!(username_with_domain, new_password, old_password)
     end
 
     def extract_login_name(login_name)

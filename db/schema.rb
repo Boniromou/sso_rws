@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160610063028) do
+ActiveRecord::Schema.define(:version => 20161121072007) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -45,17 +45,18 @@ ActiveRecord::Schema.define(:version => 20160610063028) do
   end
 
   create_table "auth_sources", :force => true do |t|
-    t.string  "auth_type",        :limit => 30, :default => "",    :null => false
-    t.string  "name",             :limit => 60, :default => "",    :null => false
+    t.string  "auth_type",        :limit => 30, :default => "", :null => false
+    t.string  "name",             :limit => 60, :default => "", :null => false
     t.string  "host",             :limit => 60
     t.integer "port"
     t.string  "account",          :limit => 60
     t.string  "account_password", :limit => 60
     t.string  "base_dn"
-    t.boolean "is_internal",                    :default => false, :null => false
     t.string  "encryption"
     t.string  "method"
     t.string  "search_scope"
+    t.string  "admin_account",    :limit => 60
+    t.string  "admin_password",   :limit => 60
   end
 
   create_table "casinos", :force => true do |t|
@@ -93,32 +94,40 @@ ActiveRecord::Schema.define(:version => 20160610063028) do
   end
 
   create_table "domains", :force => true do |t|
-    t.string   "name",       :limit => 45, :null => false
-    t.datetime "created_at",               :null => false
-    t.datetime "updated_at",               :null => false
-  end
-
-  add_index "domains", ["name"], :name => "index_domains_on_name", :unique => true
-
-  create_table "domains_casinos", :force => true do |t|
-    t.integer  "domain_id",                    :null => false
-    t.integer  "casino_id",                    :null => false
+    t.string   "name",           :limit => 45, :null => false
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
-    t.boolean  "status",     :default => true
+    t.integer  "auth_source_id"
   end
 
-  add_index "domains_casinos", ["casino_id"], :name => "fk_DomainsCasinos_CasinoId"
-  add_index "domains_casinos", ["domain_id", "casino_id"], :name => "index_domains_casinos_on_domain_id_and_casino_id", :unique => true
+  add_index "domains", ["auth_source_id"], :name => "index_domains_on_auth_source_id", :unique => true
+  add_index "domains", ["name"], :name => "index_domains_on_name", :unique => true
 
   create_table "licensees", :force => true do |t|
     t.string   "name",        :limit => 45, :null => false
     t.string   "description"
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
+    t.integer  "domain_id"
   end
 
+  add_index "licensees", ["domain_id"], :name => "fk_Licensees_DomainId"
   add_index "licensees", ["name"], :name => "index_licensees_on_name", :unique => true
+
+  create_table "login_histories", :force => true do |t|
+    t.integer  "system_user_id",                                   :null => false
+    t.integer  "domain_id",                                        :null => false
+    t.integer  "app_id",                                           :null => false
+    t.string   "detail",         :limit => 1024, :default => "{}"
+    t.datetime "sign_in_at",                                       :null => false
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+  end
+
+  add_index "login_histories", ["app_id"], :name => "index_login_histories_on_app_id"
+  add_index "login_histories", ["domain_id"], :name => "index_login_histories_on_domain_id"
+  add_index "login_histories", ["sign_in_at"], :name => "index_login_histories_on_sign_in_at"
+  add_index "login_histories", ["system_user_id"], :name => "index_login_histories_on_system_user_id"
 
   create_table "permissions", :force => true do |t|
     t.string   "name",       :null => false

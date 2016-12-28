@@ -1,0 +1,35 @@
+$('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "domain_licensees/index", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
+
+$(document).ready(function() {
+  index = $('#updated-at').index();
+  $('#domain_licensees').dataTable({
+    "bSortCellsTop": true,
+    "order": [[ index, "desc"]],
+    "pageLength": 50
+  });
+
+  $('#licensee_casinos').html(get_casinos($('#licensee_id').val()));
+  $('#licensee_id').on("change", function(){
+	  $('#licensee_casinos').html(get_casinos(this.value));
+	});
+
+  $("#domain_id").select2({width: '100%'});
+  $("#licensee_id").select2({width: '100%'});
+
+	function get_casinos(licensee_id){
+		if(!licensee_id){
+			return '';
+		}
+		return ($.ajax({
+      type: 'GET',
+      url: '<%= get_casinos_domain_licensees_path %>',
+      dataType: 'json',
+      global: false,
+      async: false,
+      data: {licensee_id: licensee_id},
+      success: function(data) { return data; }
+    }).responseText);
+	}
+});
+
+<%= render :partial => "shared/flash_message", :formats => [ :js ] %>

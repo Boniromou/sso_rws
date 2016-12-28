@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     options = args.extract_options!
     audit_target = options[:audit_target] || controller_name.singularize
     audit_action = options[:audit_action] || action_name
-    action_by = options[:action_by] || current_system_user.username
+    action_by = options[:action_by] || "#{current_system_user.username}@#{current_system_user.domain.name}"
     sid = options[:session_id] || get_sid
     client_ip = options[:ip] || get_client_ip
     description = options[:description]

@@ -1,14 +1,18 @@
 class ChangeLogPolicy < ApplicationPolicy
-  def index_create_domain_casino?
-    permitted?(:domain_casino_mapping, :list_log)
-  end
-
   def index?
     permitted?(:system_user, :list_edit_role_change_log)
   end
 
   def create_system_user?
     permitted?(:system_user, :list_create_user_change_log)
+  end
+
+  def index_create_domain_licensee?
+    permitted?(:domain_licensee_mapping, :list_log)
+  end
+
+  def index_domain_ldap?
+    permitted?(:domain_ldap, :list_log)
   end
 
   class Scope < Scope

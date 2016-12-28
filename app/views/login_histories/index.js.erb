@@ -1,0 +1,18 @@
+<% if params[:commit].present? %>
+	$('div#login_histories_result').css({ opacity: "0.0" }).html("<%= escape_javascript(render :partial => "login_histories/login_history_table", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
+
+	$(document).ready(function() {
+		index = $('#sign_in_at').index();
+	  $('.table').dataTable({
+	    "order": [[ index, "desc"]],
+	    "pageLength" : 50
+	  });
+	});
+	
+	<% if defined? @search_time_range_remark %>
+		$("input[name='start_time']").val("<%= @default_start_time %>");
+		$("input[name='end_time']").val("<%= @default_end_time %>");
+	<% end %>
+<% else %>
+	$('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "login_histories/index", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
+<% end %>

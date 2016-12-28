@@ -1,4 +1,4 @@
-<%= breadcrumbs([ t("user.create_system_user") ], 'fa fa-lg fa-fw fa-list') -%>
+<%= breadcrumbs([ t("user.create_system_user") ], 'fa fa-lg fa-fw fa-edit') -%>
 
 <%= table_tabs(t("user.create_system_user"), 
 [ t("user.create_system_user"), new_system_user_path, policy(:system_user).new? ],
@@ -89,8 +89,8 @@
         $("#invalid_error").text("<%= t("alert.invalid_username") %>");
         return false;
       }
-
-      $('#pop_up_dialog #confirm').click(registerPopUpPanel('<%= t("alert.create_system_user_confirm") %>' +' '+ username + '@' + domain + '?'));
+      var msg = getCreateMessage(username.trim() + '@' + domain);
+      $('#pop_up_dialog #confirm').click(registerPopUpPanel(msg));
 
       return false;
     });
@@ -100,6 +100,18 @@
         $('#modal_link').click();
         return false;
       }
+    }
+
+    function getCreateMessage(username) {
+      return ($.ajax({
+        type: 'GET',
+        url: '<%= create_system_user_message_path %>',
+        dataType: 'json',
+        global: false,
+        async: false,
+        data: {username: username},
+        success: function(data) { return data; }
+      }).responseText);
     }
 
     function PopupEnter(event){

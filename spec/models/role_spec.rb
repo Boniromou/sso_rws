@@ -66,6 +66,7 @@ describe Role do
     end
 
     it "roles no data" do
+      RolePermission.delete_all
       Role.delete_all
       roles = Role.get_apps_roles
       expect(roles).not_to be_nil

@@ -3,9 +3,9 @@
       <div id="logo-group">
         <!-- PLACE YOUR LOGO HERE -->
         <!--span id="logo"> <img src="img/logo.png" alt="SmartAdmin"> </span-->
-        <span id="logo">
+        <span id="logo" style="width: 250px">
           <!--%= image_tag("mylogo.png", alt: "Cirrus") %-->
-          <p> Cirrus / <%= t("title.title") %> </p>
+          <p> <%= t("general.product_portfolio") %> / <%= t("general.product_name") %> </p>
         </span>
         <!-- END LOGO PLACEHOLDER -->
 
@@ -75,7 +75,7 @@
           </li>
 
           <!-- domain_management -->
-          <% if policy(:domain).index? || policy(:domain_casino).index? %>
+          <% if policy(:domain).index_domain_ldap? || policy(:domain).index_domain_licensee? %>
             <li class=<%= selected_page_tab == "domain_management" ? "active" : "" %>>
               <%= link_to t("header.domain_management"), domain_management_root_path, :id => "domain_management_link" %>
             </li>

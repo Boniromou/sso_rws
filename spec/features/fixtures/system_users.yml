@@ -5,3 +5,10 @@
   admin: true
   auth_source_id: 1
   domain_id: 1
+3:
+  id: 3
+  username: 'user01'
+  status: true
+  admin: false
+  auth_source_id: 1
+  domain_id: 1

@@ -27,10 +27,12 @@ module Rigi
 
   class InvalidUsername < PortalError; end
   class InvalidDomain < PortalError; end
+  class InvalidAuthSource < PortalError; end
   class RegisteredAccount <  PortalError; end
   class AccountNotInLdap <  PortalError; end
   class AccountNoCasino < PortalError; end
-
-  class DomainCasinoNotFound < PortalError; end
+  class CreateDomainLicenseeFail < PortalError; end
+  class DeleteDomainLicenseeFail < PortalError; end
+  class InvalidResetPassword < PortalError; end
 
 end

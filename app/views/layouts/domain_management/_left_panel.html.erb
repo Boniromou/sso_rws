@@ -20,20 +20,20 @@
             <% end %>
           </li>
 
-          <% if policy(:domain).index? %>
+          <% if policy(:domain).index_domain_ldap? %>
             <li id="nav_domain">
-              <%= link_to domains_path, :title => t("domain.list"), :remote => true do %>
-                <i class="fa fa-lg fa-fw fa fa-list"></i> <span class="menu-item-parent"><%= t("domain.list") %></span>
+              <%= link_to domains_path, :title => t("domain_ldap.list"), :remote => true do %>
+                <i class="fa fa-lg fa-fw fa fa-edit"></i> <span class="menu-item-parent"><%= t("domain_ldap.list") %></span>
               <% end %>
             </li>
           <% end %>
 
-          <% if policy(:domain_casino).index? %>
-            <li id="nav_domain_casino">
-              <%= link_to(domain_casinos_path, title: t("domain_casino.list"), remote: true) do %>
+          <% if policy(:domain).index_domain_licensee? %>
+            <li id="nav_domain_licensee">
+              <%= link_to(domain_licensees_path, title: t("domain_licensee.list"), remote: true) do %>
                 <i class="fa fa-lg fa-fw fa fa-list"></i>
                 <span class="menu-item-parent">
-                  <%= t("domain_casino.list") %>
+                  <%= t("domain_licensee.list") %>
                 </span>
               <% end %>
             </li>

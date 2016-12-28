@@ -1,21 +1,22 @@
 module SearchTimeLimitation
+  extend self
+  
   def search_time_range_limitation(start_day_str, end_day_str, search_day_range)
     remark = true
     if start_day_str.blank? && end_day_str.blank?
-      time_now = Time.now
-      end_time = Time.parse("#{time_now.year}-#{time_now.month}-#{time_now.day}" + " 23:59:59").utc
-      start_time = end_time - search_day_range * 86400
+      start_time = nil
+      end_time = nil
     elsif start_day_str.blank?
-      end_time = Time.parse(end_day_str + " 23:59:59").utc
-      start_time = end_time - search_day_range * 86400
+      end_time = Time.parse(end_day_str).utc + 1.days
+      start_time = end_time - search_day_range.days
     elsif end_day_str.blank?
       start_time = Time.parse(start_day_str).utc
-      end_time = start_time + search_day_range * 86400
+      end_time = start_time + search_day_range.days
     else
       remark = false
       start_time = Time.parse(start_day_str).utc
-      end_time = Time.parse(end_day_str + " 23:59:59").utc
-      if ((end_time - start_time) / 86400).to_i > search_day_range
+      end_time = Time.parse(end_day_str).utc + 1.days
+      if (end_time - start_time) > search_day_range.days
         start_time = nil
         end_time = nil
       end

@@ -9,6 +9,8 @@ SsoRws::Application.routes.draw do
     get "/logout" => "system_user_sessions#destroy", :as => :logout
     get "/register" => "system_user_registrations#new", :as => :new_system_user_registration
     post "/register" => "system_user_registrations#create"
+    get "/passwords" => "system_user_registrations#edit", :as => :edit_system_user_passwords
+    post "/passwords" => "system_user_registrations#update"
   end
 
   post "/internal/system_user_sessions" => "internal/system_user_sessions#create"
@@ -18,29 +20,31 @@ SsoRws::Application.routes.draw do
   get 'role_management' => 'dashboard#role_management', :as => :role_management_root
   get 'domain_management' => 'dashboard#domain_management', :as => :domain_management_root
 
-  resources :domains, :only => [:index, :create]
-
-  resources :domain_casinos, :only => [:index, :create]
-  post "domain_casinos/inactive/:id" => "domain_casinos#inactive", as: :domain_casino_inactive
+  resources :domains,  :except => [:destroy, :show]
+  resources :domain_licensees, :only => [:index, :create] do
+    collection do
+      get 'get_casinos'
+      post 'remove'
+    end
+  end
 
   get '/system_users/export' => 'system_users#export'
   get '/roles/export' => 'roles#export'
+  get '/system_users/create_system_user_message' => 'system_users#create_system_user_message', as: :create_system_user_message
   resources :roles, :only => [:index, :show]
   resources :system_users, :only => [:index, :show, :new, :create] do
     member do
-      #post 'lock'
-      #post 'unlock'
       get 'edit_roles'
       post 'update_roles'
     end
   end
 
-  get "change_logs/index_create_domain_casino" => "change_logs#index_create_domain_casino", as: :change_logs_create_domain_casinos
-
   resources :change_logs, :only => [:index] do
     collection do
       get 'create_system_user'
       get 'index_edit_role'
+      get 'create_domain_licensee'
+      get 'index_domain_ldap'
     end
   end
 
@@ -55,6 +59,8 @@ SsoRws::Application.routes.draw do
   resources :audit_logs, :only => [:show] do
     match 'search', :via => [:get, :post], on: :collection
   end
+
+  resources :login_histories, :only => [:index]
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.

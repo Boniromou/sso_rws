@@ -1,24 +1,14 @@
 FactoryGirl.define do
   factory :auth_source do
-    id 1
+    sequence(:id)
     auth_type "AuthSourceLdap"
-    name "Laxino LDAP"
+    sequence(:name) { |n| "Laxino LDAP#{n}" }
     host "0.0.0.0"
     port 389
-    account ''
-    account_password ""
+    account "test@example.com"
+    account_password "cc123456"
     base_dn "DC=test,DC=example,DC=com"
-
-    trait :internal do
-      id 1
-      name "Laxino LDAP"
-      is_internal true
-    end
-
-    trait :external do
-      id  2
-      name "EXT LDAP"
-      is_internal false
-    end
+    admin_account "admin@example.com"
+    admin_password "cc123456"
   end
 end

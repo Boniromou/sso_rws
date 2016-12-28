@@ -1,7 +1,7 @@
 require "feature_spec_helper"
 
 describe ChangeLogsController do
-  fixtures :licensees, :domains, :casinos, :apps, :permissions, :role_permissions, :roles
+  fixtures :apps, :permissions, :role_permissions, :roles
 
   before(:each) do
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
@@ -15,7 +15,7 @@ describe ChangeLogsController do
     @system_user_5 = create(:system_user, :roles => [it_support_role], :with_casino_ids => [1000])
   end
 
-  describe "[25] Change log for create system user" do
+  describe "[25] Change log for create system user", :js => true do
         
     def fill_in_user_info(username, domain)
       fill_in "system_user_username", :with => username
@@ -31,11 +31,12 @@ describe ChangeLogsController do
       expect(col_headers[3].text).to eq(I18n.t("change_log.action_by"))
     end
 
-    def test_click_create_btn
+    def test_click_create_btn(username)
       page.find("#modal_link").click
+      wait_for_ajax
       expect(page).to have_content I18n.t("general.cancel")
       expect(page).to have_content I18n.t("general.confirm")
-      expect(page).to have_content I18n.t("alert.create_system_user_confirm")
+      expect(page).to have_content I18n.t("alert.create_system_user_confirm", :username => username)
       click_button I18n.t("general.confirm")
     end
 
@@ -82,14 +83,14 @@ describe ChangeLogsController do
       login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
       visit new_system_user_path
       fill_in_user_info('abc', 'example.com')
-      test_click_create_btn
+      test_click_create_btn('abc@example.com')
       cls = SystemUserChangeLog.by_action('create')
       expect(cls.length).to eq 1
       expect(cls[0].created_at).to be_kind_of(Time)
       expect(cls[0].action).to eq "create"
       expect(cls[0].target_username).to eq 'abc'
       expect(cls[0].target_domain).to eq 'example.com'
-      expect(cls[0].action_by['username']).to eq @system_user_4.username
+      expect(cls[0].action_by['username']).to eq "#{@system_user_4.username}@#{@system_user_4.domain.name}"
       expect(cls[0].action_by['casino_ids']).to eq @system_user_4.active_casino_ids  
       system_user = SystemUser.where(:username => 'abc').first
       test_target_casinos(system_user, cls[0])

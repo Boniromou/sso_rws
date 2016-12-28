@@ -5,6 +5,4 @@ class Casino < ActiveRecord::Base
   has_many :properties
   has_many :casinos_system_users
   has_many :system_users, :through => :casinos_system_users
-  has_many :domains_casinos
-  has_many :domains, :through => :domains_casinos
 end

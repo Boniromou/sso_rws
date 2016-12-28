@@ -48,8 +48,6 @@ class SystemUser < ActiveRecord::Base
   end
 
   def self.create_by_username_and_domain!(username, domain)
-    username = username.downcase
-    domain = domain.downcase
     SystemUser.validate_account!(username, domain)
     SystemUser.register_account!(username, domain)
   end
@@ -61,7 +59,7 @@ class SystemUser < ActiveRecord::Base
   end
 
   def self.inactived
-    where("status = ?", "inactived")
+    where(status: "inactived")
   end
 
   def update_roles(role_ids)
@@ -121,7 +119,7 @@ class SystemUser < ActiveRecord::Base
   end
 
   def update_ad_profile
-    casino_ids = self.domain.active_casino_ids
+    casino_ids = self.domain.get_casino_ids
     profile = self.auth_source.retrieve_user_profile(username, self.domain.name, casino_ids)
     self.status = profile[:status]
     update_casinos(profile[:casino_ids])
@@ -143,21 +141,23 @@ class SystemUser < ActiveRecord::Base
 
   def self.sync_user_info
     Rails.logger.info "Begin to Sync system user info"
-    auth_source = AuthSource.first
-    auth_source = auth_source.becomes(auth_source.auth_type.constantize)
     system_users = SystemUser.all
 
     if system_users.present?
       system_users.each do |system_user|
         begin
-          profile = auth_source.retrieve_user_profile(system_user.username, system_user.domain.name, system_user.domain.get_casino_ids)
+          domain = system_user.domain
+          auth_source = domain.auth_source
+          raise "domain[#{domain.name}] auth_source not exist" if auth_source.blank?
+          auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+          profile = auth_source.retrieve_user_profile(system_user.username, domain.name, domain.get_casino_ids)
           if system_user.status != profile[:status]
             system_user.status = profile[:status]
             system_user.save!
           end
           system_user.update_casinos(profile[:casino_ids])
           system_user.cache_profile
-        rescue Exception => e
+        rescue StandardError => e
           Rails.logger.error "Sync system user [#{system_user.inspect}] Exception: #{e.message}"
           Rails.logger.error "#{e.backtrace.inspect}"
           next
@@ -183,6 +183,22 @@ class SystemUser < ActiveRecord::Base
 
   def self.get_export_system_users
     SystemUser.includes(:roles).joins(:domain).select("system_users.*, domains.name as domain_name").order("system_users.updated_at desc")
+  end
+
+  def insert_login_history(app_name)
+    app = App.find_by_name(app_name || APP_NAME)
+    params = {}
+    params[:system_user_id] = self.id
+    params[:domain_id] = self.domain_id
+    params[:app_id] = app.id
+    params[:detail] = {:casino_ids => self.active_casino_ids, :casino_id_names => self.active_casino_id_names}
+    LoginHistory.insert(params)
+  end
+
+  def self.find_by_username_with_domain(username_with_domain)
+    username, domain = username_with_domain.split('@', 2)
+    return nil if username.nil? || domain.nil?
+    SystemUser.includes(:domain).where('system_users.username = ? and domains.name = ?', username, domain).first
   end
 
   private
@@ -255,22 +271,25 @@ class SystemUser < ActiveRecord::Base
   end
 
   def self.validate_username!(username)
-    raise Rigi::InvalidUsername.new(I18n.t("alert.invalid_username")) if username.blank?
+    raise Rigi::InvalidUsername.new(I18n.t("alert.invalid_username")) if username.blank? || username.index(/\s/)
   end
 
   def self.validate_account!(username, domain)
     SystemUser.validate_username!(username)
     Domain.validate_domain!(domain)
 
-    auth_source = AuthSource.first
     domain_obj = Domain.where(:name => domain).first
+    auth_source = domain_obj.auth_source
+    raise Rigi::InvalidAuthSource.new(I18n.t("alert.invalid_ldap_mapping")) if auth_source.blank?
+
     sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id, :domain_id => domain_obj.id).first
     raise Rigi::RegisteredAccount.new(I18n.t("alert.registered_account")) if sys_usr
+    auth_source
   end
 
   def self.register_account!(username, domain)
-    auth_source = AuthSource.first
     domain_obj = Domain.where(:name => domain).first
+    auth_source = domain_obj.auth_source
     auth_source = auth_source.becomes(auth_source.auth_type.constantize)
     casino_ids = domain_obj.get_casino_ids
 

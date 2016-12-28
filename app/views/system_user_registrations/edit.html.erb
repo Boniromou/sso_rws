@@ -1,0 +1,44 @@
+<% content_for :header do %>
+  <%= link_to(t("general.login"), @nav_app_link || login_path, :class => "btn btn-danger") %>
+<% end %>
+
+<!-- ap_reset_password_panel -->
+<%= form_for(:system_user, url: edit_system_user_passwords_path, html: {:class => "smart-form client-form"}) do |f| %>
+  <header><%= t("title.reset_password_title") %></header>
+  <fieldset>
+    <section>
+      <%= f.label(t("user.user_name"), :class => "label") %>
+      <label class="input"> <i class="icon-append fa fa-user"></i>
+        <%= f.text_field(:username, :placeholder => "email@example.com") %>
+        <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> <%=t("login_page.username_tooltip") %></b></label>
+    </section>
+    <section>
+      <%= f.label(t("password_page.old_password"), :class => "label") %>
+      <label class="input"> <i class="icon-append fa fa-lock"></i>
+        <%= f.password_field :old_password, autocomplete: "new-password" %>
+        <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> <%=t("password_page.password_tooltip") %></b> </label>
+    </section>
+    <section>
+      <%= f.label(t("password_page.new_password"), :class => "label") %>
+      <label class="input"> <i class="icon-append fa fa-lock"></i>
+        <%= f.password_field :new_password %>
+        <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> <%=t("password_page.new_password_tooltip") %></b> </label>
+    </section>
+    <section>
+      <%= f.label(t("password_page.confirm_password"), :class => "label") %>
+      <label class="input"> <i class="icon-append fa fa-lock"></i>
+        <%= f.password_field :password_confirmation %>
+        <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> <%=t("password_page.confirm_password_tooltip") %></b> </label>
+    </section>
+    <% if @nav_app_link.present? %>
+      <%= hidden_field_tag "app", @nav_app_link %>
+    <% end %>
+    <% if @app_name.present? %>
+      <%= hidden_field_tag "app_name", @app_name %>
+    <% end %>
+  </fieldset>
+  <footer>
+     <%= render :partial => "shared/caplock_reminder" %>
+     <%= f.submit(t("password_page.update_password"), :class => "btn btn-primary") %>
+  </footer>
+<% end %>

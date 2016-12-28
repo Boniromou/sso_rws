@@ -12,8 +12,8 @@ class SystemUsersController < ApplicationController
     authorize :system_users, :create?
 
     begin
-      username = params[:system_user][:username]
-      domain = params[:system_user][:domain]
+      username = params[:system_user][:username].strip.downcase if params[:system_user][:username].present?
+      domain = params[:system_user][:domain].downcase if params[:system_user][:domain].present?
       auditing do
         SystemUser.create_by_username_and_domain!(username, domain)       
         flash[:success] = I18n.t("success.create_user", :username => (username + '@' + domain)) 
@@ -22,15 +22,15 @@ class SystemUsersController < ApplicationController
     rescue Rigi::InvalidUsername, Rigi::InvalidDomain => e
       Rails.logger.error "SystemUser[username=#{params[:system_user][:username]} , domain=#{params[:system_user][:domain]}] illegal format"
       @errors = e.error_message 
-    rescue Rigi::RegisteredAccount, Rigi::AccountNotInLdap, Rigi::AccountNoCasino => e
+    rescue Rigi::InvalidAuthSource, Rigi::RegisteredAccount, Rigi::AccountNotInLdap, Rigi::AccountNoCasino => e
       Rails.logger.error "SystemUser[username=#{params[:system_user][:username]} , domain=#{params[:system_user][:domain]}] create failed: #{e.error_message}"
       flash[:alert] = e.error_message
-    end  
+    end
     redirect_to new_system_user_path({:errors => @errors}) 
   end
 
   def index
-    @system_users = policy_scope(SystemUser.includes(:casinos))
+    @system_users = policy_scope(SystemUser.includes(:casinos, :domain))
     authorize :system_users, :index?
   end
 
@@ -90,6 +90,10 @@ class SystemUsersController < ApplicationController
     redirect_to system_user_path(@system_user)
   end
 
+  def create_system_user_message
+    render :json => I18n.t("alert.create_system_user_confirm", :username => params[:username])
+  end
+
   private
   def role_ids_param
     role_ids = App.all.map do |app|
@@ -126,7 +130,7 @@ class SystemUsersController < ApplicationController
       cl.target_username = system_user.username
       cl.target_domain = system_user.domain.name
       cl.action = action
-      cl.action_by[:username] = current_system_user.username
+      cl.action_by[:username] = "#{current_system_user.username}@#{current_system_user.domain.name}"
       cl.action_by[:casino_ids] = current_system_user.active_casino_ids
       cl.action_by[:casino_id_names] = current_system_user.active_casino_id_names
       cl.change_detail[:app_name] = app_name

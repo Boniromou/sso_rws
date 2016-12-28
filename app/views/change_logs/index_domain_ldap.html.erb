@@ -1,0 +1,51 @@
+<%= breadcrumbs([ t("domain_ldap.list"), t("general.log")], 'fa fa-lg fa-fw fa-edit') -%>
+<%= table_tabs(t("general.log"), 
+[ t("general.list"), domains_path, policy(:domain).index_domain_ldap? ],
+[ t("general.log"), index_domain_ldap_change_logs_path, policy(:change_log).index_domain_ldap? ]) %>
+
+<div class="tab-content padding-10">
+  <div class="tab-pane fade in active" >
+    <div class="table-responsive">
+      <table id="domain_ldap_change_logs_table" class="table table-bordered table-striped fit_table">
+        <thead>
+          <tr>
+            <th style="width: 10%;"><%= t("domain.name") %></th>
+            <th style="width: 30%;"><%= t("change_log.from") %></th>
+            <th style="width: 30%;"><%= t("change_log.to") %></th>
+            <th style="width: 7%;"><%= t("change_log.action") %></th>
+            <th style="width: 11%;" id="action-at"><%= t("change_log.action_at") %></th>
+            <th style="width: 12%;"><%= t("change_log.action_by") %></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if @domain_ldap_change_logs.blank? %>
+            <tr align="center">
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+          <% else %>
+            <% @domain_ldap_change_logs.each do |cl| %>
+            <tr align="center">
+              <td><%= cl.target_domain %></td>
+              <td><%= raw(display_from_to(cl.change_detail['from'])) %></td>
+              <td><%= raw(display_from_to(cl.change_detail['to'])) %></td>
+              <td><%= display_text(cl.action) %></td>
+              <td><%= format_time(cl.created_at) %></td>
+              <td><%= popover(cl.action_by['username'], t("casino.title"), casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
+            </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+        
+<%= render "shared/page_setup" %>
+<%= render partial: "shared/nav_setup", locals: { tab_to_activate: "create_system_user" } %>

@@ -24,3 +24,5 @@ set :nginx_worker_processes, 2
 set :cluster_port, 10046
 set :virtual_server_name, 'ph-snd-sso-vapp01.laxigames.com'
 set :num_of_servers, 2
+set :keep_releases, 2
+after 'deploy', 'deploy:cleanup'

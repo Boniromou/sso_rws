@@ -112,8 +112,18 @@ module StepHelper
   def expect_have_content(content)
     expect(page).to have_content content
   end
+
+  def expect_have_content_downcase(content, with_chomp=nil)
+    content = content.downcase
+    content = content.chomp(with_chomp) if with_chomp
+    expect(page.body.downcase).to have_content(content)
+  end
 end
 
 RSpec.configure do |config|
   config.include StepHelper, type: :feature
+  
+  config.before(:each, type: :feature) do
+    mock_ad_account_profile(true, [1000])
+  end
 end

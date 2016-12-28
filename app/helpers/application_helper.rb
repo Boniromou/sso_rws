@@ -160,4 +160,21 @@ module ApplicationHelper
   def display_text(text, empty_indicator='-')
     text.nil? ? '-' : text.titleize
   end
+
+  def display_from_to(hash)
+    return '' if hash.blank?
+    text = ''
+    hash.each_with_index do |(key, value), index|
+      value = '******' if key.include?('password') && value.present?
+      text += "#{key}:#{value}; "
+      text += "<br/>" if index % 2 != 0
+    end
+    text
+  end
+
+  def gen_select_options(targets)
+    selection = targets.map { |target| [ target.name.titleize, target.id.to_s ] }
+    selection.unshift([ t("general.all"), "all" ])
+    options_for_select selection
+  end
 end
