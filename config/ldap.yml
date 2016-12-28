@@ -12,23 +12,23 @@ hqidc_ldap: &hqidc_ldap
 twidc_ldap: &twidc_ldap
   domain_name: '777iportal.local'
   name: 'twidc_ldap'
-  host: 'tw-prd-vexdc01.777iportal.local'
+  host: 'tw-prd-exdc01.777iportal.local'
   port: 3268
   account: 'svc_idc_ldap@777iportal.local'
   password: '$vc_1dc_1daP'
-  admin_account: ''
-  admin_password: ''
+  admin_account: 'svc_idc_ldap@777iportal.local'
+  admin_password: '$vc_1dc_1daP'
   base_dn: 'dc=777iportal, dc=local'
 
 phidc_ldap: &phidc_ldap
   domain_name: '888iportal.local'
   name: 'phidc_ldap'
-  host: 'ph-prd-vexdc01.888iportal.local'
+  host: 'ph-prd-exdc01.888iportal.local'
   port: 3268
   account: 'svc_idc_ldap@888iportal.local'
   password: '$vc_1dc_1daP'
-  admin_account: ''
-  admin_password: ''
+  admin_account: 'svc_idc_ldap@888iportal.local'
+  admin_password: '$vc_1dc_1daP'
   base_dn: 'dc=888iportal, dc=local'
 
 moidc_ldap: &moidc_ldap
