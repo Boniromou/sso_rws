@@ -37,11 +37,11 @@ domain_table = sso_db[:domains]
 print "Overwrite? (Y/n): "
 prompt = STDIN.gets.chomp
 if prompt.casecmp('Y') == 0
-  auth_source = auth_sources_table.where(:host => auth_source_info[:host]).first
+  auth_source = auth_sources_table.where(:name => auth_source_info[:name]).first
   sso_db.transaction do
     if auth_source
       auth_source_id = auth_source[:id]
-      auth_sources_table.where(:host => auth_source_info[:host]).update(auth_source_info)
+      auth_sources_table.where(:name => auth_source_info[:name]).update(auth_source_info)
     else
       auth_source_id = auth_sources_table.insert(auth_source_info)
     end
