@@ -34,12 +34,12 @@ phidc_ldap: &phidc_ldap
 moidc_ldap: &moidc_ldap
   domain_name: 'gamesourcecloud.local'
   name: 'moidc_ldap'
-  host: 'mo-prd-vdc01.gamesourcecloud.local'
+  host: 'mo-prd-dc01.gamesourcecloud.local'
   port: 3268
   account: 'svc_idc_ldap@gamesourcecloud.local'
   password: '$vc_1dc_1daP'
-  admin_account: ''
-  admin_password: ''
+  admin_account: 'svc_idc_ldap@gamesourcecloud.local'
+  admin_password: '$vc_1dc_1daP'
   base_dn: 'dc=gamesourcecloud, dc=local'
 
 vcidc_ldap: &vcidc_ldap
