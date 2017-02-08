@@ -29,10 +29,5 @@ class ChangeLogsController < ApplicationController
   def index_domain_ldap
     authorize :change_logs, :index_domain_ldap?
     @domain_ldap_change_logs = DomainChangeLog.all
-
-    respond_to do |format|
-      format.html { render file: "change_logs/index_domain_ldap", :layout => "domain_management", formats: [:html] }
-      format.js { render template: "change_logs/index_domain_ldap", formats: [:js] }
-    end
   end
 end

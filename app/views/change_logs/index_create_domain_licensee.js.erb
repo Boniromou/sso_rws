@@ -6,7 +6,5 @@ $(document).ready(function() {
     "order": [[ index, "desc"]],
     "pageLength": 50
   });
-
-  $("[data-content][data-original-title]").popover({trigger: "hover"});
 });
 <%= render :partial => "shared/flash_message", :formats => [ :js ] %>
