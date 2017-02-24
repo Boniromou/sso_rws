@@ -39,5 +39,5 @@ SsoRws::Application.configure do
   config.action_controller.default_url_options = { :trailing_slash => false }
 
 #  SITE_DOMAIN = ''
-  config.cache_store = :dalli_store, 'dev-cons-app01.rnd.laxino.com:11211', { :namespace => 'cirrus_test', :expires_in => 1.day, :socket_timeout => 3, :compress => true }
+  config.cache_store = :dalli_store, 'hq-int-s3-app01.laxino.local:11211', { :namespace => 'cirrus_test', :expires_in => 1.day, :socket_timeout => 3, :compress => true }
 end
