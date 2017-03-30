@@ -49,8 +49,8 @@ vcidc_ldap: &vcidc_ldap
   port: 3268
   account: 'svc_idc_ldap@laxigames.local'
   password: '$vc_1dc_1daP'
-  admin_account: ''
-  admin_password: ''
+  admin_account: 'svc_idc_ldap@laxigames.local'
+  admin_password: '$vc_1dc_1daP'
   base_dn: 'dc=laxigames, dc=local'
 
 test:
