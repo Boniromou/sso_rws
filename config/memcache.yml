@@ -19,8 +19,8 @@ test:
 
 integration0:
   servers:
-    - int-cons-vapp01.rnd.laxino.com:11211
-    - int-cons-vapp01.rnd.laxino.com:11212
+    - hq-int-s3-vapp01.laxino.local:11211
+    - hq-int-s3-vapp01.laxino.local:11212
   expires: 86400
   namespace: s3_int
   no_block: true
