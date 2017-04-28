@@ -5,7 +5,7 @@ development:
   database: rigi_sso_development
   username: rigi
   password: rigi
-  host: mo-int-generic-db01.rnd.laxino.com
+  host: hq-int-sso-vdb01.laxino.local
   port: 3306
 
 test:
@@ -15,7 +15,7 @@ test:
   database: rigi_sso_test
   username: rigi
   password: rigi
-  host: mo-int-generic-db01.rnd.laxino.com
+  host: hq-int-sso-vdb01.laxino.local
   port: 3306
 
 integration0:
