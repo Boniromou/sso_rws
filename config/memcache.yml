@@ -19,8 +19,8 @@ test:
 
 integration0:
   servers:
-    - hq-int-s3-app01.laxino.local:11211
-    - hq-int-s3-app01.laxino.local:11212
+    - hq-int-s3-vapp01.laxino.local:11211
+    - hq-int-s3-vapp01.laxino.local:11212
   expires: 86400
   namespace: s3_int
   no_block: true
@@ -99,8 +99,8 @@ production3:
   servers:
     - mo-prd-s3-vapp01.lb.laxigames.local:7000
     - mo-prd-s3-vapp01.lb.laxigames.local:7001
-    - mo-prd-s3-vapp01.lb.laxigames.local:7000
-    - mo-prd-s3-vapp01.lb.laxigames.local:7001
+    - mo-prd-s3-vapp02.lb.laxigames.local:7000
+    - mo-prd-s3-vapp02.lb.laxigames.local:7001
   expires: 86400
   namespace: s3_prd
   no_block: true

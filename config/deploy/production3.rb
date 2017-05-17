@@ -1,6 +1,6 @@
 # Define your release to be deployed to integration environment here.
 # Release number for integration environment is supposed to be odd numbers.
-set :branch, 'REL_1_3_6'
+set :branch, 'REL_1_3_9'
 
 # Define your repository server for integration environment here.
 #   production SVN - svn.prod.laxigames.com
@@ -11,7 +11,7 @@ set :repo_host, 'mo-prd-cbms-app01.gb.laxigames.local'
 #   int - Integration
 #   stg - Staging
 #   prd - Production
-role :app, 'mo-prd-sso-app01.lb.laxigames.local', 'mo-prd-sso-app02.lb.laxigames.local'
+role :app, 'mo-prd-sso-app01.lb.laxigames.local'
 
 #role :cronjob_app, 'int-cons-vapp03.rnd.laxino.com'
 
