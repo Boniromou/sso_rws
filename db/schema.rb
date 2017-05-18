@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161121072007) do
+ActiveRecord::Schema.define(:version => 20170518092400) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -202,6 +202,7 @@ ActiveRecord::Schema.define(:version => 20161121072007) do
     t.boolean  "admin",              :default => false, :null => false
     t.integer  "auth_source_id"
     t.integer  "domain_id"
+    t.datetime "purge_at"
   end
 
   add_index "system_users", ["auth_source_id"], :name => "auth_source_id"
