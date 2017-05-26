@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170518092400) do
+ActiveRecord::Schema.define(:version => 20170526012647) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -76,9 +76,11 @@ ActiveRecord::Schema.define(:version => 20170518092400) do
     t.boolean  "status",         :default => true, :null => false
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
+    t.datetime "purge_at"
   end
 
   add_index "casinos_system_users", ["casino_id", "system_user_id"], :name => "index_casinos_system_users_on_casino_id_and_system_user_id", :unique => true
+  add_index "casinos_system_users", ["purge_at"], :name => "index_casinos_system_users_on_purge_at"
   add_index "casinos_system_users", ["system_user_id"], :name => "fk_CasinosSystemUsers_SystemUserId"
 
   create_table "change_logs", :force => true do |t|
@@ -207,6 +209,7 @@ ActiveRecord::Schema.define(:version => 20170518092400) do
 
   add_index "system_users", ["auth_source_id"], :name => "auth_source_id"
   add_index "system_users", ["domain_id"], :name => "fk_SystemUsers_DomainId"
+  add_index "system_users", ["purge_at"], :name => "index_system_users_on_purge_at"
   add_index "system_users", ["username", "domain_id"], :name => "index_system_users_on_username_and_domain_id", :unique => true
 
   create_table "target_casinos", :force => true do |t|
