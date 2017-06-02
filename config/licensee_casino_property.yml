@@ -43,3 +43,6 @@ production3:
 
 production4:
   <<: *hqidc_domain
+
+sandbox:
+  <<: *hqidc_domain
