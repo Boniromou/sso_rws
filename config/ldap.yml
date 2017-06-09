@@ -88,3 +88,6 @@ production3:
 
 production4:
   <<: *vcidc_ldap
+
+sandbox:
+  <<: *moidc_ldap

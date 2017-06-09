@@ -69,3 +69,6 @@ production3:
 
 production4:
   <<: *vcidc_domain
+
+sandbox:
+  <<: *moidc_domain
