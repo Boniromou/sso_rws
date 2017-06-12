@@ -1,11 +1,13 @@
 class AuthSource < ActiveRecord::Base
+  attr_accessible :type
   DEFAULT_SRC = "Laxino LDAP"
-  attr_accessible :id, :auth_type, :name, :host, :port, :account, :account_password, :base_dn, :encryption, :method, :search_scope, :admin_account, :admin_password
+  # self.inheritance_column = '_disable'
+  # attr_accessible :id, :auth_type, :name, :host, :port, :account, :account_password, :base_dn, :encryption, :method, :search_scope, :admin_account, :admin_password
 
   has_many :system_users
-  validates_presence_of :name, :host, :port, :account, :account_password, :base_dn, :admin_account, :admin_password, :message => I18n.t("alert.invalid_params")
-  validates_uniqueness_of :name, :message => I18n.t("alert.ldap_duplicated")
-  validates_length_of :name, :maximum => 60, :message => I18n.t("alert.invalid_ldap_name")
+  # validates_presence_of :name, :host, :port, :account, :account_password, :base_dn, :admin_account, :admin_password, :message => I18n.t("alert.invalid_params")
+  # validates_uniqueness_of :name, :message => I18n.t("alert.ldap_duplicated")
+  # validates_length_of :name, :maximum => 60, :message => I18n.t("alert.invalid_ldap_name")
 
   def authenticate(login, password)
     raise NotImplementedError
