@@ -91,3 +91,6 @@ production4:
 
 sandbox:
   <<: *moidc_ldap
+
+production:
+  <<: *moidc_ldap

@@ -130,3 +130,13 @@ sandbox:
   password: rigi.pa$$w0rd123
   host: mo-snd-sso-vdb01.platform.gamesource.local
   port: 6034
+
+production:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_production
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: mo-prd-sso-vdb01.platform.gamesource.local
+  port: 6033
