@@ -1,7 +1,7 @@
 development:
   laxino:
     auth_source:
-      token: '1.1.1.1'
+      token: '10.10.5.46'
       type: 'Adfs'
     auth_source_detail:
       name: 'laxino_adfs'
