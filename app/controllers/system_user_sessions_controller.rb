@@ -8,8 +8,7 @@ class SystemUserSessionsController < Devise::SessionsController
   def new
     @app_name = params[:app_name]
     raise "app not found" unless @app_name
-    token = request.remote_ip
-    auth_source = AuthSource.find_by_token(token)
+    auth_source = AuthSource.find_by_token(request.remote_ip)
     if auth_source.nil?
       @error_message = 'unkown type'
     else
