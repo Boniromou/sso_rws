@@ -11,11 +11,8 @@ class SamlController < ApplicationController
   end
 
   def new
-    settings = Adfs.get_saml_settings(get_url_base)
+    settings = AuthSource.find_by_token(request.remote_ip).get_saml_settings(get_url_base, app_name)
     saml_request = OneLogin::RubySaml::Authrequest.new
-    app_name = params['app_name'] || session['app_name']
-    redirect_to 'https://www.google.com' and return if !app_name
-    session['app_name'] = app_name
     url = saml_request.create(settings)
     redirect_to(url)
   end
@@ -107,6 +104,10 @@ class SamlController < ApplicationController
   end
 
   private
+  def app_name
+    params[:app_name]
+  end
+
   # value is an hash
   def add_cache(key, value)
     old = Rails.cache.read(key)
