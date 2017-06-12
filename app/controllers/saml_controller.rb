@@ -11,33 +11,33 @@ class SamlController < ApplicationController
   end
 
   def new
-    settings = AuthSource.find_by_token(request.remote_ip).get_saml_settings(get_url_base, app_name)
+    settings = get_saml_settings
     saml_request = OneLogin::RubySaml::Authrequest.new
     url = saml_request.create(settings)
     redirect_to(url)
   end
 
   def acs
-    settings = Adfs.get_saml_settings(get_url_base)
-    @saml_response = OneLogin::RubySaml::Response.new(params[:SAMLResponse], :settings => settings)
-    Rails.logger.info "attributes: #{@saml_response.attributes.inspect}"
-    get_username
-    session['nameid'] = @saml_response.nameid
-    session['sessionindex'] = @saml_response.sessionindex
-    session['username'] = @username
-    Rails.logger.info "#{@username} Sucessfully logged"
-    redirect_to 'https://test-sso.laxino.com/saml/logout/?slo=true'
+    settings = get_saml_settings
+    saml_response = OneLogin::RubySaml::Response.new(params[:SAMLResponse], :settings => settings)
+    username = saml_response.attributes['username']
+    session['nameid'] = saml_response.nameid
+    session['sessionindex'] = saml_response.sessionindex
+    session['username'] = username
+    Rails.logger.info "attributes: #{saml_response.attributes.inspect}"
+    Rails.logger.info "#{username} Sucessfully logged"
+    Rails.logger.info "redirect to saml logout"
+    redirect_to "#{URL_BASE}/saml/logout/?slo=true"
   end
 
   def metadata
-    settings = Adfs.get_saml_settings(get_url_base)
+    settings = get_saml_settings
     meta = OneLogin::RubySaml::Metadata.new
     render :xml => meta.generate(settings, true)
   end
 
   # Trigger SP and IdP initiated Logout requests
   def logout
-    # print_session_id
     # If we're given a logout request, handle it in the IdP logout initiated method
     if params[:SAMLRequest]
       return idp_logout_request
@@ -100,12 +100,16 @@ class SamlController < ApplicationController
   end
 
   def get_url_base
-    "https://test-sso.laxino.com"
+    URL_BASE
   end
 
   private
   def app_name
     params[:app_name]
+  end
+
+  def get_saml_settings
+    AuthSource.find_by_token(request.remote_ip).get_saml_settings(get_url_base, app_name)
   end
 
   # value is an hash
@@ -114,13 +118,6 @@ class SamlController < ApplicationController
     value.merge!(old) if old
     Rails.logger.info "Rails cache, #{key}: #{Rails.cache.read(key)}"
     Rails.cache.write(key, value)
-  end
-
-  def get_username
-    @domain = 'mo.laxino.com'
-    @name = @saml_response.attributes['username'].split('@').first
-    @username = "#{@name}@#{@domain}"
-    Rails.logger.info "name: #{@name} domain: #{@domain}"
   end
 
   def handle_redirect
