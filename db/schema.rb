@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170608085508) do
+ActiveRecord::Schema.define(:version => 20170612040452) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -24,9 +24,10 @@ ActiveRecord::Schema.define(:version => 20170608085508) do
   add_index "app_system_users", ["system_user_id"], :name => "system_user_id"
 
   create_table "apps", :force => true do |t|
-    t.string   "name",       :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "name",         :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.string   "callback_url"
   end
 
   create_table "audit_logs", :force => true do |t|
