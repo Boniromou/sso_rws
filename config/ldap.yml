@@ -1,93 +1,118 @@
-hqidc_ldap: &hqidc_ldap
-  domain_name: 'mo.laxino.com'
-  name: 'hqidc_ldap'
-  host: 'modc03.mo.laxino.com'
-  port: 3268
-  account: 'svc_idc_ldap@mo.laxino.com'
-  password: '$vc_1dc_1daP'
-  admin_account: 'svc_idc_ldap@mo.laxino.com'
-  admin_password: '$vc_1dc_1daP'
-  base_dn: 'dc=mo, dc=laxino, dc=com'
-
-twidc_ldap: &twidc_ldap
-  domain_name: '777iportal.local'
-  name: 'twidc_ldap'
-  host: 'tw-prd-exdc01.777iportal.local'
-  port: 3268
-  account: 'svc_idc_ldap@777iportal.local'
-  password: '$vc_1dc_1daP'
-  admin_account: 'svc_idc_ldap@777iportal.local'
-  admin_password: '$vc_1dc_1daP'
-  base_dn: 'dc=777iportal, dc=local'
-
-phidc_ldap: &phidc_ldap
-  domain_name: '888iportal.local'
-  name: 'phidc_ldap'
-  host: 'ph-prd-exdc01.888iportal.local'
-  port: 3268
-  account: 'svc_idc_ldap@888iportal.local'
-  password: '$vc_1dc_1daP'
-  admin_account: 'svc_idc_ldap@888iportal.local'
-  admin_password: '$vc_1dc_1daP'
-  base_dn: 'dc=888iportal, dc=local'
-
-moidc_ldap: &moidc_ldap
-  domain_name: 'gamesourcecloud.local'
-  name: 'moidc_ldap'
-  host: 'mo-prd-dc01.gamesourcecloud.local'
-  port: 3268
-  account: 'svc_idc_ldap@gamesourcecloud.local'
-  password: '$vc_1dc_1daP'
-  admin_account: 'svc_idc_ldap@gamesourcecloud.local'
-  admin_password: '$vc_1dc_1daP'
-  base_dn: 'dc=gamesourcecloud, dc=local'
-
-vcidc_ldap: &vcidc_ldap
-  domain_name: 'laxigames.local'
-  name: 'vcidc_ldap'
-  host: 'mo-mgt-vdc01.laxigames.local'
-  port: 3268
-  account: 'svc_idc_ldap@laxigames.local'
-  password: '$vc_1dc_1daP'
-  admin_account: ''
-  admin_password: ''
-  base_dn: 'dc=laxigames, dc=local'
-
-test:
-  <<: *hqidc_ldap
+default: &default
+  laxino:
+    domain:
+      name: 'mo.laxino.com'
+    auth_source:
+      token: '10.10.5.45'
+      type: 'Ldap'
+    auth_source_detail:
+      name: 'laxino_ldap'
+      data:
+        host: 'modc03.mo.laxino.com'
+        port: 3268
+        account: 'svc_idc_ldap@mo.laxino.com'
+        password: '$vc_1dc_1daP'
+        admin_account: 'svc_idc_ldap@mo.laxino.com'
+        admin_password: '$vc_1dc_1daP'
+        base_dn: 'dc=mo, dc=laxino, dc=com'
 
 development:
-  <<: *hqidc_ldap
+  <<: *default
 
 integration0:
-  <<: *hqidc_ldap
+  <<: *default
 
 staging0:
-  <<: *hqidc_ldap
-
-sandbox0:
-  <<: *phidc_ldap
-
-production0:
-  <<: *phidc_ldap
+  <<: *default
 
 mockup0:
-  <<: *hqidc_ldap
+  <<: *default
 
-sandbox2:
-  <<: *twidc_ldap
+sandbox0: &sandbox0
+  laxino:
+    domain:
+      name: '888iportal.local'
+    auth_source:
+      token: '2.2.2.2'
+      type: 'Ldap'
+    auth_source_detail:
+      name: 'laxino_ldap'
+      data:
+        name: 'laxino_ldap'
+        host: 'ph-prd-exdc01.888iportal.local'
+        port: 3268
+        account: 'svc_idc_ldap@888iportal.local'
+        password: '$vc_1dc_1daP'
+        admin_account: 'svc_idc_ldap@888iportal.local'
+        admin_password: '$vc_1dc_1daP'
+        base_dn: 'dc=888iportal, dc=local'
+
+production0:
+  <<: *sandbox0
+
+sandbox2: &sandbox2
+  laxino:
+    domain:
+      name: '777iportal.local'
+    auth_source:
+      token: '2.2.2.2'
+      type: 'Ldap'
+    auth_source_detail:
+      name: 'laxino_ldap'
+      data:
+        name: 'laxino_ldap'
+        host: 'tw-prd-exdc01.777iportal.local'
+        port: 3268
+        account: 'svc_idc_ldap@777iportal.local'
+        password: '$vc_1dc_1daP'
+        admin_account: 'svc_idc_ldap@777iportal.local'
+        admin_password: '$vc_1dc_1daP'
+        base_dn: 'dc=777iportal, dc=local'
 
 smartocean2:
-  <<: *twidc_ldap
+  <<: *sandbox2
 
-sandbox3: 
-  <<: *moidc_ldap
+sandbox3: &sandbox3
+  laxino:
+    domain:
+      name: 'gamesourcecloud.local'
+    auth_source:
+      token: '2.2.2.2'
+      type: 'Ldap'
+    auth_source_detail:
+      name: 'laxino_ldap'
+      data:
+        name: 'laxino_ldap'
+        host: 'mo-prd-dc01.gamesourcecloud.local'
+        port: 3268
+        account: 'svc_idc_ldap@gamesourcecloud.local'
+        password: '$vc_1dc_1daP'
+        admin_account: 'svc_idc_ldap@gamesourcecloud.local'
+        admin_password: '$vc_1dc_1daP'
+        base_dn: 'dc=gamesourcecloud, dc=local'
 
 production3:
-  <<: *moidc_ldap
+  <<: *sandbox3
 
 production4:
-  <<: *vcidc_ldap
+  laxino:
+    domain:
+      name: 'laxigames.local'
+    auth_source:
+      token: '2.2.2.2'
+      type: 'Ldap'
+    auth_source_detail:
+      name: 'laxigames.local'
+      data:
+        domain_name: 'laxigames.local'
+        name: 'laxino_ldap'
+        host: 'mo-mgt-vdc01.laxigames.local'
+        port: 3268
+        account: 'svc_idc_ldap@laxigames.local'
+        password: '$vc_1dc_1daP'
+        admin_account: ""
+        admin_password: ""
+        base_dn: 'dc=laxigames, dc=local'
 
 sandbox:
-  <<: *moidc_ldap
+  <<: *sandbox3

@@ -2,62 +2,52 @@ class SamlController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:acs, :logout]
   skip_before_filter :authenticate_system_user!, :check_activation_status
 
-  def write_cookie(name, value, domain = :all)
-    cookies.permanent[name] = {
-      # expires: 1.day.ago,
-      value: value,
-      domain: domain
-    }
-  end
-
   def new
-    settings = AuthSource.find_by_token(request.remote_ip).get_saml_settings(get_url_base, app_name)
+    settings = get_saml_settings
     saml_request = OneLogin::RubySaml::Authrequest.new
     url = saml_request.create(settings)
     redirect_to(url)
   end
 
   def acs
-    settings = Adfs.get_saml_settings(get_url_base)
-    @saml_response = OneLogin::RubySaml::Response.new(params[:SAMLResponse], :settings => settings)
-    Rails.logger.info "attributes: #{@saml_response.attributes.inspect}"
-    get_username
-    session['nameid'] = @saml_response.nameid
-    session['sessionindex'] = @saml_response.sessionindex
-    session['username'] = @username
-    Rails.logger.info "#{@username} Sucessfully logged"
-    redirect_to 'https://test-sso.laxino.com/saml/logout/?slo=true'
+    settings = get_saml_settings
+    saml_response = OneLogin::RubySaml::Response.new(params[:SAMLResponse], :settings => settings)
+    Rails.logger.info "AcsResponse is: #{saml_response.response.to_s}"
+
+    session['nameid'] = saml_response.nameid
+    session['sessionindex'] = saml_response.sessionindex
+    session['username'] = saml_response.attributes['username']
+    app_name = params['app_name']
+    session['app_name'] = app_name
+    Rails.logger.info "session: #{session.inspect}"
+
+    redirect_to "#{URL_BASE}/saml/logout/?slo=true&app_name=#{app_name}"
   end
 
   def metadata
-    settings = Adfs.get_saml_settings(get_url_base)
+    settings = get_saml_settings
     meta = OneLogin::RubySaml::Metadata.new
     render :xml => meta.generate(settings, true)
   end
 
-  # Trigger SP and IdP initiated Logout requests
   def logout
-    # print_session_id
-    # If we're given a logout request, handle it in the IdP logout initiated method
-    if params[:SAMLRequest]
-      return idp_logout_request
-    # We've been given a response back from the IdP
-    elsif params[:SAMLResponse]
+    if params[:SAMLResponse]
       return process_logout_response
     elsif params[:slo]
       return sp_logout_request
     else
-      reset_session
+      Rails.logger.error "invalid logout params: #{params.inspect}"
+      raise "invalid logout params: #{params.inspect}"
     end
   end
 
-  # Create an SP initiated SLO
+  # Sending an SP initiated LogoutRequest to the IdP
   def sp_logout_request
-    # LogoutRequest accepts plain browser requests w/o paramters
-    settings = Adfs.get_saml_settings(get_url_base)
+    settings = get_saml_settings
     settings.sessionindex = session['sessionindex']
     settings.name_identifier_value = session['nameid']
-
+    Rails.logger.info "app_name: #{app_name}"
+    Rails.logger.info "session: #{session.inspect}"
     logout_request = OneLogin::RubySaml::Logoutrequest.new()
     redirect_to(logout_request.create(settings))
   end
@@ -65,72 +55,56 @@ class SamlController < ApplicationController
   # After sending an SP initiated LogoutRequest to the IdP, we need to accept
   # the LogoutResponse, verify it, then actually delete our session.
   def process_logout_response
-    settings = Adfs.get_saml_settings(get_url_base)
+    Rails.logger.info "app_name: #{app_name}"
+    Rails.logger.info "session: #{session.inspect}"
+    settings = get_saml_settings
     logout_response = OneLogin::RubySaml::Logoutresponse.new(params[:SAMLResponse], settings, :get_params => params)
-
-    logger.info "LogoutResponse is: #{logout_response.response.to_s}"
+    Rails.logger.info "LogoutResponse is: #{logout_response.response.to_s}"
     if logout_response.success?
       auth_token = logout_response.in_response_to
-      Rails.logger.info "auth_token: #{auth_token}"
       write_cookie(:auth_token, auth_token)
+      Rails.logger.info "write cookie auth_token: #{auth_token}"
       add_cache(auth_token, session.to_hash)
-
       handle_redirect
     else
-      redirect_to 'https://www.bing.com'
+      raise "logout_response is failed"
     end
-  end
-
-  # Method to handle IdP initiated logouts
-  def idp_logout_request
-    settings = Adfs.get_saml_settings(get_url_base)
-    logout_request = OneLogin::RubySaml::SloLogoutrequest.new(params[:SAMLRequest], :settings => settings)
-    if not logout_request.is_valid?
-      error_msg = "IdP initiated LogoutRequest was not valid!. Errors: #{logout_request.errors}"
-      logger.error error_msg
-      render :inline => error_msg
-    end
-    logger.info "IdP initiated Logout for #{logout_request.nameid}"
-
-    # Actually log out this session
-    reset_session
-
-    logout_response = OneLogin::RubySaml::SloLogoutresponse.new.create(settings, logout_request.id, nil, :RelayState => params[:RelayState])
-    redirect_to logout_response
   end
 
   def get_url_base
-    "https://test-sso.laxino.com"
+    URL_BASE
   end
 
   private
   def app_name
-    params[:app_name]
+    params[:app_name] || session['app_name']
+  end
+
+  def write_cookie(name, value, domain = :all)
+    cookies.permanent[name] = {
+      value: value,
+      domain: domain
+    }
+  end
+
+  def get_saml_settings
+    settings = AuthSource.find_by_token(request.remote_ip).get_saml_settings(get_url_base, app_name)
+    if !app_name
+      settings.assertion_consumer_service_url = get_url_base + "/saml/acs"
+      settings.assertion_consumer_logout_service_url = get_url_base + "/saml/logout"
+    end
+    settings
   end
 
   # value is an hash
   def add_cache(key, value)
     old = Rails.cache.read(key)
     value.merge!(old) if old
-    Rails.logger.info "Rails cache, #{key}: #{Rails.cache.read(key)}"
     Rails.cache.write(key, value)
-  end
-
-  def get_username
-    @domain = 'mo.laxino.com'
-    @name = @saml_response.attributes['username'].split('@').first
-    @username = "#{@name}@#{@domain}"
-    Rails.logger.info "name: #{@name} domain: #{@domain}"
+    Rails.logger.info "Rails cache, #{key}: #{value}"
   end
 
   def handle_redirect
-    case session['app_name']
-    when 'signature_verifier'
-      redirect_to 'http://zhiming01.rnd.laxino.com:3000/index'
-    when 'ssrs'
-      redirect_to("https://test-ssrs.laxino.com/Reports/Pages/Folder.aspx")
-    else
-      redirect_to("https://www.google.com/")
-    end
+    redirect_to App.find_by_name(app_name).callback_url
   end
 end
