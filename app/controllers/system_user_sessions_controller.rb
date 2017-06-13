@@ -10,7 +10,10 @@ class SystemUserSessionsController < Devise::SessionsController
     raise "app not found" unless @app_name
     auth_source = AuthSource.find_by_token(request.remote_ip)
     if auth_source.nil?
-      @error_message = 'unkown type'
+      @error_info = { message: I18n.t("alert.bad_gateway_message"),
+                      status: I18n.t("alert.bad_gateway_status"),
+                      note: 'Unkown token'}
+      render layout: false
     else
       redirect_to "#{auth_source.get_url}?app_name=#{@app_name}"
     end
