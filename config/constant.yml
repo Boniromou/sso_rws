@@ -26,6 +26,7 @@ development:
 integration0:
   <<: *default
   site_domain: 'laxino.com'
+  url_base: 'https://int-sso.laxino.com'
 
 staging0:
   <<: *default
