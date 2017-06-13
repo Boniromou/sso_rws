@@ -1,6 +1,6 @@
 # Define your release to be deployed to integration environment here.
 # Release number for integration environment is supposed to be odd numbers.
-set :branch, 'REL_1_3_12'
+set :branch, 'REL_1_3_13'
 
 # Define your repository server for integration environment here.
 #   production SVN - svn.prod.laxigames.com
@@ -21,7 +21,7 @@ role :app, 'mo-prd-sso-app01.platform.gamesource.local'
 # Define your application cluster with Nginx settings here
 # These variables will be used in generating Nginx/Thin config files
 set :nginx_worker_processes, 2
-set :cluster_port, 10046
+set :cluster_port, 10040
 set :virtual_server_name, 'mo-prd-sso-vapp01.platform.gamesource.local'
 set :num_of_servers, 2
 set :keep_releases, 2
