@@ -28,6 +28,7 @@ en:
     invalid_params: Operation failed; Missing required parameter.
     bad_gateway_status: Error 502 Bad Gateway
     bad_gateway_message: Oooops, Please contact technical support.
+    unkonw_token: Unkown token.
   title:
     login_title: Login
     signup_title: Registration
