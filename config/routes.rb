@@ -3,6 +3,7 @@ SsoRws::Application.routes.draw do
 
   namespace :ldap do
     get :new
+    post :login
   end
 
   namespace :saml do

@@ -3,7 +3,7 @@ class Domain < ActiveRecord::Base
 
   has_many :system_users
   has_many :licensees
-  belongs_to :auth_source
+  belongs_to :auth_source_detail
   has_many :casinos, :through => :licensees
 
   validates_presence_of :name, :message => I18n.t("alert.invalid_params")
