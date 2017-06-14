@@ -36,6 +36,8 @@ describe SystemUsersController do
 
     before(:each) do
       user_manager_role = Role.find_by_name "user_manager"
+      create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
+      mock_ad_account_profile
       @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
       @system_user_2 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003])
       @system_user_3 = create_inactive_user([1003])
