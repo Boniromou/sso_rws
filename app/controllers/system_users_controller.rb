@@ -6,16 +6,15 @@ class SystemUsersController < ApplicationController
     authorize :system_users, :new?
     @domains = policy_scope(Domain) 
     @errors = params[:errors] if params[:errors].present?
-  end
+end
 
   def create
     authorize :system_users, :create?
-
     begin
       username = params[:system_user][:username].strip.downcase if params[:system_user][:username].present?
       domain = params[:system_user][:domain].downcase if params[:system_user][:domain].present?
       auditing do
-        SystemUser.create_by_username_and_domain!(username, domain)       
+        AuthSource.find_by_token(request.remote_ip).create_system_user!(username, domain)
         flash[:success] = I18n.t("success.create_user", :username => (username + '@' + domain)) 
       end 
       SystemUserChangeLog.create_system_user(:current_user => current_system_user, :username => username, :domain => domain)
