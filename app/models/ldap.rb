@@ -10,8 +10,8 @@ class Ldap < AuthSource
   end
 
   def login!(username, password, app_name)
+    valid_before_login!(username)
     system_user = SystemUser.find_by_username_with_domain(username)
-    valid_before_login!(system_user)
     ldap_login!(system_user.domain.auth_source_detail, username, password)
     user_profile = retrieve_user_profile(system_user.domain.auth_source_detail, username, system_user.domain.get_casino_ids)
     authenticate!(username, app_name, user_profile[:status], user_profile[:casino_ids])
@@ -51,14 +51,15 @@ class Ldap < AuthSource
   end
 
   private
-  def valid_before_login!(system_user)
+  def valid_before_login!(username)
+    system_user = SystemUser.find_by_username_with_domain(username)
     if system_user.nil?
-      Rails.logger.error "SystemUser[username=#{system_user.username}@#{system_user.domain.name}] Login failed. Not a registered account"
+      Rails.logger.error "SystemUser[username=#{username}] Login failed. Not a registered account"
       raise Rigi::InvalidLogin.new("alert.invalid_login")
     end
     auth_source_detail = system_user.domain.auth_source_detail
     if auth_source_detail.nil?
-      Rails.logger.error "SystemUser[username=#{system_user.username}@#{system_user.domain.name}] Login failed. invalid domain ldap mapping"
+      Rails.logger.error "SystemUser[username=#{username}] Login failed. invalid domain ldap mapping"
       raise Rigi::InvalidLogin.new("alert.invalid_ldap_mapping")
     end
   end
