@@ -1,9 +1,10 @@
 require "feature_spec_helper"
 
 describe SystemUsersController do
-  fixtures :apps, :permissions, :role_permissions, :roles
+  fixtures :permissions, :role_permissions, :roles, :auth_sources
 
   before(:each) do
+    create(:app, name: APP_NAME, callback_url: home_root_path)
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
   end
 
@@ -59,12 +60,11 @@ describe SystemUsersController do
     end
 
     it "[4.1] verify the list system user" do
-      mock_ad_account_profile(true, [1000])
+      mock_ad_account_profile
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       visit system_users_path
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
-
       users = [@root_user, @system_user_1, @system_user_2, @system_user_3, @system_user_4, @system_user_5]
       expect(rows.length).to eq users.length
       users.each_with_index do |user, index|
@@ -612,14 +612,14 @@ describe SystemUsersController do
       expect(page).to have_content I18n.t("alert.invalid_username")
     end
 
-    it "[24.13] Create system user fail with auth_source - licensee mapping not exist" do
-      create(:domain, :name => '1003.com')
-      login_as_root
-      visit new_system_user_path
-      fill_in_user_info('abc', '1003.com')
-      test_click_create_btn('abc@1003.com')
-      expect(page).to have_content I18n.t("alert.invalid_ldap_mapping")
-    end
+    # it "[24.13] Create system user fail with auth_source - licensee mapping not exist" do
+    #   create(:domain, :name => '1003.com')
+    #   login_as_root
+    #   visit new_system_user_path
+    #   fill_in_user_info('abc', '1003.com')
+    #   test_click_create_btn('abc@1003.com')
+    #   expect(page).to have_content I18n.t("alert.invalid_ldap_mapping")
+    # end
   end
 
   describe "[28] Export system user list" do
