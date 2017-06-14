@@ -11,7 +11,7 @@ set :repo_host, 'svn.mo.laxino.com'
 #   int - Integration
 #   stg - Staging
 #   prd - Production
-role :app, 'hq-stg-sso-app01.laxino.local'
+role :app, 'mo-stg-sso-app01.rnd.laxino.com'
 
 #role :cronjob_app, 'int-cons-vapp03.rnd.laxino.com'
 
@@ -22,7 +22,7 @@ role :app, 'hq-stg-sso-app01.laxino.local'
 # These variables will be used in generating Nginx/Thin config files
 set :nginx_worker_processes, 2
 set :cluster_port, 10042
-set :virtual_server_name, 'hq-stg-sso-vapp01.laxino.local'
+set :virtual_server_name, 'mo-stg-sso-vapp01.rnd.laxino.com'
 set :num_of_servers, 2
 set :keep_releases, 2
 after 'deploy', 'deploy:cleanup'

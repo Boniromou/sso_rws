@@ -19,8 +19,8 @@ test:
 
 integration0:
   servers:
-    - hq-int-s3-vapp01.laxino.local:11211
-    - hq-int-s3-vapp01.laxino.local:11212
+    - int-cons-vapp01.rnd.laxino.com:11211
+    - int-cons-vapp01.rnd.laxino.com:11212
   expires: 86400
   namespace: s3_int
   no_block: true
@@ -28,8 +28,8 @@ integration0:
 
 staging0: &staging0
   servers:
-    - hq-stg-s3-vapp01.laxino.local:11211
-    - hq-stg-s3-vapp01.laxino.local:11212
+    - stg-cons-vapp01.rnd.laxino.com:11211
+    - stg-cons-vapp01.rnd.laxino.com:11212
   expires: 86400
   namespace: s3_stg
   no_block: false
@@ -103,25 +103,5 @@ production3:
     - mo-prd-s3-vapp02.lb.laxigames.local:7001
   expires: 86400
   namespace: s3_prd
-  no_block: true
-  timeout: 30
-
-production4:
-  servers:
-    - mo-prd-s3-vapp01.ol.laxigames.local:7000
-    - mo-prd-s3-vapp01.ol.laxigames.local:7001
-    - mo-prd-s3-vapp02.ol.laxigames.local:7000
-    - mo-prd-s3-vapp02.ol.laxigames.local:7001
-  expires: 86400
-  namespace: s3_prd
-  no_block: true
-  timeout: 30
-
-sandbox:
-  servers:
-    - mo-snd-s3-vapp01.platform.gamesource.local:11211
-    - mo-snd-s3-vapp01.platform.gamesource.local:11212
-  expires: 86400
-  namespace: s3_snd
   no_block: true
   timeout: 30

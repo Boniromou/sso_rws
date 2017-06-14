@@ -35,7 +35,7 @@ staging0: &staging0
   database: rigi_sso_staging
   username: rigi
   password: rigi
-  host: hq-stg-sso-vdb01.laxino.local
+  host: mo-stg-sso-vdb01.rnd.laxino.com
   port: 3306
 
 staging0_external:
@@ -68,7 +68,7 @@ sandbox2:
   database: rigi_sso_sandbox
   username: rigi
   password: rigi.pa$$w0rd123
-  host: tw-snd-sso-vdb01.laxigames.local  
+  host: tw-snd-sso-vdb01.laxigames.local
   port: 6034
 
 smartocean2:
