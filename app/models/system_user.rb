@@ -33,17 +33,12 @@ class SystemUser < ActiveRecord::Base
     active_casino_ids.include?(ADMIN_CASINO_ID)
   end
 
-  def self.register!(username, domain, auth_source_id, casino_ids)
+  def self.register!(username, domain, casino_ids=nil)
     transaction do
       domain = Domain.where(:name => domain).first
-      system_user = create!(:username => username, :domain_id => domain.id, :auth_source_id => auth_source_id, :status => true)
-      system_user.update_casinos(casino_ids)
+      system_user = create!(:username => username, :domain_id => domain.id, :status => true)
+      system_user.update_casinos(casino_ids) if casino_ids
     end
-  end
-
-  def self.create_by_username_and_domain!(username, domain)
-    SystemUser.validate_account!(username, domain)
-    SystemUser.register_account!(username, domain)
   end
 
   alias_method "is_root?", "is_admin?"
@@ -181,6 +176,10 @@ class SystemUser < ActiveRecord::Base
     SystemUser.includes(:domain).where('system_users.username = ? and domains.name = ?', username, domain).first
   end
 
+  def self.validate_username!(username)
+    raise Rigi::InvalidUsername.new(I18n.t("alert.invalid_username")) if username.blank? || username.index(/\s/)
+  end
+
   private
   # a = [2, 4, 6, 8]
   # b = [1, 2, 3, 4]
@@ -249,34 +248,4 @@ class SystemUser < ActiveRecord::Base
 
     Rails.cache.write(cache_key, {:permissions => {:role => role.name, :permissions => perm_hash, :values => value_hash}})
   end
-
-  def self.validate_username!(username)
-    raise Rigi::InvalidUsername.new(I18n.t("alert.invalid_username")) if username.blank? || username.index(/\s/)
-  end
-
-  def self.validate_account!(username, domain)
-    SystemUser.validate_username!(username)
-    Domain.validate_domain!(domain)
-
-    domain_obj = Domain.where(:name => domain).first
-    auth_source = domain_obj.auth_source
-    raise Rigi::InvalidAuthSource.new(I18n.t("alert.invalid_ldap_mapping")) if auth_source.blank?
-
-    sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id, :domain_id => domain_obj.id).first
-    raise Rigi::RegisteredAccount.new(I18n.t("alert.registered_account")) if sys_usr
-    auth_source
-  end
-
-  def self.register_account!(username, domain)
-    domain_obj = Domain.where(:name => domain).first
-    auth_source = domain_obj.auth_source
-    auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-    casino_ids = domain_obj.get_casino_ids
-
-    profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
-    raise Rigi::AccountNotInLdap.new(I18n.t("alert.account_not_in_ldap")) if profile.blank?
-    raise Rigi::AccountNoCasino.new(I18n.t("alert.account_no_casino")) if profile[:casino_ids].blank?
-    SystemUser.register!(username, domain, auth_source.id, profile[:casino_ids])
-  end
-
 end

@@ -17,6 +17,7 @@ class SamlController < ApplicationController
     session['nameid'] = saml_response.nameid
     session['sessionindex'] = saml_response.sessionindex
     session['username'] = saml_response.attributes['username']
+    session['casinoid'] = saml_response.attributes['casinoid']
     app_name = params['app_name']
     session['app_name'] = app_name
     Rails.logger.info "session: #{session.inspect}"
@@ -32,7 +33,14 @@ class SamlController < ApplicationController
 
   def logout
     if params[:SAMLResponse]
-      return process_logout_response
+      begin
+        process_logout_response and return
+      rescue Rigi::InvalidLogin => e
+        Rails.logger.error e.message
+        Rails.logger.error e.backtrace
+        reset_session
+        redirect_to "https://www.bing.com"
+      end
     elsif params[:slo]
       return sp_logout_request
     else
@@ -61,21 +69,26 @@ class SamlController < ApplicationController
     logout_response = OneLogin::RubySaml::Logoutresponse.new(params[:SAMLResponse], settings, :get_params => params)
     Rails.logger.info "LogoutResponse is: #{logout_response.response.to_s}"
     if logout_response.success?
-      auth_token = logout_response.in_response_to
-      write_cookie(:auth_token, auth_token)
-      Rails.logger.info "write cookie auth_token: #{auth_token}"
-      add_cache(auth_token, session.to_hash)
-      handle_redirect
+      username, app_name, casinoid = session['username'], session['app_name'], session['casinoid'].to_i
+      Rails.logger.info("app_name: #{app_name}, username: #{username}, casinoid: #{casinoid}")
+      authenticate!(username, app_name, [casinoid])
+      Rails.logger.info("Login in success")
+      reset_session
+      handle_redirect(app_name)
     else
       raise "logout_response is failed"
     end
   end
 
+  private
   def get_url_base
     URL_BASE
   end
 
-  private
+  def authenticate!(username, app_name, casino_ids)
+    AuthSource.find_by_token(get_client_ip).authenticate!(username, app_name, true, casino_ids)
+  end
+
   def app_name
     params[:app_name] || session['app_name']
   end
@@ -88,7 +101,7 @@ class SamlController < ApplicationController
   end
 
   def get_saml_settings
-    settings = AuthSource.find_by_token(request.remote_ip).get_saml_settings(get_url_base, app_name)
+    settings = AuthSource.find_by_token(get_client_ip).get_saml_settings(get_url_base, app_name)
     if !app_name
       settings.assertion_consumer_service_url = get_url_base + "/saml/acs"
       settings.assertion_consumer_logout_service_url = get_url_base + "/saml/logout"
@@ -104,7 +117,7 @@ class SamlController < ApplicationController
     Rails.logger.info "Rails cache, #{key}: #{value}"
   end
 
-  def handle_redirect
+  def handle_redirect(app_name)
     redirect_to App.find_by_name(app_name).callback_url
   end
 end
