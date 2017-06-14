@@ -38,8 +38,14 @@ class SamlController < ApplicationController
       rescue Rigi::InvalidLogin => e
         Rails.logger.error e.message
         Rails.logger.error e.backtrace
+        @app_name = session['app_name']
+        @error_info = {
+          # status: I18n.t(e.error_message),
+          message: I18n.t(e.error_message)
+          # note: I18n.t(e.error_message)
+        }
         reset_session
-        redirect_to "https://www.bing.com"
+        render layout: false, template: 'system_user_sessions/error_warning'
       end
     elsif params[:slo]
       return sp_logout_request

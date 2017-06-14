@@ -20,7 +20,6 @@ SsoRws::Application.routes.draw do
     post '/login' => 'system_user_sessions#create'
     get "/logout" => "system_user_sessions#destroy", :as => :logout
     post "/passwords" => "system_user_registrations#update"
-    get "/error_warning" => "system_user_sessions#error_warning"
     get "/register" => "system_user_registrations#new", :as => :new_system_user_registration
     post "/register" => "system_user_registrations#create"
     get "/passwords" => "system_user_registrations#edit", :as => :edit_system_user_passwords
