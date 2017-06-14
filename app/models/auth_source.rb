@@ -33,7 +33,25 @@ class AuthSource < ActiveRecord::Base
     Hash[params.collect{|k,v| [k, v.to_s.strip]}]
   end
 
+  def self.create_system_user!(username, domain)
+    validate_before_create_user!(username, domain)
+    domain_obj = Domain.where(:name => domain).first
+    if domain_obj.auth_source_detail
+      Ldap.new.create_ldap_user!(username, domain)
+    else
+      Adfs.new.create_adfs_user!(username, domain)
+    end
+  end
+
   private
+  def self.validate_before_create_user!(username, domain)
+    SystemUser.validate_username!(username)
+    Domain.validate_domain!(domain)
+    domain_obj = Domain.where(:name => domain).first
+    sys_usr = SystemUser.where(:username => username, :domain_id => domain_obj.id).first
+    raise Rigi::RegisteredAccount.new(I18n.t("alert.registered_account")) if sys_usr
+  end
+
   def validate_role_status!(system_user, app_name)
     unless system_user.is_admin? || system_user.role_in_app(app_name)
       Rails.logger.error "SystemUser[username=#{system_user.username}] Login failed. No role assigned"

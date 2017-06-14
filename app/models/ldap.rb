@@ -17,49 +17,10 @@ class Ldap < AuthSource
     authenticate!(username, app_name, user_profile[:status], user_profile[:casino_ids])
   end
 
-  def create_system_user!(username, domain)
-    valid_before_create!(username, domain)
+  def create_ldap_user!(username, domain)
     domain_obj = Domain.where(:name => domain).first
     profile = retrieve_and_check_user_profile!(domain_obj.auth_source_detail, "#{username}@#{domain}", domain_obj.get_casino_ids)
     SystemUser.register!(username, domain, profile[:casino_ids])
-  end
-
-  private
-  def valid_before_login!(system_user)
-    if system_user.nil?
-      Rails.logger.error "SystemUser[username=#{system_user.username}@#{system_user.domain.name}] Login failed. Not a registered account"
-      raise Rigi::InvalidLogin.new("alert.invalid_login")
-    end
-    auth_source_detail = system_user.domain.auth_source_detail
-    if auth_source_detail.nil?
-      Rails.logger.error "SystemUser[username=#{system_user.username}@#{system_user.domain.name}] Login failed. invalid domain ldap mapping"
-      raise Rigi::InvalidLogin.new("alert.invalid_ldap_mapping")
-    end
-  end
-
-  def valid_before_create!(username, domain)
-    SystemUser.validate_username!(username)
-    Domain.validate_domain!(domain)
-    domain_obj = Domain.where(:name => domain).first
-    raise Rigi::InvalidAuthSource.new(I18n.t("alert.invalid_ldap_mapping")) if domain_obj.auth_source_detail.blank?
-    sys_usr = SystemUser.where(:username => username, :domain_id => domain_obj.id).first
-    raise Rigi::RegisteredAccount.new(I18n.t("alert.registered_account")) if sys_usr
-  end
-
-  def retrieve_and_check_user_profile!(auth_source_detail, username_with_domain, casino_ids)
-    profile = retrieve_user_profile(auth_source_detail, username_with_domain, casino_ids)
-    raise Rigi::AccountNotInLdap.new(I18n.t("alert.account_not_in_ldap")) if profile.blank?
-    raise Rigi::AccountNoCasino.new(I18n.t("alert.account_no_casino")) if profile[:casino_ids].blank?
-  end
-
-  def ldap_login!(auth_source_detail, username, password)
-    result = false
-    Rails.logger.info "[auth_source_id=#{self.id}]LDAP authenticating to #{username}...."
-    result = initialize_ldap_con(auth_source_detail, username, password).bind if username.present? && password.present?
-    unless result
-      Rails.logger.error "SystemUser[username=#{username}] Login failed. Authentication failed"
-      raise Rigi::InvalidLogin.new("alert.invalid_login")
-    end
   end
 
   def retrieve_user_profile(auth_source_detail, username_with_domain, casino_ids)
@@ -87,6 +48,35 @@ class Ldap < AuthSource
     res = { :status => !is_disable_account, :casino_ids => groups.uniq }
     Rails.logger.info "[username=#{username_with_domain}][filter_groups=#{casino_ids}] account result => #{res.inspect}"
     res
+  end
+
+  private
+  def valid_before_login!(system_user)
+    if system_user.nil?
+      Rails.logger.error "SystemUser[username=#{system_user.username}@#{system_user.domain.name}] Login failed. Not a registered account"
+      raise Rigi::InvalidLogin.new("alert.invalid_login")
+    end
+    auth_source_detail = system_user.domain.auth_source_detail
+    if auth_source_detail.nil?
+      Rails.logger.error "SystemUser[username=#{system_user.username}@#{system_user.domain.name}] Login failed. invalid domain ldap mapping"
+      raise Rigi::InvalidLogin.new("alert.invalid_ldap_mapping")
+    end
+  end
+
+  def retrieve_and_check_user_profile!(auth_source_detail, username_with_domain, casino_ids)
+    profile = retrieve_user_profile(auth_source_detail, username_with_domain, casino_ids)
+    raise Rigi::AccountNotInLdap.new(I18n.t("alert.account_not_in_ldap")) if profile.blank?
+    raise Rigi::AccountNoCasino.new(I18n.t("alert.account_no_casino")) if profile[:casino_ids].blank?
+  end
+
+  def ldap_login!(auth_source_detail, username, password)
+    result = false
+    Rails.logger.info "[auth_source_id=#{self.id}]LDAP authenticating to #{username}...."
+    result = initialize_ldap_con(auth_source_detail, username, password).bind if username.present? && password.present?
+    unless result
+      Rails.logger.error "SystemUser[username=#{username}] Login failed. Authentication failed"
+      raise Rigi::InvalidLogin.new("alert.invalid_login")
+    end
   end
 
   def memberof_has_key?(pair, regexp, key)

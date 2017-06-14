@@ -21,9 +21,7 @@ class Adfs < AuthSource
     settings
   end
 
-  def create_system_user!(username, domain)
-    SystemUser.validate_username!(username)
-    Domain.validate_domain!(domain)
+  def create_adfs_user!(username, domain)
     SystemUser.register!(username, domain)
   end
 end

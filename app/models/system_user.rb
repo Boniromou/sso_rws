@@ -122,16 +122,17 @@ class SystemUser < ActiveRecord::Base
       system_users.each do |system_user|
         begin
           domain = system_user.domain
-          auth_source = domain.auth_source
-          raise "domain[#{domain.name}] auth_source not exist" if auth_source.blank?
-          auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-          profile = auth_source.retrieve_user_profile(system_user.username, domain.name, domain.get_casino_ids)
-          if system_user.status != profile[:status]
-            system_user.status = profile[:status]
-            system_user.save!
+          auth_source_detail = domain.auth_source_detail
+          raise "domain[#{domain.name}] auth_source_detail not exist" if auth_source_detail.blank?
+          profile = Ldap.new.retrieve_user_profile(auth_source_detail, "#{system_user.username}@#{domain.name}", domain.get_casino_ids)
+          if profile
+            if system_user.status != profile[:status]
+              system_user.status = profile[:status]
+              system_user.save!
+            end
+            system_user.update_casinos(profile[:casino_ids])
+            system_user.cache_profile
           end
-          system_user.update_casinos(profile[:casino_ids])
-          system_user.cache_profile
         rescue StandardError => e
           Rails.logger.error "Sync system user [#{system_user.inspect}] Exception: #{e.message}"
           Rails.logger.error "#{e.backtrace.inspect}"

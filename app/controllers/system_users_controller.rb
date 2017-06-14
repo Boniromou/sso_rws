@@ -14,7 +14,7 @@ end
       username = params[:system_user][:username].strip.downcase if params[:system_user][:username].present?
       domain = params[:system_user][:domain].downcase if params[:system_user][:domain].present?
       auditing do
-        AuthSource.find_by_token(get_client_ip).create_system_user!(username, domain)
+        AuthSource.create_system_user!(username, domain)
         flash[:success] = I18n.t("success.create_user", :username => (username + '@' + domain)) 
       end 
       SystemUserChangeLog.create_system_user(:current_user => current_system_user, :username => username, :domain => domain)
