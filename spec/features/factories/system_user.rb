@@ -11,9 +11,8 @@ FactoryGirl.define do
     end
 
     before(:create) do |system_user, factory|
-      auth_source = create(:auth_source)
-      domain = Domain.find_by_name(factory.domain_name) || create(:domain, name: factory.domain_name, auth_source_id: auth_source.id)
-      system_user.auth_source = domain.auth_source
+      auth_source_detail = create(:auth_source_detail_1)
+      domain = Domain.find_by_name(factory.domain_name) || create(:domain, name: factory.domain_name, auth_source_detail_id: auth_source_detail.id)
       system_user.domain_id = domain.id
     end
 

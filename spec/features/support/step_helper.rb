@@ -17,12 +17,11 @@ module StepHelper
     dn = account_status ? ["OU=Licensee"] : ["OU=Licensee,OU=Disabled Accounts"]
     memberof = casino_ids.map { |casino_id| "CN=#{casino_id}casinoid" }
     entry = [{ :distinguishedName => dn, :memberOf => memberof }]
-    allow_any_instance_of(AuthSourceLdap).to receive(:search).and_return(entry)
+    allow_any_instance_of(Net::LDAP).to receive(:search).and_return(entry)
   end
 
   def mock_ad_account_profile(status, casino_ids)
-    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-    #allow(Rigi::Ldap).to receive(:retrieve_user_profile).and_return(:account_status => status, :groups => property_ids)
+    allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(true)
     mock_ldap_query(status, casino_ids)
   end
 
@@ -32,9 +31,9 @@ module StepHelper
   end
 
   def login(username)
-    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-    visit login_path
+    visit ldap_new_path(:app_name => APP_NAME)
     fill_in "system_user_username", :with => username
+    fill_in "system_user_password", :with => '12345'
     click_button I18n.t("general.login")
   end
 

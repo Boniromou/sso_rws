@@ -1,13 +1,9 @@
-#source 'https://rubygems.org'
+# source 'https://rubygems.org'
 source 'http://gems:8808'
 
 gem 'rails', '3.2.13'
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
+gem 'ruby-saml', '1.3.1'
 gem 'mysql2', '0.3.16'
-
 gem 'lax-support', '0.6.32', :git => 'ssh://git/opt/laxino/git_repos/tools/lax-support.git', :tag => 'REL_0_6_32'
 gem 'sequel', '3.41.0'
 
@@ -54,7 +50,7 @@ end
 
 #gem 'pundit', '0.3.0'
 #gem "devise_ldap_authenticatable", "~> 0.8.1"
-#gem 'nokogiri', '1.5.5' 
+#gem 'nokogiri', '1.5.5'
 #gem 'execjs', '2.2.1'
 #gem 'therubyracer'
 #gem 'execjs'

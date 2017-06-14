@@ -15,6 +15,7 @@ default: &default
   admin_casino_id: 1000
   admin_role_type_name: 'internal'
   remain_login_history_days: 100
+  url_base: 'https://test-sso.laxino.com'
 
 test:
   <<: *default
@@ -25,6 +26,7 @@ development:
 integration0:
   <<: *default
   site_domain: 'laxino.com'
+  url_base: 'https://int-sso.laxino.com'
 
 staging0:
   <<: *default

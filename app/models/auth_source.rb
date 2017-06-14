@@ -1,33 +1,16 @@
 class AuthSource < ActiveRecord::Base
-  DEFAULT_SRC = "Laxino LDAP"
-  attr_accessible :id, :auth_type, :name, :host, :port, :account, :account_password, :base_dn, :encryption, :method, :search_scope, :admin_account, :admin_password
+  attr_accessible :type
+  belongs_to :auth_source_detail
 
-  has_many :system_users
-  validates_presence_of :name, :host, :port, :account, :account_password, :base_dn, :admin_account, :admin_password, :message => I18n.t("alert.invalid_params")
-  validates_uniqueness_of :name, :message => I18n.t("alert.ldap_duplicated")
-  validates_length_of :name, :maximum => 60, :message => I18n.t("alert.invalid_ldap_name")
-
-  def authenticate(login, password)
-    raise NotImplementedError
-  end
-=begin
-  # Try to authenticate a user not yet registered against available sources
-  def self.authenticate(login, password)
-    AuthSource.where(:onthefly_register => true).each do |source|
-      begin
-        logger.debug "Authenticating '#{login}' against '#{source.name}'" if logger && logger.debug?
-        result = source.authenticate(login, password)
-      rescue => e
-        logger.error "Error during authentication: #{e.message}"
-        attrs = nil
-      end
-      return result if result
-    end
-    return nil
-  end
-=end
-  def self.get_default_auth_source
-    AuthSource.find_by_name(DEFAULT_SRC)
+  def authenticate!(username, app_name, status, casino_ids)
+    system_user = SystemUser.find_by_username_with_domain(username)
+    system_user.update_user_profile(status, casino_ids)
+    validate_role_status!(system_user, app_name)
+    validate_account_status!(system_user)
+    validate_account_casinos!(system_user)
+    system_user.cache_info(app_name)
+    system_user.insert_login_history(app_name)
+    system_user
   end
 
   def self.insert(params)
@@ -48,5 +31,45 @@ class AuthSource < ActiveRecord::Base
 
   def self.strip_whitespace(params)
     Hash[params.collect{|k,v| [k, v.to_s.strip]}]
+  end
+
+  def self.create_system_user!(username, domain)
+    validate_before_create_user!(username, domain)
+    domain_obj = Domain.where(:name => domain).first
+    if domain_obj.auth_source_detail
+      Ldap.new.create_ldap_user!(username, domain)
+    else
+      Adfs.new.create_adfs_user!(username, domain)
+    end
+  end
+
+  private
+  def self.validate_before_create_user!(username, domain)
+    SystemUser.validate_username!(username)
+    Domain.validate_domain!(domain)
+    domain_obj = Domain.where(:name => domain).first
+    sys_usr = SystemUser.where(:username => username, :domain_id => domain_obj.id).first
+    raise Rigi::RegisteredAccount.new(I18n.t("alert.registered_account")) if sys_usr
+  end
+
+  def validate_role_status!(system_user, app_name)
+    unless system_user.is_admin? || system_user.role_in_app(app_name)
+      Rails.logger.error "SystemUser[username=#{system_user.username}] Login failed. No role assigned"
+      raise Rigi::InvalidLogin.new("alert.account_no_role")
+    end
+  end
+
+  def validate_account_status!(system_user)
+    if !system_user.activated?
+      Rails.logger.error "SystemUser[username=#{system_user.username}] Login failed. Inactive_account"
+      raise Rigi::InvalidLogin.new("alert.inactive_account")
+    end
+  end
+
+  def validate_account_casinos!(system_user)
+    if !system_user.is_admin? && system_user.active_casino_ids.blank?
+      Rails.logger.error "SystemUser[username=#{system_user.username}] Login failed. The account has no casinos"
+      raise Rigi::InvalidLogin.new("alert.account_no_casino")
+    end
   end
 end

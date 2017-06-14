@@ -34,7 +34,10 @@ class ApplicationController < ActionController::Base
   end
 
   def get_client_ip
-    request.env["HTTP_X_FORWARDED_FOR"]
+    ip = request.env["X-Real-IP"]
+    ip = request.env["HTTP_X_FORWARDED_FOR"] if !ip
+    ip = request.remote_ip if !ip
+    ip
   end
 
   def handle_route_not_found
@@ -42,6 +45,26 @@ class ApplicationController < ActionController::Base
       format.html { render partial: "shared/error404", formats: [:html], layout: "error_page", status: :not_found }
       format.js { render partial: "shared/error404", formats: [:js], status: :not_found }
     end
+  end
+
+  def write_authenticate(system_user)
+    uuid = SecureRandom.uuid
+    write_cookie(:auth_token, uuid)
+    add_cache(uuid, {:system_user => {:id => system_user.id, :username => system_user.username}})
+  end
+
+  def write_cookie(name, value, domain = :all)
+    cookies.permanent[name] = {
+      value: value,
+      domain: domain
+    }
+  end
+
+  def add_cache(key, value)
+    old = Rails.cache.read(key)
+    value.merge!(old) if old
+    Rails.cache.write(key, value)
+    Rails.logger.info "Rails cache, #{key}: #{Rails.cache.read(key)}"
   end
 
   protected

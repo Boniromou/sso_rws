@@ -1,0 +1,33 @@
+default: &default
+  user_management: 'https://int-sso.laxino.com'
+  gaming_operation: 'https://int-ap.laxino.com'
+  cage: 'https://int-cage.laxino.com'
+  station_management: 'https://int-sm.laxino.com'
+  game_recall: 'https://int-grms.laxino.com'
+  signature_verifier: 'https://int-sv.laxino.com'
+  audit_portal: 'https://int-audp.laxino.com'
+  asset_management: 'https://int-dam.laxino.com'
+  trade_promotion: 'https://int-tpms.laxino.com'
+  master_data_service: 'https://int-mds.laxino.com'
+
+test:
+  <<: *default
+
+development:
+  <<: *default
+
+integration0:
+  <<: *default
+
+staging0:
+  user_management: 'https://stg-sso.laxino.com'
+  gaming_operation: 'https://stg-ap.laxino.com'
+  cage: 'https://stg-cage.laxino.com'
+  station_management: 'https://stg-sm.laxino.com'
+  game_recall: 'https://stg-grms.laxino.com'
+  signature_verifier: 'https://stg-sv.laxino.com'
+  audit_portal: 'https://stg-audp.laxino.com'
+  asset_management: 'https://stg-dam.laxino.com'
+  trade_promotion: 'https://stg-tpms.laxino.com'
+  master_data_service: 'https://stg-mds.laxino.com'
+

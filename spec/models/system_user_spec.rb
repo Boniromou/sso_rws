@@ -3,28 +3,28 @@ require "rails_helper"
 describe SystemUser do
   describe '[26] Conjob for updating system user status and casino group' do
     before(:each) do
-      auth_source = AuthSource.create(:auth_type => "AuthSourceLdap", :name => "Laxino LDAP",:host => "0.0.0.0", :port => 389, :account => "test", :account_password => "test", :base_dn => "DC=test,DC=example,DC=com", :admin_account => "admin", :admin_password => "admin")
-      domain = Domain.create(:name => 'example.com', :auth_source_id => auth_source.id) 
+      auth_source_detail = AuthSourceDetail.create(:name => "Laxino LDAP", :data => {:host => "0.0.0.0", :port => 389, :account => "test", :account_password => "test", :base_dn => "DC=test,DC=example,DC=com", :admin_account => "admin", :admin_password => "admin"})
+      domain = Domain.create(:name => 'example.com', :auth_source_detail_id => auth_source_detail.id) 
       licensee = Licensee.create(:name => 'laxino', :domain_id => domain.id) 
       [1000, 1003, 1007].each do |casino|
         Casino.create(:id => casino, :name => casino, :licensee_id => licensee.id)
       end
     end
-  
+
     def mock_ldap_query(account_status, casino_ids)
       dn = account_status ? ["OU=Licensee"] : ["OU=Licensee,OU=Disabled Accounts"]
       memberof = casino_ids.map { |casino_id| "CN=#{casino_id}casinoid" }
       entry = [{ :distinguishedName => dn, :memberOf => memberof }]
-      allow_any_instance_of(AuthSourceLdap).to receive(:search).and_return(entry)
+      allow_any_instance_of(Net::LDAP).to receive(:search).and_return(entry)
     end
 
     def mock_ad_account_profile(status, casino_ids)
-      allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
+      allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(true)
       mock_ldap_query(status, casino_ids)
     end
 
-    def regist_and_return_system_user(username, domain)
-      SystemUser.register_account!(username, domain)
+    def regist_and_return_system_user(username, domain, casino_ids)
+      SystemUser.register!(username, domain, casino_ids)
       system_user = SystemUser.find_by_username(username)
       system_user.cache_profile
       return system_user
@@ -32,7 +32,7 @@ describe SystemUser do
 
     it '[26.1] active user updated to inactive' do
       mock_ad_account_profile(false, [1003])
-      system_user = regist_and_return_system_user('test', 'example.com')
+      system_user = regist_and_return_system_user('test', 'example.com', [1003])
       cache_info = Rails.cache.read(system_user.id)
       expect(system_user.status).to eq true  
       expect(cache_info[:status]).to eq true
@@ -46,8 +46,7 @@ describe SystemUser do
     end
 
     it '[26.2] user casino group change' do
-      mock_ad_account_profile(true, [1003])
-      system_user = regist_and_return_system_user('test', 'example.com')
+      system_user = regist_and_return_system_user('test', 'example.com', [1003])
       cache_info = Rails.cache.read(system_user.id)
       expect(system_user.active_casino_ids).to eq [1003]
       expect(cache_info[:casinos]).to eq [1003]

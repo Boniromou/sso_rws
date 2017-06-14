@@ -1,19 +1,31 @@
 SsoRws::Application.routes.draw do
   devise_for :system_users, controllers: { :sessions => "system_user_sessions", :registration => "system_user_registrations" }, only: :sessions
 
+  namespace :ldap do
+    get :new
+    post :login
+  end
+
+  namespace :saml do
+    get :new
+    post :acs
+    get :metadata
+    get :logout
+  end
+
   devise_scope :system_user do
     root :to => "system_user_sessions#new", :as => :app_root
     #root to: 'dashboard#home', :as => :home_root
     get "/login" => "system_user_sessions#new", :as => :login
     post '/login' => 'system_user_sessions#create'
     get "/logout" => "system_user_sessions#destroy", :as => :logout
+    post "/passwords" => "system_user_registrations#update"
     get "/register" => "system_user_registrations#new", :as => :new_system_user_registration
     post "/register" => "system_user_registrations#create"
     get "/passwords" => "system_user_registrations#edit", :as => :edit_system_user_passwords
-    post "/passwords" => "system_user_registrations#update"
   end
 
-  post "/internal/system_user_sessions" => "internal/system_user_sessions#create"
+  get "/app_login" => "internal/system_user_sessions#login"
   root :to => 'dashboard#home', :as => :root
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root

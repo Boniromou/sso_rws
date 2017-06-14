@@ -1,7 +1,6 @@
 class SystemUser < ActiveRecord::Base
   devise :registerable
   attr_accessible :id, :username, :status, :admin, :auth_source_id, :domain_id
-  belongs_to :auth_source
   has_many :role_assignments, :as => :user, :dependent => :destroy
   has_many :roles, :through => :role_assignments
   has_many :app_system_users
@@ -13,11 +12,6 @@ class SystemUser < ActiveRecord::Base
   validate :username, :presence => true, :message => I18n.t("alert.invalid_username")
 
   scope :with_active_casino, -> { joins(:casinos_system_users).where("casinos_system_users.status = ?", true).select("DISTINCT(system_users.id), system_users.*") }
-
-  def auth_source
-    auth = AuthSource.find_by_id(auth_source_id)
-    auth.becomes(auth.auth_type.constantize)
-  end
 
   def active_casino_ids
     self.casinos_system_users.where(:status => true).pluck(:casino_id)
@@ -39,17 +33,12 @@ class SystemUser < ActiveRecord::Base
     active_casino_ids.include?(ADMIN_CASINO_ID)
   end
 
-  def self.register!(username, domain, auth_source_id, casino_ids)
+  def self.register!(username, domain, casino_ids=nil)
     transaction do
       domain = Domain.where(:name => domain).first
-      system_user = create!(:username => username, :domain_id => domain.id, :auth_source_id => auth_source_id, :status => true)
-      system_user.update_casinos(casino_ids)
+      system_user = create!(:username => username, :domain_id => domain.id, :status => true)
+      system_user.update_casinos(casino_ids) if casino_ids
     end
-  end
-
-  def self.create_by_username_and_domain!(username, domain)
-    SystemUser.validate_account!(username, domain)
-    SystemUser.register_account!(username, domain)
   end
 
   alias_method "is_root?", "is_admin?"
@@ -102,27 +91,13 @@ class SystemUser < ActiveRecord::Base
     cache_permissions(app_name) unless is_admin?
   end
 
-=begin
-  def lock
-    update_attributes({:status => 0})
-    cache_profile
-  end
-
-  def unlock
-    update_attributes({:status => 1})
-    cache_profile
-  end
-=end
-
   def update_casinos(casino_ids)
     CasinosSystemUser.update_casinos_by_system_user(id, casino_ids)
   end
 
-  def update_ad_profile
-    casino_ids = self.domain.get_casino_ids
-    profile = self.auth_source.retrieve_user_profile(username, self.domain.name, casino_ids)
-    self.status = profile[:status]
-    update_casinos(profile[:casino_ids])
+  def update_user_profile(status, casino_ids)
+    self.status = status
+    update_casinos(casino_ids)
     save!
   end
 
@@ -147,16 +122,17 @@ class SystemUser < ActiveRecord::Base
       system_users.each do |system_user|
         begin
           domain = system_user.domain
-          auth_source = domain.auth_source
-          raise "domain[#{domain.name}] auth_source not exist" if auth_source.blank?
-          auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-          profile = auth_source.retrieve_user_profile(system_user.username, domain.name, domain.get_casino_ids)
-          if system_user.status != profile[:status]
-            system_user.status = profile[:status]
-            system_user.save!
+          auth_source_detail = domain.auth_source_detail
+          raise "domain[#{domain.name}] auth_source_detail not exist" if auth_source_detail.blank?
+          profile = Ldap.new.retrieve_user_profile(auth_source_detail, "#{system_user.username}@#{domain.name}", domain.get_casino_ids)
+          if profile
+            if system_user.status != profile[:status]
+              system_user.status = profile[:status]
+              system_user.save!
+            end
+            system_user.update_casinos(profile[:casino_ids])
+            system_user.cache_profile
           end
-          system_user.update_casinos(profile[:casino_ids])
-          system_user.cache_profile
         rescue StandardError => e
           Rails.logger.error "Sync system user [#{system_user.inspect}] Exception: #{e.message}"
           Rails.logger.error "#{e.backtrace.inspect}"
@@ -199,6 +175,10 @@ class SystemUser < ActiveRecord::Base
     username, domain = username_with_domain.split('@', 2)
     return nil if username.nil? || domain.nil?
     SystemUser.includes(:domain).where('system_users.username = ? and domains.name = ?', username, domain).first
+  end
+
+  def self.validate_username!(username)
+    raise Rigi::InvalidUsername.new(I18n.t("alert.invalid_username")) if username.blank? || username.index(/\s/)
   end
 
   private
@@ -269,34 +249,4 @@ class SystemUser < ActiveRecord::Base
 
     Rails.cache.write(cache_key, {:permissions => {:role => role.name, :permissions => perm_hash, :values => value_hash}})
   end
-
-  def self.validate_username!(username)
-    raise Rigi::InvalidUsername.new(I18n.t("alert.invalid_username")) if username.blank? || username.index(/\s/)
-  end
-
-  def self.validate_account!(username, domain)
-    SystemUser.validate_username!(username)
-    Domain.validate_domain!(domain)
-
-    domain_obj = Domain.where(:name => domain).first
-    auth_source = domain_obj.auth_source
-    raise Rigi::InvalidAuthSource.new(I18n.t("alert.invalid_ldap_mapping")) if auth_source.blank?
-
-    sys_usr = SystemUser.where(:username => username, :auth_source_id => auth_source.id, :domain_id => domain_obj.id).first
-    raise Rigi::RegisteredAccount.new(I18n.t("alert.registered_account")) if sys_usr
-    auth_source
-  end
-
-  def self.register_account!(username, domain)
-    domain_obj = Domain.where(:name => domain).first
-    auth_source = domain_obj.auth_source
-    auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-    casino_ids = domain_obj.get_casino_ids
-
-    profile = auth_source.retrieve_user_profile(username, domain, casino_ids)
-    raise Rigi::AccountNotInLdap.new(I18n.t("alert.account_not_in_ldap")) if profile.blank?
-    raise Rigi::AccountNoCasino.new(I18n.t("alert.account_no_casino")) if profile[:casino_ids].blank?
-    SystemUser.register!(username, domain, auth_source.id, profile[:casino_ids])
-  end
-
 end

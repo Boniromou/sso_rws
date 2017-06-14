@@ -6,28 +6,26 @@ module Devise
   module Strategies
     class LdapAuthenticatable < Authenticatable
       def valid?
-        username || password
+        auth_token && user_info
       end
 
       def authenticate!
-        system_user = Rigi::Login.authenticate!(username, password, APP_NAME)
+        system_user = SystemUser.find(user_info[:system_user][:id])
         success!(system_user)
-      rescue Rigi::InvalidLogin => e
-        fail!(e.error_message)
+        clear_cookie_and_cache
       end
 
-      def username
-        if params[:system_user]
-          return params[:system_user][:username].downcase
-        end
-        return nil
+      def auth_token
+        cookies[:auth_token]
       end
 
-      def password
-        if params[:system_user]
-          return params[:system_user][:password]
-        end
-        return nil
+      def user_info
+        result = Rails.cache.read(auth_token)
+      end
+
+      def clear_cookie_and_cache
+        Rails.cache.delete(auth_token)
+        cookies.delete(:auth_token, domain: :all)
       end
     end
   end

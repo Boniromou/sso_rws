@@ -1,8 +1,13 @@
 class SystemUserSessionsController < Devise::SessionsController
-  layout "login"  
+  layout "login"
 
   def new
-    #super
+    redirect_to "#{root_url}/app_login?app_name=user_management"
+  end
+
+  def error_warning
+    @error_info = params
+    render layout: false
   end
 
   def create
@@ -12,8 +17,4 @@ class SystemUserSessionsController < Devise::SessionsController
   def destroy
     super
   end
-
-  #def failure
-  #  return render :json => {:success => false, :errors => ["Login failed."]}
-  #end
 end

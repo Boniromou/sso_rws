@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170526012647) do
+ActiveRecord::Schema.define(:version => 20170612040452) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -24,9 +24,10 @@ ActiveRecord::Schema.define(:version => 20170526012647) do
   add_index "app_system_users", ["system_user_id"], :name => "system_user_id"
 
   create_table "apps", :force => true do |t|
-    t.string   "name",       :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "name",         :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.string   "callback_url"
   end
 
   create_table "audit_logs", :force => true do |t|
@@ -44,20 +45,20 @@ ActiveRecord::Schema.define(:version => 20170526012647) do
     t.datetime "updated_at",                  :null => false
   end
 
-  create_table "auth_sources", :force => true do |t|
-    t.string  "auth_type",        :limit => 30, :default => "", :null => false
-    t.string  "name",             :limit => 60, :default => "", :null => false
-    t.string  "host",             :limit => 60
-    t.integer "port"
-    t.string  "account",          :limit => 60
-    t.string  "account_password", :limit => 60
-    t.string  "base_dn"
-    t.string  "encryption"
-    t.string  "method"
-    t.string  "search_scope"
-    t.string  "admin_account",    :limit => 60
-    t.string  "admin_password",   :limit => 60
+  create_table "auth_source_details", :force => true do |t|
+    t.string   "name"
+    t.text     "data",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
+
+  create_table "auth_sources", :force => true do |t|
+    t.string  "token",                 :null => false
+    t.string  "type",                  :null => false
+    t.integer "auth_source_detail_id"
+  end
+
+  add_index "auth_sources", ["auth_source_detail_id"], :name => "fk_AuthSources_AuthSourceDetailId"
 
   create_table "casinos", :force => true do |t|
     t.integer  "licensee_id",               :null => false
@@ -96,13 +97,13 @@ ActiveRecord::Schema.define(:version => 20170526012647) do
   end
 
   create_table "domains", :force => true do |t|
-    t.string   "name",           :limit => 45, :null => false
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
-    t.integer  "auth_source_id"
+    t.string   "name",                  :limit => 45, :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+    t.integer  "auth_source_detail_id"
   end
 
-  add_index "domains", ["auth_source_id"], :name => "index_domains_on_auth_source_id", :unique => true
+  add_index "domains", ["auth_source_detail_id"], :name => "fk_Domains_AuthSourceDetailId"
   add_index "domains", ["name"], :name => "index_domains_on_name", :unique => true
 
   create_table "licensees", :force => true do |t|
@@ -202,12 +203,10 @@ ActiveRecord::Schema.define(:version => 20170526012647) do
     t.string   "username"
     t.boolean  "status",             :default => false, :null => false
     t.boolean  "admin",              :default => false, :null => false
-    t.integer  "auth_source_id"
     t.integer  "domain_id"
     t.datetime "purge_at"
   end
 
-  add_index "system_users", ["auth_source_id"], :name => "auth_source_id"
   add_index "system_users", ["domain_id"], :name => "fk_SystemUsers_DomainId"
   add_index "system_users", ["purge_at"], :name => "index_system_users_on_purge_at"
   add_index "system_users", ["username", "domain_id"], :name => "index_system_users_on_username_and_domain_id", :unique => true

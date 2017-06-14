@@ -1,30 +1,17 @@
 class Internal::SystemUserSessionsController < ApplicationController
   skip_before_filter :set_locale, :authenticate_system_user!, :check_activation_status, :verify_request_scope
-  respond_to :json
 
-  def create
-    username = params[:system_user][:username].downcase
-    password = params[:system_user][:password]
-    app_name = params[:app_name]
-    response_body = {}
-    response_status = :ok
-
-    begin
-      response_body[:system_user] = Rigi::Login.authenticate!(username, password, app_name)
-      response_body[:message] = "success"
-      response_body[:success] = true
-    rescue Rigi::InvalidLogin => e
-      response_body[:message] = e.error_message
-      response_body[:success] = false
-      response_status = :unauthorized
-    rescue Exception => e
-      response_body[:message] = e.message
-      response_body[:success] = false
-      response_status = :internal_server_error
-    end
-
-    respond_to do |format|
-      format.json { render :json => response_body, :status => response_status }
+  def login
+    @app_name = params[:app_name]
+    raise "app not found" unless @app_name
+    auth_source = AuthSource.find_by_token(get_client_ip)
+    if auth_source.nil?
+      @error_info = { message: I18n.t("alert.bad_gateway_message"),
+                      status: I18n.t("alert.bad_gateway_status"),
+                      note: I18n.t("alert.unkown_token")}
+      render layout: false, template: 'system_user_sessions/error_warning'
+    else
+      redirect_to "#{auth_source.get_url}?app_name=#{@app_name}"
     end
   end
 end
