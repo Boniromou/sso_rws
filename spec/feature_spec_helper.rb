@@ -27,6 +27,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:get_client_ip).and_return("192.1.1.1")
+    allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.1.1.1')
   end
 
   config.before(:each, js: true) do

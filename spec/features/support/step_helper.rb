@@ -32,9 +32,9 @@ module StepHelper
   end
 
   def login(username)
-    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(true)
-    visit login_path
+    visit ldap_new_path(:app_name => APP_NAME)
     fill_in "system_user_username", :with => username
+    fill_in "system_user_password", :with => '12345'
     click_button I18n.t("general.login")
   end
 

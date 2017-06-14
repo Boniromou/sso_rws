@@ -18,12 +18,21 @@
     <% @domains.each do |domain| %>
       <tr align="center">
         <td><%= domain.name %></td>
-        <td><%= domain.auth_source.name if domain.auth_source%></td>
-        <td><%= domain.auth_source.host if domain.auth_source %></td>
-        <td><%= domain.auth_source.port if domain.auth_source %></td>
-        <td><%= domain.auth_source.account if domain.auth_source %></td>
-        <td><%= domain.auth_source.base_dn if domain.auth_source %></td>
-        <td><%= domain.auth_source.admin_account if domain.auth_source %></td>
+        <% if domain.auth_source_detail %>
+          <td><%= domain.auth_source_detail.name %></td>
+          <td><%= domain.auth_source_detail.data['host'] %></td>
+          <td><%= domain.auth_source_detail.data['port'] %></td>
+          <td><%= domain.auth_source_detail.data['account'] %></td>
+          <td><%= domain.auth_source_detail.data['base_dn'] %></td>
+          <td><%= domain.auth_source_detail.data['admin_account'] %></td>
+        <% else %>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <% end %>
         <td><%= format_time(domain.updated_at) %></td>
         <td> 
           <% if policy(:domain).update_domain_ldap? %>

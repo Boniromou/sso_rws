@@ -11,7 +11,10 @@ describe DomainsController do
   def login_user(permissions=[], casino_ids=[1000])
     role = create(:role, app_id: @app_id, with_permissions: permissions)
     @system_user = create(:system_user, :roles => [role], :with_casino_ids => casino_ids)
-    mock_ad_account_profile(true, casino_ids)
+    allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user)
+    allow_any_instance_of(Ldap).to receive(:retrieve_user_profile).and_return({:status => true, :casino_ids => casino_ids})
+    create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
+
     login("#{@system_user.username}@#{@system_user.domain.name}")
   end
 
@@ -22,14 +25,14 @@ describe DomainsController do
   def domain_data
     {
       "domain_name" => "   1003.com   ",
-      "auth_source_name" => "hqidc_ldap",
-      "auth_source_host" => "0.0.0.0",
-      "auth_source_port" => "3268",
-      "auth_source_account" => "test@1003.com",
-      "auth_source_account_password" => "cccccc",
-      "auth_source_base_dn" => "dc=1003, dc=com",
-      "auth_source_admin_account" => "admin@1003.com",
-      "auth_source_admin_password" => "dddddd"
+      "auth_source_detail_name" => "hqidc_ldap",
+      "auth_source_detail_host" => "0.0.0.0",
+      "auth_source_detail_port" => "3268",
+      "auth_source_detail_account" => "test@1003.com",
+      "auth_source_detail_account_password" => "cccccc",
+      "auth_source_detail_base_dn" => "dc=1003, dc=com",
+      "auth_source_detail_admin_account" => "admin@1003.com",
+      "auth_source_detail_admin_password" => "dddddd"
     }
   end
 
@@ -41,7 +44,7 @@ describe DomainsController do
   end
 
   before(:each) do
-    app = create(:app, name: APP_NAME)
+    app = create(:app, name: APP_NAME, callback_url: root_url)
     @app_id = app.id
     @permission_list = create_permission('domain_ldap', 'list')
     @permission_create = create_permission('domain_ldap', 'create')
@@ -106,8 +109,8 @@ describe DomainsController do
       check_flash_message I18n.t('domain_ldap.create_domain_ldap_success')
       expect(current_path).to eq(domains_path)
       within("table#domain_ldap tbody tr:last-child") {
-        @domain_data.delete("auth_source_account_password")
-        @domain_data.delete("auth_source_admin_password")
+        @domain_data.delete("auth_source_detail_account_password")
+        @domain_data.delete("auth_source_detail_admin_password")
         @domain_data.each_value do |value|
           expect_have_content value.strip
         end
@@ -140,7 +143,7 @@ describe DomainsController do
     end
 
     it "[19.6] Create domain-LDAP fail with duplicated LDAP" do
-      create(:auth_source, name: "hqidc_ldap")
+      create(:auth_source_detail, name: "hqidc_ldap")
       fill_in_form
       check_flash_message I18n.t('alert.ldap_duplicated')
     end
@@ -187,35 +190,35 @@ describe DomainsController do
       visit new_domain_path
       fill_in_form
       visit index_domain_ldap_change_logs_path
-      to = "account:test@1003.com; account_password:******; admin_account:admin@1003.com; admin_password:******; base_dn:dc=1003, dc=com; host:0.0.0.0; name:hqidc_ldap; port:3268"
+      to = "host:0.0.0.0; port:3268; account:test@1003.com; account_password:******; base_dn:dc=1003, dc=com; admin_account:admin@1003.com; admin_password:******; name:hqidc_ldap;"
       check_change_log(@domain_data["domain_name"].strip, "Create", "", to, "#{@system_user.username}@#{@system_user.domain.name}")
     end
 
     it "[34.4] Create change log for edit Domain Licensee mapping" do
-      auth_source = create(:auth_source)
-      domain = create(:domain, name: "1003.com", auth_source_id: auth_source.id)
+      auth_source_detail = create(:auth_source_detail, :name => 'test_ldap', :data => {:host => '10.10.10.1', :port => '8808', :account => 'hill', :account_password => 'hill', :base_dn => '12345', :admin_account => 'portal.admin', :admin_password => 'ccccccc'})
+      domain = create(:domain, name: "1003.com", auth_source_detail_id: auth_source_detail.id)
       login_with_permission
       visit domains_path
       find("#edit_#{domain.id}").click
-      fill_in "domain_auth_source_name", :with => "hqidc_ldap"
-      fill_in "domain_auth_source_host", :with => "10.10.10.10"
+      fill_in "domain_auth_source_detail_name", :with => "hqidc_ldap"
+      fill_in "domain_auth_source_detail_host", :with => "10.10.10.10"
       click_link_or_button I18n.t("general.confirm")
       visit index_domain_ldap_change_logs_path
-      from = "host:#{auth_source.host}; name:#{auth_source.name}"
-      to = "host:10.10.10.10; name:hqidc_ldap"
+      from = "host:#{auth_source_detail.data['host']}; name:#{auth_source_detail.name}"
+      to = "host:10.10.10.10; name:hqidc_ldap;"
       check_change_log(domain.name, "Edit", from, to, "#{@system_user.username}@#{@system_user.domain.name}")
     end
   end
 
   describe "[35] Edit Domain-LDAP" do
     def edit_form(ldap_name="hqidc_ldap")
-      fill_in "domain_auth_source_name", :with => ldap_name
+      fill_in "domain_auth_source_detail_name", :with => ldap_name
       click_link_or_button I18n.t("general.confirm")
     end
 
     before(:each) do
-      @auth_source = create(:auth_source)
-      @domain = create(:domain, name: "1003.com", auth_source_id: @auth_source.id)
+      @auth_source_detail = create(:auth_source_detail, :name => 'test_ldap', :data => {:host => '10.10.10.1', :port => '8808', :account => 'hill', :account_password => 'hil123', :base_dn => '8888', :admin_account => 'portal.admin', :admin_password => 'cccccc'})
+      @domain = create(:domain, name: "1003.com", auth_source_detail_id: @auth_source_detail.id)
       login_with_permission
       visit domains_path
       find("#edit_#{@domain.id}").click
@@ -225,7 +228,7 @@ describe DomainsController do
       edit_form
       check_flash_message I18n.t('domain_ldap.edit_domain_ldap_success')
       expect(current_path).to eq(domains_path)
-      values = [@domain.name, "hqidc_ldap", @auth_source.host, @auth_source.port, @auth_source.account, @auth_source.base_dn, @auth_source.admin_account]
+      values = [@domain.name, "hqidc_ldap", @auth_source_detail.data['host'], @auth_source_detail.data['port'], @auth_source_detail.data['account'], @auth_source_detail.data['base_dn'], @auth_source_detail.data['admin_account']]
       within("table#domain_ldap tbody tr:nth-child(1)") {
         values.each do |value|
           expect_have_content value
@@ -239,7 +242,7 @@ describe DomainsController do
     end
 
     it "[35.3] Edit domain-LDAP fail with duplicated LDAP" do
-      create(:auth_source, name: "hqidc_ldap")
+      create(:auth_source_detail, name: "hqidc_ldap")
       edit_form
       check_flash_message I18n.t('alert.ldap_duplicated')
     end
@@ -252,14 +255,14 @@ describe DomainsController do
     it "[35.5] Retrieve domain-LDAP data success and disable the domain textbox" do
       domain = {
                  "domain_domain_name" => @domain.name,
-                 "domain_auth_source_name" => @auth_source.name,
-                 "domain_auth_source_host" => @auth_source.host,
-                 "domain_auth_source_port" => @auth_source.port,
-                 "domain_auth_source_account" => @auth_source.account,
-                 "domain_auth_source_account_password" => @auth_source.account_password,
-                 "domain_auth_source_base_dn" => @auth_source.base_dn,
-                 "domain_auth_source_admin_account" => @auth_source.admin_account,
-                 "domain_auth_source_admin_password" => @auth_source.admin_password
+                 "domain_auth_source_detail_name" => @auth_source_detail.name,
+                 "domain_auth_source_detail_host" => @auth_source_detail.data['host'],
+                 "domain_auth_source_detail_port" => @auth_source_detail.data['port'],
+                 "domain_auth_source_detail_account" => @auth_source_detail.data['account'],
+                 "domain_auth_source_detail_account_password" => @auth_source_detail.data['account_password'],
+                 "domain_auth_source_detail_base_dn" => @auth_source_detail.data['base_dn'],
+                 "domain_auth_source_detail_admin_account" => @auth_source_detail.data['admin_account'],
+                 "domain_auth_source_detail_admin_password" => @auth_source_detail.data['admin_password']
                }
       domain.each do |key, value|
         expect(find("##{key}").value).to eq value.to_s
