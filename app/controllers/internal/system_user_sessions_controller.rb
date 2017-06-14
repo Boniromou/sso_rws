@@ -6,10 +6,10 @@ class Internal::SystemUserSessionsController < ApplicationController
     raise "app not found" unless @app_name
     auth_source = AuthSource.find_by_token(get_client_ip)
     if auth_source.nil?
-      error_info = { message: I18n.t("alert.bad_gateway_message"),
+      @error_info = { message: I18n.t("alert.bad_gateway_message"),
                       status: I18n.t("alert.bad_gateway_status"),
                       note: I18n.t("alert.unkown_token")}
-      redirect_to error_warning_path(error_info)
+      render layout: false, template: 'system_user_sessions/error_warning'
     else
       redirect_to "#{auth_source.get_url}?app_name=#{@app_name}"
     end
