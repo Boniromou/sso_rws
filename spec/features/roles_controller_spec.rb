@@ -17,6 +17,7 @@ describe RolesController do
     before(:each) do
       user_manager_role = Role.find_by_name "user_manager"
       @system_user_1 = create(:system_user, :roles => [user_manager_role])
+      mock_ad_account_profile
     end
 
     it "[15.3] Show Role (authorized)" do

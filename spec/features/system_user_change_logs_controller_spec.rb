@@ -3,7 +3,8 @@ require "feature_spec_helper"
 describe ChangeLogsController do
 
   before(:each) do
-    @app_1 = App.find_by_name("user_management") || create(:app, :id => 1, :name => "user_management")
+    create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
+    @app_1 = create(:app, name: APP_NAME, callback_url: home_root_path)
     perm_1 = create(:permission, :name => "show", :action => "show", :target => "system_user", :app => @app_1)
     perm_2 = create(:permission, :name => "grant_roles", :action => "grant_roles", :target => "system_user", :app => @app_1)
     perm_3 = create(:permission, :name => "list_edit_role_change_log", :action => "list_edit_role_change_log", :target => "system_user", :app => @app_1)
@@ -21,6 +22,7 @@ describe ChangeLogsController do
     @system_user_5 = create(:system_user, :roles => [@int_role_1], :with_casino_ids => [1000])
     @system_user_6 = create(:system_user, :roles => [@ext_role_1], :with_casino_ids => [1000])
     @system_user_7 = create(:system_user, :roles => [@int_role_2], :with_casino_ids => [1000])
+    mock_ad_account_profile
   end
 
   describe "[16] User Change log" do

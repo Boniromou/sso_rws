@@ -2,7 +2,7 @@ class SystemUserSessionsController < Devise::SessionsController
   layout "login"
 
   def new
-    redirect_to "#{root_url}/app_login?app_name=user_management"
+    redirect_to "#{root_url}app_login?app_name=user_management"
   end
 
   def error_warning

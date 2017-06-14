@@ -29,9 +29,11 @@ describe LoginHistoriesController do
 		}
   end
 
-	before(:each) do
-		@app = create(:app, :name => "user_management")
-		@app1 = create(:app, :name => "cage")
+  before(:each) do
+    create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
+    mock_ad_account_profile
+    @app = create(:app, :name => "user_management")
+    @app1 = create(:app, :name => "cage")
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
     @system_user_1 = create(:system_user, with_roles: [role_with_login_history], with_casino_ids: [1000])
     @system_user_2 = create(:system_user, with_roles: [role_with_login_history], with_casino_ids: [1003])

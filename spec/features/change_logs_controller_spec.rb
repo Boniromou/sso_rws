@@ -13,6 +13,7 @@ describe ChangeLogsController do
     it_support_role = Role.find_by_name "it_support"
     @system_user_4 = create(:system_user, :roles => [it_support_role], :with_casino_ids => [1003, 1007])
     @system_user_5 = create(:system_user, :roles => [it_support_role], :with_casino_ids => [1000])
+    create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
   end
 
   describe "[25] Change log for create system user", :js => true do
@@ -66,6 +67,7 @@ describe ChangeLogsController do
     end
 
     it "[25.1] No Premission for List create system user change log" do
+      allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user_2)
       login("#{@system_user_2.username}@#{@system_user_2.domain.name}")
       visit user_management_root_path
       expect(has_link?(I18n.t("user.create_system_user"))).to be false
@@ -74,12 +76,17 @@ describe ChangeLogsController do
     end
 
     it "[25.2] List create system user change log" do
+      allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user_4)
       login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
       visit create_system_user_change_logs_path(:commit => true)
       verify_change_log_table_column_header
     end
 
     it "[25.3] Create system user change log" do
+      allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user_4)
+      mock_ad_account_profile
+      #auth_source_detail = create(:auth_source_detail, :name => 'test_ldap', :data => {})
+      #@system_user_4.domain.update_attributes(:auth_source_detail_id => auth_source_detail.id)
       login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
       visit new_system_user_path
       fill_in_user_info('abc', 'example.com')
@@ -97,6 +104,7 @@ describe ChangeLogsController do
     end
 
     it "[25.4] search by start/end date" do
+      allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user_4)
       mock_time_at_now "2016-03-31 09:00:00"
       one_day_age = 5.day.ago
       create_system_user_change_logs([
@@ -115,6 +123,7 @@ describe ChangeLogsController do
     end
 
     it "[25.5] 1000 user show all change log" do
+      allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user_5)
       create_system_user_change_logs
       login("#{@system_user_5.username}@#{@system_user_5.domain.name}")
       visit create_system_user_change_logs_path(:commit => true)
@@ -123,8 +132,9 @@ describe ChangeLogsController do
     end
 
     it "[25.6] 1003, 1007 user show target user casino 1003 and 1007 change log" do
-      create_system_user_change_logs
+      allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user_4)
       mock_ad_account_profile(true, [1003, 1007])
+      create_system_user_change_logs
       login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
       visit create_system_user_change_logs_path(:commit => true)
       rc_rows = all("div#content table tbody tr")

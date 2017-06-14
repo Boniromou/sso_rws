@@ -20,9 +20,13 @@ module StepHelper
     allow_any_instance_of(Net::LDAP).to receive(:search).and_return(entry)
   end
 
-  def mock_ad_account_profile(status, casino_ids)
+  def mock_ad_account_profile(status=true, casino_ids=[1000])
     allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(true)
     mock_ldap_query(status, casino_ids)
+  end
+
+  def mock_authenticate_failed
+    allow_any_instance_of(Ldap).to receive(:ldap_login!).and_raise(Rigi::InvalidLogin.new("alert.invalid_login"))
   end
 
   def mock_time_at_now(time_in_str)
@@ -102,10 +106,6 @@ module StepHelper
 
   def click_header_link(title)
     first('ul.dropdown-menu').find('a', :text => title).click
-  end
-
-  def mock_authenticate(rtn = true)
-    allow_any_instance_of(AuthSourceLdap).to receive(:authenticate).and_return(rtn)
   end
 
   def expect_have_content(content)
