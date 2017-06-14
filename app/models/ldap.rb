@@ -67,6 +67,7 @@ class Ldap < AuthSource
     profile = retrieve_user_profile(auth_source_detail, username_with_domain, casino_ids)
     raise Rigi::AccountNotInLdap.new(I18n.t("alert.account_not_in_ldap")) if profile.blank?
     raise Rigi::AccountNoCasino.new(I18n.t("alert.account_no_casino")) if profile[:casino_ids].blank?
+    profile
   end
 
   def ldap_login!(auth_source_detail, username, password)
