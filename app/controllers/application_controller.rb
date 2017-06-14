@@ -34,7 +34,10 @@ class ApplicationController < ActionController::Base
   end
 
   def get_client_ip
-    request.env["HTTP_X_FORWARDED_FOR"]
+    ip = request.env["X-Real-IP"]
+    ip = request.env["HTTP_X_FORWARDED_FOR"] if !ip
+    ip = request.remote_ip if !ip
+    ip
   end
 
   def handle_route_not_found
