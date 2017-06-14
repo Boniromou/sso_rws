@@ -8,7 +8,7 @@ class LdapController < ApplicationController
   end
 
   def login
-    auth_source = AuthSource.find_by_token(request.remote_ip)
+    auth_source = AuthSource.find_by_token(get_client_ip)
     system_user = auth_source.login!(params[:system_user][:username], params[:system_user][:password], params[:app_name])
 	  write_authenticate(system_user)
     redirect_to App.find_by_name(params[:app_name]).callback_url
