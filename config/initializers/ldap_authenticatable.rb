@@ -6,11 +6,11 @@ module Devise
   module Strategies
     class LdapAuthenticatable < Authenticatable
       def valid?
-        auth_token || user_info
+        auth_token && user_info
       end
 
       def authenticate!
-        system_user = SystemUser.find_by_id(user_info[:system_user][:id])
+        system_user = SystemUser.find(user_info[:system_user][:id])
         success!(system_user)
         clear_cookie_and_cache
       end

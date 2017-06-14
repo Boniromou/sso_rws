@@ -13,8 +13,15 @@ class Ldap < AuthSource
     system_user = SystemUser.find_by_username_with_domain(username)
     valid_before_login!(system_user)
     ldap_login!(system_user.domain.auth_source_detail, username, password)
-    user_profile = retrieve_user_profile(system_user)
+    user_profile = retrieve_user_profile(system_user.domain.auth_source_detail, username, system_user.domain.get_casino_ids)
     authenticate!(username, app_name, user_profile[:status], user_profile[:casino_ids])
+  end
+
+  def create_system_user!(username, domain)
+    valid_before_create!(username, domain)
+    domain_obj = Domain.where(:name => domain).first
+    profile = retrieve_and_check_user_profile!(domain_obj.auth_source_detail, "#{username}@#{domain}", domain_obj.get_casino_ids)
+    SystemUser.register!(username, domain, profile[:casino_ids])
   end
 
   private
@@ -30,6 +37,21 @@ class Ldap < AuthSource
     end
   end
 
+  def valid_before_create!(username, domain)
+    SystemUser.validate_username!(username)
+    Domain.validate_domain!(domain)
+    domain_obj = Domain.where(:name => domain).first
+    raise Rigi::InvalidAuthSource.new(I18n.t("alert.invalid_ldap_mapping")) if domain_obj.auth_source_detail.blank?
+    sys_usr = SystemUser.where(:username => username, :domain_id => domain_obj.id).first
+    raise Rigi::RegisteredAccount.new(I18n.t("alert.registered_account")) if sys_usr
+  end
+
+  def retrieve_and_check_user_profile!(auth_source_detail, username_with_domain, casino_ids)
+    profile = retrieve_user_profile(auth_source_detail, username_with_domain, casino_ids)
+    raise Rigi::AccountNotInLdap.new(I18n.t("alert.account_not_in_ldap")) if profile.blank?
+    raise Rigi::AccountNoCasino.new(I18n.t("alert.account_no_casino")) if profile[:casino_ids].blank?
+  end
+
   def ldap_login!(auth_source_detail, username, password)
     result = false
     Rails.logger.info "[auth_source_id=#{self.id}]LDAP authenticating to #{username}...."
@@ -40,14 +62,12 @@ class Ldap < AuthSource
     end
   end
 
-  def retrieve_user_profile(system_user)
-    filter_groups = system_user.domain.get_casino_ids
-    auth_source_detail = system_user.domain.auth_source_detail
+  def retrieve_user_profile(auth_source_detail, username_with_domain, casino_ids)
     ldap = initialize_ldap_con(auth_source_detail, nil, nil)
-    search_filter = Net::LDAP::Filter.eq("userPrincipalName", "#{system_user.username}@#{system_user.domain.name}")
+    search_filter = Net::LDAP::Filter.eq("userPrincipalName", "#{username_with_domain}")
     ldap_entry = ldap.search(:base => auth_source_detail['data']['base_dn'], :filter => search_filter, :return_result => true, :scope => auth_source_detail['data']['search_scope'] || Net::LDAP::SearchScope_WholeSubtree).first
     if ldap_entry.blank?
-      Rails.logger.info "[username=#{system_user.username}][filter_groups=#{filter_groups}] account is not in Ldap server "
+      Rails.logger.info "[username=#{username_with_domain}][filter_groups=#{casino_ids}] account is not in Ldap server "
       return {}
     end
     
@@ -59,13 +79,13 @@ class Ldap < AuthSource
 
     is_disable_account = dnames.any? { |dn| dn.include?(DISABLED_ACCOUNT_KEY) }
     memberofs.each do |memberof|
-      filter_groups.each do |filter|
+      casino_ids.each do |filter|
         groups << filter.to_i if memberof_has_key?(memberof, MATCH_PATTERN_REGEXP, filter.to_s)
       end
     end
 
     res = { :status => !is_disable_account, :casino_ids => groups.uniq }
-    Rails.logger.info "[username=#{system_user.username}][filter_groups=#{filter_groups}] account result => #{res.inspect}"
+    Rails.logger.info "[username=#{username_with_domain}][filter_groups=#{casino_ids}] account result => #{res.inspect}"
     res
   end
 
