@@ -12,14 +12,16 @@ class SamlController < ApplicationController
   def acs
     settings = get_saml_settings
     saml_response = OneLogin::RubySaml::Response.new(params[:SAMLResponse], :settings => settings)
-    username = saml_response.attributes['username']
+    Rails.logger.info "AcsResponse is: #{saml_response.response.to_s}"
+
     session['nameid'] = saml_response.nameid
     session['sessionindex'] = saml_response.sessionindex
-    session['username'] = username
-    Rails.logger.info "attributes: #{saml_response.attributes.inspect}"
-    Rails.logger.info "#{username} Sucessfully logged"
-    Rails.logger.info "redirect to saml logout"
-    redirect_to "#{URL_BASE}/saml/logout/?slo=true"
+    session['username'] = saml_response.attributes['username']
+    app_name = params['app_name']
+    session['app_name'] = app_name
+    Rails.logger.info "session: #{session.inspect}"
+
+    redirect_to "#{URL_BASE}/saml/logout/?slo=true&app_name=#{app_name}"
   end
 
   def metadata
@@ -44,6 +46,8 @@ class SamlController < ApplicationController
     settings = get_saml_settings
     settings.sessionindex = session['sessionindex']
     settings.name_identifier_value = session['nameid']
+    Rails.logger.info "app_name: #{app_name}"
+    Rails.logger.info "session: #{session.inspect}"
     logout_request = OneLogin::RubySaml::Logoutrequest.new()
     redirect_to(logout_request.create(settings))
   end
@@ -51,12 +55,15 @@ class SamlController < ApplicationController
   # After sending an SP initiated LogoutRequest to the IdP, we need to accept
   # the LogoutResponse, verify it, then actually delete our session.
   def process_logout_response
+    Rails.logger.info "app_name: #{app_name}"
+    Rails.logger.info "session: #{session.inspect}"
     settings = get_saml_settings
     logout_response = OneLogin::RubySaml::Logoutresponse.new(params[:SAMLResponse], settings, :get_params => params)
     Rails.logger.info "LogoutResponse is: #{logout_response.response.to_s}"
     if logout_response.success?
       auth_token = logout_response.in_response_to
       write_cookie(:auth_token, auth_token)
+      Rails.logger.info "write cookie auth_token: #{auth_token}"
       add_cache(auth_token, session.to_hash)
       handle_redirect
     else
@@ -70,7 +77,7 @@ class SamlController < ApplicationController
 
   private
   def app_name
-    params[:app_name]
+    params[:app_name] || session['app_name']
   end
 
   def write_cookie(name, value, domain = :all)
@@ -81,15 +88,20 @@ class SamlController < ApplicationController
   end
 
   def get_saml_settings
-    AuthSource.find_by_token(request.remote_ip).get_saml_settings(get_url_base, app_name)
+    settings = AuthSource.find_by_token(request.remote_ip).get_saml_settings(get_url_base, app_name)
+    if !app_name
+      settings.assertion_consumer_service_url = get_url_base + "/saml/acs"
+      settings.assertion_consumer_logout_service_url = get_url_base + "/saml/logout"
+    end
+    settings
   end
 
   # value is an hash
   def add_cache(key, value)
     old = Rails.cache.read(key)
     value.merge!(old) if old
-    Rails.logger.info "Rails cache, #{key}: #{Rails.cache.read(key)}"
     Rails.cache.write(key, value)
+    Rails.logger.info "Rails cache, #{key}: #{value}"
   end
 
   def handle_redirect

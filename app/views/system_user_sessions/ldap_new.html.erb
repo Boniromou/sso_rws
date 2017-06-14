@@ -1,14 +1,15 @@
-<% content_for :header do %>
-  <%= link_to(t("general.sign_up"), new_system_user_registration_path, :class => "btn btn-danger") %>
-  <%= link_to(t("general.reset_password"), edit_system_user_passwords_path(app_name: APP_NAME), :class => "btn btn-danger") %>
-<% end %>
+<%# content_for :header do %>
+  <%#= link_to(t("general.sign_up"), new_system_user_registration_path, :class => "btn btn-danger") %>
+  <%#= link_to(t("general.reset_password"), edit_system_user_passwords_path(app_name: APP_NAME), :class => "btn btn-danger") %>
+<%# end %>
 <!-- ap_login_panel -->
-  <%= form_for(:system_user, url: login_path, html: {:class => "smart-form client-form"}) do |f| %>
+  <%= form_for(:system_user, url: ldap_login_path, html: {:class => "smart-form client-form"}) do |f| %>
     <header><%= t("title.login_title") %></header>
     <fieldset>
       <section>
         <%= f.label(t("user.user_name"), :class => "label") %>
         <label class="input"><i class="icon-append fa fa-user"></i>
+          <%= hidden_field_tag 'app_name', @app_name %>
           <%= f.text_field(:username, :placeholder => "email@example.com") %>
           <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i><%=t("login_page.username_tooltip") %></b>
         </label>

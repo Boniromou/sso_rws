@@ -1,7 +1,6 @@
 class SystemUser < ActiveRecord::Base
   devise :registerable
   attr_accessible :id, :username, :status, :admin, :auth_source_id, :domain_id
-  belongs_to :auth_source
   has_many :role_assignments, :as => :user, :dependent => :destroy
   has_many :roles, :through => :role_assignments
   has_many :app_system_users
@@ -13,11 +12,6 @@ class SystemUser < ActiveRecord::Base
   validate :username, :presence => true, :message => I18n.t("alert.invalid_username")
 
   scope :with_active_casino, -> { joins(:casinos_system_users).where("casinos_system_users.status = ?", true).select("DISTINCT(system_users.id), system_users.*") }
-
-  def auth_source
-    auth = AuthSource.find_by_id(auth_source_id)
-    auth.becomes(auth.auth_type.constantize)
-  end
 
   def active_casino_ids
     self.casinos_system_users.where(:status => true).pluck(:casino_id)
@@ -102,27 +96,13 @@ class SystemUser < ActiveRecord::Base
     cache_permissions(app_name) unless is_admin?
   end
 
-=begin
-  def lock
-    update_attributes({:status => 0})
-    cache_profile
-  end
-
-  def unlock
-    update_attributes({:status => 1})
-    cache_profile
-  end
-=end
-
   def update_casinos(casino_ids)
     CasinosSystemUser.update_casinos_by_system_user(id, casino_ids)
   end
 
-  def update_ad_profile
-    casino_ids = self.domain.get_casino_ids
-    profile = self.auth_source.retrieve_user_profile(username, self.domain.name, casino_ids)
-    self.status = profile[:status]
-    update_casinos(profile[:casino_ids])
+  def update_user_profile(status, casino_ids)
+    self.status = status
+    update_casinos(casino_ids)
     save!
   end
 

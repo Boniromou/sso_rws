@@ -44,6 +44,26 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def write_authenticate(system_user)
+    uuid = SecureRandom.uuid
+    write_cookie(:auth_token, uuid)
+    add_cache(uuid, {:system_user => {:id => system_user.id, :username => system_user.username}})
+  end
+
+  def write_cookie(name, value, domain = :all)
+    cookies.permanent[name] = {
+      value: value,
+      domain: domain
+    }
+  end
+
+  def add_cache(key, value)
+    old = Rails.cache.read(key)
+    value.merge!(old) if old
+    Rails.cache.write(key, value)
+    Rails.logger.info "Rails cache, #{key}: #{Rails.cache.read(key)}"
+  end
+
   protected
   class SystemUserContext
     attr_reader :system_user, :request_casino_id
