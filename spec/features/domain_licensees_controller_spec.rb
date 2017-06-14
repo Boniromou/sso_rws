@@ -2,12 +2,14 @@ require "feature_spec_helper"
 
 describe DomainLicenseesController do
   before(:each) do
+    create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
     app = create(:app, name: APP_NAME)
+    mock_ad_account_profile
     @app_id = app.id
   end
 
   def auth_source_id
-    auth_source = AuthSource.first || create(:auth_source)
+    auth_source = create(:auth_source, :token => '192.1.1.1', :type => 'Ldap') #AuthSource.first || create(:auth_source)
     auth_source.id
   end
 
@@ -251,9 +253,9 @@ describe DomainLicenseesController do
     end
 
     it "[23.5] 1000 user show all change log" do
-      auth_source = create(:auth_source)
+      auth_source_detail = create(:auth_source_detail, :name => 'test', :data => {})
       licensee = create(:licensee, :id => 1003, :with_casino_ids => [1000, 1003, 1007])
-      domain = create(:domain, :name => '1003.com', :auth_source_id => auth_source.id)
+      domain = create(:domain, :name => '1003.com', :auth_source_detail_id => auth_source_detail.id)
       visit_domain_licensee
       general_create_domain_licensee('1003.com', "#{licensee.name}[#{licensee.id}]")
       click_link I18n.t("general.logout")
@@ -264,9 +266,9 @@ describe DomainLicenseesController do
     end
 
     it "[23.6] 1003, 1007 user show target user casino 1003 and 1007 change log" do
-      auth_source = create(:auth_source)
+      auth_source_detail = create(:auth_source_detail, :name => 'test', :data => {})
       licensee = create(:licensee, :id => 1003, :with_casino_ids => [1003, 1007, 1014])
-      domain = create(:domain, :name => '1003.com', :auth_source_id => auth_source.id)
+      domain = create(:domain, :name => '1003.com', :auth_source_detail_id => auth_source_detail.id)
       visit_domain_licensee
       general_create_domain_licensee('1003.com', "#{licensee.name}[#{licensee.id}]")
       click_link I18n.t("general.logout")
