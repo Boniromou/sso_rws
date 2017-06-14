@@ -12,12 +12,12 @@ class SamlController < ApplicationController
   def acs
     settings = get_saml_settings
     saml_response = OneLogin::RubySaml::Response.new(params[:SAMLResponse], :settings => settings)
-    Rails.logger.info "AcsResponse is: #{saml_response.response.to_s}"
+    Rails.logger.info "AcsResponse is: #{saml_response.attributes.inspect}"
 
     session['nameid'] = saml_response.nameid
     session['sessionindex'] = saml_response.sessionindex
     session['username'] = saml_response.attributes['username']
-    session['casinoid'] = saml_response.attributes['casinoid']
+    session['casinoid'] = saml_response.attributes['casinoid'].delete('casinoid').to_i
     app_name = params['app_name']
     session['app_name'] = app_name
     Rails.logger.info "session: #{session.inspect}"
@@ -77,7 +77,8 @@ class SamlController < ApplicationController
     if logout_response.success?
       username, app_name, casinoid = session['username'], session['app_name'], session['casinoid'].to_i
       Rails.logger.info("app_name: #{app_name}, username: #{username}, casinoid: #{casinoid}")
-      authenticate!(username, app_name, [casinoid])
+      system_user = authenticate!(username, app_name, [casinoid])
+      write_authenticate(system_user)
       Rails.logger.info("Login in success")
       reset_session
       handle_redirect(app_name)
