@@ -20,14 +20,19 @@ integration0:
   <<: *default
 
 staging0:
-  user_management: 'https://stg-sso.laxino.com'
-  gaming_operation: 'https://stg-ap.laxino.com'
-  cage: 'https://stg-cage.laxino.com'
-  station_management: 'https://stg-sm.laxino.com'
-  game_recall: 'https://stg-grms.laxino.com'
-  signature_verifier: 'https://stg-sv.laxino.com'
-  audit_portal: 'https://stg-audp.laxino.com'
-  asset_management: 'https://stg-dam.laxino.com'
-  trade_promotion: 'https://stg-tpms.laxino.com'
-  master_data_service: 'https://stg-mds.laxino.com'
+  user_management: 'https://stg-sso2.laxino.com/home'
+  gaming_operation: 'https://stg-ap2.laxino.com/home'
+  cage: 'https://stg-cms2.laxino.com/home'
+  station_management: 'https://stg-sm2.laxino.com/index'
+  game_recall: 'https://stg-gr2.laxino.com/search_game_history'
+  signature_verifier: 'https://stg-sv2.laxino.com/index'
+  audit_portal: 'https://stg-audp2.laxino.com/index'
 
+sandbox3:
+  user_management: 'https://snd-sso.138777.net/home'
+  gaming_operation: 'https://snd-ap.138777.net/home'
+  cage: 'https://snd-cms.138777.net/home'
+  station_management: 'https://snd-sm.138777.net/index'
+  game_recall: 'https://snd-gr.138777.net/search_game_history'
+  signature_verifier: 'https://snd-sv.138777.net/index'
+  audit_portal: 'https://snd-audp.138777.net/index'
