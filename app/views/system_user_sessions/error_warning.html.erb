@@ -20,7 +20,7 @@
             <div class="col-md-12">
               <div class="error-box text-center">
                 <h1 class="error-text tada animated"><i class="fa fa-times-circle text-danger error-icon-shadow"></i> <%= @error_info[:status] %></h1>
-                <h2 class="font-xl"><strong><%= t("general.product_portfolio") %> / <%= @app_name %></strong></h2>
+                <h2 class="font-xl"><strong><%= t("general.product_portfolio") %> / <%= @app_name.titleize %></strong></h2>
                 <h2 class="font-xl"><strong><%= @error_info[:message] %></strong></h2>
                 <br />
                 <p class="lead semi-bold">
