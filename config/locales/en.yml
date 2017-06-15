@@ -32,7 +32,7 @@ en:
     authenticate_failed: Application Authenticate Failed
     bad_gateway_status: 502 Bad Gateway
     bad_gateway_message: Please contact technical support for assistance...
-    unkonw_token: ! 'Status : Unknown Token.'
+    unknown_token: ! 'Status : Unknown Token.'
   title:
     title: User Management
     login_title: Login
