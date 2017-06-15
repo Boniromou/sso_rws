@@ -17,20 +17,24 @@ en:
     invalid_property: property can not be null
     caps_lock: The Caps Lock is turn ON
     account_no_casino: ! 'System error : Invalid Casino'
-    invalid_username: Invalid username format. Space and Special Character is not allowed.
+    invalid_username: Invalid username format. Space and Special Character is not
+      allowed.
     account_not_in_ldap: User not found in database
     invalid_domain: Invalid domain format
+    duplicate_domain: Duplicate Domain
     domain_duplicated: Create Domain failed; Domain duplicated.
     create_system_user_confirm: Are you sure to create system user [%{username}]?
-    invalid_ldap_mapping: Domain-LDAP Configuration not found; Please contact technical support.
+    invalid_ldap_mapping: Domain-LDAP Configuration not found; Please contact technical
+      support.
     ldap_duplicated: Operation failed; LDAP duplicated.
     invalid_ldap_name: Operation failed; Invalid LDAP name.
     invalid_params: Operation failed; Missing required parameter.
-    bad_gateway_status: Error 502 Bad Gateway
-    bad_gateway_message: Oooops, Please contact technical support.
-    unkonw_token: Unkown token.
-    authenticate_failed: $$$authenticate_failed
+    authenticate_failed: Application Authenticate Failed
+    bad_gateway_status: 502 Bad Gateway
+    bad_gateway_message: Please contact technical support for assistance...
+    unkonw_token: ! 'Status : Unknown Token.'
   title:
+    title: User Management
     login_title: Login
     signup_title: Registration
     reset_password_title: Change Password
@@ -66,11 +70,11 @@ en:
     action_by: Action by
     export: Export
     last_updated_at: ! 'Last Updated at : '
-    delete: Delete
-    add: Add
     list: List
     product_portfolio: GameSource
     product_name: User Management
+    delete: Delete
+    add: Add
   user:
     user_name: User Name
     password: Password
@@ -144,7 +148,9 @@ en:
     confirm_password_tooltip: Please enter your New Password again
     update_password: Confirm
     invalid_system: System can not be null
-    invalid_password_format: Unable to update password; The value provided for the new password does not meet the length, complexity, or history requirements of the domain configuration.
+    invalid_password_format: Unable to update password; The value provided for the
+      new password does not meet the length, complexity, or history requirements of
+      the domain configuration.
     confirm_password_fail: The New Password entered does not match
   propagation:
     title: Propagation
@@ -176,6 +182,7 @@ en:
     title: Casinos
   domain:
     name: Domain
+    list: Domains
     domain_name: Domain Name
   domain_ldap:
     name: Domain-LDAP
@@ -205,10 +212,13 @@ en:
     create: Create
     delete: Delete
     create_mapping_successfully: Create Domain-Licensee Mapping successful !
-    invalid_params: Create Domain-Licensee Mapping failed; Domain or Licensee not found or empty.
-    create_mapping_fail_licensee_used: Create Domain-Licensee mapping failed; Licensee had been used.
+    invalid_params: Create Domain-Licensee Mapping failed; Domain or Licensee not
+      found or empty.
+    create_mapping_fail_licensee_used: Create Domain-Licensee mapping failed; Licensee
+      had been used.
     delete_mapping_successfully: Delete Domain-Licensee mapping successful !
-    delete_mapping_fail: Delete Domain-Licensee mapping error, Domain-Licensee mapping not found.
+    delete_mapping_fail: Delete Domain-Licensee mapping error, Domain-Licensee mapping
+      not found.
   confirm:
     create_domain: Do you confirm to create Domain [%{domain_name}] ?
     export_user_role: Are you sure to export System User List report ?
@@ -228,5 +238,6 @@ en:
     list: Login History
     login_time: Login Time
     search_range_remark: The search range is limited to [%{config_value}] days
-    search_range_error: The search range cannot be empty and limited to [%{config_value}] days
+    search_range_error: The search range cannot be empty and limited to [%{config_value}]
+      days
     search_system_user_error: System User not found
