@@ -40,10 +40,12 @@ staging0_external:
 sandbox0:
   <<: *default
   site_domain: 'laxigames.com'
+  url_base: 'https://snd-sso.888iportal.com'
 
 production0:
   <<: *default
   site_domain: 'laxigames.com'
+  url_base: 'https://sso.888iportal.com'
 
 mockup0:
   <<: *default
@@ -52,19 +54,24 @@ mockup0:
 sandbox2:
   <<: *default
   site_domain: 'laxigames.local'
+  url_base: 'https://snd-sso.777iportal.com'
 
 smartocean2:
   <<: *default
   site_domain: 'laxigames.local'
+  url_base: 'https://sso.777iportal.com'
 
 sandbox3:
   <<: *default
   site_domain: 'laxigames.local'
+  url_base: 'https://snd-sso.138777.net'
 
 production3:
   <<: *default
   site_domain: 'laxigames.local'
+  url_base: 'https://sso.pia.com.mo'
 
 production4:
   <<: *default
   site_domain: 'laxigames.local'
+  url_base: 'https://sso.laxino.com'
