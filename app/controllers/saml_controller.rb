@@ -40,9 +40,9 @@ class SamlController < ApplicationController
         Rails.logger.error e.backtrace
         @app_name = session['app_name']
         @error_info = {
-          # status: I18n.t(e.error_message),
-          message: I18n.t(e.error_message)
-          # note: I18n.t(e.error_message)
+          status: I18n.t('alert.authenticate_failed'),
+          # message: I18n.t(e.error_message)
+          note: I18n.t(e.error_message)
         }
         reset_session
         render layout: false, template: 'system_user_sessions/error_warning'
