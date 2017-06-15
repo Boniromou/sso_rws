@@ -44,7 +44,6 @@ class SamlController < ApplicationController
           # message: I18n.t(e.error_message)
           note: I18n.t(e.error_message)
         }
-        reset_session
         render layout: false, template: 'system_user_sessions/error_warning'
       end
     elsif params[:slo]
@@ -80,7 +79,6 @@ class SamlController < ApplicationController
       system_user = authenticate!(username, app_name, [casinoid])
       write_authenticate(system_user)
       Rails.logger.info("Login in success")
-      reset_session
       handle_redirect(app_name)
     else
       raise "logout_response is failed"
