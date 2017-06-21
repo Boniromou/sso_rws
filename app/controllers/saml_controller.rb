@@ -17,7 +17,7 @@ class SamlController < ApplicationController
     session['nameid'] = saml_response.nameid
     session['sessionindex'] = saml_response.sessionindex
     session['username'] = saml_response.attributes['username']
-    session['casinoid'] = saml_response.attributes['casinoid'].delete('casinoid').to_i
+    session['casinoids'] = convert_casino_ids(saml_response.attributes['casinoids'])
     app_name = params['app_name']
     session['app_name'] = app_name
     Rails.logger.info "session: #{session.inspect}"
@@ -74,9 +74,9 @@ class SamlController < ApplicationController
     logout_response = OneLogin::RubySaml::Logoutresponse.new(params[:SAMLResponse], settings, :get_params => params)
     Rails.logger.info "LogoutResponse is: #{logout_response.response.to_s}"
     if logout_response.success?
-      username, app_name, casinoid = session['username'], session['app_name'], session['casinoid'].to_i
-      Rails.logger.info("app_name: #{app_name}, username: #{username}, casinoid: #{casinoid}")
-      system_user = authenticate!(username, app_name, [casinoid])
+      username, app_name, casinoids = session['username'], session['app_name'], session['casinoids']
+      Rails.logger.info("app_name: #{app_name}, username: #{username}, casinoids: #{casinoids}")
+      system_user = authenticate!(username, app_name, casinoids)
       write_authenticate(system_user)
       Rails.logger.info("Login in success")
       handle_redirect(app_name)
@@ -103,6 +103,11 @@ class SamlController < ApplicationController
       value: value,
       domain: domain
     }
+  end
+
+  def convert_casino_ids(casino_ids)
+    return [] unless casino_ids
+    casino_ids.map {|casino_id| casino_id.delete('casinoid')}
   end
 
   def get_saml_settings

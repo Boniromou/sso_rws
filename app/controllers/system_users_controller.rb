@@ -6,7 +6,7 @@ class SystemUsersController < ApplicationController
     authorize :system_users, :new?
     @domains = policy_scope(Domain) 
     @errors = params[:errors] if params[:errors].present?
-end
+  end
 
   def create
     authorize :system_users, :create?

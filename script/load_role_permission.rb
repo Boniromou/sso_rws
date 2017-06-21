@@ -25,7 +25,7 @@ apps_info = {
               :DAM => {:id => 8, :name => 'asset_management'},
               :TPMS => {:id => 9, :name => 'trade_promotion'},
               :MDS => {:id => 10, :name => 'master_data_service'},
-              :SSRS => {:id => 11, :name => 'report_protal'}
+              :SSRS => {:id => 11, :name => 'report_portal'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }
