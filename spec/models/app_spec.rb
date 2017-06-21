@@ -1,7 +1,15 @@
 require "rails_helper"
 
 describe App do
-  fixtures :apps
+  def create_apps(app_names)
+    app_names.each do |app_name|
+      App.create!(name: app_name)
+    end
+  end
+
+  before(:each) do
+    create_apps(["User Management", "Gaming Operation", "Cage"])
+  end
 
   describe "test validate" do
     it "app name cannot be null" do

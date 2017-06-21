@@ -26,6 +26,7 @@ SsoRws::Application.routes.draw do
   end
 
   get "/app_login" => "internal/system_user_sessions#login"
+  get "/ssrs_login" => "internal/system_user_sessions#ssrs_login"
   root :to => 'dashboard#home', :as => :root
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root

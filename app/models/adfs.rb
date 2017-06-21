@@ -21,6 +21,16 @@ class Adfs < AuthSource
     settings
   end
 
+  def authenticate!(username, app_name, status, casino_ids)
+    system_user = SystemUser.find_by_username_with_domain(username)
+    if system_user.nil?
+      Rails.logger.error "SystemUser[username=#{username}] Login failed. Not a registered account"
+      raise Rigi::InvalidLogin.new("alert.invalid_login")
+    end
+    casino_ids = system_userdomain.get_casino_ids & casino_ids
+    super(username, app_name, status, casino_ids)
+  end
+
   def create_adfs_user!(username, domain)
     SystemUser.register!(username, domain)
   end

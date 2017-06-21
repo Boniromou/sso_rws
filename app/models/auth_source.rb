@@ -13,26 +13,6 @@ class AuthSource < ActiveRecord::Base
     system_user
   end
 
-  def self.insert(params)
-    params = strip_whitespace(params)
-    params[:auth_type] = AuthSourceLdap.to_s
-    create!(params)
-  end
-
-  def self.edit(params)
-    auth_source = find_by_id(params[:id])
-    if auth_source
-      auth_source.update_attributes!(strip_whitespace(params))
-    else
-      auth_source = insert(params)
-    end
-    auth_source
-  end
-
-  def self.strip_whitespace(params)
-    Hash[params.collect{|k,v| [k, v.to_s.strip]}]
-  end
-
   def self.create_system_user!(username, domain)
     validate_before_create_user!(username, domain)
     domain_obj = Domain.where(:name => domain).first

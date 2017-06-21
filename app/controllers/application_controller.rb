@@ -34,6 +34,7 @@ class ApplicationController < ActionController::Base
   end
 
   def get_client_ip
+    return '0.0.0.0' if Rails.env == "development"
     ip = request.env["X-Real-IP"]
     ip = request.env["HTTP_X_FORWARDED_FOR"] if !ip
     ip = request.remote_ip if !ip

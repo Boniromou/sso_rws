@@ -14,4 +14,8 @@ class Internal::SystemUserSessionsController < ApplicationController
       redirect_to "#{auth_source.get_url}?app_name=#{@app_name}"
     end
   end
+
+  def ssrs_login
+    redirect_to "#{root_url}app_login?app_name=#{SSRS_APP_NAME}"
+  end
 end
