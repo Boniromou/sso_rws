@@ -55,7 +55,7 @@ class ApplicationController < ActionController::Base
   end
 
   def write_cookie(name, value, domain = :all)
-    cookies.permanent[name] = {
+    cookies[name] = {
       value: value,
       domain: domain
     }
