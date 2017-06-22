@@ -17,7 +17,7 @@ class SamlController < ApplicationController
     session['nameid'] = saml_response.nameid
     session['sessionindex'] = saml_response.sessionindex
     session['username'] = saml_response.attributes['username']
-    session['casinoids'] = convert_casino_ids(saml_response.attributes['casinoids'])
+    session['casinoids'] = convert_casino_ids(saml_response.attributes.all['casinoids'])
     app_name = params['app_name']
     session['app_name'] = app_name
     Rails.logger.info "session: #{session.inspect}"
@@ -107,7 +107,7 @@ class SamlController < ApplicationController
 
   def convert_casino_ids(casino_ids)
     return [] unless casino_ids
-    casino_ids.map {|casino_id| casino_id.delete('casinoid')}
+    casino_ids.collect {|casino_id| casino_id.delete('casinoid').to_i}
   end
 
   def get_saml_settings

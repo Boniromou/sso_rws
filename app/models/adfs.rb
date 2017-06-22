@@ -27,7 +27,7 @@ class Adfs < AuthSource
       Rails.logger.error "SystemUser[username=#{username}] Login failed. Not a registered account"
       raise Rigi::InvalidLogin.new("alert.invalid_login")
     end
-    casino_ids = system_userdomain.get_casino_ids & casino_ids
+    casino_ids = system_user.domain.get_casino_ids & casino_ids
     super(username, app_name, status, casino_ids)
   end
 
