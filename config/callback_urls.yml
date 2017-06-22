@@ -27,6 +27,8 @@ staging0:
   game_recall: 'https://stg-gr2.laxino.com/search_game_history'
   signature_verifier: 'https://stg-sv2.laxino.com/index'
   audit_portal: 'https://stg-audp2.laxino.com/index'
+  asset_management: 'https://stg-dam2.laxino.com/index'
+  trade_promotion: 'https://stg-tpms2.laxino.com/index'
 
 sandbox3:
   user_management: 'https://snd-sso.138777.net/home'
@@ -36,3 +38,13 @@ sandbox3:
   game_recall: 'https://snd-gr.138777.net/search_game_history'
   signature_verifier: 'https://snd-sv.138777.net/index'
   audit_portal: 'https://snd-audp.138777.net/index'
+
+production3:
+  user_management: 'https://sso.pia.com.mo/home'
+  gaming_operation: 'https://ap.pia.com.mo/home'
+  cage: 'https://cms.pia.com.mo/home'
+  station_management: 'https://sm.pia.com.mo/index'
+  game_recall: 'https://gr.pia.com.mo/search_game_history'
+  signature_verifier: 'https://sv.pia.com.mo/index'
+  audit_portal: 'https://audp.pia.com.mo/index'
+  asset_management: 'https://dam.pia.com.mo/index'
