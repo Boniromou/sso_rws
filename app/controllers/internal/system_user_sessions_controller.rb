@@ -16,6 +16,6 @@ class Internal::SystemUserSessionsController < ApplicationController
   end
 
   def ssrs_login
-    redirect_to "#{root_url}app_login?app_name=#{SSRS_APP_NAME}"
+    redirect_to "#{URL_BASE}/app_login?app_name=#{SSRS_APP_NAME}"
   end
 end
