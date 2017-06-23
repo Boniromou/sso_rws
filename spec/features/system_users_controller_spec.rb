@@ -148,17 +148,10 @@ describe SystemUsersController do
       logout(@root_user)
     end
 
-    it '[5.4] Cannot see the edit buttons if the targeted users have no casino group' do
+    it '[5.4] Can see the edit buttons if the targeted users have no casino group' do
       login_as_root
-      verify_system_user_profile_page(@system_user_2, false)
+      verify_system_user_profile_page(@system_user_2, true)
       logout(@root_user)
-    end
-
-    it '[5.5] Not allowed to edit targeted users without casino group (policy check on the confirm button)' do
-      login_as_root
-      visit edit_roles_system_user_path(:id => @system_user_2.id)
-      within("div#content form"){ click_button I18n.t("general.confirm") }
-      check_flash_message I18n.t("alert.account_no_casino")
     end
   end
 

@@ -22,7 +22,7 @@
           <header>
             <h2><strong><%= t("role.systems_and_roles") %></strong></h2>
 
-            <% if policy(@system_user).edit_roles? && @system_user.active_casino_ids.any? %>
+            <% if policy(@system_user).edit_roles? %>
             <div class="widget-toolbar" role="menu">
               <div class="btn-group">
                 <%=link_to t("general.edit"), edit_roles_system_user_path(:id => @system_user.id), :class => "btn btn-primary btn-xs", :remote => true %>
