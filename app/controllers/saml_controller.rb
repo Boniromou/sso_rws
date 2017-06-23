@@ -16,7 +16,7 @@ class SamlController < ApplicationController
 
     session['nameid'] = saml_response.nameid
     session['sessionindex'] = saml_response.sessionindex
-    session['username'] = saml_response.attributes['username']
+    session['username'] = saml_response.attributes['username'].downcase if saml_response.attributes['username']
     session['casinoids'] = convert_casino_ids(saml_response.attributes['casinoids'])
     app_name = params['app_name']
     session['app_name'] = app_name
