@@ -98,13 +98,6 @@ class SamlController < ApplicationController
     params[:app_name] || session['app_name']
   end
 
-  def write_cookie(name, value, domain = :all)
-    cookies.permanent[name] = {
-      value: value,
-      domain: domain
-    }
-  end
-
   def convert_casino_ids(casino_ids)
     return [] unless casino_ids
     casino_ids.collect {|casino_id| casino_id.delete('casinoid').to_i}
@@ -117,14 +110,6 @@ class SamlController < ApplicationController
       settings.assertion_consumer_logout_service_url = get_url_base + "/saml/logout"
     end
     settings
-  end
-
-  # value is an hash
-  def add_cache(key, value)
-    old = Rails.cache.read(key)
-    value.merge!(old) if old
-    Rails.cache.write(key, value)
-    Rails.logger.info "Rails cache, #{key}: #{value}"
   end
 
   def handle_redirect(app_name)
