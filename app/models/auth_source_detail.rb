@@ -1,6 +1,7 @@
 class AuthSourceDetail < ActiveRecord::Base
   attr_accessible :data, :name
   serialize :data, JSON
+  validates_presence_of :name, :message => I18n.t("alert.invalid_params")
   validates_uniqueness_of :name, :message => I18n.t("alert.ldap_duplicated")
 
   def self.insert(params)

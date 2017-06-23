@@ -146,7 +146,7 @@ class SystemUser < ActiveRecord::Base
   def cache_profile
     cache_key = "#{self.id}"
     casinos = self.active_casino_ids
-    licensee = Casino.find(casinos.first).licensee_id
+    licensee = Casino.find(casinos.first).licensee_id if casinos.present?
     properties = Property.where(:casino_id => casinos).pluck(:id)
     cache_hash = {
       :status => self.status,
