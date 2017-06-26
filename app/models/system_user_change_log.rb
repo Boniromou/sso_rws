@@ -1,5 +1,5 @@
 class SystemUserChangeLog < ChangeLog
-  scope :by_action, -> action { where("action = ?", action) if action.present? }
+  scope :by_action, -> action { where(action: action) if action.present? }
 
   def self.search_query(*args)
     args.extract_options!

@@ -62,7 +62,7 @@ describe LoginHistoriesController do
    	end
 
   	it "[29.2] verify the list login history with non-1000 user" do
-  		mock_ad_account_profile(true, [1003, 1007])
+  		mock_ad_account_profile('active', [1003, 1007])
   		login("#{@system_user_2.username}@#{@system_user_2.domain.name}")
   		visit login_histories_path
   		click_button I18n.t("general.search")
@@ -71,7 +71,7 @@ describe LoginHistoriesController do
   	end
 
   	it "[29.3] filter suspended casino group user login history" do
-  		mock_ad_account_profile(true, [1003])
+  		mock_ad_account_profile('active', [1003])
       login("#{@system_user_2.username}@#{@system_user_2.domain.name}")
       @system_user_2.update_casinos([1007])
       visit login_histories_path
@@ -81,7 +81,7 @@ describe LoginHistoriesController do
   	end
 
   	it "[29.4] Only allow to view subset casino of user login history" do
-  		mock_ad_account_profile(true, [1003])
+  		mock_ad_account_profile('active', [1003])
   		login("#{@system_user_2.username}@#{@system_user_2.domain.name}")
   		visit login_histories_path
   		click_button I18n.t("general.search")

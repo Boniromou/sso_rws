@@ -30,6 +30,16 @@ describe ChangeLogsController do
       expect(change_log.target_casino_id).to eq system_user.active_casino_ids.first
     end
 
+    def check_target_casinos(casino_ids)
+      cl = ChangeLog.first
+      target_casinos = TargetCasino.all
+      expect(target_casinos.size).to eq casino_ids.size
+      target_casinos.each_with_index do |target_casino, index|
+        expect(target_casino['change_log_id']).to eq cl.id
+        expect(target_casino['target_casino_id']).to eq casino_ids[index]
+      end
+    end
+
     it "[16.1] 1000 user successfully edit 1003 user" do
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       visit edit_roles_system_user_path(@system_user_2)
@@ -50,6 +60,8 @@ describe ChangeLogsController do
       expect(cls[0].change_detail['app_name']).to eq @app_1.name
       expect(cls[0].change_detail['from']).to eq @int_role_1.name
       expect(cls[0].change_detail['to']).to eq @int_role_2.name
+
+      check_target_casinos(@system_user_2.active_casino_ids)
     end
 
     it "[16.2] 1003 user successfully edit 1003 user" do
@@ -72,6 +84,8 @@ describe ChangeLogsController do
       expect(cls[0].change_detail['app_name']).to eq @app_1.name
       expect(cls[0].change_detail['from']).to eq @int_role_1.name
       expect(cls[0].change_detail['to']).to eq @int_role_2.name
+
+      check_target_casinos(@system_user_3.active_casino_ids)
     end
 
     it "[16.3] 1000 user successfully edit 1003, 1007 user" do
@@ -84,26 +98,19 @@ describe ChangeLogsController do
       end
 
       cls = ChangeLog.all
-      expect(cls.length).to eq 2
-      expect(cls[0].action_by['username']).to eq "#{@system_user_1.username}@#{@system_user_1.domain.name}"
-      expect(cls[0].action_by['casino_ids']).to eq @system_user_1.active_casino_ids
-      expect(cls[0].created_at).to be_kind_of(Time)
-      expect(cls[0].action).to eq "edit_role"
-      expect(cls[0].target_username).to eq @system_user_4.username
-      expect(cls[0].target_casino_id).to eq 1003
-      expect(cls[0].change_detail['app_name']).to eq @app_1.name
-      expect(cls[0].change_detail['from']).to eq @int_role_1.name
-      expect(cls[0].change_detail['to']).to eq @int_role_2.name
+      expect(cls.length).to eq 1
+      cl = cls.first
+      expect(cl.action_by['username']).to eq "#{@system_user_1.username}@#{@system_user_1.domain.name}"
+      expect(cl.action_by['casino_ids']).to eq @system_user_1.active_casino_ids
+      expect(cl.created_at).to be_kind_of(Time)
+      expect(cl.action).to eq "edit_role"
+      expect(cl.target_username).to eq @system_user_4.username
+      expect(cl.target_casino_id).to eq 1003
+      expect(cl.change_detail['app_name']).to eq @app_1.name
+      expect(cl.change_detail['from']).to eq @int_role_1.name
+      expect(cl.change_detail['to']).to eq @int_role_2.name
 
-      expect(cls[1].action_by['username']).to eq "#{@system_user_1.username}@#{@system_user_1.domain.name}"
-      expect(cls[1].action_by['casino_ids']).to eq @system_user_1.active_casino_ids
-      expect(cls[1].created_at).to be_kind_of(Time)
-      expect(cls[1].action).to eq "edit_role"
-      expect(cls[1].target_username).to eq @system_user_4.username
-      expect(cls[1].target_casino_id).to eq 1007
-      expect(cls[1].change_detail['app_name']).to eq @app_1.name
-      expect(cls[1].change_detail['from']).to eq @int_role_1.name
-      expect(cls[1].change_detail['to']).to eq @int_role_2.name
+      check_target_casinos(@system_user_4.active_casino_ids)
     end
 
     it "[16.4] 1000 user successfully edit 1000 user" do
@@ -126,6 +133,8 @@ describe ChangeLogsController do
       expect(cls[0].change_detail['app_name']).to eq @app_1.name
       expect(cls[0].change_detail['from']).to eq @int_role_1.name
       expect(cls[0].change_detail['to']).to eq @int_role_2.name
+
+      check_target_casinos(@system_user_5.active_casino_ids)
     end
 
     it "[16.5] 1003, 1007 user successfully edit 1003 user" do

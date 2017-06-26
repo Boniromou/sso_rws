@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170612040452) do
+ActiveRecord::Schema.define(:version => 20170626023710) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -95,6 +95,8 @@ ActiveRecord::Schema.define(:version => 20170612040452) do
     t.string   "target_domain",   :limit => 45
     t.string   "type",            :limit => 45,                     :null => false
   end
+
+  add_index "change_logs", ["target_username", "target_domain"], :name => "index_change_logs_on_target_username_and_target_domain"
 
   create_table "domains", :force => true do |t|
     t.string   "name",                  :limit => 45, :null => false
@@ -193,16 +195,16 @@ ActiveRecord::Schema.define(:version => 20170612040452) do
   add_index "roles", ["role_type_id"], :name => "fk_Roles_RoleTypeId"
 
   create_table "system_users", :force => true do |t|
-    t.integer  "sign_in_count",      :default => 0,     :null => false
+    t.integer  "sign_in_count",                    :default => 0,          :null => false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.datetime "created_at",                                               :null => false
+    t.datetime "updated_at",                                               :null => false
     t.string   "username"
-    t.boolean  "status",             :default => false, :null => false
-    t.boolean  "admin",              :default => false, :null => false
+    t.string   "status",             :limit => 45, :default => "inactive", :null => false
+    t.boolean  "admin",                            :default => false,      :null => false
     t.integer  "domain_id"
     t.datetime "purge_at"
   end

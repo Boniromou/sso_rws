@@ -5,7 +5,7 @@ describe SystemUsersController do
 
   describe "[36] User management dashboard - view inactive system user" do
   	def create_inactive_user(casino_ids)
-  		system_user = create(:system_user, status: false)
+  		system_user = create(:system_user, status: 'inactive')
   		licensee = create(:licensee)
   		casino_ids.each do |casino_id|
         create(:casino, :id => casino_id, :licensee_id => licensee.id) unless Casino.exists?(:id => casino_id)
@@ -55,7 +55,7 @@ describe SystemUsersController do
     end
 
     it "[36.2] verify the inactive system non-1000 user" do
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       login("#{@system_user_2.username}@#{@system_user_2.domain.name}")
       visit user_management_root_path
       check_system_user_list([@system_user_3])

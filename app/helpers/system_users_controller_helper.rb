@@ -1,17 +1,6 @@
 module SystemUsersControllerHelper
   def system_user_status_format(status)
-    return "user.active" if status
-    return "user.inactive"
-  end
-
-  def change_status_button_name(status)
-    return "user.lock" if status
-    return "user.unlock"
-  end
-
-  def change_status_action_name(status)
-    return "lock" if status
-    return "unlock"
+    return "user.#{status}" if status
   end
 
   def roles_format(system_user)

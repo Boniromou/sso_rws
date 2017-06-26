@@ -14,13 +14,13 @@ module StepHelper
   end
 
   def mock_ldap_query(account_status, casino_ids)
-    dn = account_status ? ["OU=Licensee"] : ["OU=Licensee,OU=Disabled Accounts"]
+    dn = account_status == 'inactive' ? ["OU=Licensee,OU=Disabled Accounts"] : ["OU=Licensee"]
     memberof = casino_ids.map { |casino_id| "CN=#{casino_id}casinoid" }
     entry = [{ :distinguishedName => dn, :memberOf => memberof }]
     allow_any_instance_of(Net::LDAP).to receive(:search).and_return(entry)
   end
 
-  def mock_ad_account_profile(status=true, casino_ids=[1000])
+  def mock_ad_account_profile(status='active', casino_ids=[1000])
     allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(true)
     mock_ldap_query(status, casino_ids)
   end
@@ -35,6 +35,7 @@ module StepHelper
   end
 
   def login(username)
+    create(:app, name: APP_NAME, callback_url: home_root_path) unless App.find_by_name(APP_NAME)
     visit ldap_new_path(:app_name => APP_NAME)
     fill_in "system_user_username", :with => username
     fill_in "system_user_password", :with => '12345'
@@ -42,8 +43,8 @@ module StepHelper
   end
 
   def login_as_root
-    root_user = SystemUser.find_by_admin(1) || SystemUser.create(:username => "portal.admin", :status => true, :admin => true, :auth_source_id => 1)
-    login_as(root_user, :scope => :system_user)
+    root_user = SystemUser.find_by_admin(1) || SystemUser.create(:username => "portal.admin", :status => SystemUser::ACTIVE, :admin => true, :auth_source_id => 1)
+    login("#{root_user.username}@#{root_user.domain.name}")
   end
 
   def check_success_audit_log(audit_target, action_type, action, action_by, description=nil)

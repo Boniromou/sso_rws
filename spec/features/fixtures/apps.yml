@@ -1,9 +1,12 @@
 user:
   id: 1
   name: "user_management"
+  callback_url: "/home"
 operation:
   id: 2 
   name: "gaming_operation"
+  callback_url: "/home"
 cage:
   id: 3
   name: "cage"
+  callback_url: "/home"

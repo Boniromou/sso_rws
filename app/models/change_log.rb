@@ -26,4 +26,11 @@ class ChangeLog < ActiveRecord::Base
   def target_casino_id
     self.target_casinos.first.target_casino_id if self.target_casinos.first
   end
+
+  def backfill(target_user)
+    return if TargetCasino.find_by_change_log_id(id).present?
+    target_user.active_casino_ids.each do |casino_id|
+      target_casinos.create(:target_casino_id => casino_id, :target_casino_name => Casino.find(casino_id).name)
+    end
+  end
 end

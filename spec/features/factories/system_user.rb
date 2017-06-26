@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :system_user do
     sequence(:username) { |n| "system_user_#{n}" }
-    status    true
+    status    'active'
     admin     false
 
     transient do
@@ -32,6 +32,7 @@ FactoryGirl.define do
 
     trait :admin do
       username  'portal.admin'
+      status 'active'
       admin     true
     end
   end

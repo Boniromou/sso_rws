@@ -15,7 +15,6 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if resource.is_a?(SystemUser)
       Rails.logger.info "A SystemUser logged in. Session=#{session.inspect}"
-      #Rails.logger.info request.session_options.inspect
       home_root_path
     elsif
       app_root_path
@@ -27,7 +26,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_activation_status
-    if current_system_user && !current_system_user.activated?
+    if current_system_user && current_system_user.inactived?
       Rails.logger.info "[SystemUser id=#{current_system_user.id}] to be forced to logout due to de-activated status"
       handle_inactive_status
     end

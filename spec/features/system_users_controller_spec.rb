@@ -73,7 +73,7 @@ describe SystemUsersController do
     end
 
     it "[4.2] verify the list system non-1000 user" do
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       login("#{@system_user_2.username}@#{@system_user_2.domain.name}")
       visit system_users_path
       table_selector = "div#content table#system_user"
@@ -83,7 +83,7 @@ describe SystemUsersController do
     end
 
     it "[4.3] filter suspended casino group user" do
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       login("#{@system_user_2.username}@#{@system_user_2.domain.name}")
       @system_user_3.update_casinos([1007])
       visit system_users_path
@@ -94,7 +94,7 @@ describe SystemUsersController do
     end
 
     it "[4.4] Only allow to view subset casino of user" do
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       @system_user_3.update_casinos([1003, 1007])
 
       login("#{@system_user_2.username}@#{@system_user_2.domain.name}")
@@ -159,9 +159,6 @@ describe SystemUsersController do
     before(:each) do
       @system_user_1 = create(:system_user, :with_casino_ids => [1000])
       @system_user_2 = create(:system_user, :with_casino_ids => [1000])
-      #@user_manager = Role.first
-      #@helpdesk = Role.find_by_name("helpdesk")
-      #@system_user_2.role_assignments.create!({:role_id => @helpdesk.id})
     end
 
     def verify_grant_role(click_cancel_button=false)
@@ -169,8 +166,6 @@ describe SystemUsersController do
       app1 = App.first
       roles = Role.all.group_by { |role| role.app_id }
       apps = App.all
-      #@system_user_1.role_assignments.create!({:role_id => r1.id})
-      #@system_user_1.app_system_users.create!({:app_id => r1.app.id})
       login_as_root
       visit edit_roles_system_user_path(@system_user_1)
       main_panel = find("div#content")
@@ -232,11 +227,6 @@ describe SystemUsersController do
         radio_btn_1 = find("input##{app1.name}_#{r1.id}")
         expect(radio_btn_1[:checked]).to eq "checked"
         uncheck("enabled_#{app1.name}")
-        #radio_btn_1.unselect_option
-        #click_button(I18n.t("general.confirm"))
-        # capybara won't let radio buttons unselected
-        #visit "/system_users/#{@system_user_1.id}/update_roles"
-
       end
 
       page.driver.post("/system_users/#{@system_user_1.id}/update_roles")
@@ -414,74 +404,6 @@ describe SystemUsersController do
       click_button I18n.t("general.confirm")
       verify_authorized_request
     end
-
-    xit "[14.9] Lock System user (authorized)" do
-      user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role])
-      user_manager_2 = create(:system_user, :roles => [user_manager_role])
-      login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
-      visit home_root_path
-      assert_dropdown_menu_item I18n.t("header.user_management")
-      visit user_management_root_path
-      assert_left_panel_item I18n.t("general.dashboard")
-      assert_left_panel_item I18n.t("user.list_users")
-      click_link I18n.t("user.list_users")
-      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
-      #find(user_manager_2_profile_link_selector).click
-      click_button I18n.t("user.lock")
-      verify_authorized_request
-    end
-
-    xit "[14.10] Lock System user (unauthorized)" do
-      allow(SystemUserPolicy).to receive("lock?").and_return(false)
-      user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role])
-      user_manager_2 = create(:system_user, :roles => [user_manager_role])
-      login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
-      visit home_root_path
-      assert_dropdown_menu_item I18n.t("header.user_management")
-      visit user_management_root_path
-      assert_left_panel_item I18n.t("general.dashboard")
-      assert_left_panel_item I18n.t("user.list_users")
-      click_link I18n.t("user.list_users")
-      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
-      #find(user_manager_2_profile_link_selector).click
-      expect(has_link?(I18n.t("user.lock"))).to be false
-    end
-
-    xit "[14.11] Un-lock system user (authorized)" do
-      user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role])
-      user_manager_2 = create(:system_user, :status => false, :roles => [user_manager_role])
-      login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
-      visit home_root_path
-      assert_dropdown_menu_item I18n.t("header.user_management")
-      visit user_management_root_path
-      assert_left_panel_item I18n.t("general.dashboard")
-      assert_left_panel_item I18n.t("user.list_users")
-      click_link I18n.t("user.list_users")
-      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
-      #find(user_manager_2_profile_link_selector).click
-      click_button I18n.t("user.unlock")
-      verify_authorized_request
-    end
-
-    xit "[14.12] un-lock system user (unauthorized)" do
-      allow(SystemUserPolicy).to receive("unlock?").and_return(false)
-      user_manager_role = Role.find_by_name "user_manager"
-      user_manager_1 = create(:system_user, :roles => [user_manager_role])
-      user_manager_2 = create(:system_user, :roles => [user_manager_role])
-      login("#{user_manager_1.username}@#{user_manager_1.domain.name}")
-      visit home_root_path
-      assert_dropdown_menu_item I18n.t("header.user_management")
-      visit user_management_root_path
-      assert_left_panel_item I18n.t("general.dashboard")
-      assert_left_panel_item I18n.t("user.list_users")
-      click_link I18n.t("user.list_users")
-      user_manager_2_profile_link_selector = "div#content table tbody tr:nth-child(2) td:first-child a"
-      #find(user_manager_2_profile_link_selector).click
-      expect(has_link?(I18n.t("user.unlock"))).to be false
-    end
   end
 
   describe "[24] Create System User", :js => true do
@@ -520,7 +442,7 @@ describe SystemUsersController do
       login_as_root
       visit new_system_user_path
       fill_in_user_info('   abc   ', '1003.com')
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       test_click_create_btn('abc@1003.com')
       expect(page).to have_content I18n.t("success.create_user", :username => 'abc@1003.com')
       expect(current_path).to eq new_system_user_path
@@ -539,7 +461,7 @@ describe SystemUsersController do
     it "[24.3] Display domains in create user page according to user domain casino mapping (1003,1007)" do
       system_user = create(:system_user, :roles => [@it_support_role], :domain_name => '1003.com', :with_casino_ids => [1003])
       create(:domain, :name => '1014.com', :with_casino_ids => [1014])
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       login("#{system_user.username}@#{system_user.domain.name}")
       visit new_system_user_path
       expect(page).not_to have_select("domain", :with_options => domain_array)
@@ -551,7 +473,7 @@ describe SystemUsersController do
       login_as_root
       visit new_system_user_path
       expect(page).to have_select("domain", :with_options => ["1003.com"])
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       fill_in_user_info('abc', '1003.com')
       test_click_create_btn('abc@1003.com')
       expect(page).to have_content I18n.t("alert.account_no_casino")
@@ -570,7 +492,7 @@ describe SystemUsersController do
       create(:system_user, :domain_name => '1003.com', :with_casino_ids => [1007])
       login_as_root
       visit new_system_user_path
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       fill_in_user_info('abc', '1003.com')
       test_click_create_btn('abc@1003.com')
       check_fail_audit_log("system_user", "create", "create", "portal.admin@example.com")
@@ -597,22 +519,13 @@ describe SystemUsersController do
 
     it "[24.11] Create system user fail with invalid input (space in system user name)" do
       system_user = create(:system_user, :roles => [@it_support_role], :domain_name => '1003.com', :with_casino_ids => [1003])
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       login("#{system_user.username}@#{system_user.domain.name}")
       visit new_system_user_path
       fill_in_user_info('ab    c', '1003.com')
       page.find("#modal_link").click
       expect(page).to have_content I18n.t("alert.invalid_username")
     end
-
-    # it "[24.13] Create system user fail with auth_source - licensee mapping not exist" do
-    #   create(:domain, :name => '1003.com')
-    #   login_as_root
-    #   visit new_system_user_path
-    #   fill_in_user_info('abc', '1003.com')
-    #   test_click_create_btn('abc@1003.com')
-    #   expect(page).to have_content I18n.t("alert.invalid_ldap_mapping")
-    # end
   end
 
   describe "[28] Export system user list" do

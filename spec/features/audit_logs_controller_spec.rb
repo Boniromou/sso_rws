@@ -5,11 +5,11 @@ describe AuditLogsController do
 
   before(:each) do
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000])   
-    user_manager_role = Role.find_by_name "user_manager"
+    user_manager_role = Role.find_by_name("user_manager")
     @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003])
     create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
     allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user_1)
-    allow_any_instance_of(Ldap).to receive(:retrieve_user_profile).and_return({:status => true, :casino_ids => [1000]})
+    allow_any_instance_of(Ldap).to receive(:retrieve_user_profile).and_return({:status => 'active', :casino_ids => [1000]})
   end
 
   describe '[9] Search audit log by Time' do

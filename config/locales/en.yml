@@ -85,6 +85,7 @@ en:
     status: Status
     active: Active
     inactive: Inactive
+    pending: Pending
     lock: lock
     unlock: un-lock
     preferred_language: Preferred Language

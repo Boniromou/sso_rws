@@ -11,8 +11,6 @@ describe DomainsController do
   def login_user(permissions=[], casino_ids=[1000])
     role = create(:role, app_id: @app_id, with_permissions: permissions)
     @system_user = create(:system_user, :roles => [role], :with_casino_ids => casino_ids)
-    allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user)
-    allow_any_instance_of(Ldap).to receive(:retrieve_user_profile).and_return({:status => true, :casino_ids => casino_ids})
     create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
 
     login("#{@system_user.username}@#{@system_user.domain.name}")

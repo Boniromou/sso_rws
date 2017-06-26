@@ -45,7 +45,8 @@ class Ldap < AuthSource
       end
     end
 
-    res = { :status => !is_disable_account, :casino_ids => groups.uniq }
+    status = is_disable_account ? SystemUser::INACTIVE : SystemUser::ACTIVE
+    res = { :status => status, :casino_ids => groups.uniq }
     Rails.logger.info "[username=#{username_with_domain}][filter_groups=#{casino_ids}] account result => #{res.inspect}"
     res
   end

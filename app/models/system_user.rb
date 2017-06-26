@@ -1,4 +1,8 @@
 class SystemUser < ActiveRecord::Base
+  ACTIVE = 'active'
+  INACTIVE = 'inactive'
+  PENDING = 'pending'
+
   devise :registerable
   attr_accessible :id, :username, :status, :admin, :auth_source_id, :domain_id
   has_many :role_assignments, :as => :user, :dependent => :destroy
@@ -33,22 +37,35 @@ class SystemUser < ActiveRecord::Base
     active_casino_ids.include?(ADMIN_CASINO_ID)
   end
 
-  def self.register!(username, domain, casino_ids=nil)
+  def self.register!(username, domain, casino_ids)
     transaction do
       domain = Domain.where(:name => domain).first
-      system_user = create!(:username => username, :domain_id => domain.id, :status => true)
+      system_user = create!(:username => username, :domain_id => domain.id, :status => ACTIVE)
       system_user.update_casinos(casino_ids) if casino_ids
     end
+  end
+
+  def self.register_without_check!(username, domain)
+    domain = Domain.where(:name => domain).first
+    create!(:username => username, :domain_id => domain.id, :status => PENDING)
   end
 
   alias_method "is_root?", "is_admin?"
 
   def activated?
-    self.status
+    self.status == ACTIVE
+  end
+
+  def inactived?
+    self.status == INACTIVE
+  end
+
+  def pending?
+    self.status == PENDING
   end
 
   def self.inactived
-    where(status: "inactived")
+    where(status: INACTIVE)
   end
 
   def update_roles(role_ids)
@@ -95,9 +112,13 @@ class SystemUser < ActiveRecord::Base
     CasinosSystemUser.update_casinos_by_system_user(id, casino_ids)
   end
 
-  def update_user_profile(status, casino_ids)
-    self.status = status
+  def update_user_profile(casino_ids)
     update_casinos(casino_ids)
+    save!
+  end
+
+  def update_status(status)
+    self.status = status
     save!
   end
 
@@ -181,6 +202,18 @@ class SystemUser < ActiveRecord::Base
 
   def self.validate_username!(username)
     raise Rigi::InvalidUsername.new(I18n.t("alert.invalid_username")) if username.blank? || username.index(/\s/)
+  end
+
+  def backfill_change_logs
+    return unless status == PENDING
+    change_logs = find_change_logs_by_action(['edit_role', 'create'])
+    change_logs.each do |change_log|
+      change_log.backfill(self)
+    end
+  end
+
+  def find_change_logs_by_action(actions)
+    SystemUserChangeLog.where(target_username: username, target_domain: domain.name).by_action(actions)
   end
 
   private

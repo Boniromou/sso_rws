@@ -91,7 +91,7 @@ class SamlController < ApplicationController
   end
 
   def authenticate!(username, app_name, casino_ids)
-    AuthSource.find_by_token(get_client_ip).authenticate!(username, app_name, true, casino_ids)
+    AuthSource.find_by_token(get_client_ip).authenticate!(username, app_name, casino_ids)
   end
 
   def app_name

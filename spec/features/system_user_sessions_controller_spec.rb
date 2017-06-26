@@ -1,10 +1,9 @@
 require "feature_spec_helper"
 
 describe SystemUserSessionsController do
-  fixtures :permissions, :role_permissions, :roles, :auth_sources
+  fixtures :apps, :permissions, :role_permissions, :roles, :auth_sources
 
   before(:each) do
-    create(:app, name: APP_NAME, callback_url: home_root_path)
     mock_ad_account_profile
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
   end
@@ -48,7 +47,7 @@ describe SystemUserSessionsController do
     end
 
     it "[1.9] Login successful and update the User casino group" do
-      mock_ad_account_profile(true, [1003])
+      mock_ad_account_profile('active', [1003])
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       casino_system_user_1003 = CasinosSystemUser.where(:casino_id => 1003, :system_user_id => @system_user_1.id).first
       casino_system_user_1007 = CasinosSystemUser.where(:casino_id => 1007, :system_user_id => @system_user_1.id).first
@@ -58,7 +57,7 @@ describe SystemUserSessionsController do
     end
 
     it "[1.10] Login fail with user AD casino group null" do
-      mock_ad_account_profile(true, [])
+      mock_ad_account_profile('active', [])
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       casino_system_user_1003 = CasinosSystemUser.where(:casino_id => 1003, :system_user_id => @system_user_1.id).first
       casino_system_user_1007 = CasinosSystemUser.where(:casino_id => 1007, :system_user_id => @system_user_1.id).first
@@ -68,10 +67,10 @@ describe SystemUserSessionsController do
     end
 
     it "[1.11] Login successful and update the User lock/unlock status" do
-      mock_ad_account_profile(false, [])
+      mock_ad_account_profile('inactive', [])
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       @system_user_1.reload
-      expect(@system_user_1.status).to eq false
+      expect(@system_user_1.status).to eq 'inactive'
       expect_have_content(I18n.t("alert.inactive_account").chomp('.').titleize)
     end
 
@@ -82,7 +81,7 @@ describe SystemUserSessionsController do
     end
 
     it '[1.13] Login fail with AD casino not match with local' do
-      mock_ad_account_profile(true, [rand(9999)])
+      mock_ad_account_profile('active', [rand(9999)])
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       expect_have_content(I18n.t("alert.account_no_casino").titleize)
     end

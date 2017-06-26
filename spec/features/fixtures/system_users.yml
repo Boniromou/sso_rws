@@ -1,12 +1,12 @@
 1:
   id: 1
   username: 'portal.admin'
-  status: true
+  status: 'active'
   admin: true
   domain_id: 1
 3:
   id: 3
   username: 'user01'
-  status: true
+  status: 'active'
   admin: false
   domain_id: 1

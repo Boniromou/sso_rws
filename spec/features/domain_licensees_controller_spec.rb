@@ -3,13 +3,13 @@ require "feature_spec_helper"
 describe DomainLicenseesController do
   before(:each) do
     create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
-    app = create(:app, name: APP_NAME)
+    app = create(:app, name: APP_NAME, callback_url: home_root_path)
     mock_ad_account_profile
     @app_id = app.id
   end
 
   def auth_source_id
-    auth_source = create(:auth_source, :token => '192.1.1.1', :type => 'Ldap') #AuthSource.first || create(:auth_source)
+    auth_source = create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
     auth_source.id
   end
 
@@ -24,7 +24,7 @@ describe DomainLicenseesController do
     else
       system_user = create(:system_user, :roles => [role], :with_casino_ids => casino_ids)
     end
-    mock_ad_account_profile(true, casino_ids)
+    mock_ad_account_profile('active', casino_ids)
     login("#{system_user.username}@#{system_user.domain.name}")
   end
 

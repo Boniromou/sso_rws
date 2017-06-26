@@ -5,12 +5,12 @@ describe ChangeLogsController do
 
   before(:each) do
     @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
-    user_manager_role = Role.find_by_name "user_manager"
+    user_manager_role =  Role.find_by_name("user_manager")
     @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1000])
     @system_user_2 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003])
     @system_user_3 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003, 1007, 1014])
 
-    it_support_role = Role.find_by_name "it_support"
+    it_support_role = Role.find_by_name("it_support")
     @system_user_4 = create(:system_user, :roles => [it_support_role], :with_casino_ids => [1003, 1007])
     @system_user_5 = create(:system_user, :roles => [it_support_role], :with_casino_ids => [1000])
     create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
@@ -133,7 +133,7 @@ describe ChangeLogsController do
 
     it "[25.6] 1003, 1007 user show target user casino 1003 and 1007 change log" do
       allow_any_instance_of(Ldap).to receive(:ldap_login!).and_return(@system_user_4)
-      mock_ad_account_profile(true, [1003, 1007])
+      mock_ad_account_profile('active', [1003, 1007])
       create_system_user_change_logs
       login("#{@system_user_4.username}@#{@system_user_4.domain.name}")
       visit create_system_user_change_logs_path(:commit => true)
