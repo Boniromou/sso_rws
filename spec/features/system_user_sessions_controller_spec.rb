@@ -9,6 +9,24 @@ describe SystemUserSessionsController do
   end
 
   describe "[1] Login" do
+    def create_change_logs_without_target_casinos(user)
+      actions = ['create', 'edit_role']
+      content = { :action_by => {:username => 'user1', :casino_ids => [1000]}, :type => 'SystemUserChangeLog', :target_username => "#{user.username}", :target_domain => "#{user.domain.name}"}
+      actions.each do |action|
+        change_log = create(:change_log, content.merge(:action => action))
+      end
+    end
+
+    def check_target_casinos(action, casino_ids)
+      cl = ChangeLog.find_by_action(action)
+      target_casinos = TargetCasino.where(change_log_id: cl.id)
+      expect(target_casinos.size).to eq casino_ids.size
+      target_casinos.each_with_index do |target_casino, index|
+        expect(target_casino['change_log_id']).to eq cl.id
+        expect(target_casino['target_casino_id']).to eq casino_ids[index]
+      end
+    end
+
     before(:each) do
       @u1 = create(:system_user)
       user_manager_role = Role.find_by_name "user_manager"
@@ -66,7 +84,7 @@ describe SystemUserSessionsController do
       expect_have_content(I18n.t("alert.account_no_casino").titleize)
     end
 
-    it "[1.11] Login successful and update the User lock/unlock status" do
+    it "[1.11] Login successful and update the User status" do
       mock_ad_account_profile('inactive', [])
       login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
       @system_user_1.reload
@@ -108,6 +126,18 @@ describe SystemUserSessionsController do
         expect(permissions[:permissions][:values][rp.permission.target.to_sym][rp.permission.action.to_sym]).to eq "1"
         expect(@system_user_1.roles[0].get_permission_value(rp.permission.target, rp.permission.action)).to eq "1"
       end
+    end
+
+    it "login successful with user status = pending" do
+      create_change_logs_without_target_casinos(@system_user_1)
+      expect(TargetCasino.all.size).to eq 0
+      @system_user_1.update_attributes!(status: SystemUser::PENDING)
+      login("#{@system_user_1.username}@#{@system_user_1.domain.name}")
+      expect(page.current_path).to eq home_root_path
+      @system_user_1.reload
+      expect(@system_user_1.status).to eq SystemUser::ACTIVE
+      check_target_casinos('create', @system_user_1.active_casino_ids)
+      check_target_casinos('edit_role', @system_user_1.active_casino_ids)
     end
   end
 
