@@ -48,9 +48,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def write_authenticate(system_user)
+  def write_authenticate(system_user, app_name)
+    name = app_name == 'report_portal' ? 'report_portal_auth_token' : 'auth_token'
     uuid = SecureRandom.uuid
-    write_cookie(:auth_token, uuid)
+    write_cookie(name.to_sym, uuid)
     add_cache(uuid, {:system_user => {:id => system_user.id, :username => system_user.username}})
   end
 

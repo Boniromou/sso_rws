@@ -77,7 +77,7 @@ class SamlController < ApplicationController
       username, app_name, casinoids = session['username'], session['app_name'], session['casinoids']
       Rails.logger.info("app_name: #{app_name}, username: #{username}, casinoids: #{casinoids}")
       system_user = authenticate!(username, app_name, casinoids)
-      write_authenticate(system_user)
+      write_authenticate(system_user, app_name)
       Rails.logger.info("Login in success")
       handle_redirect(app_name)
     else
