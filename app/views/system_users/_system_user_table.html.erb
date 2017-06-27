@@ -16,7 +16,7 @@
             <%= "#{su.username}@#{su.domain.name}" %>
           <% end %>
           </td>
-          <td id="<%=su.id%>"><%=t("#{system_user_status_format(su.status)}") %></td>
+          <td id="<%=su.id%>"><%= system_user_status_format(su.status) %></td>
           <td><%= casino_id_names_format(su.active_casino_id_names) %></td>
           <td><%= format_time(su.updated_at) %></td>
         </tr>

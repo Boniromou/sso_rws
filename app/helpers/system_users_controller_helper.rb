@@ -1,6 +1,6 @@
 module SystemUsersControllerHelper
   def system_user_status_format(status)
-    return "user.#{status}" if status
+    return t("user.#{status}") if status.present?
   end
 
   def roles_format(system_user)
