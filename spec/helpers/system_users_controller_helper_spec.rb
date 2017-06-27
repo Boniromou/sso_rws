@@ -11,12 +11,12 @@ describe SystemUsersControllerHelper do
   describe 'system_user_status_format' do
     it 'should return active for system user status true' do
       result = helper.system_user_status_format('active')
-      expect(result).to eq("user.active")
+      expect(result).to eq t("user.active")
     end
 
     it 'should return inactive for system user status false' do
       result = helper.system_user_status_format('inactive')
-      expect(result).to eq("user.inactive")
+      expect(result).to eq t("user.inactive")
     end
 
     it 'should return nil for system user status nil' do

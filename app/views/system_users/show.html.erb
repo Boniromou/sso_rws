@@ -6,7 +6,7 @@
     <%= t("user.list_users") %>
     <span> &gt; </span>
     <i><%= @system_user.username %></i>
-    <small>(<%= t("#{system_user_status_format(@system_user.status)}") %>)</small>
+    <small>(<%= system_user_status_format(@system_user.status) %>)</small>
   </h2>
 </div>
 </div>
