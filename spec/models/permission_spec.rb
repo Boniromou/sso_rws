@@ -1,7 +1,22 @@
 require "rails_helper"
 
 describe Permission do
-  fixtures :permissions
+  def create_permissions(targets, app_id)
+    targets.each do |target|
+      (0..2).each do |index|
+        create(:permission, target: target, action: "target_#{index}", name: "name_#{index}", app_id: app_id)
+      end
+    end
+  end
+  
+  before(:each) do
+    app1 = create(:app, name: APP_NAME)
+    app2 = create(:app, name: 'gaming_operation')
+    app3 = create(:app, name: 'cage')
+    create_permissions(['system_user'], app1.id)
+    create_permissions(['audit_log', 'maintenance', 'test_player'], app2.id)
+    create_permissions(['player', 'player_transaction'], app3.id)
+  end
   
   describe "test validate" do
     it "permission name,action,target cannot be null" do

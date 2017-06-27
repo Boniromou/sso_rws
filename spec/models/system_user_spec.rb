@@ -34,15 +34,15 @@ describe SystemUser do
       mock_ad_account_profile(false, [1003])
       system_user = regist_and_return_system_user('test', 'example.com', [1003])
       cache_info = Rails.cache.read(system_user.id)
-      expect(system_user.status).to eq true  
-      expect(cache_info[:status]).to eq true
+      expect(system_user.status).to eq 'active'  
+      expect(cache_info[:status]).to eq 'active'
 
       SystemUser.sync_user_info
 
       system_user = SystemUser.find_by_username('test')
       cache_info = Rails.cache.read(system_user.id)
-      expect(system_user.status).to eq false    
-      expect(cache_info[:status]).to eq false 
+      expect(system_user.status).to eq 'inactive'    
+      expect(cache_info[:status]).to eq 'inactive' 
     end
 
     it '[26.2] user casino group change' do
@@ -51,7 +51,7 @@ describe SystemUser do
       expect(system_user.active_casino_ids).to eq [1003]
       expect(cache_info[:casinos]).to eq [1003]
 
-      mock_ad_account_profile(true, [1007])
+      mock_ad_account_profile('active', [1007])
       SystemUser.sync_user_info
 
       system_user = SystemUser.find_by_username('test')
@@ -62,16 +62,15 @@ describe SystemUser do
   end
 
   describe 'update_roles' do
-    fixtures :roles, :apps
-
     before(:each) do
-      @user_manager = Role.find_by_name("user_manager")
-      @cashier = Role.find_by_name("cashier")
-      @su1 = SystemUser.create!(:username => 'lucy1', :status => true, :admin => false)
-      @su2 = SystemUser.create!(:username => 'lucy2', :status => true, :admin => false)
+      app = create(:app, name: APP_NAME)
+      @user_manager = create(:role, name: "user_manager", app_id: app.id)
+      @cashier = create(:role, name: "cashier", app_id: app.id)
+      @su1 = SystemUser.create!(:username => 'lucy1', :status => 'active', :admin => false)
+      @su2 = SystemUser.create!(:username => 'lucy2', :status => 'active', :admin => false)
       @su2.role_assignments.create!({:role_id => @user_manager.id})
       @su2.app_system_users.create!({:app_id => @user_manager.app_id})
-      @su3 = SystemUser.create!(:username => 'lucy3', :status => true, :admin => false)
+      @su3 = SystemUser.create!(:username => 'lucy3', :status => 'active', :admin => false)
       @su3.role_assignments.create!({:role_id => @user_manager.id})
       @su3.app_system_users.create!({:app_id => @user_manager.app_id})
     end
@@ -90,23 +89,11 @@ describe SystemUser do
       expect(@su2.role_assignments[0].role_id).to eq(@cashier.id)
     end
 
-    # it 'should delete the existing role if n/a is selected' do
-    #   @su3.update_roles([-1])
-    #   @su3.reload
-    #   expect(@su3.role_assignments.length).to eq(0)
-    # end
-
     it 'should not change the existing role if the same role is selected' do
       @su2.update_roles([@user_manager.id])
       @su2.reload
       expect(@su2.role_assignments.length).to eq(1)
       expect(@su2.role_assignments[0].role_id).to eq(@user_manager.id)
     end
-
-    # it 'should not change no role if no role is selected again' do
-    #   @su1.update_roles([-1])
-    #   @su1.reload
-    #   expect(@su1.role_assignments.length).to eq(0)
-    # end
   end
 end

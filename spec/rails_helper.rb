@@ -14,6 +14,7 @@ require 'capybara/rails'
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
 Devise::TestHelpers
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/features/support/**/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
   config.include Devise::TestHelpers, :type => :controller

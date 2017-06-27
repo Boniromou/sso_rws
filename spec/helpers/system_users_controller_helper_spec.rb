@@ -1,51 +1,34 @@
 require 'rails_helper'
 
 describe SystemUsersControllerHelper do
-  fixtures :roles, :system_users
   before(:each) do
-    @root_user = SystemUser.find_by_admin(1)
-    @user_manager = Role.find_by_name("user_manager")
-    @system_auditor = Role.find_by_name("system_auditor")
+    @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
+    app = create(:app, name: APP_NAME)   
+    @user_manager = create(:role, name: "user_manager", app_id: app.id)
+    @system_auditor = create(:role, name: "system_auditor", app_id: app.id)
   end
 
   describe 'system_user_status_format' do
     it 'should return active for system user status true' do
-      result = helper.system_user_status_format(true)
+      result = helper.system_user_status_format('active')
       expect(result).to eq("user.active")
     end
 
     it 'should return inactive for system user status false' do
-      result = helper.system_user_status_format(false)
+      result = helper.system_user_status_format('inactive')
       expect(result).to eq("user.inactive")
     end
 
-    it 'should return inactive for system user status nil' do
+    it 'should return nil for system user status nil' do
       result = helper.system_user_status_format(nil)
-      expect(result).to eq("user.inactive")
-    end
-  end
-
-  describe 'change_status_button_name' do
-    it 'should return lock if status is true' do
-      result = helper.change_status_button_name(true)
-      expect(result).to eq("user.lock")
-    end
-
-    it 'should return unlock if status is false' do
-      result = helper.change_status_button_name(false)
-      expect(result).to eq("user.unlock")
-    end
-
-    it 'should return unlock if status is nil' do
-      result = helper.change_status_button_name(nil)
-      expect(result).to eq("user.unlock")
+      expect(result).to be_nil
     end
   end
 
   describe 'roles_format' do
     before(:each) do
-      @su1 = SystemUser.create!(:username => 'lucy', :status => true, :admin => false)
-      @su2 = SystemUser.create!(:username => 'lucy2', :status => true, :admin => false)
+      @su1 = SystemUser.create!(:username => 'lucy', :status => 'active', :admin => false)
+      @su2 = SystemUser.create!(:username => 'lucy2', :status => 'active', :admin => false)
       @su2.role_assignments.create!({:role_id => @user_manager.id}) 
     end
 
