@@ -78,8 +78,9 @@ describe SystemUsersController do
       visit system_users_path
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
-      expect(rows.length).to eq 1
+      expect(rows.length).to eq 2
       verify_system_user_table_record(1, @system_user_2)
+      verify_system_user_table_record(2, @system_user_5)
     end
 
     it "[4.3] filter suspended casino group user" do
@@ -89,8 +90,9 @@ describe SystemUsersController do
       visit system_users_path
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
-      expect(rows.length).to eq 1
+      expect(rows.length).to eq 2
       verify_system_user_table_record(1, @system_user_2)
+      verify_system_user_table_record(2, @system_user_5)
     end
 
     it "[4.4] Only allow to view subset casino of user" do
@@ -102,8 +104,9 @@ describe SystemUsersController do
 
       table_selector = "div#content table#system_user"
       rows = all("#{table_selector} tbody tr")
-      expect(rows.length).to eq 1
+      expect(rows.length).to eq 2
       verify_system_user_table_record(1, @system_user_2)
+      verify_system_user_table_record(2, @system_user_5)
     end
   end
 

@@ -28,7 +28,7 @@ class SystemUserPolicy < ApplicationPolicy
   end
 
   def has_mutual_casinos?
-    system_user.is_admin? || system_user.has_admin_casino? || record.active_casino_ids.any? && (record.active_casino_ids - system_user.active_casino_ids).blank?
+    system_user.is_admin? || system_user.has_admin_casino? || record.pending? || (record.activated? && (record.active_casino_ids - system_user.active_casino_ids).blank?)
   end
 
   #def same_group?
@@ -40,12 +40,11 @@ class SystemUserPolicy < ApplicationPolicy
       if system_user.is_admin? || system_user.has_admin_casino?
         scope.all
       else
-        users = scope.joins(:casinos_system_users).where("casinos_system_users.casino_id in (?)", system_user.active_casino_ids).group("system_users.id").all
-
+        users = scope.where(domain_id: system_user.domain_id).all
         users.delete_if do |user|
           if user.activated?
-            (user.active_casino_ids - system_user.active_casino_ids).any?
-          else
+            (user.active_casino_ids - system_user.active_casino_ids).any?      
+          elsif user.inactived?
             (user.casino_ids - system_user.active_casino_ids).any?
           end
         end
