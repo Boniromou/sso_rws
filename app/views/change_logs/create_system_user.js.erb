@@ -1,7 +1,8 @@
 $('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "change_logs/create_system_user", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
 $(document).ready(function() {
+  var index = $('#action-at').index();
   $('.table').dataTable({
-    "order": [[ 0, "asc"]],
+    "order": [[ index, "desc"]],
     "pageLength" : 50
   });
 });
