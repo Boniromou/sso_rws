@@ -2,8 +2,8 @@
 
 development:
   servers:
-    - int-cons-vapp01.rnd.laxino.com:11211
-    - int-cons-vapp01.rnd.laxino.com:11212
+    - hq-int-s3-app01.laxino.local:11211
+    - hq-int-s3-app01.laxino.local:11212
   expires: 86400
   namespace: s3_dev
   no_block: false
@@ -11,7 +11,7 @@ development:
 
 test:
   servers:
-    - dev-cons-app01.rnd.laxino.com:11211
+    - hq-int-s3-app01.laxino.local:11211
   expires: 86400
   namespace: s3_tst
   no_block: true
@@ -101,6 +101,35 @@ production3:
     - mo-prd-s3-vapp01.lb.laxigames.local:7001
     - mo-prd-s3-vapp02.lb.laxigames.local:7000
     - mo-prd-s3-vapp02.lb.laxigames.local:7001
+  expires: 86400
+  namespace: s3_prd
+  no_block: true
+  timeout: 30
+
+production4:
+  servers:
+    - mo-prd-s3-vapp01.ol.laxigames.local:7000
+    - mo-prd-s3-vapp01.ol.laxigames.local:7001
+    - mo-prd-s3-vapp02.ol.laxigames.local:7000
+    - mo-prd-s3-vapp02.ol.laxigames.local:7001
+  expires: 86400
+  namespace: s3_prd
+  no_block: true
+  timeout: 30
+
+sandbox:
+  servers:
+    - mo-snd-s3-vapp01.platform.gamesource.local:11211
+    - mo-snd-s3-vapp01.platform.gamesource.local:11212
+  expires: 86400
+  namespace: s3_snd
+  no_block: true
+  timeout: 30
+
+production:
+  servers:
+    - mo-prd-s3-vapp01.platform.gamesource.local:7000
+    - mo-prd-s3-vapp01.platform.gamesource.local:7001
   expires: 86400
   namespace: s3_prd
   no_block: true

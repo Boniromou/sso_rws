@@ -132,3 +132,6 @@ production4:
 
 sandbox:
   <<: *sandbox3
+
+production:
+  <<: *sandbox3

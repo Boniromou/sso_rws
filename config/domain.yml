@@ -72,3 +72,6 @@ production4:
 
 sandbox:
   <<: *moidc_domain
+
+production:
+  <<: *moidc_domain

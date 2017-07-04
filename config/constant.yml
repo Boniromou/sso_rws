@@ -76,3 +76,13 @@ production4:
   <<: *default
   site_domain: 'laxigames.local'
   url_base: 'https://sso.laxino.com'
+
+sandbox:
+  <<: *default
+  site_domain: 'laxigames.local'
+  url_base: 'https://cert-sso.gogamesource.com'
+
+production:
+  <<: *default
+  site_domain: 'laxigames.local'
+  url_base: 'https://sso.gogamesource.com'
