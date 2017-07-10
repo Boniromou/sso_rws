@@ -32,7 +32,7 @@ integration0:
 staging0:
   <<: *default
   site_domain: 'laxino.com'
-  url_base: 'https://stg-sso2.laxino.com'
+  url_base: 'https://stg-sso.laxino.com'
 
 staging0_external:
   <<: *default

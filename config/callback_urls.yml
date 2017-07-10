@@ -1,13 +1,13 @@
 default: &default
-  user_management: 'https://int-sso.laxino.com'
-  gaming_operation: 'https://int-ap.laxino.com'
-  cage: 'https://int-cage.laxino.com'
-  station_management: 'https://int-sm.laxino.com'
+  user_management: 'https://int-sso.laxino.com/home'
+  gaming_operation: 'https://int-ap.laxino.com/home'
+  cage: 'https://int-cage.laxino.com/home'
+  station_management: 'https://int-sm.laxino.com/index'
   game_recall: 'https://int-grms.laxino.com'
-  signature_verifier: 'https://int-sv.laxino.com'
-  audit_portal: 'https://int-audp.laxino.com'
-  asset_management: 'https://int-dam.laxino.com'
-  trade_promotion: 'https://int-tpms.laxino.com'
+  signature_verifier: 'https://int-sv.laxino.com/index'
+  audit_portal: 'https://int-audp.laxino.com/index'
+  asset_management: 'https://int-dam.laxino.com/index'
+  trade_promotion: 'https://int-tpms.laxino.com/index'
   master_data_service: 'https://int-mds.laxino.com'
 
 test:
@@ -17,18 +17,26 @@ development:
   <<: *default
 
 integration0:
-  <<: *default
+  user_management: 'https://int-sso.laxino.com/home'
+  gaming_operation: 'https://int-ap.laxino.com/home'
+  cage: 'https://int-cms.laxino.com/home'
+  station_management: 'https://int-sm.laxino.com/index'
+  game_recall: 'https://int-gr.laxino.com/search_game_history'
+  signature_verifier: 'https://int-sv.laxino.com/index'
+  audit_portal: 'https://int-audp.laxino.com/index'
+  asset_management: 'https://int-dam.laxino.com/index'
+  trade_promotion: 'https://int-tpms.laxino.com/index'
 
 staging0:
-  user_management: 'https://stg-sso2.laxino.com/home'
-  gaming_operation: 'https://stg-ap2.laxino.com/home'
-  cage: 'https://stg-cms2.laxino.com/home'
-  station_management: 'https://stg-sm2.laxino.com/index'
-  game_recall: 'https://stg-gr2.laxino.com/search_game_history'
-  signature_verifier: 'https://stg-sv2.laxino.com/index'
-  audit_portal: 'https://stg-audp2.laxino.com/index'
-  asset_management: 'https://stg-dam2.laxino.com/index'
-  trade_promotion: 'https://stg-tpms2.laxino.com/index'
+  user_management: 'https://stg-sso.laxino.com/home'
+  gaming_operation: 'https://stg-ap.laxino.com/home'
+  cage: 'https://stg-cms.laxino.com/home'
+  station_management: 'https://stg-sm.laxino.com/index'
+  game_recall: 'https://stg-gr.laxino.com/search_game_history'
+  signature_verifier: 'https://stg-sv.laxino.com/index'
+  audit_portal: 'https://stg-audp.laxino.com/index'
+  asset_management: 'https://stg-dam.laxino.com/index'
+  trade_promotion: 'https://stg-tpms.laxino.com/index'
 
 sandbox3:
   user_management: 'https://snd-sso.138777.net/home'

@@ -12,19 +12,24 @@ class SystemUser < ActiveRecord::Base
   belongs_to :domain
   has_many :casinos_system_users
   has_many :casinos, :through => :casinos_system_users
-
+  has_many :active_casinos_system_users, :class_name => 'CasinosSystemUser', :conditions => {casinos_system_users: {status: true}}
+  has_many :active_casinos, :through => :active_casinos_system_users, :class_name => 'Casino', :source => :casino
   validate :username, :presence => true, :message => I18n.t("alert.invalid_username")
 
   scope :with_active_casino, -> { joins(:casinos_system_users).where("casinos_system_users.status = ?", true).select("DISTINCT(system_users.id), system_users.*") }
 
   def active_casino_ids
-    self.casinos_system_users.where(:status => true).pluck(:casino_id)
+    self.active_casinos.map{|casino| casino.id}
+  end
+
+  def all_casino_ids
+    self.casinos.map{|casino| casino.id}
   end
 
   def active_casino_id_names
     rtn = []
-    self.casinos_system_users.includes(:casino).where(status: true).each do |casino_system_user|
-      rtn.push({id: casino_system_user.casino.id, name: casino_system_user.casino.name})
+    self.active_casinos.each do |casino|
+      rtn.push({id: casino.id, name: casino.name})
     end
     rtn
   end

@@ -16,7 +16,7 @@ class SystemUserPolicy < ApplicationPolicy
   end
 
   def index?
-    permitted?(:system_user, :show) # && same_group?
+    permitted?(:system_user, :show)
   end
 
   def show?
@@ -31,21 +31,17 @@ class SystemUserPolicy < ApplicationPolicy
     system_user.is_admin? || system_user.has_admin_casino? || record.pending? || (record.activated? && (record.active_casino_ids - system_user.active_casino_ids).blank?)
   end
 
-  #def same_group?
-  #  system_user.is_admin? || system_user.has_admin_casino? || same_scope?(record.active_casino_ids)
-  #end
-
   class Scope < Scope
     def resolve
       if system_user.is_admin? || system_user.has_admin_casino?
-        scope.all
+        scope.includes(:active_casinos).all
       else
-        users = scope.where(domain_id: system_user.domain_id).all
+        users = scope.includes(:active_casinos, :casinos).where(domain_id: system_user.domain_id).all
         users.delete_if do |user|
           if user.activated?
             (user.active_casino_ids - system_user.active_casino_ids).any?      
           elsif user.inactived?
-            (user.casino_ids - system_user.active_casino_ids).any?
+            (user.all_casino_ids - system_user.active_casino_ids).any?
           end
         end
       end
