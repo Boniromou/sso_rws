@@ -2,6 +2,12 @@ class AuthSource < ActiveRecord::Base
   attr_accessible :type
   belongs_to :auth_source_detail
 
+  def self.find_by_token(token)
+    auth_source = AuthSource.where(token: token).first
+    auth_source = AuthSource.where(token: '*').first unless auth_source
+    auth_source
+  end
+
   def authenticate!(username, app_name, status, casino_ids)
     system_user = SystemUser.find_by_username_with_domain(username)
     system_user.update_user_profile(casino_ids)
