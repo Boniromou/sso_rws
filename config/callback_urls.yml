@@ -46,6 +46,7 @@ sandbox3:
   game_recall: 'https://snd-gr.138777.net/search_game_history'
   signature_verifier: 'https://snd-sv.138777.net/index'
   audit_portal: 'https://snd-audp.138777.net/index'
+  report_portal: 'https://snd-report.138777.net/Reports/Pages/Folder.aspx'
 
 production3:
   user_management: 'https://sso.pia.com.mo/home'
@@ -56,3 +57,17 @@ production3:
   signature_verifier: 'https://sv.pia.com.mo/index'
   audit_portal: 'https://audp.pia.com.mo/index'
   asset_management: 'https://dam.pia.com.mo/index'
+
+sandbox:
+  user_management: 'https://cert-sso.gogamesource.com/home'
+  gaming_operation: 'https://cert-ap.gogamesource.com/home'
+  cage: 'https://cert-cms.gogamesource.com/home'
+  station_management: 'https://cert-sm.gogamesource.com/index'
+  game_recall: 'https://cert-gr.gogamesource.com/search_game_history'
+  signature_verifier: 'https://cert-sv.gogamesource.com/index'
+  audit_portal: 'https://cert-audp.gogamesource.com/index'
+  report_portal: 'https://cert-report.gogamesource.com/Reports/Pages/Folder.aspx'
+
+production:
+  user_management: 'https://sso.gogamesource.com/home'
+  asset_management: 'https://dam.gogamesource.com/index'
