@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170626023710) do
+ActiveRecord::Schema.define(:version => 20170725094736) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -66,10 +66,12 @@ ActiveRecord::Schema.define(:version => 20170626023710) do
     t.string   "description"
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
+    t.datetime "purge_at"
   end
 
   add_index "casinos", ["licensee_id"], :name => "fk_Casinos_LicenseeId"
   add_index "casinos", ["name"], :name => "index_casinos_on_name", :unique => true
+  add_index "casinos", ["purge_at"], :name => "index_casinos_on_purge_at"
 
   create_table "casinos_system_users", :force => true do |t|
     t.integer  "system_user_id",                   :null => false

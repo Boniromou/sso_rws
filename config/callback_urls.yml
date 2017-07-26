@@ -8,7 +8,7 @@ default: &default
   audit_portal: 'https://int-audp.laxino.com/index'
   asset_management: 'https://int-dam.laxino.com/index'
   trade_promotion: 'https://int-tpms.laxino.com/index'
-  master_data_service: 'https://int-mds.laxino.com'
+  master_data_service: 'https://int-nmds.laxino.com/dashboard'
 
 test:
   <<: *default
@@ -38,6 +38,30 @@ staging0:
   asset_management: 'https://stg-dam.laxino.com/index'
   trade_promotion: 'https://stg-tpms.laxino.com/index'
 
+sandbox2:
+  user_management: 'https://snd-sso.777iportal.com/home'
+  gaming_operation: 'https://snd-ap.777iportal.com/home'
+  game_recall: 'https://snd-gr.777iportal.com/search_game_history'
+  trade_promotion: 'https://snd-tpms.777iportal.com/index'
+
+smartocean2:
+  user_management: 'https://sso.777iportal.com/home'
+  gaming_operation: 'https://ap.777iportal.com/home'
+  game_recall: 'https://gr.777iportal.com/search_game_history'
+  trade_promotion: 'https://tpms.777iportal.com/index'
+
+sandbox0:
+  user_management: 'https://snd-sso.888iportal.com/home'
+  gaming_operation: 'https://snd-ap.888iportal.com/home'
+  game_recall: 'https://snd-gr.888iportal.com/search_game_history'
+  trade_promotion: 'https://snd-tpms.888iportal.com/index'
+
+production0:
+  user_management: 'https://sso.888iportal.com/home'
+  gaming_operation: 'https://ap.888iportal.com/home'
+  game_recall: 'https://gr.888iportal.com/search_game_history'
+  trade_promotion: 'https://tpms.888iportal.com/index'
+
 sandbox3:
   user_management: 'https://snd-sso.138777.net/home'
   gaming_operation: 'https://snd-ap.138777.net/home'
@@ -58,6 +82,11 @@ production3:
   audit_portal: 'https://audp.pia.com.mo/index'
   asset_management: 'https://dam.pia.com.mo/index'
 
+production4:
+  user_management: 'https://sso.laxino.com/home'
+  asset_management: 'https://dam.laxino.com/index'
+  master_data_service: 'https://nmds.laxino.com/dashboard'
+
 sandbox:
   user_management: 'https://cert-sso.gogamesource.com/home'
   gaming_operation: 'https://cert-ap.gogamesource.com/home'
@@ -71,3 +100,4 @@ sandbox:
 production:
   user_management: 'https://sso.gogamesource.com/home'
   asset_management: 'https://dam.gogamesource.com/index'
+  master_data_service: 'https://nmds.gogamesource.com/dashboard'
