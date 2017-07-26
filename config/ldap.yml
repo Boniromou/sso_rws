@@ -33,7 +33,7 @@ sandbox0: &sandbox0
     domain:
       name: '888iportal.local'
     auth_source:
-      token: '2.2.2.2'
+      token: '*'
       type: 'Ldap'
     auth_source_detail:
       name: 'laxino_ldap'
@@ -55,7 +55,7 @@ sandbox2: &sandbox2
     domain:
       name: '777iportal.local'
     auth_source:
-      token: '2.2.2.2'
+      token: '*'
       type: 'Ldap'
     auth_source_detail:
       name: 'laxino_ldap'
