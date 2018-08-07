@@ -66,11 +66,13 @@ sandbox3:
   <<: *default
   site_domain: 'laxigames.local'
   url_base: 'https://snd-sso.138777.net'
+  remain_login_history_days: 455
 
 production3:
   <<: *default
   site_domain: 'laxigames.local'
   url_base: 'https://sso.pia.com.mo'
+  remain_login_history_days: 455
 
 production4:
   <<: *default
