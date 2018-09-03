@@ -73,14 +73,14 @@ sandbox3:
   report_portal: 'https://snd-report.138777.net/Reports/Pages/Folder.aspx'
 
 production3:
-  user_management: 'https://sso.pia.com.mo/home'
-  gaming_operation: 'https://ap.pia.com.mo/home'
-  cage: 'https://cms.pia.com.mo/home'
-  station_management: 'https://sm.pia.com.mo/index'
-  game_recall: 'https://gr.pia.com.mo/search_game_history'
-  signature_verifier: 'https://sv.pia.com.mo/index'
-  audit_portal: 'https://audp.pia.com.mo/index'
-  asset_management: 'https://dam.pia.com.mo/index'
+  user_management: 'https://sso.gogamesource.com/home'
+  gaming_operation: 'https://ap.gogamesource.com/home'
+  cage: 'https://cms.gogamesource.com/home'
+  station_management: 'https://sm.gogamesource.com/index'
+  game_recall: 'https://gr.gogamesource.com/search_game_history'
+  signature_verifier: 'https://sv.gogamesource.com/index'
+  audit_portal: 'https://audp.gogamesource.com/index'
+  asset_management: 'https://dam.gogamesource.com/index'
 
 production4:
   user_management: 'https://sso.laxino.com/home'

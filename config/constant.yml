@@ -71,7 +71,7 @@ sandbox3:
 production3:
   <<: *default
   site_domain: 'laxigames.local'
-  url_base: 'https://sso.pia.com.mo'
+  url_base: 'https://sso.gogamesource.com'
   remain_login_history_days: 455
 
 production4:
