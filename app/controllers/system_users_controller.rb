@@ -4,7 +4,7 @@ class SystemUsersController < ApplicationController
 
   def new
     authorize :system_users, :new?
-    @domains = policy_scope(Domain) 
+    @domains = policy_scope(Domain)
     @errors = params[:errors] if params[:errors].present?
   end
 
@@ -15,17 +15,17 @@ class SystemUsersController < ApplicationController
       domain = params[:system_user][:domain].downcase if params[:system_user][:domain].present?
       auditing do
         AuthSource.create_system_user!(username, domain)
-        flash[:success] = I18n.t("success.create_user", :username => (username + '@' + domain)) 
+        flash[:success] = I18n.t("success.create_user", :username => (username + '@' + domain))
       end
       SystemUserChangeLog.create_system_user(:current_user => current_system_user, :username => username, :domain => domain)
     rescue Rigi::InvalidUsername, Rigi::InvalidDomain => e
       Rails.logger.error "SystemUser[username=#{params[:system_user][:username]} , domain=#{params[:system_user][:domain]}] illegal format"
-      @errors = e.error_message 
+      @errors = e.error_message
     rescue Rigi::InvalidAuthSource, Rigi::RegisteredAccount, Rigi::AccountNotInLdap, Rigi::AccountNoCasino => e
       Rails.logger.error "SystemUser[username=#{params[:system_user][:username]} , domain=#{params[:system_user][:domain]}] create failed: #{e.error_message}"
       flash[:alert] = e.error_message
     end
-    redirect_to new_system_user_path({:errors => @errors}) 
+    redirect_to new_system_user_path({:errors => @errors})
   end
 
   def index
@@ -56,8 +56,9 @@ class SystemUsersController < ApplicationController
 
     @roles_by_apps = apps.map do |app|
       ros = roles.find_all { |role| role.app_id == app.id }
+      next if ros.blank?
       {:app => app, :roles => ros }
-    end
+    end.compact
 
     @current_role_ids = @system_user.role_assignments.select(:role_id).map { |role_asm| role_asm.role_id }
     @current_app_ids = @system_user.app_system_users.select(:app_id).map { |app_asm| app_asm.app_id }
@@ -93,7 +94,7 @@ class SystemUsersController < ApplicationController
       v = params[app.name.to_sym]
       v ? v.to_i : nil
     end
-    
+
     role_ids.compact.uniq
   end
 
@@ -140,16 +141,16 @@ class SystemUsersController < ApplicationController
     role_types = RoleType.get_all_role_types
     system_users = policy_scope(SystemUser.get_export_system_users)
     casinos = CasinosSystemUser.get_users_active_casinos
-    
+
     excel = Spreadsheet::Workbook.new
     sheet1 = excel.create_worksheet
     sheet1.row(0).concat ["#{I18n.t("user.export_role_type_tip")}"]
     title = [I18n.t("user.user_name"), I18n.t("user.status"), I18n.t("user.casino_groups"), I18n.t("general.updated_at")].concat(apps.values)
     sheet1.row(1).concat title
-    
+
     format_row = Spreadsheet::Format.new :horizontal_align => :center, :border => :thin
     columns_count = title.size
-    
+
     system_users.each_with_index do |su, index|
       row_columns = []
       row_columns << "#{su['username']}@#{su['domain_name']}"

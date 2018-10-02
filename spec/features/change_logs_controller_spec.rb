@@ -17,7 +17,7 @@ describe ChangeLogsController do
   end
 
   describe "[25] Change log for create system user", :js => true do
-        
+
     def fill_in_user_info(username, domain)
       fill_in "system_user_username", :with => username
       select domain, :from => "system_user[domain]"
@@ -98,7 +98,7 @@ describe ChangeLogsController do
       expect(cls[0].target_username).to eq 'abc'
       expect(cls[0].target_domain).to eq 'example.com'
       expect(cls[0].action_by['username']).to eq "#{@system_user_4.username}@#{@system_user_4.domain.name}"
-      expect(cls[0].action_by['casino_ids']).to eq @system_user_4.active_casino_ids  
+      expect(cls[0].action_by['casino_ids']).to eq @system_user_4.active_casino_ids
       system_user = SystemUser.where(:username => 'abc').first
       test_target_casinos(system_user, cls[0])
     end
@@ -108,6 +108,7 @@ describe ChangeLogsController do
       mock_time_at_now "2016-03-31 09:00:00"
       one_day_age = 5.day.ago
       create_system_user_change_logs([
+        one_day_age,
         one_day_age,
         one_day_age,
         one_day_age,

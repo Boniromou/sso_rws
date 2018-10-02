@@ -31,19 +31,19 @@ class Role < ActiveRecord::Base
     perm_hash
   end
 
-  def self.get_apps_roles
+  def self.get_apps_roles(roles)
     rtn = {}
     role_types = RoleType.get_all_role_types
-    Role.includes(:permissions).each do |role|
+    roles.each do |role|
       rtn[role.app_id] = [] if rtn[role.app_id].blank?
       rtn[role.app_id].push({"name" => "#{role.name.titleize}#{role_types[role.role_type_id]}", "permissions" => role.permissions.map(&:id)})
     end
     rtn
   end
 
-  def self.get_export_role_pessmission
+  def self.get_export_role_pessmission(policy_roles)
     apps = App.all
-    apps_roles = get_apps_roles
+    apps_roles = get_apps_roles(policy_roles)
     apps_permissions = Permission.get_all_permissions
 
     format_title = Spreadsheet::Format.new :weight => :bold, :horizontal_align => :center, :vertical_align => :middle, :border => :thin
@@ -52,7 +52,8 @@ class Role < ActiveRecord::Base
     apps.each do |app|
       title = [I18n.t("general.action"), I18n.t("permission.target")]
       permissions_targets = apps_permissions[app["id"]] || {}
-      roles = apps_roles[app["id"]] || []
+      roles = apps_roles[app["id"]]
+      next unless roles
       roles.each do |role|
         title << role['name'].titleize
       end

@@ -16,14 +16,14 @@
     <div class="row">
       <article class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
 
-        <% @apps.each do |app| %>
-        <div id=<%= app.name %> class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+        <% @roles_by_apps.each do |app_roles| %>
+        <div id=<%= app_roles[:app].name %> class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
 
-          <header><h2><strong><%= app.name.titleize %></strong></h2></header>
+          <header><h2><strong><%= app_roles[:app].name.titleize %></strong></h2></header>
 
           <div>
             <div class="widget-body">
-                <% app.roles.each do |role| %>
+                <% app_roles[:roles].each do |role| %>
                   <h5>
                     <small><i class='fa fa-check-square-o'></i></small>
                     <%= role.name.titleize %>

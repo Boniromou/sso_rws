@@ -4,7 +4,6 @@ source 'http://gems:8808'
 gem 'rails', '3.2.13'
 gem 'ruby-saml', '1.3.1'
 gem 'mysql2', '0.3.16'
-gem 'lax-support', '0.6.32', :git => 'ssh://git/opt/laxino/git_repos/tools/lax-support.git', :tag => 'REL_0_6_32'
 gem 'sequel', '3.41.0'
 
 # Gems used only for assets and not required

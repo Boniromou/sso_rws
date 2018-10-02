@@ -6,7 +6,7 @@ class Ldap < AuthSource
   MATCH_PATTERN_REGEXP = /CN=\d+casinoid/
 
   def get_url
-    "/ldap/new"
+    "#{URL_BASE}/ldap/new"
   end
 
   def login!(username, password, app_name)
@@ -31,7 +31,7 @@ class Ldap < AuthSource
       Rails.logger.info "[username=#{username_with_domain}][filter_groups=#{casino_ids}] account is not in Ldap server "
       return {}
     end
-    
+
     dnames = ldap_entry[:distinguishedName]
     memberofs = ldap_entry[:memberOf]
     is_disable_account, is_admin_group = false, false
