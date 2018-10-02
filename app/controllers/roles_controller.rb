@@ -32,7 +32,7 @@ class RolesController < ApplicationController
 
   def export
     authorize :role, :index?
-    roles = policy_scope(Role).includes(:permissions)
+    roles = policy_scope(Role.includes(:permissions))
     respond_to do |format|
       format.xls do
         current_time = Time.now.strftime("%Y-%m-%d %H-%M-%S")
