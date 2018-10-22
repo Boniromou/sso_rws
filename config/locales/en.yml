@@ -22,6 +22,7 @@ en:
     account_not_in_ldap: User not found in database
     invalid_domain: Invalid domain format
     duplicate_domain: Duplicate Domain
+    duplicate_domain_licensee: Duplicate Domain-Licensee Mapping
     domain_duplicated: Create Domain failed; Domain duplicated.
     create_system_user_confirm: Are you sure to create system user [%{username}]?
     invalid_ldap_mapping: Domain-LDAP Configuration not found; Please contact technical

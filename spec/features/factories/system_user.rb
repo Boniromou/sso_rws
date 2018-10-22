@@ -22,7 +22,8 @@ FactoryGirl.define do
 
       if factory.with_casino_ids
         casino_ids = factory.with_casino_ids
-        licensee = create(:licensee, domain_id: system_user.domain.id)
+        licensee = create(:licensee)
+        create(:domain_licensee, domain_id: system_user.domain.id, licensee_id: licensee.id)
         casino_ids.each do |casino_id|
           create(:casino, :id => casino_id, :licensee_id => licensee.id) unless Casino.exists?(:id => casino_id)
           create(:casinos_system_user, system_user_id: system_user.id, casino_id: casino_id) unless CasinosSystemUser.exists?(:system_user_id => system_user.id, :casino_id => casino_id)

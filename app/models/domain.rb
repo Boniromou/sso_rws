@@ -1,8 +1,8 @@
 class Domain < ActiveRecord::Base
   attr_accessible :id, :name, :auth_source_detail_id
-  belongs_to :auth_source_detail
+  has_many :domain_licensees
   has_many :system_users
-  has_many :licensees
+  has_many :licensees, :through => :domain_licensees
   belongs_to :auth_source_detail
   has_many :casinos, :through => :licensees
 

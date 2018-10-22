@@ -114,32 +114,28 @@ describe DomainLicenseesController do
   	end
 
     it "[21.1] Create domain licensee mapping success" do
-      create(:domain, :name => '1003.com')
+      domain = create(:domain, :name => '1003.com')
       licensee = create(:licensee, :id => 1003, :with_casino_ids => [1003, 1007])
       licensee1 = create(:licensee, :id => 1007, :with_domain => '1007.com')
-      domain = licensee1.domain
       login_root
       visit domain_management_root_path
       click_link I18n.t("domain_licensee.list")
       wait_for_ajax
   		expect(page).to have_select("domain_id", :with_options => ['1003.com', '1007.com'])
-  		expect(page).to have_select("licensee_id", :with_options => ["#{licensee.name}[#{licensee.id}]"])
+  		expect(page).to have_select("licensee_id", :with_options => ["#{licensee.name}[#{licensee.id}]", "#{licensee1.name}[#{licensee1.id}]"])
   		expect(find("#licensee_casinos").text).to eq get_casinos(licensee)
-      general_create_domain_licensee('1007.com', "#{licensee.name}[#{licensee.id}]")
+      general_create_domain_licensee('1003.com', "#{licensee.name}[#{licensee.id}]")
       wait_for_ajax
       check_flash_message(I18n.t('domain_licensee.create_mapping_successfully'))
       check_domain_licensee(domain, licensee)
     end
 
-    it "[21.5] Create domain licensee mapping fail - licensee bounded with another domain" do
-      create(:domain, :name => '1007.com')
-      licensee = create(:licensee, :id => 1007)
-      domain = create(:domain, :name => '1008.com')
+    it "[21.5] Create domain licensee mapping fail - duplicate domain licensee" do
+      licensee = create(:licensee, :id => 1007, :with_domain => '1007.com')
       visit_domain_licensee
-    	licensee.update_attributes(domain_id: domain.id)
     	general_create_domain_licensee('1007.com', "#{licensee.name}[#{licensee.id}]")
     	wait_for_ajax
-      check_flash_message(I18n.t('domain_licensee.create_mapping_fail_licensee_used'))
+      check_flash_message(I18n.t('alert.duplicate_domain_licensee'))
     end
 
     it "[21.3] Create domain licensee mapping success audit log" do
@@ -152,10 +148,8 @@ describe DomainLicenseesController do
     end
 
     it "[21.4] Create domain licensee mapping fail audit log" do
-      domain = create(:domain, :name => '1007.com')
-      licensee = create(:licensee, :id => 1007)
+      licensee = create(:licensee, :id => 1007, :with_domain => '1007.com')
       visit_domain_licensee
-    	licensee.update_attributes(domain_id: domain.id)
     	general_create_domain_licensee('1007.com', "#{licensee.name}[#{licensee.id}]")
       wait_for_ajax
       check_fail_audit_log("domain_licensee", 'create', 'create', "#{@root_user.username}@#{@root_user.domain.name}")
@@ -165,32 +159,27 @@ describe DomainLicenseesController do
   describe "[22] Delete Domain Licensee Mapping" do
     before :each do
       @licensee = create(:licensee, :id => 1003, :with_domain => '1003.com')
+      domain = Domain.find_by_name('1003.com')
+      @domain_licensee = DomainLicensee.where(licensee_id: @licensee.id, domain_id: domain.id).first
     end
 
     it "[22.1] Delete Domain Licensee Mapping success" do
     	visit_domain_licensee
-      find("#delete_#{@licensee.id}").click
+      find("#delete_#{@domain_licensee.id}").click
       check_flash_message(I18n.t('domain_licensee.delete_mapping_successfully'))
     end
 
     it "[22.2] delete Domain Licensee Mapping fail with record updated" do
       visit_domain_licensee
-    	@licensee.update_attributes(domain_id: nil)
-      find("#delete_#{@licensee.id}").click
+      @domain_licensee.destroy
+      find("#delete_#{@domain_licensee.id}").click
       check_flash_message(I18n.t('domain_licensee.delete_mapping_fail'))
     end
 
     it "[22.3] delete Domain Licensee Mapping success audit log" do
       visit_domain_licensee
-      find("#delete_#{@licensee.id}").click
+      find("#delete_#{@domain_licensee.id}").click
       check_success_audit_log("domain_licensee", 'delete', 'delete', "#{@root_user.username}@#{@root_user.domain.name}")
-    end
-
-    it "[22.4] delete Domain Licensee Mapping fail audit log" do
-      visit_domain_licensee
-    	@licensee.update_attributes(domain_id: nil)
-      find("#delete_#{@licensee.id}").click
-      check_fail_audit_log("domain_licensee", 'delete', 'delete', "#{@root_user.username}@#{@root_user.domain.name}")
     end
   end
 
@@ -236,7 +225,7 @@ describe DomainLicenseesController do
     it "[23.3] Create change log for create Domain Licensee mapping" do
       licensee = create(:licensee, :id => 1003, :with_casino_ids => [1003, 1007])
       licensee1 = create(:licensee, :id => 1007, :with_domain => '1007.com')
-      domain = licensee1.domain
+      domain = Domain.find_by_name('1007.com')
       visit_domain_licensee
       click_link I18n.t("domain_licensee.list")
       general_create_domain_licensee('1007.com', "#{licensee.name}[#{licensee.id}]")
@@ -246,10 +235,12 @@ describe DomainLicenseesController do
 
     it "[23.4] Create change log for delete Domain Licensee mapping" do
       licensee = create(:licensee, :id => 1003, :with_domain => '1003.com', :with_casino_ids => [20000])
+      domain = Domain.find_by_name('1003.com')
+      domain_licensee = DomainLicensee.where(licensee_id: licensee.id, domain_id: domain.id).first
       visit_domain_licensee
-      find("#delete_#{licensee.id}").click
+      find("#delete_#{domain_licensee.id}").click
       visit create_domain_licensee_change_logs_path
-      check_change_logs(licensee.domain, licensee, [20000], "Delete")
+      check_change_logs(domain, licensee, [20000], "Delete")
     end
 
     it "[23.5] 1000 user show all change log" do

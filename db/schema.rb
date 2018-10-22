@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170801080356) do
+ActiveRecord::Schema.define(:version => 20181022074118) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -43,7 +43,10 @@ ActiveRecord::Schema.define(:version => 20170801080356) do
     t.string   "description"
     t.datetime "created_at",                  :null => false
     t.datetime "updated_at",                  :null => false
+    t.datetime "purge_at"
   end
+
+  add_index "audit_logs", ["purge_at"], :name => "index_audit_logs_on_purge_at"
 
   create_table "auth_source_details", :force => true do |t|
     t.string   "name"
@@ -96,9 +99,23 @@ ActiveRecord::Schema.define(:version => 20170801080356) do
     t.datetime "updated_at",                                        :null => false
     t.string   "target_domain",   :limit => 45
     t.string   "type",            :limit => 45,                     :null => false
+    t.datetime "purge_at"
   end
 
+  add_index "change_logs", ["purge_at"], :name => "index_change_logs_on_purge_at"
   add_index "change_logs", ["target_username", "target_domain"], :name => "index_change_logs_on_target_username_and_target_domain"
+
+  create_table "domain_licensees", :force => true do |t|
+    t.integer  "domain_id",   :null => false
+    t.integer  "licensee_id", :null => false
+    t.datetime "purge_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "domain_licensees", ["domain_id", "licensee_id"], :name => "index_domain_licensees_on_domain_id_and_licensee_id", :unique => true
+  add_index "domain_licensees", ["licensee_id"], :name => "fk_DomainLicensees_LicenseeId"
+  add_index "domain_licensees", ["purge_at"], :name => "index_domain_licensees_on_purge_at"
 
   create_table "domains", :force => true do |t|
     t.string   "name",                  :limit => 45, :null => false
@@ -115,11 +132,9 @@ ActiveRecord::Schema.define(:version => 20170801080356) do
     t.string   "description"
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
-    t.integer  "domain_id"
     t.datetime "purge_at"
   end
 
-  add_index "licensees", ["domain_id"], :name => "fk_Licensees_DomainId"
   add_index "licensees", ["name"], :name => "index_licensees_on_name", :unique => true
   add_index "licensees", ["purge_at"], :name => "index_licensees_on_purge_at"
 
@@ -218,11 +233,13 @@ ActiveRecord::Schema.define(:version => 20170801080356) do
   add_index "system_users", ["username", "domain_id"], :name => "index_system_users_on_username_and_domain_id", :unique => true
 
   create_table "target_casinos", :force => true do |t|
-    t.integer "change_log_id"
-    t.integer "target_casino_id"
-    t.string  "target_casino_name"
+    t.integer  "change_log_id"
+    t.integer  "target_casino_id"
+    t.string   "target_casino_name"
+    t.datetime "purge_at"
   end
 
   add_index "target_casinos", ["change_log_id"], :name => "fk_TargetCasinos_ChangeLogId"
+  add_index "target_casinos", ["purge_at"], :name => "index_target_casinos_on_purge_at"
 
 end

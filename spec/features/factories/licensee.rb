@@ -8,11 +8,11 @@ FactoryGirl.define do
       with_casino_ids nil
     end
 
-    before(:create) do |licensee, factory|
+    after(:create) do |licensee, factory|
       if factory.with_domain
         auth_source_detail = create(:auth_source_detail, :name => 'test', :data => {})
-      	domain = Domain.find_by_name(factory.with_domain) || create(:domain, name: factory.with_domain, auth_source_detail_id: auth_source_detail.id)
-        licensee.domain_id = domain.id
+        domain = Domain.find_by_name(factory.with_domain) || create(:domain, name: factory.with_domain, auth_source_detail_id: auth_source_detail.id)
+        create(:domain_licensee, domain_id: domain.id, licensee_id: licensee.id)
       end
     end
 
