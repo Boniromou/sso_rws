@@ -20,8 +20,8 @@ SsoRws::Application.routes.draw do
     post '/login' => 'system_user_sessions#create'
     get "/logout" => "system_user_sessions#destroy", :as => :logout
     post "/passwords" => "system_user_registrations#update"
-    get "/register" => "system_user_registrations#new", :as => :new_system_user_registration
-    post "/register" => "system_user_registrations#create"
+    # get "/register" => "system_user_registrations#new", :as => :new_system_user_registration
+    # post "/register" => "system_user_registrations#create"
     get "/passwords" => "system_user_registrations#edit", :as => :edit_system_user_passwords
   end
 
@@ -33,7 +33,23 @@ SsoRws::Application.routes.draw do
   get 'role_management' => 'dashboard#role_management', :as => :role_management_root
   get 'domain_management' => 'dashboard#domain_management', :as => :domain_management_root
 
-  resources :domains,  :except => [:destroy, :show]
+  resources :domains, :only => [:index, :create] do
+    member do
+      post 'delete'
+    end
+  end
+
+  resources :ldap_details, :except => [:destroy, :show]
+  resources :saml_details, :except => [:destroy, :show] do
+    member do
+      post 'upload'
+      get 'edit_token'
+    end
+    collection do
+      post 'delete_token'
+    end
+  end
+
   resources :domain_licensees, :only => [:index, :create] do
     collection do
       get 'get_casinos'
@@ -44,11 +60,28 @@ SsoRws::Application.routes.draw do
   get '/system_users/export' => 'system_users#export'
   get '/roles/export' => 'roles#export'
   get '/system_users/create_system_user_message' => 'system_users#create_system_user_message', as: :create_system_user_message
-  resources :roles, :only => [:index, :show]
+
+  resources :roles, :only => [:index, :show] do
+    collection do
+      post 'upload'
+      post 'check_version'
+      post 'remove'
+    end
+  end
+
+   resources :permissions, :only => [:index] do
+    collection do
+      post 'remove'
+    end
+  end
+
   resources :system_users, :only => [:index, :show, :new, :create] do
     member do
       get 'edit_roles'
       post 'update_roles'
+    end
+    collection do
+      post 'upload'
     end
   end
 
@@ -58,6 +91,11 @@ SsoRws::Application.routes.draw do
       get 'index_edit_role'
       get 'create_domain_licensee'
       get 'index_domain_ldap'
+      get 'index_domain'
+      get 'index_adfs'
+      get 'index_role'
+      get 'index_permission'
+      get 'index_app'
     end
   end
 
@@ -74,6 +112,19 @@ SsoRws::Application.routes.draw do
   end
 
   resources :login_histories, :only => [:index]
+  resources :role_permissions_versions, :only => [:index]
+
+  resources :apps, :except => [:destroy, :new, :show] do
+    member do
+      post 'delete'
+    end
+  end
+
+  namespace :excels do  
+    get 'create_system_user_log'
+    get 'login_history'
+    get 'system_user_log'
+  end
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.

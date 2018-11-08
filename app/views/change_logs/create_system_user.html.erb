@@ -1,26 +1,27 @@
-<%= breadcrumbs([ t("user.create_system_user"), "Log"], 'fa fa-lg fa-fw fa-list') -%>
-<%= table_tabs("Log", 
-[ t("user.create_system_user"), new_system_user_path, policy(:system_user).new? ],
+<%= breadcrumbs([ t("user.create_system_user"), t("general.log")], 'fa fa-lg fa-fw fa-edit') -%>
+<%= table_tabs("Log",
+[ t("user.create_system_user"), new_system_user_path, policy(:system_user).create? ],
 [ "Log", create_system_user_change_logs_path, policy(:change_log).create_system_user? ]) %>
 
 <div class="tab-content padding-10">
-  <div class="tab-pane fade in active" > 
+  <div class="tab-pane fade in active" >
     <%= form_tag(create_system_user_change_logs_path, :remote => true, :method => 'get', :id => "search_form") do %>
       <fieldset>
         <div class="row">
           <%= render partial: "shared/date_range_picker" , locals: {:default_start_time => params[:start_time], :default_end_time => params[:end_time] } %>
-        </div>  
+        </div>
         <div class="form-actions">
           <div class="row">
             <div class="col-md-12">
               <%= submit_tag t("general.search"), :class => "btn btn-primary", :remote => true  %>
+              <%= link_to t('general.export'), excels_create_system_user_log_path, class: 'btn btn-primary' %>
             </div>
           </div>
-        </div>           
-      </fieldset>     
+        </div>
+      </fieldset>
     <% end %>
     <br />
-    
+
     <% if params[:commit].present? %>
     <div class="table-responsive">
       <table class="table table-bordered table-striped">
@@ -58,6 +59,5 @@
   </div>
 </div>
 
-        
 <%= render "shared/page_setup" %>
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "create_system_user" } %>
