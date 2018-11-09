@@ -11,7 +11,7 @@ class ExcelsController < ApplicationController
   
   def create_system_user_log
     logs = SystemUserChangeLog.by_action('create')
-    page_to_excel("Create System User Log") do |sheet|
+    page_to_excel("SSO_Create_System_User_Log") do |sheet|
       sheet.row(0).default_format = HEAD_FORMAT
       sheet.row(1).default_format = TIP_FORMAT
       sheet.row(0).push("Create System User Log")
@@ -36,7 +36,7 @@ class ExcelsController < ApplicationController
 
   def system_user_log
     logs = SystemUserChangeLog.by_action('edit_role')
-    page_to_excel("System User Log") do |sheet|
+    page_to_excel("SSO_System_User_Log") do |sheet|
       sheet.row(0).default_format = HEAD_FORMAT
       sheet.row(1).default_format = TIP_FORMAT
       sheet.row(0).push("System User Log")
@@ -64,7 +64,7 @@ class ExcelsController < ApplicationController
 
   def login_history
     historires =  LoginHistory.all.as_json(:include => ['system_user', 'domain', 'app'])
-    page_to_excel("Login History") do |sheet|
+    page_to_excel("SSO_Login_History") do |sheet|
       sheet.row(0).default_format = HEAD_FORMAT
       sheet.row(1).default_format = TIP_FORMAT
       sheet.row(0).push("Login History")
