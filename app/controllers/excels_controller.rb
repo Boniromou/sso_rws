@@ -11,10 +11,10 @@ class ExcelsController < ApplicationController
   
   def create_system_user_log
     logs = SystemUserChangeLog.by_action('create')
-    page_to_excel("SSO_CreateSystemUserLog") do |sheet|
+    page_to_excel("Create System User Log") do |sheet|
       sheet.row(0).default_format = HEAD_FORMAT
       sheet.row(1).default_format = TIP_FORMAT
-      sheet.row(0).push("Single Sign On - CreateSystemUserLog")
+      sheet.row(0).push("Create System User Log")
       sheet.row(1).concat(["Last updated at",  format_time(Time.now)]) 
 
       title = %W( System\ User Casinos Action Action\ at Action\ by Casinos )
@@ -36,10 +36,10 @@ class ExcelsController < ApplicationController
 
   def system_user_log
     logs = SystemUserChangeLog.by_action('edit_role')
-    page_to_excel("SSO_SystemUserLog") do |sheet|
+    page_to_excel("System User Log") do |sheet|
       sheet.row(0).default_format = HEAD_FORMAT
       sheet.row(1).default_format = TIP_FORMAT
-      sheet.row(0).push("Single Sign On - SystemUserLog")
+      sheet.row(0).push("System User Log")
       sheet.row(1).concat(["Last updated at",  format_time(Time.now)]) 
 
       title = %W( Action\ by Casinos Action\ at Action System\ User  Casinos System From To )
@@ -64,10 +64,10 @@ class ExcelsController < ApplicationController
 
   def login_history
     historires =  LoginHistory.all.as_json(:include => ['system_user', 'domain', 'app'])
-    page_to_excel("SSO_LoginHistory") do |sheet|
+    page_to_excel("Login History") do |sheet|
       sheet.row(0).default_format = HEAD_FORMAT
       sheet.row(1).default_format = TIP_FORMAT
-      sheet.row(0).push("Single Sign On - LoginHistory")
+      sheet.row(0).push("Login History")
       sheet.row(1).concat(["Last updated at",  format_time(Time.now)]) 
 
       title = %W(System\ User Casinos System Login\ Time )
