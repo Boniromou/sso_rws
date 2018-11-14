@@ -17,7 +17,7 @@ module SsoRws
 
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
-    config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += %W(#{config.root}/lib #{config.root}/services)
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
 
     # Only load the plugins named here, in the order given (default is alphabetical).
@@ -68,7 +68,7 @@ module SsoRws
 
     # Enable AJAX call
     config.enable_ajax = true
-   
+
     # Add slash to the end of each URL
     config.action_controller.default_url_options = { :trailing_slash => true }
 

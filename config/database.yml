@@ -2,7 +2,7 @@ development:
   adapter: mysql2
   encoding: utf8
   collation: utf8_bin
-  database: rigi_sso_development
+  database: rigi_sso_development2
   username: rigi
   password: rigi
   host: hq-int-sso-vdb01.laxino.local
