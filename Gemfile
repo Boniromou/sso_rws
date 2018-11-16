@@ -37,6 +37,7 @@ gem 'jquery-rails', '~> 3.1.1'
 # gem 'debugger'
 gem 'devise', '3.2.4'
 gem 'thin', '1.6.2'
+gem 'net-sftp', '2.1.2'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0.0'

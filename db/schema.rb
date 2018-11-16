@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20181022074118) do
+ActiveRecord::Schema.define(:version => 20181112023910) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -128,11 +128,14 @@ ActiveRecord::Schema.define(:version => 20181022074118) do
   add_index "domains", ["name"], :name => "index_domains_on_name", :unique => true
 
   create_table "licensees", :force => true do |t|
-    t.string   "name",        :limit => 45, :null => false
+    t.string   "name",               :limit => 45,   :null => false
     t.string   "description"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.datetime "purge_at"
+    t.string   "sync_user_strategy", :limit => 45
+    t.string   "sync_user_config",   :limit => 1024
+    t.string   "sync_user_data",     :limit => 1024
   end
 
   add_index "licensees", ["name"], :name => "index_licensees_on_name", :unique => true

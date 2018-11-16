@@ -1,0 +1,48 @@
+base: &base
+  name: MGM_Trial01
+  sync_user_strategy: csv_user
+  sync_user_config: &base_strategy_config
+    user: sftp.common
+    password: Cc123456
+    path: '/home/sftp.common/sso'
+
+integration0: &int
+  <<: *base
+  sync_user_config:
+    <<: *base_strategy_config
+    host: hq-int-pis-vapp02.laxino.local
+
+test:
+  <<: *int
+
+development:
+  <<: *int
+
+staging0:
+  <<: *base
+  sync_user_config:
+    <<: *base_strategy_config
+    host: mo-stg-generic-app01.rnd.laxino.com
+
+mockup0:
+  <<: *base
+  sync_user_config:
+    <<: *base_strategy_config
+    host: mo-mock-generic-app01.rnd.laxino.com
+
+sandbox3:
+  <<: *base
+  sync_user_config:
+    <<: *base_strategy_config
+    host: mo-snd-pis-vapp02.lb.laxigames.local
+
+production3:
+  <<: *base
+  sync_user_config:
+    <<: *base_strategy_config
+#    host: mo-prd-pis-vapp02.lb.laxigames.local
+    host: fex.mgmmacau.com
+    user: vengamesource
+    password: jpW0g3-?5j2jK/Y3@@ESD
+    path: '.'
+

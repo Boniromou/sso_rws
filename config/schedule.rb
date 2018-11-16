@@ -21,6 +21,10 @@ every 6.hours do
   command "/opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/cronjob/sync_system_user.sh #{ENV['RAILS_ENV']} >> /opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/log/sync_system_user_#{ENV['RAILS_ENV']}.log 2>&1"
 end
 
+every 8.hours do
+  command "/opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/cronjob/sync_sftp_user.sh #{ENV['RAILS_ENV']} >> /opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/log/sync_sftp_user_#{ENV['RAILS_ENV']}.log 2>&1"
+end
+
 every 1.days do
   command "/opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/cronjob/clean_login_history.sh #{ENV['RAILS_ENV']} >> /opt/deploy/env/sso_rws/app_#{ENV['RAILS_ENV']}/current/log/clean_login_history_#{ENV['RAILS_ENV']}.log 2>&1"
 end
