@@ -2,9 +2,9 @@ base: &base
   name: MGM_Trial01
   sync_user_strategy: csv_user
   sync_user_config: &base_strategy_config
-    user: sftp.10010.common
-    password: Abcd1234
-    path: '/home/sftp.10010.common/sso'
+    user: sftp.common
+    password: Cc123456
+    path: '/home/sftp.common/sso'
 
 integration0: &int
   <<: *base
@@ -22,7 +22,7 @@ staging0:
   <<: *base
   sync_user_config:
     <<: *base_strategy_config
-    host: hq-stg-pis-vapp02.laxino.local
+    host: mo-stg-generic-app01.rnd.laxino.com
 
 mockup0:
   <<: *base
