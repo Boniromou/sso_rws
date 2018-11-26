@@ -36,10 +36,11 @@ class SystemUserPolicy < ApplicationPolicy
       if system_user.is_admin? || system_user.has_admin_casino?
         scope.includes(:active_casinos).all
       else
-        users = scope.includes(:active_casinos, :casinos).where(domain_id: system_user.domain_id).all
+        domain_ids = system_user.casinos.first.licensee.domains.map(&:id)
+        users = scope.includes(:active_casinos, :casinos).where(domain_id: domain_ids).all
         users.delete_if do |user|
           if user.activated?
-            (user.active_casino_ids - system_user.active_casino_ids).any?      
+            (user.active_casino_ids - system_user.active_casino_ids).any?
           elsif user.inactived?
             (user.all_casino_ids - system_user.active_casino_ids).any?
           end

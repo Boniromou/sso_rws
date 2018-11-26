@@ -138,7 +138,7 @@ class UserHelper
   def get_role_names(role_ids)
     return nil if role_ids.size == 0
     roles = @db[:roles].where(id: role_ids).select(:name)
-    roles.map{|role| role[:name] || role[:name].titleize }.join(',')
+    roles.map{|role| role[:name] }.join(',')
   end
 end
 

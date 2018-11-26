@@ -6,7 +6,8 @@ development:
     auth_source_detail:
       name: 'laxino_adfs'
       data:
-        config_url: "https://adfs.laxino.com/federationmetadata/2007-06/federationmetadata.xml"
+        config_url: "https://fs.laxino.com/federationmetadata/2007-06/federationmetadata.xml"
+        comparison: "minimum"
         private_key: "-----BEGIN PRIVATE KEY-----
 MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCeMSKCuiZddv1/
 GwdlCQpUxVYbpWFXxuVpyC4AEWZMVeP46aWJUXn5WTJHq6BvQT8Y/9nTvh57Uzf1
@@ -68,6 +69,7 @@ integration0:
       name: 'laxino_adfs'
       data:
         config_url: "https://fs.laxino.com/federationmetadata/2007-06/federationmetadata.xml"
+        comparison: "minimum"
         private_key: "-----BEGIN PRIVATE KEY-----
 MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCeMSKCuiZddv1/
 GwdlCQpUxVYbpWFXxuVpyC4AEWZMVeP46aWJUXn5WTJHq6BvQT8Y/9nTvh57Uzf1
@@ -129,6 +131,7 @@ staging0:
       name: 'laxino_adfs'
       data:
         config_url: "https://fs.laxino.com/federationmetadata/2007-06/federationmetadata.xml"
+        comparison: "minimum"
         private_key: "-----BEGIN PRIVATE KEY-----
 MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCeMSKCuiZddv1/
 GwdlCQpUxVYbpWFXxuVpyC4AEWZMVeP46aWJUXn5WTJHq6BvQT8Y/9nTvh57Uzf1

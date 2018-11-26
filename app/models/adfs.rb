@@ -11,6 +11,7 @@ class Adfs < AuthSource
     settings.assertion_consumer_service_url = url_base + "/saml/acs?app_name=#{app_name}"
     settings.assertion_consumer_logout_service_url = url_base + "/saml/logout?app_name=#{app_name}"
 
+    settings.authn_context_comparison = auth_source_detail['data']['comparison'] if auth_source_detail['data']['comparison']
     settings.private_key = auth_source_detail['data']['private_key']
     settings.certificate = auth_source_detail['data']['certificate']
     settings.name_identifier_format = "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
