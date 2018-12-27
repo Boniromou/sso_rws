@@ -1,22 +1,21 @@
 # Define your release to be deployed to integration environment here.
 # Release number for integration environment is supposed to be odd numbers.
-set :branch, 'CBG_0_5_12'
+set :branch, 'CBG_0_5_13'
 
 # Define your repository server for integration environment here.
 #   production SVN - svn.prod.laxigames.com
 #   development SVN - svn.mo.laxino.com
-set :repo_host, 'svn.mo.laxino.com'
+set :repo_host, 'laxino@svn.mo.laxino.com'
+set :user, 'ias'
+set :group, 'ias_rnd'
 
 # Define your application servers for integration environment here.
 #   int - Integration
 #   stg - Staging
 #   prd - Production
-role :app, 'do-prd-sso-app01.idc.local'
+role :app, 'do-prd-generic-app01.idc.local'
 
 #role :cronjob_app, 'int-cons-vapp03.rnd.laxino.com'
-
-set :user, "ias"
-set :group, "ias_rnd"
 
 # Define your database servers for integration environment here.
 # role :db,  "int-cons-db01.rnd.laxino.com", :primary => true

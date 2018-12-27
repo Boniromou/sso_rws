@@ -148,5 +148,5 @@ ias_prd:
   database: rigi_sso_production
   username: rigi
   password: rigi.pa$$w0rd123
-  host: do-prd-generic-vdb01.idc.local
+  host: do-prd-sso-vdb01.idc.local
   port: 6033
