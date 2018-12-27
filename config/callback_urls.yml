@@ -101,3 +101,14 @@ production:
   user_management: 'https://sso.gogamesource.com/home'
   asset_management: 'https://dam.gogamesource.com/index'
   master_data_service: 'https://nmds.gogamesource.com/dashboard'
+
+ias_prd:
+  user_management: 'https://sso.cert.laxino.com//home'
+  gaming_operation: 'https://ap.cert.laxino.com/home'
+  cage: 'https://cms.cert.laxino.com/home'
+  station_management: 'https://sm.cert.laxino.com/index'
+  signature_verifier: 'https://sv.cert.laxino.com/index'
+  audit_portal: 'https://audp.cert.laxino.com/index'
+  asset_management: 'https://dam.cert.laxino.com/index'
+  marketing_portal: 'https://mp.cert.laxino.com/home'
+  tacho: 'https://ogr.cert.laxino.com'

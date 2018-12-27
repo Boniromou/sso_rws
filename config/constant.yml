@@ -89,3 +89,9 @@ production:
   <<: *default
   site_domain: 'laxigames.local'
   url_base: 'https://sso.gogamesource.com'
+
+ias_prd:
+  <<: *default
+  site_domain: 'laxigames.local'
+  url_base: 'https://sso.cert.laxino.com'
+  remain_login_history_days: 455
