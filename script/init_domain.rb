@@ -41,7 +41,7 @@ if prompt.casecmp('Y') == 0
       if licensee_table.where(id: licensee['id']).count == 0
         raise "update domain-licensee mapping error: licensee[#{licensee['id']}] not exist."
       end
-      licensee_table.where(id: licensee['id']).update(domain_id: licensee['domain_id'])
+      sso_db[:domain_licensees].insert(licensee_id: licensee['id'], domain_id: licensee['domain_id'], :created_at => Time.now.utc, :updated_at => Time.now.utc) if sso_db[:domain_licensees].where(licensee_id: licensee['id'], domain_id: licensee['domain_id']).count == 0
     end
   end
 end

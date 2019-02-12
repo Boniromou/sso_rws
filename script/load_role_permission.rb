@@ -14,10 +14,10 @@ env = ARGV[0]
 file_name = ARGV[1]
 sheet_name = ARGV[2]
 
-apps_info = { 
-              :SSO => { :id => 1, :name => 'user_management' }, 
-              :AP => { :id => 2, :name => 'gaming_operation' }, 
-              :CAGE => { :id => 3, :name => 'cage' }, 
+apps_info = {
+              :SSO => { :id => 1, :name => 'user_management' },
+              :AP => { :id => 2, :name => 'gaming_operation' },
+              :CAGE => { :id => 3, :name => 'cage' },
               :SM => { :id => 4, :name => 'station_management' },
               :GRMS => { :id => 5, :name => 'game_recall' },
               :SV => { :id => 6, :name => 'signature_verifier' },
@@ -25,7 +25,9 @@ apps_info = {
               :DAM => {:id => 8, :name => 'asset_management'},
               :TPMS => {:id => 9, :name => 'trade_promotion'},
               :MDS => {:id => 10, :name => 'master_data_service'},
-              :SSRS => {:id => 11, :name => 'report_portal'}
+              :SSRS => {:id => 11, :name => 'report_portal'},
+              :MP => {:id => 12, :name => 'marketing_portal'},
+              :OGR => {:id => 14, :name => 'platform_game_recall'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }

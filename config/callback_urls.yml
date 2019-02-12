@@ -106,7 +106,7 @@ ias_prd:
   user_management: 'https://sso.cert.laxino.com//home'
   gaming_operation: 'https://ap.cert.laxino.com/home'
   cage: 'https://cms.cert.laxino.com/home'
-  station_management: 'https://sm.cert.laxino.com/index'
+  station_management: 'https://mtm.cert.laxino.com/index'
   signature_verifier: 'https://sv.cert.laxino.com/index'
   audit_portal: 'https://audp.cert.laxino.com/index'
   asset_management: 'https://dam.cert.laxino.com/index'

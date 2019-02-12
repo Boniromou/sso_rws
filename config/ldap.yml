@@ -135,3 +135,22 @@ sandbox:
 
 production:
   <<: *sandbox3
+
+ias_prd:
+  laxino:
+    domain:
+      name: 'idc.local'
+    auth_source:
+      token: '*'
+      type: 'Ldap'
+    auth_source_detail:
+      name: 'laxino_ldap'
+      data:
+        name: 'laxino_ldap'
+        host: 'hq-prd-dc01.idc.local'
+        port: 3268
+        account: 'svc_idc_ldap@idc.local'
+        password: '$vc_1dc_1daP'
+        admin_account: 'svc_idc_ldap@idc.local'
+        admin_password: '$vc_1dc_1daP'
+        base_dn: 'dc=idc, dc=local'
