@@ -111,4 +111,4 @@ ias_prd:
   audit_portal: 'https://audp.cert.laxino.com/index'
   asset_management: 'https://dam.cert.laxino.com/index'
   marketing_portal: 'https://mp.cert.laxino.com/home'
-  tacho: 'https://ogr.cert.laxino.com'
+  platform_game_recall: 'https://ogr.cert.laxino.com'
