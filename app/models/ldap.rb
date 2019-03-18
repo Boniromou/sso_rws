@@ -6,7 +6,11 @@ class Ldap < AuthSource
   MATCH_PATTERN_REGEXP = /CN=\d+casinoid/
 
   def get_url
-    "#{URL_BASE}/ldap/new"
+    "/ldap/new"
+  end
+
+  def get_auth_url
+    "/ldap_auth/new"
   end
 
   def login!(username, password, app_name)
@@ -15,6 +19,15 @@ class Ldap < AuthSource
     ldap_login!(system_user.domain.auth_source_detail, username, password)
     user_profile = retrieve_user_profile(system_user.domain.auth_source_detail, username, system_user.domain.get_casino_ids)
     authenticate!(username, app_name, user_profile[:status], user_profile[:casino_ids])
+  end
+
+  def authorize!(username, password, app_name, casino_id, permission)
+    valid_before_login!(username)
+    system_user = SystemUser.find_by_username_with_domain(username)
+    ldap_login!(system_user.domain.auth_source_detail, username, password)
+    user_profile = retrieve_user_profile(system_user.domain.auth_source_detail, username, system_user.domain.get_casino_ids)
+    system_user = authenticate_without_cache!(username, app_name, user_profile[:status], user_profile[:casino_ids])
+    system_user.authorize!(app_name, casino_id, permission)
   end
 
   def create_ldap_user!(username, domain)

@@ -67,6 +67,11 @@ class ApplicationController < ActionController::Base
     Rails.logger.info "Rails cache, #{key}: #{Rails.cache.read(key)}"
   end
 
+  def check_login_type!(type)
+    auth_source = AuthSource.find_by_token(get_client_ip)
+    raise 'Invalid login type' if auth_source.type != type
+  end
+
   protected
   class SystemUserContext
     attr_reader :system_user, :request_casino_id

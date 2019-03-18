@@ -39,6 +39,7 @@ en:
     login_title: Login
     signup_title: Registration
     reset_password_title: Change Password
+    authorize_title: Authorization
   general:
     login: Login
     logout: logout
@@ -76,6 +77,7 @@ en:
     product_name: User Management
     delete: Delete
     add: Add
+    authorize: Authorize
   user:
     user_name: User Name
     password: Password

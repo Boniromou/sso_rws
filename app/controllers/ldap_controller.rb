@@ -3,6 +3,7 @@ class LdapController < ApplicationController
   skip_before_filter :authenticate_system_user!, :check_activation_status
 
   def new
+    check_login_type!('Ldap')
     @app_name = params[:app_name]
     render :template => "system_user_sessions/ldap_new"
   end

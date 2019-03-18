@@ -25,6 +25,7 @@ module Rigi
     end
   end
 
+  class InvalidParameter < PortalError; end
   class InvalidUsername < PortalError; end
   class InvalidDomain < PortalError; end
   class InvalidAuthSource < PortalError; end
@@ -34,5 +35,6 @@ module Rigi
   class CreateDomainLicenseeFail < PortalError; end
   class DeleteDomainLicenseeFail < PortalError; end
   class InvalidResetPassword < PortalError; end
+  class InvalidAuthorize < PortalError; end
 
 end

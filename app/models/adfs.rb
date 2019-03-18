@@ -4,6 +4,10 @@ class Adfs < AuthSource
     "#{URL_BASE}/saml/new"
   end
 
+  def get_auth_url
+    "#{URL_BASE}/saml_auth/new"
+  end
+
   def get_saml_settings(url_base, app_name)
     idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
     settings = idp_metadata_parser.parse_remote(auth_source_detail['data']['config_url'], false)
@@ -30,6 +34,17 @@ class Adfs < AuthSource
     end
     casino_ids = system_user.domain.get_casino_ids & casino_ids
     super(username, app_name, SystemUser::ACTIVE, casino_ids)
+  end
+
+  def authorize!(username, password, app_name, casino_id, permission)
+    system_user = SystemUser.find_by_username_with_domain(username)
+    if system_user.nil?
+      Rails.logger.error "SystemUser[username=#{username}] Login failed. Not a registered account"
+      raise Rigi::InvalidLogin.new("alert.invalid_login")
+    end
+    casino_ids = system_user.domain.get_casino_ids & casino_ids
+    system_user = authenticate_without_cache!(username, app_name, SystemUser::ACTIVE, casino_ids)
+    system_user.authorize!(app_name, casino_id, permission)
   end
 
   def create_adfs_user!(username, domain)

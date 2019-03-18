@@ -221,6 +221,15 @@ class SystemUser < ActiveRecord::Base
     SystemUserChangeLog.where(target_username: username, target_domain: domain.name).by_action(actions)
   end
 
+  def authorize!(app_name, casino_id, permission)
+    app = App.find_by_name(app_name)
+    raise Rigi::InvalidAuthorize.new('Authorize failed, Casino not match') unless active_casino_ids.include?(casino_id.to_i)
+    return if self.is_admin?
+    role_ids = self.roles.where(app_id: app.id).map(&:id)
+    permission = Permission.joins(:roles).where(roles: {id: role_ids}, app_id: app.id, target: permission[0], action: permission[1])
+    raise Rigi::InvalidAuthorize.new('Authorize failed, Permission denied') if permission.blank?
+  end
+
   private
   # a = [2, 4, 6, 8]
   # b = [1, 2, 3, 4]

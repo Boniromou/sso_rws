@@ -13,6 +13,18 @@ SsoRws::Application.routes.draw do
     get :logout
   end
 
+  namespace :ldap_auth do
+    get :new
+    post :second_authorize
+  end
+
+  namespace :saml_auth do
+    get :new
+    post :acs
+    get :metadata
+    get :logout
+  end
+
   devise_scope :system_user do
     root :to => "system_user_sessions#new", :as => :app_root
     #root to: 'dashboard#home', :as => :home_root
@@ -27,6 +39,7 @@ SsoRws::Application.routes.draw do
 
   get "/app_login" => "internal/system_user_sessions#login"
   get "/ssrs_login" => "internal/system_user_sessions#ssrs_login"
+  get "/authorize" => "internal/system_users#second_authorize"
   root :to => 'dashboard#home', :as => :root
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root
@@ -75,7 +88,7 @@ SsoRws::Application.routes.draw do
 
   resources :login_histories, :only => [:index]
 
-  namespace :excels do  
+  namespace :excels do
     get 'create_system_user_log'
     get 'login_history'
     get 'system_user_log'

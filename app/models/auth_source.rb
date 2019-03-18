@@ -9,6 +9,13 @@ class AuthSource < ActiveRecord::Base
   end
 
   def authenticate!(username, app_name, status, casino_ids)
+    system_user = authenticate_without_cache!(username, app_name, status, casino_ids)
+    system_user.cache_info(app_name)
+    system_user.insert_login_history(app_name)
+    system_user
+  end
+
+  def authenticate_without_cache!(username, app_name, status, casino_ids)
     system_user = SystemUser.find_by_username_with_domain(username)
     system_user.update_user_profile(casino_ids)
     system_user.update_status(status) unless system_user.pending?
@@ -17,8 +24,6 @@ class AuthSource < ActiveRecord::Base
     validate_account_casinos!(system_user)
     system_user.backfill_change_logs
     system_user.update_status(status) if system_user.pending?
-    system_user.cache_info(app_name)
-    system_user.insert_login_history(app_name)
     system_user
   end
 
