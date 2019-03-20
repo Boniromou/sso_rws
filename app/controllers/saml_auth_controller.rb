@@ -13,7 +13,7 @@ class SamlAuthController < SamlController
   def authenticate!(username, app_name, casino_ids)
     system_user = AuthSource.find_by_token(get_client_ip).authorize!(username, app_name, casino_ids, auth_info['casino_id'], auth_info['permission'])
     Rails.logger.info("Login in success")
-    write_cookie(:second_auth_result, {error_code: 'OK', error_message: 'Authorize successfully.'})
+    write_authorize_cookie({error_code: 'OK', error_message: 'Authorize successfully.', authorized_by: username, authorized_at: Time.now})
     redirect_to auth_info['callback_url']
   end
 
@@ -29,7 +29,7 @@ class SamlAuthController < SamlController
   def handle_invalid_login(e)
     Rails.logger.error e.error_message
     Rails.logger.error e.backtrace
-    write_cookie(:second_auth_result, {error_code: e.message, error_message: e.error_message})
+    write_authorize_cookie({error_code: e.message, error_message: e.error_message})
     redirect_to auth_info['callback_url']
   end
 end

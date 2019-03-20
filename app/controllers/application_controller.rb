@@ -53,6 +53,10 @@ class ApplicationController < ActionController::Base
     add_cache(uuid, {:system_user => {:id => system_user.id, :username => system_user.username}})
   end
 
+  def write_authorize_cookie(value)
+    write_cookie(:second_auth_result, JSON.generate(value))
+  end
+
   def write_cookie(name, value, domain = :all)
     cookies[name] = {
       value: value,

@@ -15,7 +15,7 @@ SsoRws::Application.routes.draw do
 
   namespace :ldap_auth do
     get :new
-    post :second_authorize
+    post :create
   end
 
   namespace :saml_auth do
@@ -39,7 +39,7 @@ SsoRws::Application.routes.draw do
 
   get "/app_login" => "internal/system_user_sessions#login"
   get "/ssrs_login" => "internal/system_user_sessions#ssrs_login"
-  get "/authorize" => "internal/system_users#second_authorize"
+  get "/second_authorize" => "internal/system_users#second_authorize"
   root :to => 'dashboard#home', :as => :root
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root

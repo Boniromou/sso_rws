@@ -20,7 +20,7 @@ class Internal::SystemUsersController < ApplicationController
   end
 
   def handle_invalid_parameter
-    write_cookie(:second_auth_result, {error_code: 'InvalidParameter', error_message: 'Authorize failed, invalid parameters.'})
+    write_authorize_cookie({error_code: 'InvalidParameter', error_message: 'Authorize failed, invalid parameters.'})
     raise "callback excaption" unless auth_info['callback_url']
     redirect_to auth_info['callback_url']
   end

@@ -7,18 +7,19 @@ class LdapAuthController < ApplicationController
     @app_name = params[:app_name]
   end
 
-  def second_authorize
+  def create
     auth_source = AuthSource.find_by_token(get_client_ip)
     system_user = auth_source.authorize!(params[:system_user][:username], params[:system_user][:password], params[:app_name], auth_info['casino_id'], auth_info['permission'])
-    write_cookie(:second_auth_result, {error_code: 'OK', error_message: 'Authorize successfully.'})
+    Rails.logger.info 'Authorize successfully.'
+    write_authorize_cookie({error_code: 'OK', error_message: 'Authorize successfully.', authorized_by: params[:system_user][:username], authorized_at: Time.now})
     redirect_to auth_info['callback_url']
   rescue Rigi::InvalidLogin => e
     @app_name = params[:app_name]
     flash[:alert] = I18n.t(e.error_message)
     render :template => "ldap_auth/new"
   rescue Rigi::InvalidAuthorize => e
-    Rails.logger.error e.error_message
-    write_cookie(:second_auth_result, {error_code: 'InvalidAuthorize', error_message: e.error_message})
+    Rails.logger.error "Authorize failed: #{e.error_message}"
+    write_authorize_cookie({error_code: 'InvalidAuthorize', error_message: e.error_message})
     redirect_to auth_info['callback_url']
   end
 
