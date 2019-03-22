@@ -2,6 +2,7 @@ class SamlController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:acs, :logout]
   skip_before_filter :authenticate_system_user!, :check_activation_status
   rescue_from Rigi::InvalidLogin, :with => :handle_invalid_login
+  rescue_from Rigi::InvalidAuthorize, :with => :handle_invalid_authorize
 
   def new
     check_login_type!('Adfs')
@@ -20,11 +21,11 @@ class SamlController < ApplicationController
     session['sessionindex'] = saml_response.sessionindex
     session['username'] = saml_response.attributes['username'].downcase if saml_response.attributes['username']
     session['casinoids'] = convert_casino_ids(saml_response.attributes.all['casinoids'])
-    app_name = params['app_name']
-    session['app_name'] = app_name
+    session['app_name'] = params['app_name']
+    session['second_authorize'] = params['second_authorize']
     Rails.logger.info "session: #{session.inspect}"
 
-    redirect_to_logout_path
+    redirect_to "#{URL_BASE}/saml/logout/?slo=true&app_name=#{params['app_name']}&second_authorize=#{params['second_authorize']}"
   end
 
   def metadata
@@ -66,7 +67,7 @@ class SamlController < ApplicationController
     if logout_response.success?
       username, app_name, casinoids = session['username'], session['app_name'], session['casinoids']
       Rails.logger.info("app_name: #{app_name}, username: #{username}, casinoids: #{casinoids}")
-      authenticate!(username, app_name, casinoids)
+      is_second_authorize? ? authorize_user!(username, app_name, casino_ids) : authenticate!(username, app_name, casinoids)
     else
       raise "logout_response is failed"
     end
@@ -77,8 +78,8 @@ class SamlController < ApplicationController
     URL_BASE
   end
 
-  def redirect_to_logout_path
-    redirect_to "#{URL_BASE}/saml/logout/?slo=true&app_name=#{app_name}"
+  def auth_info
+    JSON.parse cookies[:second_auth_info]
   end
 
   def authenticate!(username, app_name, casino_ids)
@@ -88,8 +89,23 @@ class SamlController < ApplicationController
     handle_redirect(app_name)
   end
 
+  def authorize_user!(username, app_name, casino_ids)
+    system_user = AuthSource.find_by_token(get_client_ip).authorize!(username, app_name, casino_ids, auth_info['casino_id'], auth_info['permission'])
+    Rails.logger.info("Authorize success")
+    write_authorize_cookie({error_code: 'OK', error_message: 'Authorize successfully.', authorized_by: username, authorized_at: Time.now})
+    redirect_to auth_info['callback_url']
+  end
+
   def app_name
     params[:app_name] || session['app_name']
+  end
+
+  def second_authorize
+    params[:second_authorize] || session['second_authorize']
+  end
+
+  def is_second_authorize?
+    second_authorize.to_s == 'true'
   end
 
   def convert_casino_ids(casino_ids)
@@ -98,12 +114,7 @@ class SamlController < ApplicationController
   end
 
   def get_saml_settings
-    settings = AuthSource.find_by_token(get_client_ip).get_saml_settings(get_url_base, app_name)
-    if !app_name
-      settings.assertion_consumer_service_url = get_url_base + "/saml/acs"
-      settings.assertion_consumer_logout_service_url = get_url_base + "/saml/logout"
-    end
-    settings
+    AuthSource.find_by_token(get_client_ip).get_saml_settings(get_url_base, app_name, is_second_authorize?)
   end
 
   def handle_redirect(app_name)
@@ -111,14 +122,25 @@ class SamlController < ApplicationController
   end
 
   def handle_invalid_login(e)
-    Rails.logger.error e.message
+    if is_second_authorize?
+      handle_invalid_authorize(e)
+    else
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+      @app_name = session['app_name']
+      @error_info = {
+        status: I18n.t('alert.authenticate_failed'),
+        # message: I18n.t(e.error_message)
+        note: I18n.t(e.error_message)
+      }
+      render layout: false, template: 'system_user_sessions/error_warning'
+    end
+  end
+
+  def handle_invalid_authorize(e)
+    Rails.logger.error e.error_message
     Rails.logger.error e.backtrace
-    @app_name = session['app_name']
-    @error_info = {
-      status: I18n.t('alert.authenticate_failed'),
-      # message: I18n.t(e.error_message)
-      note: I18n.t(e.error_message)
-    }
-    render layout: false, template: 'system_user_sessions/error_warning'
+    write_authorize_cookie({error_code: e.message, error_message: e.error_message})
+    redirect_to auth_info['callback_url']
   end
 end

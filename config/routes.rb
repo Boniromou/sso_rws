@@ -18,13 +18,6 @@ SsoRws::Application.routes.draw do
     post :create
   end
 
-  namespace :saml_auth do
-    get :new
-    post :acs
-    get :metadata
-    get :logout
-  end
-
   devise_scope :system_user do
     root :to => "system_user_sessions#new", :as => :app_root
     #root to: 'dashboard#home', :as => :home_root

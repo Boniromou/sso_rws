@@ -5,15 +5,15 @@ class Adfs < AuthSource
   end
 
   def get_auth_url
-    "#{URL_BASE}/saml_auth/new"
+    "#{URL_BASE}/saml/new"
   end
 
-  def get_saml_settings(url_base, app_name)
+  def get_saml_settings(url_base, app_name, second_authorize = false)
     idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
     settings = idp_metadata_parser.parse_remote(auth_source_detail['data']['config_url'], false)
     settings.issuer                         = url_base + "/saml/metadata"
-    settings.assertion_consumer_service_url = url_base + "/saml/acs?app_name=#{app_name}"
-    settings.assertion_consumer_logout_service_url = url_base + "/saml/logout?app_name=#{app_name}"
+    settings.assertion_consumer_service_url = url_base + "/saml/acs?app_name=#{app_name}&second_authorize=#{second_authorize}"
+    settings.assertion_consumer_logout_service_url = url_base + "/saml/logout?app_name=#{app_name}&second_authorize=#{second_authorize}"
 
     settings.authn_context_comparison = auth_source_detail['data']['comparison'] if auth_source_detail['data']['comparison']
     settings.private_key = auth_source_detail['data']['private_key']
