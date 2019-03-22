@@ -36,7 +36,7 @@ class Adfs < AuthSource
     super(username, app_name, SystemUser::ACTIVE, casino_ids)
   end
 
-  def authorize!(username, password, app_name, casino_id, permission)
+  def authorize!(username, app_name, casino_ids, target_casino, permission)
     system_user = SystemUser.find_by_username_with_domain(username)
     if system_user.nil?
       Rails.logger.error "SystemUser[username=#{username}] Login failed. Not a registered account"
@@ -44,7 +44,7 @@ class Adfs < AuthSource
     end
     casino_ids = system_user.domain.get_casino_ids & casino_ids
     system_user = authenticate_without_cache!(username, app_name, SystemUser::ACTIVE, casino_ids)
-    system_user.authorize!(app_name, casino_id, permission)
+    system_user.authorize!(app_name, target_casino, permission)
   end
 
   def create_adfs_user!(username, domain)
