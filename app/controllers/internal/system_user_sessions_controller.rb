@@ -11,7 +11,7 @@ class Internal::SystemUserSessionsController < ApplicationController
                       note: I18n.t("alert.unknown_token")}
       render layout: false, template: 'system_user_sessions/error_warning'
     else
-      redirect_to "#{auth_source.get_url}?app_name=#{@app_name}"
+      redirect_to "#{auth_source.get_url}?app_name=#{@app_name}&second_authorize=false"
     end
   end
 
