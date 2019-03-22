@@ -67,7 +67,7 @@ class SamlController < ApplicationController
     if logout_response.success?
       username, app_name, casinoids = session['username'], session['app_name'], session['casinoids']
       Rails.logger.info("app_name: #{app_name}, username: #{username}, casinoids: #{casinoids}")
-      is_second_authorize? ? authorize_user!(username, app_name, casino_ids) : authenticate!(username, app_name, casinoids)
+      is_second_authorize? ? authorize_user!(username, app_name, casinoids) : authenticate!(username, app_name, casinoids)
     else
       raise "logout_response is failed"
     end
