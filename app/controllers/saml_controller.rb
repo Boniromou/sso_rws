@@ -78,10 +78,6 @@ class SamlController < ApplicationController
     URL_BASE
   end
 
-  def auth_info
-    JSON.parse cookies[:second_auth_info]
-  end
-
   def authenticate!(username, app_name, casino_ids)
     system_user = AuthSource.find_by_token(get_client_ip).authenticate!(username, app_name, casino_ids)
     write_authenticate(system_user, app_name)

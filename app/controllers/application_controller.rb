@@ -54,7 +54,13 @@ class ApplicationController < ActionController::Base
   end
 
   def write_authorize_cookie(value)
-    write_cookie(:second_auth_result, JSON.generate(value))
+    value.merge!({message_id: auth_info['message_id']})
+    value = JWT.encode value, 'test_key', 'HS256'
+    write_cookie(:second_auth_result, value)
+  end
+
+  def auth_info
+    JWT.decode(cookies[:second_auth_info], 'test_key', true, { algorithm: 'HS256' })[0] if cookies[:second_auth_info]
   end
 
   def write_cookie(name, value, domain = :all)

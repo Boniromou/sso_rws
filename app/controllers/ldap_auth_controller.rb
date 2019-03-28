@@ -22,9 +22,4 @@ class LdapAuthController < ApplicationController
     write_authorize_cookie({error_code: 'InvalidAuthorize', error_message: e.error_message})
     redirect_to auth_info['callback_url']
   end
-
-  private
-  def auth_info
-    JSON.parse cookies[:second_auth_info]
-  end
 end

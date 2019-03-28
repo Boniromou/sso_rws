@@ -10,10 +10,6 @@ class Internal::SystemUsersController < ApplicationController
   end
 
   private
-  def auth_info
-    JSON.parse cookies[:second_auth_info]
-  end
-
   def check_auth_info!
     raise Rigi::InvalidParameter unless cookies[:second_auth_info]
     raise Rigi::InvalidParameter if (['app_name', 'casino_id', 'permission', 'callback_url'] - auth_info.keys).present?
