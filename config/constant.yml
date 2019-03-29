@@ -23,7 +23,7 @@ test:
 
 development:
   <<: *default
-  url_base: 'http://yunxiaopan01.laxino.local:3000'
+  url_base: 'http://10.10.5.169:3000'
 
 integration0:
   <<: *default
@@ -33,7 +33,8 @@ integration0:
 staging0:
   <<: *default
   site_domain: 'laxino.com'
-  url_base: 'https://stg-sso2.laxino.com'
+  # url_base: 'https://stg-sso2.laxino.com'
+  url_base: 'https://stg-sso.laxino.com'
 
 staging0_external:
   <<: *default

@@ -35,7 +35,8 @@ staging0: &staging0
   database: rigi_sso_staging
   username: rigi
   password: rigi
-  host: mo-stg-sso-vdb01.rnd.laxino.com
+  # host: mo-stg-sso-vdb01.rnd.laxino.com
+  host: hq-stg-sso-vdb01.laxino.local
   port: 3306
 
 staging0_external:
