@@ -29,7 +29,7 @@ class SamlController < ApplicationController
   end
 
   def metadata
-    settings = get_saml_settings(true)
+    settings = get_saml_settings
     meta = OneLogin::RubySaml::Metadata.new
     render :xml => meta.generate(settings, true)
   end
@@ -109,9 +109,9 @@ class SamlController < ApplicationController
     casino_ids.collect {|casino_id| casino_id.delete('casinoid').to_i}
   end
 
-  def get_saml_settings(is_metadata = false)
+  def get_saml_settings
     settings = AuthSource.find_by_token(get_client_ip).get_saml_settings(get_url_base, app_name, is_second_authorize?)
-    if is_metadata
+    if !app_name
       settings.assertion_consumer_service_url = get_url_base + "/saml/acs"
       settings.assertion_consumer_logout_service_url = get_url_base + "/saml/logout"
     end
