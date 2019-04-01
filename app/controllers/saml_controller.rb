@@ -110,7 +110,12 @@ class SamlController < ApplicationController
   end
 
   def get_saml_settings
-    AuthSource.find_by_token(get_client_ip).get_saml_settings(get_url_base, app_name, is_second_authorize?)
+    settings = AuthSource.find_by_token(get_client_ip).get_saml_settings(get_url_base, app_name, is_second_authorize?)
+    if !app_name
+      settings.assertion_consumer_service_url = get_url_base + "/saml/acs"
+      settings.assertion_consumer_logout_service_url = get_url_base + "/saml/logout"
+    end
+    settings
   end
 
   def handle_redirect(app_name)
