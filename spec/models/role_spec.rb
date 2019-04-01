@@ -16,7 +16,7 @@ describe Role do
 
   describe "test get_apps_roles" do
     fixtures :roles, :permissions, :role_permissions, :role_types
-    
+
     def check_role_permission roles, roles_names, roles_permissions
       roles.each_with_index do |role, index|
         expect(role["name"]).to eq roles_names[index]
@@ -25,7 +25,7 @@ describe Role do
     end
 
     it "success" do
-      app_roles = Role.get_apps_roles
+      app_roles = Role.get_apps_roles(Role.all)
       expect(app_roles.length).to eq 3
 
       roles_1 = app_roles[1]
@@ -56,7 +56,7 @@ describe Role do
     it "roles no data" do
       RolePermission.delete_all
       Role.delete_all
-      roles = Role.get_apps_roles
+      roles = Role.get_apps_roles(Role.all)
       expect(roles).not_to be_nil
       expect(roles.length).to eq 0
     end

@@ -4,7 +4,7 @@ base: &base
   sync_user_config: &base_strategy_config
     user: sftp.common
     password: Cc123456
-    path: '/home/sftp.common/sso'
+    path: '/home/sftp.common/systemuser'
 
 integration0: &int
   <<: *base

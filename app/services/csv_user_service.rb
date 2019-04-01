@@ -18,16 +18,16 @@ class CsvUserService
     end
   end
 
-  private
   def process_csv(file_name, data)
     records = get_csv_records(data)
     process_users(records)
     update_licensee(file_name)
   end
 
+  private
   def process_users(records)
     records.each do |domain_id, usernames|
-      users = SystemUser.where(domain_id: domain_id)
+      users = SystemUser.includes(:roles).where(domain_id: domain_id)
       error_data = usernames - users.map(&:username)
       Rails.logger.error "users not exist: #{error_data}" if error_data.size > 0
       SystemUser.transaction do
@@ -42,10 +42,13 @@ class CsvUserService
     return if user.status == SystemUser::PENDING
     if usernames.include?(user.username)
       return if user.status == SystemUser::ACTIVE
-      user.update_attributes!(status: SystemUser::ACTIVE)
+      user.update_attributes!(status: SystemUser::ACTIVE) if user.roles.present?
     else
-      return if user.status == SystemUser::INACTIVE
-      user.update_attributes!(status: SystemUser::INACTIVE)
+      if user.status == SystemUser::INACTIVE
+        user.update_attributes!(status: SystemUser::ACTIVE) if user.roles.present?
+      else
+        user.update_attributes!(status: SystemUser::INACTIVE) if user.roles.blank?
+      end
     end
   end
 

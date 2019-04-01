@@ -1,4 +1,6 @@
 class Role < ActiveRecord::Base
+  attr_accessible :name
+
   validates_presence_of :name
   has_many :role_assignments, :dependent => :destroy
   has_many :system_users, :through => :role_assignments, :source => :user, :source_type => 'SystemUser'

@@ -4,8 +4,9 @@ describe SystemUser do
   describe '[26] Conjob for updating system user status and casino group' do
     before(:each) do
       auth_source_detail = AuthSourceDetail.create(:name => "Laxino LDAP", :data => {:host => "0.0.0.0", :port => 389, :account => "test", :account_password => "test", :base_dn => "DC=test,DC=example,DC=com", :admin_account => "admin", :admin_password => "admin"})
-      domain = Domain.create(:name => 'example.com', :auth_source_detail_id => auth_source_detail.id) 
-      licensee = Licensee.create(:name => 'laxino', :domain_id => domain.id) 
+      domain = Domain.create(:name => 'example.com', :auth_source_detail_id => auth_source_detail.id)
+      licensee = Licensee.create(:name => 'laxino')
+      DomainLicensee.create(domain_id: domain.id, licensee_id: licensee.id)
       [1000, 1003, 1007].each do |casino|
         Casino.create(:id => casino, :name => casino, :licensee_id => licensee.id)
       end
@@ -34,15 +35,15 @@ describe SystemUser do
       mock_ad_account_profile(false, [1003])
       system_user = regist_and_return_system_user('test', 'example.com', [1003])
       cache_info = Rails.cache.read(system_user.id)
-      expect(system_user.status).to eq 'active'  
+      expect(system_user.status).to eq 'active'
       expect(cache_info[:status]).to eq 'active'
 
       SystemUser.sync_user_info
 
       system_user = SystemUser.find_by_username('test')
       cache_info = Rails.cache.read(system_user.id)
-      expect(system_user.status).to eq 'inactive'    
-      expect(cache_info[:status]).to eq 'inactive' 
+      expect(system_user.status).to eq 'inactive'
+      expect(cache_info[:status]).to eq 'inactive'
     end
 
     it '[26.2] user casino group change' do
@@ -56,7 +57,7 @@ describe SystemUser do
 
       system_user = SystemUser.find_by_username('test')
       cache_info = Rails.cache.read(system_user.id)
-      expect(system_user.active_casino_ids).to eq [1007]      
+      expect(system_user.active_casino_ids).to eq [1007]
       expect(cache_info[:casinos]).to eq [1007]
     end
   end
