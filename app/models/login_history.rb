@@ -6,8 +6,8 @@ class LoginHistory < ActiveRecord::Base
   serialize :detail, JSON
   validates_presence_of :system_user_id, :domain_id, :app_id, :sign_in_at
 
-  scope :since, -> time { where("sign_in_at >= ?", time) if time.present? }
-  scope :until, -> time { where("sign_in_at < ?", time) if time.present? }
+  scope :since, -> time { where("login_histories.sign_in_at >= ?", time) if time.present? }
+  scope :until, -> time { where("login_histories.sign_in_at < ?", time) if time.present? }
   scope :by_system_user_id, -> system_user_id { where(system_user_id: system_user_id) if system_user_id.present? }
   scope :by_domain_id, -> domain_id { where(domain_id: domain_id) if domain_id.present? }
   scope :by_app_id, -> app_id { where(app_id: app_id) if app_id.present? }
