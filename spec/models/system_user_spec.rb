@@ -3,7 +3,7 @@ require "rails_helper"
 describe SystemUser do
   describe '[26] Conjob for updating system user status and casino group' do
     before(:each) do
-      auth_source_detail = AuthSourceDetail.create(:name => "Laxino LDAP", :data => {:host => "0.0.0.0", :port => 389, :account => "test", :account_password => "test", :base_dn => "DC=test,DC=example,DC=com", :admin_account => "admin", :admin_password => "admin"})
+      auth_source_detail = AuthSourceDetail.create(:name => "Laxino LDAP", :data => {:host => "0.0.0.0", :port => 389, :account => "test", :password => "test", :base_dn => "DC=test,DC=example,DC=com", :admin_account => "admin", :admin_password => "admin"})
       domain = Domain.create(:name => 'example.com', :auth_source_detail_id => auth_source_detail.id)
       licensee = Licensee.create(:name => 'laxino')
       DomainLicensee.create(domain_id: domain.id, licensee_id: licensee.id)

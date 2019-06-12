@@ -172,15 +172,16 @@ class SystemUser < ActiveRecord::Base
   def cache_profile
     cache_key = "#{self.id}"
     casinos = self.active_casino_ids
-    licensee = Casino.find(casinos.first).licensee_id if casinos.present?
+    licensee = Casino.find(casinos.first).licensee if casinos.present?
     properties = Property.where(:casino_id => casinos).pluck(:id)
     cache_hash = {
       :status => self.status,
       :admin => self.admin,
       :username_with_domain => "#{self.username}@#{self.domain.name}",
       :casinos => casinos,
-      :licensee => licensee,
-      :properties => properties
+      :licensee => licensee.try(:id),
+      :properties => properties,
+      :timezone => licensee.try(:timezone)
     }
     Rails.cache.write(cache_key, cache_hash)
   end

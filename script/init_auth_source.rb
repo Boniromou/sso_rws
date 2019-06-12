@@ -18,11 +18,11 @@ sso_db = Database.connect(env)
 
 p auth_source
 domain_name = auth_source['domain_name']
-auth_source_info = {:name => auth_source['name'], 
+auth_source_info = {:name => auth_source['name'],
                     :host => auth_source['host'],
                     :port => auth_source['port'],
                     :account => auth_source['account'],
-                    :account_password => auth_source['password'],
+                    :password => auth_source['password'],
                     :base_dn => auth_source['base_dn'],
                     :encryption => auth_source['encryption'],
                     :method => auth_source['method'],

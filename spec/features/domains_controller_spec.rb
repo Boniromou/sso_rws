@@ -27,7 +27,7 @@ describe DomainsController do
       "auth_source_detail_host" => "0.0.0.0",
       "auth_source_detail_port" => "3268",
       "auth_source_detail_account" => "test@1003.com",
-      "auth_source_detail_account_password" => "cccccc",
+      "auth_source_detail_password" => "cccccc",
       "auth_source_detail_base_dn" => "dc=1003, dc=com",
       "auth_source_detail_admin_account" => "admin@1003.com",
       "auth_source_detail_admin_password" => "dddddd"
@@ -107,7 +107,7 @@ describe DomainsController do
       check_flash_message I18n.t('domain_ldap.create_domain_ldap_success')
       expect(current_path).to eq(domains_path)
       within("table#domain_ldap tbody tr:last-child") {
-        @domain_data.delete("auth_source_detail_account_password")
+        @domain_data.delete("auth_source_detail_password")
         @domain_data.delete("auth_source_detail_admin_password")
         @domain_data.each_value do |value|
           expect_have_content value.strip
@@ -188,12 +188,12 @@ describe DomainsController do
       visit new_domain_path
       fill_in_form
       visit index_domain_ldap_change_logs_path
-      to = "host:0.0.0.0; port:3268; account:test@1003.com; account_password:******; base_dn:dc=1003, dc=com; admin_account:admin@1003.com; admin_password:******; name:hqidc_ldap;"
+      to = "host:0.0.0.0; port:3268; account:test@1003.com; password:******; base_dn:dc=1003, dc=com; admin_account:admin@1003.com; admin_password:******; name:hqidc_ldap;"
       check_change_log(@domain_data["domain_name"].strip, "Create", "", to, "#{@system_user.username}@#{@system_user.domain.name}")
     end
 
     it "[34.4] Create change log for edit Domain Licensee mapping" do
-      auth_source_detail = create(:auth_source_detail, :name => 'test_ldap', :data => {:host => '10.10.10.1', :port => '8808', :account => 'hill', :account_password => 'hill', :base_dn => '12345', :admin_account => 'portal.admin', :admin_password => 'ccccccc'})
+      auth_source_detail = create(:auth_source_detail, :name => 'test_ldap', :data => {:host => '10.10.10.1', :port => '8808', :account => 'hill', :password => 'hill', :base_dn => '12345', :admin_account => 'portal.admin', :admin_password => 'ccccccc'})
       domain = create(:domain, name: "1003.com", auth_source_detail_id: auth_source_detail.id)
       login_with_permission
       visit domains_path
@@ -215,7 +215,7 @@ describe DomainsController do
     end
 
     before(:each) do
-      @auth_source_detail = create(:auth_source_detail, :name => 'test_ldap', :data => {:host => '10.10.10.1', :port => '8808', :account => 'hill', :account_password => 'hil123', :base_dn => '8888', :admin_account => 'portal.admin', :admin_password => 'cccccc'})
+      @auth_source_detail = create(:auth_source_detail, :name => 'test_ldap', :data => {:host => '10.10.10.1', :port => '8808', :account => 'hill', :password => 'hil123', :base_dn => '8888', :admin_account => 'portal.admin', :admin_password => 'cccccc'})
       @domain = create(:domain, name: "1003.com", auth_source_detail_id: @auth_source_detail.id)
       login_with_permission
       visit domains_path
@@ -257,7 +257,7 @@ describe DomainsController do
                  "domain_auth_source_detail_host" => @auth_source_detail.data['host'],
                  "domain_auth_source_detail_port" => @auth_source_detail.data['port'],
                  "domain_auth_source_detail_account" => @auth_source_detail.data['account'],
-                 "domain_auth_source_detail_account_password" => @auth_source_detail.data['account_password'],
+                 "domain_auth_source_detail_password" => @auth_source_detail.data['password'],
                  "domain_auth_source_detail_base_dn" => @auth_source_detail.data['base_dn'],
                  "domain_auth_source_detail_admin_account" => @auth_source_detail.data['admin_account'],
                  "domain_auth_source_detail_admin_password" => @auth_source_detail.data['admin_password']

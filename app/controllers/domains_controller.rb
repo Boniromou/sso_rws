@@ -93,6 +93,6 @@ class DomainsController < ApplicationController
 
   def missing_params?
     auth_source_detail = params[:domain][:auth_source_detail]
-    auth_source_detail[:name].blank? || auth_source_detail[:host].blank? || auth_source_detail[:port].blank? || auth_source_detail[:account].blank? || auth_source_detail[:account_password].blank? || auth_source_detail[:base_dn].blank? || auth_source_detail[:admin_account].blank? || auth_source_detail[:admin_password].blank?
+    auth_source_detail[:name].blank? || auth_source_detail[:host].blank? || auth_source_detail[:port].blank? || auth_source_detail[:account].blank? || auth_source_detail[:password].blank? || auth_source_detail[:base_dn].blank? || auth_source_detail[:admin_account].blank? || auth_source_detail[:admin_password].blank?
   end
 end
