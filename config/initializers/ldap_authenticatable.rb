@@ -12,8 +12,6 @@ module Devise
       def authenticate!
         system_user = SystemUser.find(user_info[:system_user][:id])
         success!(system_user)
-        Object.send(:remove_const, :TIMEZONE) if defined? TIMEZONE
-        Object.const_set('TIMEZONE', system_user.timezone)
         clear_cookie_and_cache
       end
 

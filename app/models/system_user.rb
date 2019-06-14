@@ -18,6 +18,10 @@ class SystemUser < ActiveRecord::Base
 
   scope :with_active_casino, -> { joins(:casinos_system_users).where("casinos_system_users.status = ?", true).select("DISTINCT(system_users.id), system_users.*") }
 
+  def timezone
+    @timezone ||= Rails.cache.fetch(id).try(:[], :timezone)
+  end
+
   def active_casino_ids
     self.active_casinos.map{|casino| casino.id}
   end
@@ -45,11 +49,6 @@ class SystemUser < ActiveRecord::Base
   def licensee
     casino = self.active_casinos.first
     casino.licensee if casino
-  end
-
-  def timezone
-    user = Rails.cache.fetch "#{self.id}"
-    user.try(:[], :timezone) || self.licensee.try(:timezone) || '+08:00'
   end
 
   def self.register!(username, domain, casino_ids)

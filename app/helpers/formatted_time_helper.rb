@@ -1,21 +1,25 @@
 module FormattedTimeHelper
+  def user_timezone
+    current_system_user.timezone
+  end
+
   def format_time(time)
     begin
       unless time.blank?
-        time.to_time.getlocal(TIMEZONE).strftime("%Y-%m-%d %H:%M:%S")
+        time.to_time.getlocal(user_timezone).strftime("%Y-%m-%d %H:%M:%S")
       end
     rescue Exception
-      Time.parse("#{time} #{TIMEZONE}").strftime("%Y-%m-%d %H:%M:%S")
+      Time.parse("#{time} #{user_timezone}").strftime("%Y-%m-%d %H:%M:%S")
     end
   end
 
   def format_date(time)
-    time.to_time.getlocal(TIMEZONE).strftime("%Y-%m-%d")
+    time.to_time.getlocal(user_timezone).strftime("%Y-%m-%d")
   end
 
   def parse_date(date_str, is_end = false)
     return if date_str.blank?
-    time = Time.parse("#{date_str} 00:00:00 #{TIMEZONE}", "%Y-%m-%d %H:%M:%S %Z")
+    time = Time.parse("#{date_str} 00:00:00 #{user_timezone}", "%Y-%m-%d %H:%M:%S %Z")
     time = time + 1.days if is_end
     time.utc
   end
