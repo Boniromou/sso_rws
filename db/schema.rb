@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20181112023910) do
+ActiveRecord::Schema.define(:version => 20190611023429) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(:version => 20181112023910) do
   end
 
   add_index "audit_logs", ["purge_at"], :name => "index_audit_logs_on_purge_at"
+  add_index "audit_logs", ["updated_at"], :name => "idx_updated_at"
 
   create_table "auth_source_details", :force => true do |t|
     t.string   "name"
@@ -86,8 +87,10 @@ ActiveRecord::Schema.define(:version => 20181112023910) do
   end
 
   add_index "casinos_system_users", ["casino_id", "system_user_id"], :name => "index_casinos_system_users_on_casino_id_and_system_user_id", :unique => true
+  add_index "casinos_system_users", ["created_at"], :name => "idx_created_at"
   add_index "casinos_system_users", ["purge_at"], :name => "index_casinos_system_users_on_purge_at"
   add_index "casinos_system_users", ["system_user_id"], :name => "fk_CasinosSystemUsers_SystemUserId"
+  add_index "casinos_system_users", ["updated_at"], :name => "idx_updated_at"
 
   create_table "change_logs", :force => true do |t|
     t.string   "change_detail",   :limit => 1024, :default => "{}"
@@ -104,6 +107,54 @@ ActiveRecord::Schema.define(:version => 20181112023910) do
 
   add_index "change_logs", ["purge_at"], :name => "index_change_logs_on_purge_at"
   add_index "change_logs", ["target_username", "target_domain"], :name => "index_change_logs_on_target_username_and_target_domain"
+  add_index "change_logs", ["updated_at"], :name => "idx_updated_at"
+
+  create_table "chronos_archive_transaction_logs", :force => true do |t|
+    t.string   "archive_job_id",              :null => false
+    t.string   "target_uuid"
+    t.integer  "target_id",      :limit => 8
+    t.datetime "traced_at",                   :null => false
+    t.datetime "opened_at",                   :null => false
+    t.datetime "closed_at",                   :null => false
+  end
+
+  add_index "chronos_archive_transaction_logs", ["archive_job_id", "closed_at"], :name => "chronos_archive_transaction_logs_archive_job_id_closed_at_index"
+  add_index "chronos_archive_transaction_logs", ["archive_job_id", "traced_at"], :name => "chronos_archive_transaction_logs_archive_job_id_traced_at_index"
+  add_index "chronos_archive_transaction_logs", ["closed_at"], :name => "chronos_archive_transaction_logs_closed_at_index"
+  add_index "chronos_archive_transaction_logs", ["target_id", "archive_job_id"], :name => "chronos_atxs_tid_ajid", :unique => true
+  add_index "chronos_archive_transaction_logs", ["target_uuid", "archive_job_id"], :name => "chronos_atxs_tuuid_ajid", :unique => true
+
+  create_table "chronos_archive_transactions", :force => true do |t|
+    t.string   "archive_job_id",              :null => false
+    t.string   "target_uuid"
+    t.integer  "target_id",      :limit => 8
+    t.datetime "traced_at",                   :null => false
+    t.datetime "opened_at",                   :null => false
+    t.datetime "closed_at"
+  end
+
+  add_index "chronos_archive_transactions", ["archive_job_id", "closed_at"], :name => "chronos_archive_transactions_archive_job_id_closed_at_index"
+  add_index "chronos_archive_transactions", ["archive_job_id", "traced_at"], :name => "chronos_archive_transactions_archive_job_id_traced_at_index"
+  add_index "chronos_archive_transactions", ["target_id", "archive_job_id"], :name => "chronos_atxs_tid_ajid", :unique => true
+  add_index "chronos_archive_transactions", ["target_uuid", "archive_job_id"], :name => "chronos_atxs_tuuid_ajid", :unique => true
+
+  create_table "chronos_schema_info", :id => false, :force => true do |t|
+    t.integer "version", :default => 0, :null => false
+  end
+
+  create_table "chronos_trace_logs", :force => true do |t|
+    t.string   "job_id",     :null => false
+    t.string   "target",     :null => false
+    t.string   "type",       :null => false
+    t.datetime "synced_at",  :null => false
+    t.datetime "traced_at",  :null => false
+    t.datetime "created_at", :null => false
+  end
+
+  add_index "chronos_trace_logs", ["created_at"], :name => "chronos_trace_logs_created_at_index"
+  add_index "chronos_trace_logs", ["job_id", "created_at"], :name => "chronos_trace_logs_job_id_created_at_index"
+  add_index "chronos_trace_logs", ["target", "job_id", "synced_at"], :name => "chronos_trace_logs_target_job_id_synced_at_index"
+  add_index "chronos_trace_logs", ["type", "job_id", "target"], :name => "chronos_trace_logs_type_job_id_target_id"
 
   create_table "domain_licensees", :force => true do |t|
     t.integer  "domain_id",   :null => false
@@ -136,6 +187,7 @@ ActiveRecord::Schema.define(:version => 20181112023910) do
     t.string   "sync_user_strategy", :limit => 45
     t.string   "sync_user_config",   :limit => 1024
     t.string   "sync_user_data",     :limit => 1024
+    t.string   "timezone",           :limit => 45
   end
 
   add_index "licensees", ["name"], :name => "index_licensees_on_name", :unique => true
@@ -231,8 +283,10 @@ ActiveRecord::Schema.define(:version => 20181112023910) do
     t.datetime "purge_at"
   end
 
+  add_index "system_users", ["created_at"], :name => "idx_created_at"
   add_index "system_users", ["domain_id"], :name => "fk_SystemUsers_DomainId"
   add_index "system_users", ["purge_at"], :name => "index_system_users_on_purge_at"
+  add_index "system_users", ["updated_at"], :name => "idx_updated_at"
   add_index "system_users", ["username", "domain_id"], :name => "index_system_users_on_username_and_domain_id", :unique => true
 
   create_table "target_casinos", :force => true do |t|
@@ -240,9 +294,12 @@ ActiveRecord::Schema.define(:version => 20181112023910) do
     t.integer  "target_casino_id"
     t.string   "target_casino_name"
     t.datetime "purge_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "target_casinos", ["change_log_id"], :name => "fk_TargetCasinos_ChangeLogId"
   add_index "target_casinos", ["purge_at"], :name => "index_target_casinos_on_purge_at"
+  add_index "target_casinos", ["updated_at"], :name => "idx_updated_at"
 
 end
