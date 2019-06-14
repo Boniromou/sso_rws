@@ -42,6 +42,16 @@ class SystemUser < ActiveRecord::Base
     active_casino_ids.include?(ADMIN_CASINO_ID)
   end
 
+  def licensee
+    casino = self.active_casinos.first
+    casino.licensee if casino
+  end
+
+  def timezone
+    user = Rails.cache.fetch "#{self.id}"
+    user.try(:[], :timezone) || self.licensee.try(:timezone) || '+08:00'
+  end
+
   def self.register!(username, domain, casino_ids)
     transaction do
       domain = Domain.where(:name => domain).first
@@ -171,17 +181,18 @@ class SystemUser < ActiveRecord::Base
 
   def cache_profile
     cache_key = "#{self.id}"
-    casinos = self.active_casino_ids
-    licensee = Casino.find(casinos.first).licensee if casinos.present?
-    properties = Property.where(:casino_id => casinos).pluck(:id)
+    casinos = self.active_casinos
+    casino_ids = casinos.map(&:id)
+    licensee = casinos.first.licensee if casinos.present?
+    properties = Property.where(:casino_id => casino_ids).pluck(:id)
     cache_hash = {
       :status => self.status,
       :admin => self.admin,
       :username_with_domain => "#{self.username}@#{self.domain.name}",
-      :casinos => casinos,
+      :casinos => casino_ids,
       :licensee => licensee.try(:id),
       :properties => properties,
-      :timezone => licensee.try(:timezone)
+      :timezone => licensee.try(:timezone) || '+08:00'
     }
     Rails.cache.write(cache_key, cache_hash)
   end

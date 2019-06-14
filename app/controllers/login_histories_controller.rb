@@ -1,6 +1,7 @@
 class LoginHistoriesController < ApplicationController
 	layout proc {|controller| controller.request.xhr? ? false: "user_management" }
   respond_to :html, :js
+  include FormattedTimeHelper
 
   def index
     authorize :login_history, :list?
@@ -8,8 +9,8 @@ class LoginHistoriesController < ApplicationController
     if params[:commit].present?
       handle_search_with_result
     else
-      @default_start_time = Date.today - (SEARCH_RANGE_FOR_LOGIN_HISTORY - 1).days
-      @default_end_time = Date.today
+      @default_start_time = format_date(Time.now - (SEARCH_RANGE_FOR_LOGIN_HISTORY - 1).days)
+      @default_end_time = format_date(Time.now)
       @apps = App.all
     end
   end
@@ -17,14 +18,14 @@ class LoginHistoriesController < ApplicationController
   private
 
   def handle_search_with_result
-    start_time, end_time, remark = SearchTimeLimitation::search_time_range_limitation(params[:start_time], params[:end_time], SEARCH_RANGE_FOR_LOGIN_HISTORY)
+    start_time, end_time, remark = format_time_range(params[:start_time], params[:end_time], SEARCH_RANGE_FOR_LOGIN_HISTORY)
     if start_time.nil? && end_time.nil?
       @search_error = I18n.t("login_history.search_range_error", :config_value => SEARCH_RANGE_FOR_LOGIN_HISTORY)
     else
       if remark
         @search_time_range_remark = I18n.t("login_history.search_range_remark", :config_value => SEARCH_RANGE_FOR_LOGIN_HISTORY)
-        @default_start_time = start_time.localtime.strftime("%Y-%m-%d")
-        @default_end_time = (end_time.localtime - 1.days).strftime("%Y-%m-%d")
+        @default_start_time = format_date(start_time)
+        @default_end_time = format_date(end_time - 1.days)
       end
       if params[:username].present?
 	      system_user = SystemUser.find_by_username_with_domain(params[:username])

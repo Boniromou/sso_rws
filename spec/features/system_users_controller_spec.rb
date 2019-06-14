@@ -13,7 +13,7 @@ describe SystemUsersController do
   end
 
   def format_time(time)
-    time.getlocal.strftime("%Y-%m-%d %H:%M:%S") if time.present?
+    time.to_time.getlocal(TIMEZONE).strftime("%Y-%m-%d %H:%M:%S") if time.present?
   end
 
   def verify_system_user_table_column_header

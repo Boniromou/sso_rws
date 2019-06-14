@@ -8,7 +8,7 @@ class DomainsController < ApplicationController
 
   def index
     authorize :domain, :index_domain_ldap?
-    @domains = Domain.includes(:auth_source_detail).all
+    @domains = Domain.joins(:auth_source_detail).all
   end
 
   def new

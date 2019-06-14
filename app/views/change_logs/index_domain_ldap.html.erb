@@ -1,5 +1,5 @@
 <%= breadcrumbs([ t("domain_ldap.list"), t("general.log")], 'fa fa-lg fa-fw fa-edit') -%>
-<%= table_tabs(t("general.log"), 
+<%= table_tabs(t("general.log"),
 [ t("general.list"), domains_path, policy(:domain).index_domain_ldap? ],
 [ t("general.log"), index_domain_ldap_change_logs_path, policy(:change_log).index_domain_ldap? ]) %>
 
@@ -32,8 +32,8 @@
             <% @domain_ldap_change_logs.each do |cl| %>
             <tr align="center">
               <td><%= cl.target_domain %></td>
-              <td><%= raw(display_from_to(cl.change_detail['from'])) %></td>
-              <td><%= raw(display_from_to(cl.change_detail['to'])) %></td>
+              <td><%= raw(display_from_to(cl.change_detail.try(:[], 'from'))) %></td>
+              <td><%= raw(display_from_to(cl.change_detail.try(:[], 'to'))) %></td>
               <td><%= display_text(cl.action) %></td>
               <td><%= format_time(cl.created_at) %></td>
               <td><%= popover(cl.action_by['username'], t("casino.title"), casino_id_names_format(cl.action_by['casino_id_names']), "popover-hover", "top") %></td>
@@ -46,6 +46,6 @@
   </div>
 </div>
 
-        
+
 <%= render "shared/page_setup" %>
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "domain" } %>

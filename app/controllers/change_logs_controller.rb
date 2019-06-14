@@ -1,19 +1,24 @@
 class ChangeLogsController < ApplicationController
   layout proc {|controller| controller.request.xhr? ? false: "user_management" }
+  include FormattedTimeHelper
 
   def index_edit_role
     authorize :change_logs, :index?
 
     if params[:commit].present?
-      @system_user_change_logs = policy_scope(SystemUserChangeLog.by_action('edit_role').search_query(params[:target_system_user_name], params[:start_time], params[:end_time]))
+      start_time = parse_date(params[:start_time])
+      end_time = parse_date(params[:end_time], true)
+      @system_user_change_logs = policy_scope(SystemUserChangeLog.by_action('edit_role').search_query(params[:target_system_user_name], start_time, end_time))
     end
   end
 
   def create_system_user
     authorize :change_logs, :create_system_user?
-
-    @create_user_change_logs = policy_scope(SystemUserChangeLog.by_action('create').search_query('', params[:start_time], params[:end_time])) if params[:commit].present?
-
+    if params[:commit].present?
+      start_time = parse_date(params[:start_time])
+      end_time = parse_date(params[:end_time], true)
+      @create_user_change_logs = policy_scope(SystemUserChangeLog.by_action('create').search_query('', start_time, end_time))
+    end
   end
 
   def create_domain_licensee

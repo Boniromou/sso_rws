@@ -42,18 +42,6 @@ module ApplicationHelper
   end
 =end
 
-  def parse_date(date_str, is_end_time=false)
-    if is_end_time
-      Time.strptime(date_str + " 23:59:59", "%Y-%m-%d %H:%M:%S")
-    else
-      Time.strptime(date_str, "%Y-%m-%d")
-    end
-  end
-
-  def parse_datetime(datetime_str)
-    Time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
-  end
-
   def local_datetime_format(time_to_parse)
     time_to_parse.in_time_zone("Beijing").strftime("%Y-%m-%d %H:%M:%S")
   end

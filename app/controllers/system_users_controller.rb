@@ -37,7 +37,7 @@ class SystemUsersController < ApplicationController
     authorize :system_users, :index?
     respond_to do |format|
       format.xls do
-        current_time = Time.now.strftime("%Y-%m-%d %H-%M-%S")
+        current_time = Time.now.getlocal(current_system_user.timezone).strftime("%Y-%m-%d %H-%M-%S")
         send_data get_export_user_role_info, :type => :xls, :filename => I18n.t("user.export_file_name", :current_time => current_time)
       end
     end

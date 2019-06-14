@@ -4,7 +4,7 @@ describe AuditLogsController do
   fixtures :apps, :permissions, :role_permissions, :roles
 
   before(:each) do
-    @root_user = create(:system_user, :admin, :with_casino_ids => [1000])   
+    @root_user = create(:system_user, :admin, :with_casino_ids => [1000])
     user_manager_role = Role.find_by_name("user_manager")
     @system_user_1 = create(:system_user, :roles => [user_manager_role], :with_casino_ids => [1003])
     create(:auth_source, :token => '192.1.1.1', :type => 'Ldap')
@@ -35,7 +35,7 @@ describe AuditLogsController do
       end_time = Time.parse(start_str) + (SEARCH_RANGE_FOR_AUDIT_LOG + 1 ) * 86400
       end_str = "#{end_time.year}-#{end_time.month}-#{end_time.day}"
       fill_in "from", :with => start_str
-      fill_in "from", :with => end_str
+      fill_in "to", :with => end_str
       click_button I18n.t("general.search")
       expect(page.source).to have_content(I18n.t("auditlog.search_range_error", :config_value => SEARCH_RANGE_FOR_AUDIT_LOG))
     end

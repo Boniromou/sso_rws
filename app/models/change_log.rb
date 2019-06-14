@@ -6,8 +6,8 @@ class ChangeLog < ActiveRecord::Base
 
   has_many :target_casinos
 
-  scope :since, -> time { where("change_logs.created_at > ?", time.to_start_date) if time.present? }
-  scope :until, -> time { where("change_logs.created_at < ?", time.to_end_date) if time.present? }
+  scope :since, -> time { where("change_logs.created_at >= ?", time) if time.present? }
+  scope :until, -> time { where("change_logs.created_at < ?", time) if time.present? }
   scope :match_target_username, -> target_username { where("change_logs.target_username LIKE ?", "%#{target_username}%") if target_username.present? }
 
   def self.inherited(child)

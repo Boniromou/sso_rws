@@ -2,7 +2,7 @@ class AuditLog < ActiveRecord::Base
   attr_accessible :audit_target, :action_type, :action, :action_status, :action_error, :session_id, :ip, :action_by, :action_at, :description
   validates_presence_of :audit_target, :action, :action_status, :action_by, :action_at#, :action_type
   validate :action_type, :inclusion => { :in => %w(create read update delete) }
-  scope :since, -> time { where("action_at > ?", time) if time.present? }
+  scope :since, -> time { where("action_at >= ?", time) if time.present? }
   scope :until, -> time { where("action_at < ?", time) if time.present? }
   scope :match_action_by, -> actioner { where("action_by LIKE ?", "%#{actioner}%") if actioner.present? }
   scope :by_target, -> target { where("audit_target = ?", target) if target.present? }
@@ -16,7 +16,7 @@ class AuditLog < ActiveRecord::Base
       audit_target, action, action_type, action_by, start_time, end_time = args
       by_target(audit_target).by_action(action).by_action_type(action_type).match_action_by(action_by).since(start_time).until(end_time)
     end
-  
+
     #
     # =>
     # def self.test_player_log(action, action_by, session_id, ip, options={}, &block)

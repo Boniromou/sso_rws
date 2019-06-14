@@ -2,22 +2,36 @@ module FormattedTimeHelper
   def format_time(time)
     begin
       unless time.blank?
-        time.getlocal.strftime("%Y-%m-%d %H:%M:%S")
+        time.to_time.getlocal(TIMEZONE).strftime("%Y-%m-%d %H:%M:%S")
       end
     rescue Exception
-      Time.parse(time).getlocal.strftime("%Y-%m-%d %H:%M:%S")
-    end
-  end
-  
-  def parse_date(date_str, is_end_time=false)
-    if is_end_time
-      Time.strptime(date_str + " 23:59:59", "%m/%d/%Y %H:%M:%S")
-    else
-      Time.strptime(date_str, "%m/%d/%Y")
+      Time.parse("#{time} #{TIMEZONE}").strftime("%Y-%m-%d %H:%M:%S")
     end
   end
 
-  def parse_datetime(datetime_str)
-    Time.strptime(datetime_str, "%m/%d/%Y %H:%M:%S")
+  def format_date(time)
+    time.to_time.getlocal(TIMEZONE).strftime("%Y-%m-%d")
+  end
+
+  def parse_date(date_str, is_end = false)
+    return if date_str.blank?
+    time = Time.parse("#{date_str} 00:00:00 #{TIMEZONE}", "%Y-%m-%d %H:%M:%S %Z")
+    time = time + 1.days if is_end
+    time.utc
+  end
+
+  def format_time_range(start_day_str, end_day_str, search_day_range)
+    remark = false
+    return nil, nil, remark if start_day_str.blank? && end_day_str.blank?
+    start_time = parse_date(start_day_str)
+    end_time = parse_date(end_day_str, true)
+    if start_time.nil? || end_time.nil?
+      remark = true
+      start_time = end_time - search_day_range.days unless start_time
+      end_time = start_time + search_day_range.days unless end_time
+    end
+
+    return nil, nil, remark if end_time - start_time > search_day_range.days
+    return start_time, end_time, remark
   end
 end
