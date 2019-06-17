@@ -9,7 +9,7 @@ module FormattedTimeHelper
         time.to_time.getlocal(user_timezone).strftime("%Y-%m-%d %H:%M:%S")
       end
     rescue Exception
-      Time.parse("#{time} #{user_timezone}").strftime("%Y-%m-%d %H:%M:%S")
+      Time.parse(time).getlocal(user_timezone).strftime("%Y-%m-%d %H:%M:%S")
     end
   end
 
