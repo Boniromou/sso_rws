@@ -19,7 +19,11 @@ class SystemUser < ActiveRecord::Base
   scope :with_active_casino, -> { joins(:casinos_system_users).where("casinos_system_users.status = ?", true).select("DISTINCT(system_users.id), system_users.*") }
 
   def timezone
-    @timezone ||= Rails.cache.fetch(id).try(:[], :timezone)
+    @timezone ||= TZInfo::Timezone.get(timezone_name)
+  end
+
+  def timezone_name
+    @timezone_name ||= Rails.cache.fetch(id).try(:[], :timezone) || DEFAULT_TIMEZONE
   end
 
   def active_casino_ids
@@ -191,7 +195,7 @@ class SystemUser < ActiveRecord::Base
       :casinos => casino_ids,
       :licensee => licensee.try(:id),
       :properties => properties,
-      :timezone => licensee.try(:timezone) || '+08:00'
+      :timezone => licensee.try(:timezone) || DEFAULT_TIMEZONE
     }
     Rails.cache.write(cache_key, cache_hash)
   end

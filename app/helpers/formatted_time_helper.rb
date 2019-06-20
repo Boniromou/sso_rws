@@ -1,27 +1,27 @@
 module FormattedTimeHelper
+  def timezone_name
+    current_system_user.timezone_name
+  end
+
   def user_timezone
     current_system_user.timezone
   end
 
   def format_time(time)
-    begin
-      unless time.blank?
-        time.to_time.getlocal(user_timezone).strftime("%Y-%m-%d %H:%M:%S")
-      end
-    rescue Exception
-      Time.parse(time).getlocal(user_timezone).strftime("%Y-%m-%d %H:%M:%S")
-    end
+    time.in_time_zone(timezone_name).strftime("%Y-%m-%d %H:%M:%S") if time.present?
+  rescue Exception
+    Time.parse(time).in_time_zone(timezone_name).strftime("%Y-%m-%d %H:%M:%S")
   end
 
   def format_date(time)
-    time.to_time.getlocal(user_timezone).strftime("%Y-%m-%d")
+    time.in_time_zone(timezone_name).strftime("%Y-%m-%d")
   end
 
   def parse_date(date_str, is_end = false)
     return if date_str.blank?
-    time = Time.parse("#{date_str} 00:00:00 #{user_timezone}", "%Y-%m-%d %H:%M:%S %Z")
+    time = user_timezone.local_to_utc(Time.parse("#{date_str} 00:00:00"))
     time = time + 1.days if is_end
-    time.utc
+    time
   end
 
   def format_time_range(start_day_str, end_day_str, search_day_range)
