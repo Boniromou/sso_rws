@@ -28,72 +28,59 @@ development:
 
 integration0:
   <<: *default
-  site_domain: 'laxino.com'
   url_base: 'https://int-sso.laxino.com'
 
 staging0:
   <<: *default
-  site_domain: 'laxino.com'
   # url_base: 'https://stg-sso2.laxino.com'
   url_base: 'https://stg-sso.laxino.com'
 
-staging0_external:
+staging1:
   <<: *default
-  site_domain: 'laxino.com'
+  # url_base: 'https://stg-sso2.laxino.com'
+  url_base: 'https://stg1-sso.laxino.com'
 
 sandbox0:
-  <<: *default
-  site_domain: 'laxigames.com'
   url_base: 'https://snd-sso.888iportal.com'
 
 production0:
   <<: *default
-  site_domain: 'laxigames.com'
   url_base: 'https://sso.888iportal.com'
 
 mockup0:
   <<: *default
-  site_domain: 'laxino.com'
 
 sandbox2:
   <<: *default
-  site_domain: 'laxigames.local'
   url_base: 'https://snd-sso.777iportal.com'
 
 smartocean2:
   <<: *default
-  site_domain: 'laxigames.local'
   url_base: 'https://sso.777iportal.com'
 
 sandbox3:
   <<: *default
-  site_domain: 'laxigames.local'
   url_base: 'https://snd-sso.138777.net'
   remain_login_history_days: 455
 
 production3:
   <<: *default
-  site_domain: 'laxigames.local'
   url_base: 'https://sso.gogamesource.com'
   remain_login_history_days: 455
 
 production4:
   <<: *default
-  site_domain: 'laxigames.local'
   url_base: 'https://sso.laxino.com'
 
 sandbox:
   <<: *default
-  site_domain: 'laxigames.local'
   url_base: 'https://cert-sso.gogamesource.com'
 
 production:
   <<: *default
-  site_domain: 'laxigames.local'
   url_base: 'https://sso.gogamesource.com'
 
 ias_prd:
   <<: *default
-  site_domain: 'laxigames.local'
   url_base: 'https://sso.cert.laxino.com'
   remain_login_history_days: 455

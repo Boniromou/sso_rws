@@ -25,6 +25,24 @@ integration0:
 staging0:
   <<: *default
 
+staging1:
+  laxino:
+      domain:
+        name: 'ias.local'
+      auth_source:
+        token: '*'
+        type: 'Ldap'
+      auth_source_detail:
+        name: 'laxino_ldap'
+        data:
+          host: 'vdc01'
+          port: 3268
+          account: 'svc_idc_ldap@ias.local'
+          password: 'I@s.1daP'
+          admin_account: 'svc_idc_ldap@ias.local'
+          admin_password: 'I@s.1daP'
+          base_dn: 'dc=ias, dc=local'
+
 mockup0:
   <<: *default
 

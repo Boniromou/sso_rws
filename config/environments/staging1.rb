@@ -36,8 +36,8 @@ SsoRws::Application.configure do
   config.assets.debug = true
 
   config.cache_store = :dalli_store,
-                        'stg-cons-vapp01.rnd.laxino.com:11211', 'stg-cons-vapp01.rnd.laxino.com:11212',
-                        {:namespace => 'cirrus_stg_ex',
+                        's3-vapp01.stg1.ias.local:11211', 's3-vapp01.stg1.ias.local:11212',
+                        {:namespace => 'cirrus_stg',
                          :expires_in => 1.day,
                          :socket_timeout => 3,
                          :compress => true }

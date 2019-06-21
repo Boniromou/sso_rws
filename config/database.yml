@@ -28,7 +28,7 @@ integration0:
   host: hq-int-sso-vdb01.laxino.local
   port: 3306
 
-staging0: &staging0
+staging0:
   adapter: mysql2
   encoding: utf8
   collation: utf8_bin
@@ -39,8 +39,15 @@ staging0: &staging0
   host: hq-stg-sso-vdb01.laxino.local
   port: 3306
 
-staging0_external:
-  <<: *staging0
+staging1:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_staging
+  username: rigi
+  password: rigi
+  host: sso-vdb01.stg1.ias.local
+  port: 3306
 
 sandbox0:
   adapter: mysql2

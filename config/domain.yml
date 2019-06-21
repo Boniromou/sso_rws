@@ -4,6 +4,12 @@ hqidc_domain: &hqidc_domain
   licensees:
     - {id: 1000, domain_id: 1}
 
+stg1_domain: &hqidc_domain
+  domains:
+    - {id: 1, name: 'ias.local'}
+  licensees:
+    - {id: 1000, domain_id: 1}
+
 mockup_domain: &mockup_domain
   domains:
     - {id: 1, name: 'mo.laxino.com'}
@@ -51,6 +57,9 @@ integration0:
 
 staging0:
   <<: *hqidc_domain
+
+staging1:
+  <<: *stg1_domain
 
 sandbox0:
   <<: *phidc_domain

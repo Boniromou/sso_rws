@@ -1,4 +1,4 @@
-set :stages, %w(integration0 staging0 staging0_external production0 sandbox0 sandbox2 smartocean2 mockup0 sandbox3 production3 production4 sandbox production ias_prd)
+set :stages, %w(integration0 staging0 staging1 production0 sandbox0 sandbox2 smartocean2 mockup0 sandbox3 production3 production4 sandbox production ias_prd)
 set :default_stage, 'integration0'
 require 'capistrano/ext/multistage'
 require 'lax-capistrano-recipes/rws'
@@ -44,6 +44,6 @@ set :use_sudo, false
 # Define deployment destination and source,
 # using lazy evaluation of variables
 set(:deploy_to) { "#{env_path}/app_#{stage}" }
-set(:repository) { "ssh://#{repo_host}/opt/laxino/stash_repos/#{project.sub('.', '/')}/#{application}.git" }
+set(:repository) { "ssh://laxino@#{repo_host}/opt/laxino/stash_repos/#{project.sub('.', '/')}/#{application}.git" }
 
 # Define your cron jobs here

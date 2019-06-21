@@ -26,7 +26,7 @@ integration0:
   no_block: true
   timeout: 30
 
-staging0: &staging0
+staging0:
   servers:
     # - stg-cons-vapp01.rnd.laxino.com:11211
     # - stg-cons-vapp01.rnd.laxino.com:11212
@@ -37,9 +37,14 @@ staging0: &staging0
   no_block: false
   timeout: 30
 
-staging0_external:
-  <<: *staging0
-  namespace: s3_stg_ex
+staging1:
+  servers:
+    - s3-vapp01.stg1.ias.local:11211
+    - s3-vapp01.stg1.ias.local:11212
+  expires: 86400
+  namespace: s3_stg
+  no_block: false
+  timeout: 30
 
 sandbox0:
   servers:

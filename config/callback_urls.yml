@@ -38,6 +38,16 @@ staging0:
   asset_management: 'https://stg-dam.laxino.com/index'
   trade_promotion: 'https://stg-tp.laxino.com/index'
 
+staging1:
+  user_management: 'https://stg1-sso.laxino.com/home'
+  gaming_operation: 'https://stg1-ap.laxino.com/home'
+  cage: 'https://stg1-cms.laxino.com/home'
+  station_management: 'https://stg1-sm.laxino.com/index'
+  signature_verifier: 'https://stg1-sv.laxino.com/index'
+  audit_portal: 'https://stg1-audp.laxino.com/index'
+  asset_management: 'https://stg1-dam.laxino.com/index'
+  trade_promotion: 'https://stg1-tp.laxino.com/index'
+
 sandbox2:
   user_management: 'https://snd-sso.777iportal.com/home'
   gaming_operation: 'https://snd-ap.777iportal.com/home'

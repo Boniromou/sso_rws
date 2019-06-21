@@ -19,7 +19,7 @@ end
 =end
 
 
-Licensee.find_or_create_by(:id => 1000, :name => 'LAXINO', :timezone => '+08:00') unless Licensee.exists?(:id => 1000)
+Licensee.find_or_create_by(:id => 1000, :name => 'LAXINO', :timezone => 'Asia/Macao') unless Licensee.exists?(:id => 1000)
 Casino.create(:id => 1000, :name => 'LAXINO', :licensee_id => 1000) unless Casino.exists?(:id => 1000)
 Property.create(:id => 1000, :name => 'LAXINO', :casino_id => 1000) unless Property.exists?(:id => 1000)
 RoleType.create(:name => 'internal') unless RoleType.exists?(:name => 'internal')
