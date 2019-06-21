@@ -19,8 +19,8 @@ end
 =end
 
 
-Licensee.find_or_create_by(:id => 1000, :name => 'LAXINO', :timezone => 'Asia/Macao') unless Licensee.exists?(:id => 1000)
-Casino.create(:id => 1000, :name => 'LAXINO', :licensee_id => 1000) unless Casino.exists?(:id => 1000)
-Property.create(:id => 1000, :name => 'LAXINO', :casino_id => 1000) unless Property.exists?(:id => 1000)
-RoleType.create(:name => 'internal') unless RoleType.exists?(:name => 'internal')
-RoleType.create(:name => 'external') unless RoleType.exists?(:name => 'external')
+Licensee.where(:id => 1000, :name => 'LAXINO', :timezone => 'Asia/Macao').first_or_create
+Casino.where(:id => 1000, :name => 'LAXINO', :licensee_id => 1000).first_or_create
+Property.where(:id => 1000, :name => 'LAXINO', :casino_id => 1000).first_or_create
+RoleType.where(:name => 'internal').first_or_create
+RoleType.where(:name => 'external').first_or_create
