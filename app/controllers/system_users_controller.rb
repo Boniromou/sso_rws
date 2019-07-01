@@ -1,4 +1,6 @@
 class SystemUsersController < ApplicationController
+  include FormattedTimeHelper
+  include SystemUsersControllerHelper
   layout proc {|controller| controller.request.xhr? ? false: "user_management" }
   respond_to :html, :js
 
@@ -154,9 +156,9 @@ class SystemUsersController < ApplicationController
     system_users.each_with_index do |su, index|
       row_columns = []
       row_columns << "#{su['username']}@#{su['domain_name']}"
-      row_columns << ApplicationController.helpers.system_user_status_format(su["status"])
-      row_columns << ApplicationController.helpers.casino_id_names_format(casinos[su["id"]])
-      row_columns << ApplicationController.helpers.format_time(su.updated_at)
+      row_columns << system_user_status_format(su["status"])
+      row_columns << casino_id_names_format(casinos[su["id"]])
+      row_columns << format_time(su.updated_at)
       roles = su.roles.map {|role| {role.app_id => "#{role.name.titleize}#{role_types[role.role_type_id]}"}}.inject(:merge) || {}
       apps.keys.each do |app_id|
         row_columns << (roles[app_id] || '-')
