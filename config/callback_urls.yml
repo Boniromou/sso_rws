@@ -122,3 +122,14 @@ ias_prd:
   asset_management: 'https://dam.cert.laxino.com/index'
   marketing_portal: 'https://mp.cert.laxino.com/home'
   platform_game_recall: 'https://ogr.cert.laxino.com'
+
+sandbox5:
+  user_management: 'https://snd5-sso.8888pgy3c.com/home'
+  gaming_operation: 'https://snd5-ap.8888pgy3c.com/home'
+  cage: 'https://snd5-cms.8888pgy3c.com/home'
+  station_management: 'https://snd5-mtm.8888pgy3c.com/index'
+  signature_verifier: 'https://snd5-sv.8888pgy3c.com/index'
+  audit_portal: 'https://snd5-audp.8888pgy3c.com/index'
+  marketing_portal: 'https://snd5-mp.8888pgy3c.com/home'
+  platform_game_recall: 'https://snd5-ogr.8888pgy3c.com'
+  report_portal: 'https://snd5-report.8888pgy3c.com/Reports/Pages/Folder.aspx'

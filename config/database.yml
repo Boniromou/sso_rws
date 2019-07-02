@@ -158,3 +158,13 @@ ias_prd:
   password: rigi.pa$$w0rd123
   host: do-prd-sso-vdb01.idc.local
   port: 6033
+
+sandbox5:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_sandbox
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: sso-vdb01.snd5.gamesource.local
+  port: 6034

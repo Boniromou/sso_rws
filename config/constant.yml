@@ -37,10 +37,10 @@ staging0:
 
 staging1:
   <<: *default
-  # url_base: 'https://stg-sso2.laxino.com'
   url_base: 'https://stg1-sso.laxino.com'
 
 sandbox0:
+  <<: *default
   url_base: 'https://snd-sso.888iportal.com'
 
 production0:
@@ -83,4 +83,9 @@ production:
 ias_prd:
   <<: *default
   url_base: 'https://sso.cert.laxino.com'
+  remain_login_history_days: 455
+
+sandbox5:
+  <<: *default
+  url_base: 'https://snd5-sso.8888pgy3c.com'
   remain_login_history_days: 455

@@ -172,3 +172,6 @@ ias_prd:
         admin_account: 'svc_idc_ldap@idc.local'
         admin_password: '$vc_1dc_1daP'
         base_dn: 'dc=idc, dc=local'
+
+  sandbox5:
+    <<: *sandbox0

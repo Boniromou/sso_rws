@@ -93,3 +93,6 @@ production:
 
 ias_prd:
   <<: *ias_domain
+
+sandbox5:
+  <<: *phidc_domain
