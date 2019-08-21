@@ -36,5 +36,6 @@ module Rigi
   class DeleteDomainLicenseeFail < PortalError; end
   class InvalidResetPassword < PortalError; end
   class InvalidAuthorize < PortalError; end
+  class DuplicateAuthorize < PortalError; end
 
 end

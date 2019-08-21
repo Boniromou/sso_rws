@@ -6,7 +6,7 @@ class Internal::SystemUsersController < ApplicationController
     check_auth_info!
     auth_source = AuthSource.find_by_token(get_client_ip)
     raise Rigi::InvalidParameter if auth_source.nil?
-    redirect_to "#{auth_source.get_auth_url}?app_name=#{auth_info['app_name']}&second_authorize=true"
+    redirect_to auth_source.get_auth_url(auth_info['app_name'])
   end
 
   private

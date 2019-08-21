@@ -1,10 +1,11 @@
-<%= form_for(:system_user, url: ldap_auth_create_path, html: {:class => "smart-form client-form authorize_form", autocomplete: 'off' }) do |f| %>
+<%= form_for(:system_user, url: ldap_auth_create_path, html: {:id => "authorize_form", :class => "smart-form client-form authorize_form", autocomplete: 'off' }) do |f| %>
   <header><%= t("title.authorize_title") %></header>
   <fieldset>
     <section>
       <%= f.label(t("user.user_name"), :class => "label") %>
       <label class="input"><i class="icon-append fa fa-user"></i>
         <%= hidden_field_tag 'app_name', @app_name %>
+        <%= hidden_field_tag 'message_id', @message_id %>
         <%= f.text_field(:username, :placeholder => "email@example.com") %>
         <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i><%=t("login_page.username_tooltip") %></b>
       </label>
@@ -22,3 +23,11 @@
       <%= f.submit(t("general.authorize"), :class => "btn btn-primary") %>
   </footer>
 <% end %>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#authorize_form').one('submit', function() {
+      $(this).find('input[type="submit"]').attr('disabled','disabled');
+  });
+})
+</script>

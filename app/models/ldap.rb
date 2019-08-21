@@ -9,8 +9,8 @@ class Ldap < AuthSource
     "/ldap/new"
   end
 
-  def get_auth_url
-    "/ldap_auth/new"
+  def get_auth_url(app_name)
+    "/ldap_auth/new?app_name=#{app_name}"
   end
 
   def login!(username, password, app_name)
