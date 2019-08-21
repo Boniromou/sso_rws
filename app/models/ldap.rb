@@ -5,8 +5,8 @@ class Ldap < AuthSource
   DISABLED_ACCOUNT_KEY = 'Disabled Accounts'
   MATCH_PATTERN_REGEXP = /CN=\d+casinoid/
 
-  def get_url
-    "/ldap/new"
+  def get_url(app_name)
+    "/ldap/new?app_name=#{app_name}"
   end
 
   def get_auth_url(app_name)

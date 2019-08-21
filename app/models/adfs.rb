@@ -1,7 +1,7 @@
 class Adfs < AuthSource
 
-  def get_url
-    "#{URL_BASE}/saml/new"
+  def get_url(app_name)
+    "#{URL_BASE}/saml/new?app_name=#{app_name}&second_authorize=false"
   end
 
   def get_auth_url(app_name)
