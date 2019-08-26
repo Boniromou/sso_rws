@@ -14,13 +14,18 @@
           <div class="row">
             <div class="col-md-12">
               <%= submit_tag t("general.search"), :class => "btn btn-primary", :remote => true  %>
-              <%= link_to t('general.export'), excels_create_system_user_log_path, class: 'btn btn-primary' %>
+              <%= button_tag t("general.export"), :class => "btn btn-primary", :type => "button", :id => "export_button" %>
             </div>
           </div>
         </div>
       </fieldset>
     <% end %>
     <br />
+
+    <%= form_tag(excels_create_system_user_log_path, :method => "get", :id => "export_create_user_form", :style => "display: none;") do %>
+      <%= hidden_field_tag :export_start_time, params[:start_time] %>
+      <%= hidden_field_tag :export_end_time, params[:end_time] %>
+    <% end %>
 
     <% if params[:commit].present? %>
     <div class="table-responsive">
@@ -61,3 +66,11 @@
 
 <%= render "shared/page_setup" %>
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "create_system_user" } %>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button#export_button").click(function () {
+    $("#export_create_user_form").submit();
+  });
+})
+</script>

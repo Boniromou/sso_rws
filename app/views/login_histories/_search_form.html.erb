@@ -1,9 +1,9 @@
-<%= form_tag(login_histories_path, :remote => true, :method => 'get', :id => "login_search_form") do %>
+<%= form_tag(login_histories_path, :remote => true, :method => "get", :id => "login_search_form") do %>
   <fieldset>
     <div class="row">
       <%= render partial: "shared/date_range_picker" , locals: {:default_start_time => @default_start_time, :default_end_time => @default_end_time } %>
     </div>
-    
+
     <div class="row">
       <div class="col-sm-6">
         <section class="smart-form">
@@ -13,7 +13,7 @@
           </label>
         </section>
       </div>
-      
+
       <div class="col-sm-6">
         <section class="smart-form">
           <label class="label"><%= t("change_log.system") %></label>
@@ -25,15 +25,30 @@
         </section>
       </div>
     </div>
-    
+
   </fieldset>
-    
+
   <div class="form-actions">
     <div class="row">
       <div class="col-md-12">
         <%= submit_tag t("general.search"), :class => "btn btn-primary", :remote => true  %>
-        <%= link_to t('general.export'), excels_login_history_path, class: 'btn btn-primary' %>
+        <%= button_tag t("general.export"), :class => "btn btn-primary", :type => "button", :id => "export_button" %>
       </div>
     </div>
   </div>
 <% end %>
+
+<%= form_tag(excels_login_history_path, :method => "get", :id => "export_login_history_form", :style => "display: none;") do %>
+  <%= hidden_field_tag :export_app_id %>
+  <%= hidden_field_tag :export_username %>
+  <%= hidden_field_tag :export_start_time, @default_start_time %>
+  <%= hidden_field_tag :export_end_time, @default_end_time %>
+<% end %>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button#export_button").click(function () {
+    $("#export_login_history_form").submit();
+  });
+})
+</script>

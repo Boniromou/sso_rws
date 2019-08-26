@@ -1,5 +1,5 @@
 <%= breadcrumbs([ t("user.list_users"), "Log"], 'fa fa-lg fa-fw fa-list') -%>
-<%= table_tabs("Log", 
+<%= table_tabs("Log",
 [ t("user.list_users"), system_users_path, policy(:system_user).index? ],
 [ "Log", index_edit_role_change_logs_path, policy(:change_log).index? ]) %>
 
@@ -11,7 +11,7 @@
         <div class="row">
           <%= render partial: "shared/date_range_picker" , locals: {:default_start_time => params[:start_time], :default_end_time => params[:end_time] } %>
         </div>
-        
+
         <div class="row">
           <div class="col-sm-4">
             <section class="smart-form">
@@ -22,20 +22,26 @@
             </section>
           </div>
         </div>
-        
+
       </fieldset>
-        
+
       <div class="form-actions">
         <div class="row">
           <div class="col-md-12">
             <%= submit_tag t("general.search"), :class => "btn btn-primary", :remote => true  %>
-            <%= link_to t('general.export'), excels_system_user_log_path, class: 'btn btn-primary' %>
+            <%= button_tag t("general.export"), :class => "btn btn-primary", :type => "button", :id => "export_button" %>
           </div>
         </div>
       </div>
     <% end %>
     <!--/form-->
     <br><br>
+
+    <%= form_tag(excels_system_user_log_path, :method => "get", :id => "export_edit_role_form", :style => "display: none;") do %>
+      <%= hidden_field_tag :export_username, params[:target_system_user_name] %>
+      <%= hidden_field_tag :export_start_time, params[:start_time] %>
+      <%= hidden_field_tag :export_end_time, params[:end_time] %>
+    <% end %>
 
     <% if params[:commit].present? %>
     <div class="table-responsive">
@@ -83,6 +89,13 @@
   </div>
 </div>
 
-        
 <%= render "shared/page_setup" %>
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_system_users" } %>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $("button#export_button").click(function () {
+    $("#export_edit_role_form").submit();
+  });
+})
+</script>
