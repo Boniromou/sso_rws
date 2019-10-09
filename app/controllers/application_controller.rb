@@ -47,10 +47,24 @@ class ApplicationController < ActionController::Base
   end
 
   def write_authenticate(system_user, app_name)
-    name = app_name == 'report_portal' ? 'report_portal_auth_token' : 'auth_token'
+    if app_name == 'gaming_operation'
+      write_go_authenticate(system_user, app_name)
+      return
+    end
     uuid = SecureRandom.uuid
+    name = app_name == 'report_portal' ? 'report_portal_auth_token' : 'auth_token'
     write_cookie(name.to_sym, uuid)
     add_cache(uuid, {:system_user => {:id => system_user.id, :username => system_user.username}})
+  end
+
+  def write_go_authenticate(system_user, app_name)
+    name = "#{app_name}_auth_token"
+    result = {
+      id: system_user.id,
+      app_name: app_name,
+      sign_at: Time.now
+    }
+    write_cookie(name.to_sym, JWT.encode(result, 'test_key', 'HS256'))
   end
 
   def write_authorize_cookie(value)

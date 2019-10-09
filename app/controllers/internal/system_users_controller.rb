@@ -9,6 +9,20 @@ class Internal::SystemUsersController < ApplicationController
     redirect_to auth_source.get_auth_url(auth_info['app_name'])
   end
 
+  def get_info
+    auth_info = JWT.decode(request.headers["X-Token"], 'test_key', true, { algorithm: 'HS256' })[0]
+    profile = Rails.cache.read(auth_info['id'])
+    permissions = []
+    permission_info = Rails.cache.read("#{auth_info['app_name']}:permissions:#{auth_info['id']}")
+    if permission_info
+      permission_info[:permissions][:permissions].each do |target, actions|
+        permissions += actions.map{|action| "#{target}-#{action}"}
+      end
+    end
+    permissions = ['admin'] if profile[:admin]
+    render :json => {error_code: 'OK', data: {profile: profile, permissions: permissions.uniq}}
+  end
+
   private
   def check_auth_info!
     raise Rigi::InvalidParameter unless cookies[:second_auth_info]
