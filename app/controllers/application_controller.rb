@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
   end
 
   def write_authenticate(system_user, app_name)
-    if app_name == 'gaming_operation'
+    if app_name == 'platform_gaming_operation'
       write_go_authenticate(system_user, app_name)
       return
     end
