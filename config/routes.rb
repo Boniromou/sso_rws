@@ -32,8 +32,10 @@ SsoRws::Application.routes.draw do
 
   get "/app_login" => "internal/system_user_sessions#login"
   get "/ssrs_login" => "internal/system_user_sessions#ssrs_login"
-  get "/second_authorize" => "internal/system_users#second_authorize"
-  get "user/get_info" => "internal/system_users#get_info"
+  get "/second_authorize" => "internal/authorization#second_authorize"
+  post "/user/get_info" => "internal/system_users#get_info"
+  post "/user/validate_permission" => "internal/system_users#validate_permission"
+
   root :to => 'dashboard#home', :as => :root
   get 'home' => 'dashboard#home', :as => :home_root
   get 'user_management' => 'dashboard#user_management', :as => :user_management_root

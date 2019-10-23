@@ -37,5 +37,7 @@ module Rigi
   class InvalidResetPassword < PortalError; end
   class InvalidAuthorize < PortalError; end
   class DuplicateAuthorize < PortalError; end
+  class InvalidToken < PortalError; end
+  class InvalidPermission < PortalError; end
 
 end

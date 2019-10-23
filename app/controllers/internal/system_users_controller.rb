@@ -1,37 +1,61 @@
 class Internal::SystemUsersController < ApplicationController
   skip_before_filter :set_locale, :authenticate_system_user!, :check_activation_status, :verify_request_scope
-  rescue_from Rigi::InvalidParameter, :with => :handle_invalid_parameter
-
-  def second_authorize
-    check_auth_info!
-    auth_source = AuthSource.find_by_token(get_client_ip)
-    raise Rigi::InvalidParameter if auth_source.nil?
-    redirect_to auth_source.get_auth_url(auth_info['app_name'])
-  end
 
   def get_info
-    auth_info = JWT.decode(request.headers["X-Token"], 'test_key', true, { algorithm: 'HS256' })[0]
-    profile = Rails.cache.read(auth_info['id'])
-    permissions = []
+    auth_info = JWT.decode(params[:token], 'test_key', true, { algorithm: 'HS256' })[0]
+    user = SystemUser.find(auth_info['id'])
+    profile = get_profile(user)
+    permissions = get_permissions(user, auth_info['app_name'])
+    render :json => {error_code: 'OK', error_msg: 'Request is now completed', data: {profile: profile, permissions: permissions}}
+  rescue StandardError => e
+    Rails.logger.error("Get user info error: #{e.message} #{e.backtrace}")
+    render :json => {error_code: 'InternalServerError', error_msg: e.message}
+  end
+
+  def validate_permission
+    auth_info = JWT.decode(params[:token], 'test_key', true, { algorithm: 'HS256' })[0]
+    user = SystemUser.find(auth_info['id'])
     permission_info = Rails.cache.read("#{auth_info['app_name']}:permissions:#{auth_info['id']}")
-    if permission_info
-      permission_info[:permissions][:permissions].each do |target, actions|
-        permissions += actions.map{|action| "#{target}-#{action}"}
-      end
+    raise Rigi::InvalidToken.new('Invalid token') if user.blank? || permission_info.blank?
+    unless user.admin
+      target, action = params[:permission].split('-')
+      permissions = permission_info[:permissions][:permissions][target.to_sym]
+      raise Rigi::InvalidPermission.new('Invalid permission') if permissions.blank? || !permissions.include?(action)
     end
-    permissions = ['admin'] if profile[:admin]
-    render :json => {error_code: 'OK', data: {profile: profile, permissions: permissions.uniq}}
+    render :json => {error_code: 'OK', error_msg: 'Request is now completed'}
+  rescue Rigi::PortalError => e
+    Rails.logger.error("validate permission error: #{e.error_message}")
+    render :json => {error_code: e.class.name.demodulize, error_msg: e.error_message}
+  rescue StandardError => e
+    Rails.logger.error("validate permission error: #{e.message} #{e.backtrace}")
+    render :json => {error_code: 'InternalServerError', error_msg: e.message}
   end
 
   private
-  def check_auth_info!
-    raise Rigi::InvalidParameter unless cookies[:second_auth_info]
-    raise Rigi::InvalidParameter if (['app_name', 'casino_id', 'permission', 'callback_url'] - auth_info.keys).present?
+  def get_profile(user)
+    casinos = user.active_casinos
+    casino_ids = casinos.map(&:id)
+    licensee = casinos.first.licensee if casinos.present?
+    properties = Property.where(:casino_id => casino_ids).pluck(:id)
+    {
+      :status => user.status,
+      :admin => user.admin,
+      :username_with_domain => "#{user.username}@#{user.domain.name}",
+      :casinos => casino_ids,
+      :licensee => licensee.try(:id),
+      :properties => properties,
+      :timezone => licensee.try(:timezone) || DEFAULT_TIMEZONE
+    }
   end
 
-  def handle_invalid_parameter
-    write_authorize_cookie({error_code: 'InvalidParameter', error_message: 'Authorize failed, invalid parameters.'})
-    raise "callback excaption" unless auth_info['callback_url']
-    redirect_to auth_info['callback_url']
+  def get_permissions(user, app_name)
+    return ['admin'] if user.admin
+    app = App.find_by_name(app_name)
+    permissions = []
+    roles = user.roles.includes(:role_permissions => :permission).where(roles: {app_id: app.id}).where(permissions: {app_id: app.id})
+    roles.each do |r|
+      permissions += r.permissions.map{|p| "#{p.target}-#{p.action}" }
+    end
+    permissions.uniq
   end
 end
