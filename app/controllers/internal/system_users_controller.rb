@@ -37,15 +37,16 @@ class Internal::SystemUsersController < ApplicationController
     casino_ids = casinos.map(&:id)
     licensee = casinos.first.licensee if casinos.present?
     properties = Property.where(:casino_id => casino_ids).pluck(:id)
-    {
+    profile = {
       :status => user.status,
       :admin => user.admin,
       :username_with_domain => "#{user.username}@#{user.domain.name}",
-      :casinos => casino_ids,
-      :licensee => licensee.try(:id),
-      :properties => properties,
+      :casino_ids => casino_ids,
+      :licensee_id => licensee.try(:id),
+      :property_ids => properties,
       :timezone => licensee.try(:timezone) || DEFAULT_TIMEZONE
     }
+    profile.merge!(get_policy_casinos(user))
   end
 
   def get_permissions(user, app_name)
@@ -57,5 +58,13 @@ class Internal::SystemUsersController < ApplicationController
       permissions += r.permissions.map{|p| "#{p.target}-#{p.action}" }
     end
     permissions.uniq
+  end
+
+  def get_policy_casinos(user)
+    casinos = (user.is_admin? || user.has_admin_casino?) ? Casino.all : user.active_casinos
+    casino_ids = casinos.map(&:id)
+    properties = Property.where(:casino_id => casino_ids).as_json(only: [:id, :name])
+    casinos = casinos.as_json(only: [:id, :name])
+    {policy_casinos: casinos, policy_properties: properties}
   end
 end
