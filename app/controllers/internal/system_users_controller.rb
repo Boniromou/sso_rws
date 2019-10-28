@@ -15,9 +15,10 @@ class Internal::SystemUsersController < ApplicationController
   def validate_permission
     auth_info = JWT.decode(params[:token], 'test_key', true, { algorithm: 'HS256' })[0]
     user = SystemUser.find(auth_info['id'])
-    permission_info = Rails.cache.read("#{auth_info['app_name']}:permissions:#{auth_info['id']}")
-    raise Rigi::InvalidToken.new('Invalid token') if user.blank? || permission_info.blank?
+    raise Rigi::InvalidToken.new('Invalid token') if user.blank?
     unless user.admin
+      permission_info = Rails.cache.read("#{auth_info['app_name']}:permissions:#{auth_info['id']}")
+      raise Rigi::InvalidPermission.new('Permission info not found') if permission_info.blank?
       target, action = params[:permission].split('-')
       permissions = permission_info[:permissions][:permissions][target.to_sym]
       raise Rigi::InvalidPermission.new('Invalid permission') if permissions.blank? || !permissions.include?(action)
