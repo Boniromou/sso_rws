@@ -7,6 +7,9 @@ class Internal::SystemUsersController < ApplicationController
     profile = get_profile(user)
     permissions = get_permissions(user, auth_info['app_name'])
     render :json => {error_code: 'OK', error_msg: 'Request is now completed', data: {profile: profile, permissions: permissions}}
+  rescue JWT::DecodeError => e
+    Rails.logger.error("validate permission error: #{e.message}")
+    render :json => {error_code: 'InvalidToken', error_msg: 'Invalid token'}
   rescue StandardError => e
     Rails.logger.error("Get user info error: #{e.message} #{e.backtrace}")
     render :json => {error_code: 'InternalServerError', error_msg: e.message}
@@ -24,6 +27,9 @@ class Internal::SystemUsersController < ApplicationController
       raise Rigi::InvalidPermission.new('Invalid permission') if permissions.blank? || !permissions.include?(action)
     end
     render :json => {error_code: 'OK', error_msg: 'Request is now completed'}
+  rescue JWT::DecodeError => e
+    Rails.logger.error("validate permission error: #{e.message}")
+    render :json => {error_code: 'InvalidToken', error_msg: 'Invalid token'}
   rescue Rigi::PortalError => e
     Rails.logger.error("validate permission error: #{e.error_message}")
     render :json => {error_code: e.class.name.demodulize, error_msg: e.error_message}
