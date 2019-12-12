@@ -28,7 +28,9 @@ apps_info = {
               :SSRS => {:id => 11, :name => 'report_portal'},
               :MP => {:id => 12, :name => 'marketing_portal'},
               :OGR => {:id => 14, :name => 'platform_game_recall'},
-              :SP => {:id => 15, :name => 'spindle'}
+              :SP => {:id => 15, :name => 'spindle'},
+              :GOP => {:id => 20, :name => 'platform_gaming_operation'},
+              :KOS => {:id => 21, :name => 'kiosk_management'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }

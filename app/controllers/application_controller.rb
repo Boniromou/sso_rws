@@ -47,8 +47,8 @@ class ApplicationController < ActionController::Base
   end
 
   def write_authenticate(system_user, app_name)
-    if app_name == 'platform_gaming_operation'
-      write_go_authenticate(system_user, app_name)
+    if ['platform_gaming_operation', 'kiosk_management'].include?(app_name)
+      write_client_authenticate(system_user, app_name)
       return
     end
     uuid = SecureRandom.uuid
@@ -57,7 +57,7 @@ class ApplicationController < ActionController::Base
     add_cache(uuid, {:system_user => {:id => system_user.id, :username => system_user.username}})
   end
 
-  def write_go_authenticate(system_user, app_name)
+  def write_client_authenticate(system_user, app_name)
     name = "#{app_name}_auth_token"
     result = {
       id: system_user.id,
