@@ -30,7 +30,8 @@ apps_info = {
               :OGR => {:id => 14, :name => 'platform_game_recall'},
               :SP => {:id => 15, :name => 'spindle'},
               :GOP => {:id => 20, :name => 'platform_gaming_operation'},
-              :KOS => {:id => 21, :name => 'kiosk_management'}
+              :KOS => {:id => 21, :name => 'kiosk_management'},
+              :TOP => {:id => 22, :name => 'tournament_portal'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }

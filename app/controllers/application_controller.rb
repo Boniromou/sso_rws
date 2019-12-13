@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
   end
 
   def write_authenticate(system_user, app_name)
-    if ['platform_gaming_operation', 'kiosk_management'].include?(app_name)
+    if ['platform_gaming_operation', 'kiosk_management','tournament_portal'].include?(app_name)
       write_client_authenticate(system_user, app_name)
       return
     end
