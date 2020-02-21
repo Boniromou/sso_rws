@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
   rescue_from Exception, :with => :handle_fatal_error
   rescue_from Pundit::NotAuthorizedError, :with => :handle_unauthorize
 
+  VUE_PORTALS = ['platform_gaming_operation', 'kiosk_management','tournament_portal', 'signature_verifier_portal']
+
   def set_locale
     I18n.locale = params[:locale] && I18n.available_locales.include?(params[:locale].to_sym) ? params[:locale] : I18n.default_locale
   end
@@ -47,7 +49,7 @@ class ApplicationController < ActionController::Base
   end
 
   def write_authenticate(system_user, app_name)
-    if ['platform_gaming_operation', 'kiosk_management','tournament_portal'].include?(app_name)
+    if VUE_PORTALS.include?(app_name)
       write_client_authenticate(system_user, app_name)
       return
     end
