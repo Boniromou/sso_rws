@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   rescue_from Exception, :with => :handle_fatal_error
   rescue_from Pundit::NotAuthorizedError, :with => :handle_unauthorize
 
-  VUE_PORTALS = ['platform_gaming_operation', 'kiosk_management','tournament_portal', 'signature_verifier_portal']
+  VUE_PORTALS = ['platform_gaming_operation', 'kiosk_management','tournament_portal', 'signature_verifier_portal', 'signature_management']
 
   def set_locale
     I18n.locale = params[:locale] && I18n.available_locales.include?(params[:locale].to_sym) ? params[:locale] : I18n.default_locale
