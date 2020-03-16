@@ -159,3 +159,12 @@ sandbox5:
   namespace: s3_snd
   no_block: true
   timeout: 30
+
+sandbox6:
+  servers:
+    - s3-vapp01.snd6.gamesource.local:11211
+    - s3-vapp01.snd6.gamesource.local:11212
+  expires: 86400
+  namespace: s3_snd
+  no_block: true
+  timeout: 30

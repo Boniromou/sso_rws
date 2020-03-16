@@ -89,3 +89,8 @@ sandbox5:
   <<: *default
   url_base: 'https://snd5-sso.8888pgy3c.com'
   remain_login_history_days: 455
+
+sandbox6:
+  <<: *default
+  url_base: 'https://snd6-sso.138777.net'
+  remain_login_history_days: 455

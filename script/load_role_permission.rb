@@ -15,23 +15,25 @@ file_name = ARGV[1]
 sheet_name = ARGV[2]
 
 apps_info = {
-              :SSO => { :id => 1, :name => 'user_management' },
-              :AP => { :id => 2, :name => 'gaming_operation' },
-              :CAGE => { :id => 3, :name => 'cage' },
-              :SM => { :id => 4, :name => 'station_management' },
-              :GRMS => { :id => 5, :name => 'game_recall' },
-              :SV => { :id => 6, :name => 'signature_verifier' },
-              :AUDP => { :id => 7, :name => 'audit_portal' },
-              :DAM => {:id => 8, :name => 'asset_management'},
-              :TPMS => {:id => 9, :name => 'trade_promotion'},
-              :MDS => {:id => 10, :name => 'master_data_service'},
-              :SSRS => {:id => 11, :name => 'report_portal'},
-              :MP => {:id => 12, :name => 'marketing_portal'},
-              :OGR => {:id => 14, :name => 'platform_game_recall'},
-              :SP => {:id => 15, :name => 'spindle'},
-              :GOP => {:id => 20, :name => 'platform_gaming_operation'},
-              :KOS => {:id => 21, :name => 'kiosk_management'},
-              :TOP => {:id => 22, :name => 'tournament_portal'}
+              :SSO => {:name => 'user_management' },
+              :AP => {:name => 'gaming_operation' },
+              :CAGE => {:name => 'cage' },
+              :SM => {:name => 'station_management' },
+              :GRMS => {:name => 'game_recall' },
+              :SV => {:name => 'signature_verifier' },
+              :AUDP => {:name => 'audit_portal' },
+              :DAM => {:name => 'asset_management'},
+              :TPMS => {:name => 'trade_promotion'},
+              :MDS => {:name => 'master_data_service'},
+              :SSRS => {:name => 'report_portal'},
+              :MP => {:name => 'marketing_portal'},
+              :OGR => {:name => 'platform_game_recall'},
+              :SP => {:name => 'spindle'},
+              :GOP => {:name => 'platform_gaming_operation'},
+              :KOS => {:name => 'kiosk_management'},
+              :TOP => {:name => 'tournament_portal'},
+              :SVP => {:name => 'signature_verifier_portal'},
+              :SPP => {:name => 'signature_management'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }
@@ -119,15 +121,15 @@ if prompt == 'Y'
   roles_table = sso_db[:roles]
   permissions_table = sso_db[:permissions]
   role_permissions_table = sso_db[:role_permissions]
-  app_id = apps_info[sheet_name.to_sym][:id]
   app_name = apps_info[sheet_name.to_sym][:name]
 
   sso_db.transaction do
-    app = apps_table.where("id = ? and name = ?", app_id, app_name).first
-
+    app = apps_table.where(:name => app_name).first
     if app.nil?
-      apps_table.insert(:id => app_id, :name => app_name, :created_at => Time.now.utc, :updated_at => Time.now.utc)
+      apps_table.insert(:name => app_name, :created_at => Time.now.utc, :updated_at => Time.now.utc)
     end
+
+    app_id = apps_table.where(:name => app_name).first[:id]
 
     role_type_info.each do |role_type_id, role_type_name|
       role_type = role_types_table.where("id = ? and name = ?", role_type_id, role_type_name).first

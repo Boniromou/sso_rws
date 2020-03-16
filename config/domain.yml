@@ -96,3 +96,6 @@ ias_prd:
 
 sandbox5:
   <<: *phidc_domain
+
+sandbox6:
+  <<: *moidc_domain

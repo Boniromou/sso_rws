@@ -1,0 +1,37 @@
+app:
+  name: 'user_management'
+  callback_url: 'http://10.10.5.169:3000/home'
+
+auth_source:
+  id: 1
+  token: '*'
+  type: 'Ldap'
+
+auth_source_detail:
+  id: 1
+  name: 'laxino_ldap'
+  data:
+    host: 'hqprdmodc20.mo.laxino.com'
+    port: 3268
+    account: 'svc_idc_ldap@mo.laxino.com'
+    password: '$vc_1dc_1daP'
+    admin_account: 'svc_idc_ldap@mo.laxino.com'
+    admin_password: '$vc_1dc_1daP'
+    base_dn: 'dc=mo, dc=laxino, dc=com'
+
+domain:
+  id: 1
+  name: 'mo.laxino.com'
+  auth_source_detail_id: 1
+
+domain_licensee:
+  id: 1
+  domain_id: 1
+  licensee_id: 1000
+
+user:
+  id: 1
+  username: 'portal.admin'
+  status: 'active'
+  admin: true
+  domain_id: 1

@@ -133,3 +133,16 @@ sandbox5:
   marketing_portal: 'https://snd5-mp.8888pgy3c.com/home'
   platform_game_recall: 'https://snd5-ogr.8888pgy3c.com'
   report_portal: 'https://snd5-report.8888pgy3c.com/Reports/Pages/Folder.aspx'
+
+sandbox6:
+  user_management: 'https://snd6-sso.138777.net/home'
+  cage: 'https://snd6-cms.138777.net/home'
+  station_management: 'https://snd6-mtm.138777.net/index'
+  audit_portal: 'https://snd6-audp.138777.net/index'
+  marketing_portal: 'https://snd6-mp.138777.net/home'
+  platform_game_recall: 'https://snd6-ogr.138777.net'
+  report_portal: 'https://snd6-report.138777.net/Reports/Pages/Folder.aspx'
+  platform_gaming_operation: 'https://snd6-go.138777.net'
+  signature_verifier_portal: 'https://snd6-sv.138777.net'
+  signature_management: 'https://snd6-spp.138777.net'
+  kiosk_management: 'https://snd6-kosp.138777.net'
