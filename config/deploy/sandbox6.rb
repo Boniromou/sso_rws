@@ -7,7 +7,7 @@ set :branch, 'CBG_0_6_6'
 #   development SVN - svn.mo.laxino.com
 set :user, "swe"
 set :group, "swe"
-set :repo_host, 'svn.prod.laxigames.com'
+set :repo_host, 'cbms-app01.snd6.gamesource.local'
 
 # Define your application servers for integration environment here.
 #   int - Integration
