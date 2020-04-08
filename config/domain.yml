@@ -99,3 +99,6 @@ sandbox5:
 
 sandbox6:
   <<: *moidc_domain
+
+cert1:
+  <<: *ias_domain

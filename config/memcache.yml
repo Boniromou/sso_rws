@@ -168,3 +168,12 @@ sandbox6:
   namespace: s3_snd
   no_block: true
   timeout: 30
+
+cert1:
+  servers:
+    - s3-vapp01.cert1.idc.local:11211
+    - s3-vapp01.cert1.idc.local:11212
+  expires: 86400
+  namespace: s3_prd
+  no_block: true
+  timeout: 30

@@ -146,3 +146,18 @@ sandbox6:
   signature_verifier_portal: 'https://snd6-sv.138777.net'
   signature_management: 'https://snd6-spp.138777.net'
   kiosk_management: 'https://snd6-kosp.138777.net'
+  spindle: 'https://snd6-lmp.138777.net'
+
+cert1:
+  user_management: 'https://cert1-sso.cert.laxino.com/home'
+  cage: 'https://cert1-cms.cert.laxino.com/home'
+  station_management: 'https://cert1-mtm.cert.laxino.com/index'
+  audit_portal: 'https://cert1-audp.cert.laxino.com/index'
+  marketing_portal: 'https://cert1-mp.cert.laxino.com/home'
+  platform_game_recall: 'https://cert1-ogr.cert.laxino.com'
+  report_portal: 'https://cert1-report.cert.laxino.com/Reports/Pages/Folder.aspx'
+  platform_gaming_operation: 'https://cert1-go.cert.laxino.com'
+  signature_verifier_portal: 'https://cert1-sv.cert.laxino.com'
+  signature_management: 'https://cert1-spp.cert.laxino.com'
+  kiosk_management: 'https://cert1-kosp.cert.laxino.com'
+  spindle: 'https://cert1-lmp.cert.laxino.com'

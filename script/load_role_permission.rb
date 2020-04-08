@@ -33,7 +33,8 @@ apps_info = {
               :KOS => {:name => 'kiosk_management'},
               :TOP => {:name => 'tournament_portal'},
               :SVP => {:name => 'signature_verifier_portal'},
-              :SPP => {:name => 'signature_management'}
+              :SPP => {:name => 'signature_management'},
+              :LMP => {:name => 'spindle'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }
