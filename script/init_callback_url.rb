@@ -18,12 +18,12 @@ print "Overwrite? (Y/n): "
 prompt = STDIN.gets.chomp
 
 if prompt.casecmp('Y') == 0
-  configs.each do |app, url|
-    app = db[:apps].where(:name => app)
+  configs.each do |app_name, url|
+    app = db[:apps].where(:name => app_name)
     if app.first
       app.update(:callback_url => url, :updated_at => Time.now.utc)
     else
-      db[:apps].insert(:name => app[:name], :callback_url => url, :created_at => Time.now.utc, :updated_at => Time.now.utc)
+      db[:apps].insert(:name => app_name, :callback_url => url, :created_at => Time.now.utc, :updated_at => Time.now.utc)
     end
   end
 end
