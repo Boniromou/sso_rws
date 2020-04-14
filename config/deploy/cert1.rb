@@ -5,7 +5,7 @@ set :branch, 'CBG_0_6_7'
 # Define your repository server for integration environment here.
 #   production SVN - svn.prod.laxigames.com
 #   development SVN - svn.mo.laxino.com
-set :repo_host, 'svn.mo.laxino.com'
+set :repo_host, 'svn'
 set :user, "swe"
 set :group, "swe"
 
@@ -13,9 +13,9 @@ set :group, "swe"
 #   int - Integration
 #   stg - Staging
 #   prd - Production
-role :app, 'sso-app01.cert1.idc.local'
+role :app, 'generic-app01.cert1.idc.local'
 
-role :cronjob_app, 'sso-app01.cert1.idc.local'
+role :cronjob_app, 'generic-app01.cert1.idc.local'
 
 #role :cronjob_app, 'int-cons-vapp03.rnd.laxino.com'
 
