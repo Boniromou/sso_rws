@@ -23,7 +23,7 @@ if prompt.casecmp('Y') == 0
     if app.first
       app.update(:callback_url => url, :updated_at => Time.now.utc)
     else
-      db[:apps].insert(:name => app, :callback_url => url, :created_at => Time.now.utc, :updated_at => Time.now.utc)
+      db[:apps].insert(:name => app[:name], :callback_url => url, :created_at => Time.now.utc, :updated_at => Time.now.utc)
     end
   end
 end
