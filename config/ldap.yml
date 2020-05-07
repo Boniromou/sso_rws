@@ -148,6 +148,25 @@ production4:
         admin_password: ""
         base_dn: 'dc=laxigames, dc=local'
 
+production6:
+  laxino:
+    domain:
+      name: 'gamesourcecloud.local'
+    auth_source:
+      token: '*'
+      type: 'Ldap'
+    auth_source_detail:
+      name: 'laxino_ldap'
+      data:
+        name: 'laxino_ldap'
+        host: 'mo-prd-dc01.gamesourcecloud.local'
+        port: 3268
+        account: 'svc_idc_ldap@gamesourcecloud.local'
+        password: '$vc_1dc_1daP'
+        admin_account: 'svc_idc_ldap@gamesourcecloud.local'
+        admin_password: '$vc_1dc_1daP'
+        base_dn: 'dc=gamesourcecloud, dc=local'
+
 sandbox:
   <<: *sandbox3
 

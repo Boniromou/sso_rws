@@ -34,15 +34,34 @@ sandbox3:
   <<: *base
   sync_user_config:
     <<: *base_strategy_config
-    host: mo-snd-pis-vapp02.lb.laxigames.local
+    host: snd-fex.mgmmacau.com
+    user: vengamesource
+    password: jpW0g3-?5j2jK/Y3@@ESD
+    path: '.'
+
+production6:
+  <<: *base
+  sync_user_config:
+    <<: *base_strategy_config
+    host: snd-fex.mgmmacau.com
+    user: vengamesource
+    password: jpW0g3-?5j2jK/Y3@@ESD
+    path: '.'
 
 production3:
   <<: *base
   sync_user_config:
     <<: *base_strategy_config
-#    host: mo-prd-pis-vapp02.lb.laxigames.local
     host: fex.mgmmacau.com
     user: vengamesource
     password: jpW0g3-?5j2jK/Y3@@ESD
     path: '.'
 
+production6:
+  <<: *base
+  sync_user_config:
+    <<: *base_strategy_config
+    host: fex.mgmmacau.com
+    user: vengamesource
+    password: jpW0g3-?5j2jK/Y3@@ESD
+    path: '.'

@@ -103,3 +103,8 @@ cert1:
 ga0:
   <<: *default
   url_base: 'https://ga0-sso.laxino.com'
+
+production6:
+  <<: *default
+  url_base: 'https://prd6-sso.gogamesource.com'
+  remain_login_history_days: 455

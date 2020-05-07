@@ -198,3 +198,13 @@ cert1:
   password: rigi.pa$$w0rd123
   host: sso-vdb01.cert1.idc.local
   port: 6033
+
+production6:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_production
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: sso-vdb01.prd6.gamesource.local
+  port: 6033

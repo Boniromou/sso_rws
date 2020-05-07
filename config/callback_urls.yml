@@ -165,3 +165,17 @@ cert1:
 ga0:
   user_management: 'https://ga0-sso.laxino.com/home'
   signature_management: 'https://ga0-spp.laxino.com'
+
+production6:
+  user_management: 'https://prd6-sso.gogamesource.com/home'
+  cage: 'https://prd6-cms.gogamesource.com/home'
+  station_management: 'https://prd6-mtm.gogamesource.com/index'
+  audit_portal: 'https://prd6-audp.gogamesource.com/index'
+  marketing_portal: 'https://prd6-mp.gogamesource.com/home'
+  platform_game_recall: 'https://prd6-ogr.gogamesource.com'
+  report_portal: 'https://prd6-report.gogamesource.com/Reports/Pages/Folder.aspx'
+  platform_gaming_operation: 'https://prd6-go.gogamesource.com'
+  signature_verifier_portal: 'https://prd6-sv.gogamesource.com'
+  signature_management: 'https://prd6-spp.gogamesource.com'
+  kiosk_management: 'https://prd6-kosp.gogamesource.com'
+  spindle: 'https://prd6-lmp.gogamesource.com'
