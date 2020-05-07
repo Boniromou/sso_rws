@@ -161,3 +161,7 @@ cert1:
   signature_management: 'https://cert1-spp.cert.laxino.com'
   kiosk_management: 'https://cert1-kosp.cert.laxino.com'
   spindle: 'https://cert1-lmp.cert.laxino.com'
+
+ga0:
+  user_management: 'https://ga0-sso.laxino.com/home'
+  signature_management: 'https://ga0-spp.laxino.com'

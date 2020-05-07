@@ -177,3 +177,12 @@ cert1:
   namespace: s3_prd
   no_block: true
   timeout: 30
+
+ga0:
+  servers:
+    - s3-vapp01.ga0.ias.local:7000
+    - s3-vapp01.ga0.ias.local:7001
+  expires: 86400
+  namespace: s3_prd
+  no_block: true
+  timeout: 30

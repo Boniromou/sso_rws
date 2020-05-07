@@ -99,3 +99,7 @@ cert1:
   <<: *default
   url_base: 'https://cert1-sso.cert.laxino.com'
   remain_login_history_days: 455
+
+ga0:
+  <<: *default
+  url_base: 'https://ga0-sso.laxino.com'
