@@ -1,13 +1,13 @@
 # Define your release to be deployed to integration environment here.
 # Release number for integration environment is supposed to be odd numbers.
-set :branch, 'CBG_0_6_10'
+set :branch, 'CBG_0_6_11'
 
 # Define your repository server for integration environment here.
 #   production SVN - svn.prod.laxigames.com
 #   development SVN - svn.mo.laxino.com
 set :user, "swe"
 set :group, "swe"
-set :repo_host, 'cbms-app01.snd6.gamesource.local'
+set :repo_host, 'cbms-app01.prd6.gamesource.local'
 
 # Define your application servers for integration environment here.
 #   int - Integration
