@@ -108,3 +108,8 @@ production6:
   <<: *default
   url_base: 'https://prd6-sso.gogamesource.com'
   remain_login_history_days: 455
+
+sandbox8:
+  <<: *default
+  url_base: 'https://snd8-sso.grac381.com'
+  remain_login_history_days: 455

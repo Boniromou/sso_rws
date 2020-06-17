@@ -179,3 +179,17 @@ production6:
   signature_management: 'https://prd6-spp.gogamesource.com'
   kiosk_management: 'https://prd6-kosp.gogamesource.com'
   spindle: 'https://prd6-lmp.gogamesource.com'
+
+sandbox8:
+  user_management: 'https://snd8-sso.grac381.com/home'
+  cage: 'https://snd8-cms.grac381.com/home'
+  station_management: 'https://snd8-mtm.grac381.com/index'
+  audit_portal: 'https://snd8-audp.grac381.com/index'
+  marketing_portal: 'https://snd8-mp.grac381.com/home'
+  platform_game_recall: 'https://snd8-ogr.grac381.com'
+  report_portal: 'https://snd8-report.grac381.com/Reports/Pages/Folder.aspx'
+  platform_gaming_operation: 'https://snd8-go.grac381.com'
+  signature_verifier_portal: 'https://snd8-sv.grac381.com'
+  signature_management: 'https://snd8-spp.grac381.com'
+  kiosk_management: 'https://snd8-kosp.grac381.com'
+  spindle: 'https://snd8-lmp.grac381.com'
