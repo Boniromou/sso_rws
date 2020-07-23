@@ -5,7 +5,7 @@ class SamlController < ApplicationController
   rescue_from Rigi::InvalidAuthorize, :with => :handle_invalid_authorize
 
   def new
-    check_login_type!('Adfs')
+    check_login_type!('adfs')
     settings = get_saml_settings
     saml_request = OneLogin::RubySaml::Authrequest.new
     url = saml_request.create(settings)

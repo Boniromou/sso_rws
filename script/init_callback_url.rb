@@ -17,13 +17,37 @@ p configs
 print "Overwrite? (Y/n): "
 prompt = STDIN.gets.chomp
 
-if prompt.casecmp('Y') == 0
-  configs.each do |app_name, url|
-    app = db[:apps].where(:name => app_name)
-    if app.first
-      app.update(:callback_url => url, :updated_at => Time.now.utc)
-    else
-      db[:apps].insert(:name => app_name, :callback_url => url, :created_at => Time.now.utc, :updated_at => Time.now.utc)
-    end
+exit unless prompt.casecmp('Y') == 0
+
+app_types = {
+  'user_management' => 'standard',
+  'gaming_operation' => 'standard',
+  'cage' => 'standard',
+  'station_management' => 'standard',
+  'game_recall' => 'standard',
+  'signature_verifier' => 'standard',
+  'audit_portal' => 'standard',
+  'asset_management' => 'standard',
+  'trade_promotion' => 'standard',
+  'master_data_service' => 'standard',
+  'marketing_portal' => 'standard',
+  'content_management' => 'standard',
+  'spindle' => 'standard',
+  'report_portal' => 'standard',
+  'platform_game_recall' => 'standard',
+  'platform_gaming_operation' => 'vue',
+  'kiosk_management' => 'vue',
+  'signature_verifier_portal' => 'vue',
+  'signature_management' => 'vue',
+  'tournament_portal' => 'vue'
+}
+
+configs.each do |app_name, url|
+  app = db[:apps].where(name: app_name)
+  type = app_types[app_name] || 'standard'
+  if app.first
+    db[:apps].where(name: app_name).update(callback_url: url, type: type, updated_at: Time.now.utc)
+  else
+    db[:apps].insert(name: app_name, callback_url: url, type: type, created_at: Time.now.utc, updated_at: Time.now.utc)
   end
 end

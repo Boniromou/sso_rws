@@ -8,8 +8,6 @@ class ApplicationController < ActionController::Base
   rescue_from Exception, :with => :handle_fatal_error
   rescue_from Pundit::NotAuthorizedError, :with => :handle_unauthorize
 
-  VUE_PORTALS = ['platform_gaming_operation', 'kiosk_management','tournament_portal', 'signature_verifier_portal', 'signature_management']
-
   def set_locale
     I18n.locale = params[:locale] && I18n.available_locales.include?(params[:locale].to_sym) ? params[:locale] : I18n.default_locale
   end
@@ -49,17 +47,18 @@ class ApplicationController < ActionController::Base
   end
 
   def write_authenticate(system_user, app_name)
-    if VUE_PORTALS.include?(app_name)
-      write_client_authenticate(system_user, app_name)
-      return
-    end
+    app_type = App.where(name: app_name).first.token_type || 'standard'
+    send("#{app_type}_token", system_user, app_name)
+  end
+
+  def standard_token(system_user, app_name)
     uuid = SecureRandom.uuid
     name = app_name == 'report_portal' ? 'report_portal_auth_token' : 'auth_token'
     write_cookie(name.to_sym, uuid)
     add_cache(uuid, {:system_user => {:id => system_user.id, :username => system_user.username}})
   end
 
-  def write_client_authenticate(system_user, app_name)
+  def vue_token(system_user, app_name)
     name = "#{app_name}_auth_token"
     result = {
       id: system_user.id,
@@ -95,7 +94,7 @@ class ApplicationController < ActionController::Base
 
   def check_login_type!(type)
     auth_source = AuthSource.find_by_token(get_client_ip)
-    raise 'Invalid login type' if auth_source.type != type
+    raise 'Invalid login type' unless auth_source.type.downcase.include?(type)
   end
 
   protected
