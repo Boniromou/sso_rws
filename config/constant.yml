@@ -24,7 +24,7 @@ test:
 
 development:
   <<: *default
-  url_base: 'http://10.10.5.169:3000'
+  url_base: 'http://10.10.5.154:3000'
 
 integration0:
   <<: *default
@@ -112,4 +112,9 @@ production6:
 sandbox8:
   <<: *default
   url_base: 'https://snd8-sso.grac381.com'
+  remain_login_history_days: 455
+
+sandbox10:
+  <<: *default
+  url_base: 'https://snd10-sso.gogamesource.com.ph'
   remain_login_history_days: 455

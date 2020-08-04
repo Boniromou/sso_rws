@@ -193,3 +193,17 @@ sandbox8:
   signature_management: 'https://snd8-spp.grac381.com'
   kiosk_management: 'https://snd8-kosp.grac381.com'
   spindle: 'https://snd8-lmp.grac381.com'
+
+sandbox10:
+  user_management: 'https://snd10-sso.gogamesource.com.ph/home'
+  cage: 'https://snd10-cms.gogamesource.com.ph/home'
+  station_management: 'https://snd10-mtm.gogamesource.com.ph/index'
+  audit_portal: 'https://snd10-audp.gogamesource.com.ph/index'
+  marketing_portal: 'https://snd10-mp.gogamesource.com.ph/home'
+  platform_game_recall: 'https://snd10-ogr.gogamesource.com.ph'
+  report_portal: 'https://snd10-report.gogamesource.com.ph/Reports/Pages/Folder.aspx'
+  platform_gaming_operation: 'https://snd10-go.gogamesource.com.ph'
+  signature_verifier_portal: 'https://snd10-sv.gogamesource.com.ph'
+  signature_management: 'https://snd10-spp.gogamesource.com.ph'
+  kiosk_management: 'https://snd10-kosp.gogamesource.com.ph'
+  spindle: 'https://snd10-lmp.gogamesource.com.ph'
