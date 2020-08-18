@@ -11,12 +11,12 @@ auth_source_detail:
   id: 1
   name: 'laxino_ldap'
   data:
-    host: 'mo-prd-dc01.gamesourcecloud.local'
+    host: 'mo-prd-dc11.gamesourcecloud.local'
     port: 3268
     account: 'svc_idc_ldap@gamesourcecloud.local'
-    password: '$vc_1dc_1daP'
+    password: "$vc_1dc_1daP"
     admin_account: 'svc_idc_ldap@gamesourcecloud.local'
-    admin_password: '$vc_1dc_1daP'
+    admin_password: "$vc_1dc_1daP"
     base_dn: 'dc=gamesourcecloud, dc=local'
 
 domain:

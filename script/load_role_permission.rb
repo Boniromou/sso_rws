@@ -34,7 +34,8 @@ apps_info = {
               :TOP => {:name => 'tournament_portal'},
               :SVP => {:name => 'signature_verifier_portal'},
               :SPP => {:name => 'signature_management'},
-              :LMP => {:name => 'spindle'}
+              :LMP => {:name => 'spindle'},
+              :POP => {:name => 'player_operations_portal'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }

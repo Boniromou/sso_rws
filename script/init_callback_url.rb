@@ -39,7 +39,8 @@ app_types = {
   'kiosk_management' => 'vue',
   'signature_verifier_portal' => 'vue',
   'signature_management' => 'vue',
-  'tournament_portal' => 'vue'
+  'tournament_portal' => 'vue',
+  'player_operations_portal' => 'vue'
 }
 
 configs.each do |app_name, url|
