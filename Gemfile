@@ -1,6 +1,5 @@
 # source 'https://rubygems.org'
-# source 'http://gems:8808'
-source 'http://10.10.33.41:8808'
+source 'http://gems:8808'
 
 gem 'rails', '3.2.13'
 gem 'ruby-saml', '1.3.1'
