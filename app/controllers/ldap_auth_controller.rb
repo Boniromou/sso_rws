@@ -3,7 +3,7 @@ class LdapAuthController < ApplicationController
   skip_before_filter :authenticate_system_user!, :check_activation_status
 
   def new
-    check_login_type!('Ldap')
+    check_login_type!('ldap')
     @message_id = SecureRandom.hex
     session[:message_id] = @message_id
     @app_name = params[:app_name]
