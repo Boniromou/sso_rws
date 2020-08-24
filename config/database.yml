@@ -218,3 +218,13 @@ sandbox8:
   password: rigi.pa$$w0rd123
   host: sso-vdb01.snd8.gamesource.local
   port: 6034
+
+sandbox10:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_sandbox
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: sso-vdb01.snd10.gamesource.local
+  port: 6034

@@ -102,3 +102,6 @@ sandbox6:
 
 cert1:
   <<: *ias_domain
+
+sandbox10:
+  <<: *moidc_domain
