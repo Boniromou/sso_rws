@@ -36,6 +36,7 @@ class ApplicationController < ActionController::Base
     ip = request.env["X-Real-IP"]
     ip = request.env["HTTP_X_FORWARDED_FOR"] if !ip
     ip = request.remote_ip if !ip
+    ip = ip.split(',').first if ip
     ip
   end
 
