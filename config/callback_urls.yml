@@ -207,3 +207,16 @@ sandbox10:
   signature_management: 'https://snd10-spp.gogamesource.com.ph'
   kiosk_management: 'https://snd10-kosp.gogamesource.com.ph'
   spindle: 'https://snd10-lmp.gogamesource.com.ph'
+
+production10:
+  user_management: 'https://prd10-sso.gogamesource.com.ph/home'
+  cage: 'https://prd10-cms.gogamesource.com.ph/home'
+  station_management: 'https://prd10-mtm.gogamesource.com.ph/index'
+  audit_portal: 'https://prd10-audp.gogamesource.com.ph/index'
+  marketing_portal: 'https://prd10-mp.gogamesource.com.ph/home'
+  platform_game_recall: 'https://prd10-ogr.gogamesource.com.ph'
+  report_portal: 'https://prd10-report.gogamesource.com.ph/Reports/Pages/Folder.aspx'
+  platform_gaming_operation: 'https://prd10-go.gogamesource.com.ph'
+  signature_verifier_portal: 'https://prd10-sv.gogamesource.com.ph'
+  kiosk_management: 'https://prd10-kosp.gogamesource.com.ph'
+  spindle: 'https://prd10-lmp.gogamesource.com.ph'
