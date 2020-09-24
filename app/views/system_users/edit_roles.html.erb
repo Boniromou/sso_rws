@@ -21,7 +21,7 @@
             <div class="widget-body">
 
 
-<%= form_tag({action: :update_roles}, :method => :post, :class => "smart-form", :remote => true) do %>
+<%= form_tag({action: :update_roles}, :method => :post, :id => "edit_role_form", :class => "smart-form", :remote => true) do %>
   <% @roles_by_apps.each do |roles_by_apps| %>
   <fieldset id="<%= "#{roles_by_apps[:app].name}_app" %>">
     <section>
@@ -61,19 +61,11 @@
   </footer>
 <% end %>
 
-
-
-
             </div>
           </div>
       </article>
     </div>
   </section>
-
-
-
-
-
 
 <script type = "text/javascript" >
   $(document).ready(function(){
@@ -89,6 +81,10 @@
         radio_btns.attr("disabled", "disabled");
         radio_btns.removeAttr('checked');
       }
+    });
+
+    $('#edit_role_form').one('submit', function() {
+      $(this).find('input[type="submit"]').attr('disabled','disabled');
     });
   });
 </script>
