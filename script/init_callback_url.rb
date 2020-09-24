@@ -47,8 +47,8 @@ configs.each do |app_name, url|
   app = db[:apps].where(name: app_name)
   type = app_types[app_name] || 'standard'
   if app.first
-    db[:apps].where(name: app_name).update(callback_url: url, type: type, updated_at: Time.now.utc)
+    db[:apps].where(name: app_name).update(callback_url: url, token_type: type, updated_at: Time.now.utc)
   else
-    db[:apps].insert(name: app_name, callback_url: url, type: type, created_at: Time.now.utc, updated_at: Time.now.utc)
+    db[:apps].insert(name: app_name, callback_url: url, token_type: type, created_at: Time.now.utc, updated_at: Time.now.utc)
   end
 end

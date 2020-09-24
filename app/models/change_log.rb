@@ -8,7 +8,7 @@ class ChangeLog < ActiveRecord::Base
 
   scope :since, -> time { where("change_logs.created_at >= ?", time) if time.present? }
   scope :until, -> time { where("change_logs.created_at < ?", time) if time.present? }
-  scope :match_target_username, -> target_username { where("change_logs.target_username LIKE ?", "%#{target_username}%") if target_username.present? }
+  scope :match_target_username, -> target_username { where("concat(change_logs.target_username, '@', ifnull(change_logs.target_domain, '')) LIKE ?", "%#{target_username}%") if target_username.present? }
 
   def self.inherited(child)
      child.instance_eval do

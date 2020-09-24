@@ -28,14 +28,15 @@ apps_info = {
               :SSRS => {:name => 'report_portal'},
               :MP => {:name => 'marketing_portal'},
               :OGR => {:name => 'platform_game_recall'},
-              :SP => {:name => 'spindle'},
               :GOP => {:name => 'platform_gaming_operation'},
               :KOS => {:name => 'kiosk_management'},
               :TOP => {:name => 'tournament_portal'},
               :SVP => {:name => 'signature_verifier_portal'},
               :SPP => {:name => 'signature_management'},
               :LMP => {:name => 'spindle'},
-              :POP => {:name => 'player_operations_portal'}
+              :POP => {:name => 'player_operations_portal'},
+              :PGDP => {:name => 'portable_gaming_device_portal'},
+              :IAUDP => {:name => 'inspection_and_audit_portal'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }
