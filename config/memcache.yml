@@ -226,3 +226,12 @@ production10:
   namespace: s3_prd
   no_block: true
   timeout: 30
+
+sandbox9:
+  servers:
+    - s3-vapp01.snd9.gamesource.local:7000
+    - s3-vapp01.snd9.gamesource.local:7001
+  expires: 86400
+  namespace: s3_snd
+  no_block: true
+  timeout: 30

@@ -105,3 +105,6 @@ cert1:
 
 sandbox10:
   <<: *moidc_domain
+
+sandbox9:
+  <<: *moidc_domain

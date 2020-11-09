@@ -1,6 +1,6 @@
 app:
   name: 'user_management'
-  callback_url: 'https://prd6-sso.gogamesource.com/home'
+  callback_url: 'https://snd9-sso.grac381.com/home'
 
 auth_source:
   id: 1
@@ -11,12 +11,12 @@ auth_source_detail:
   id: 1
   name: 'laxino_ldap'
   data:
-    host: 'dc01.prd6.gamesourcecloud.local'
-    port: 3268
+    host: 'snd9-vdc01.gamesourcecloud.local'
+    port: 389
     account: 'svc_idc_ldap@gamesourcecloud.local'
-    password: "Cc12345^1qazxsw2"
+    password: 'Svc_1dc_1daP'
     admin_account: 'svc_idc_ldap@gamesourcecloud.local'
-    admin_password: "Cc12345^1qazxsw2"
+    admin_password: 'Svc_1dc_1daP'
     base_dn: 'dc=gamesourcecloud, dc=local'
 
 domain:

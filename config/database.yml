@@ -238,3 +238,13 @@ production10:
   password: rigi.pa$$w0rd123
   host: sso-vdb01.prd10.gamesource.local
   port: 6033
+
+sandbox9:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_sandbox
+  username: rigi
+  password: rigi.pa$$w0rd123
+  host: sso-vdb01.snd9.gamesource.local
+  port: 6034

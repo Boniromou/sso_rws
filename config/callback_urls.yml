@@ -220,3 +220,7 @@ production10:
   signature_verifier_portal: 'https://prd10-sv.gogamesource.com.ph'
   kiosk_management: 'https://prd10-kosp.gogamesource.com.ph'
   spindle: 'https://prd10-lmp.gogamesource.com.ph'
+
+sandbox9:
+  user_management: 'https://snd9-sso.grac381.com/home'
+  station_management: 'https://snd9-mtm.grac381.com/index'
