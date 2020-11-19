@@ -50,6 +50,7 @@ class Internal::SystemUsersController < ApplicationController
       :username_with_domain => "#{user.username}@#{user.domain.name}",
       :casino_ids => casino_ids,
       :licensee_id => licensee.try(:id),
+      :licensee_name => licensee.try(:name),
       :property_ids => properties,
       :timezone => licensee.try(:timezone) || DEFAULT_TIMEZONE
     }

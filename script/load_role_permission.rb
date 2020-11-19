@@ -36,7 +36,9 @@ apps_info = {
               :LMP => {:name => 'spindle'},
               :POP => {:name => 'player_operations_portal'},
               :PGDP => {:name => 'portable_gaming_device_portal'},
-              :IAUDP => {:name => 'inspection_and_audit_portal'}
+              :IAUDP => {:name => 'inspection_and_audit_portal'},
+              :PAOP => {:name => 'player_approval_operations_portal'},
+              :GFP => {:name => 'game_feeds_portal'}
             }
 role_type_info = { '1' => 'internal', '2' => 'external' }
 permission_columns = { :action => 'action', :target => 'target' }
