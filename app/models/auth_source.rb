@@ -31,7 +31,7 @@ class AuthSource < ActiveRecord::Base
     validate_before_create_user!(username, domain)
     domain_obj = Domain.where(:name => domain).first
     user_type = domain_obj.user_type || 'Ldap'
-    user_type.constantize.new.create_ldap_user!(username, domain)
+    user_type.constantize.new.create_user!(username, domain)
   end
 
   private

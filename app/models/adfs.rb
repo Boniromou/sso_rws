@@ -47,7 +47,7 @@ class Adfs < AuthSource
     system_user.authorize!(app_name, target_casino, permission)
   end
 
-  def create_adfs_user!(username, domain)
+  def create_user!(username, domain)
     SystemUser.register_without_check!(username, domain)
   end
 end

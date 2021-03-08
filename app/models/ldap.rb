@@ -31,7 +31,7 @@ class Ldap < AuthSource
     system_user.authorize!(app_name, casino_id, permission)
   end
 
-  def create_ldap_user!(username, domain)
+  def create_user!(username, domain)
     domain_obj = Domain.where(:name => domain).first
     profile = retrieve_and_check_user_profile!(domain_obj.auth_source_detail, "#{username}@#{domain}", domain_obj.get_casino_ids)
     SystemUser.register!(username, domain, profile[:casino_ids])
