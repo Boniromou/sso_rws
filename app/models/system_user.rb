@@ -171,10 +171,14 @@ class SystemUser < ActiveRecord::Base
         begin
           domain = system_user.domain
           auth_source_detail = domain.auth_source_detail
-          raise "domain[#{domain.name}] auth_source_detail not exist" if auth_source_detail.blank?
+          if auth_source_detail.blank?
+            Rails.logger.info "**************************"
+            Rails.logger.info "Cannot sync user [#{system_user.username}@#{domain.name}], auth_source_detail is null"
+            next
+          end
           user_type = domain.user_type || 'Ldap'
           profile = user_type.constantize.new.retrieve_user_profile(auth_source_detail, "#{system_user.username}@#{domain.name}", domain.get_casino_ids)
-          if profile
+          if profile.present?
             if system_user.status != profile[:status]
               system_user.status = profile[:status]
               system_user.save!
