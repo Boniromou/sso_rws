@@ -18,23 +18,20 @@ class AuthSource < ActiveRecord::Base
   def authenticate_without_cache!(username, app_name, status, casino_ids)
     system_user = SystemUser.find_by_username_with_domain(username)
     system_user.update_user_profile(casino_ids)
-    system_user.update_status(status) unless system_user.pending?
+    system_user.update_status(status)
     validate_role_status!(system_user, app_name)
     validate_account_status!(system_user)
     validate_account_casinos!(system_user)
     system_user.backfill_change_logs
-    system_user.update_status(status) if system_user.pending?
+    system_user.update_verified(true) unless system_user.verified
     system_user
   end
 
   def self.create_system_user!(username, domain)
     validate_before_create_user!(username, domain)
     domain_obj = Domain.where(:name => domain).first
-    if domain_obj.auth_source_detail
-      Ldap.new.create_ldap_user!(username, domain)
-    else
-      Adfs.new.create_adfs_user!(username, domain)
-    end
+    user_type = domain_obj.user_type || 'Ldap'
+    user_type.constantize.new.create_ldap_user!(username, domain)
   end
 
   private

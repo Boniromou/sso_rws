@@ -34,6 +34,8 @@ en:
     bad_gateway_status: 502 Bad Gateway
     bad_gateway_message: Please contact technical support for assistance...
     unknown_token: ! 'Status : Unknown Token.'
+    registered_account: The account has been registered
+    record_not_found: This record is not found.
   title:
     title: User Management
     login_title: Login
@@ -78,12 +80,14 @@ en:
     delete: Delete
     add: Add
     authorize: Authorize
+    inactive: Inactive
   user:
     user_name: User Name
     password: Password
     list_users: System User
     system_user: System User
     create_system_user: Create System User
+    inactive_system_user: Inactive System User
     name: Name
     status: Status
     active: Active
@@ -116,6 +120,16 @@ en:
     system: ! 'System:'
     has_permission: Y
     export_file_name: Permission List report (%{current_time}).xls
+    upload_title: Upload Role and Permission
+    upload_tooltip: ! 'Filename Format: %{env}_role_permission_vx.x.xlsx'
+    incorrect_file_name: Incorrect file name or format
+    duplicated_version: Incorrect file; Duplication version
+    upload_failed: Upload role and permissions failed; Please try again or contact technical support
+    current_version: Current Version
+    last_upload_at: Last Updated At
+    upload_at: Upload At
+    list_upload_log: Role-Permission Upload Log
+    change_apps: Change Apps
   permission:
     target: Target
   auditlog:
@@ -172,6 +186,8 @@ en:
     create_user: Create System User [%{username}] successful !
     create_domain: Create Domain [%{domain_name}] successful !
     reset_password: Your password have been changed successfully !
+    upload_role: Upload role and permissions successfully !
+    inactive_system_user: Inactive system user successfully !
   dashboard:
     inactive_system_user: Inactive System User
     no_record: no record of inactive users
@@ -228,6 +244,8 @@ en:
     export_user_role: Are you sure to export System User List report ?
     export_role_permission: Are you sure to export Permission List report ?
   change_log:
+    index_edit_role: Edit Role Log
+    index_inactive_uesr: Inactive User Log
     user: System User
     action: Action
     action_at: Action at

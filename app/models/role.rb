@@ -1,7 +1,6 @@
 class Role < ActiveRecord::Base
-  attr_accessible :name
-
-  validates_presence_of :name
+  attr_accessible :name, :role_type_id, :app_id
+  validates_presence_of :name, :role_type_id, :app_id
   has_many :role_assignments, :dependent => :destroy
   has_many :system_users, :through => :role_assignments, :source => :user, :source_type => 'SystemUser'
   has_many :role_permissions
@@ -95,5 +94,22 @@ class Role < ActiveRecord::Base
     blob = StringIO.new('')
     excel.write blob
     blob.string
+  end
+
+  def self.create_or_update_all!(role_data)
+    role_data.each do |data|
+      role = where(name: data[:name], app_id: data[:app_id]).first
+      role ? role.update_attributes!(data) : create!(data)
+    end
+  end
+
+  def self.upload_permissions(datas)
+    transaction do
+      datas.each do |data|
+        create_or_update_all!(data[:roles])
+        Permission.create_or_update_all!(data[:permissions])
+        RolePermission.change_permissions!(data[:role_permissions])
+      end
+    end
   end
 end

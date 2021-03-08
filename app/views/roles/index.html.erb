@@ -1,20 +1,31 @@
 <!-- Breadcrumbs -->
-  <div class="row">
-    <div id="breadcrumbs" class="col-xs-12 col-sm-7 col-md-7 col-lg-12">
-      <h2 class="page-title txt-color-blueDark">
-        <i class="fa-fw fa fa-list"></i>
-        <%= t("role.list_roles") %>
-        <a id="exportRolePermission" class="btn btn-primary pull-right"><%= t("general.export") %></a>
-      </h2>
-    </div>
-  </div>
+<%= breadcrumbs([ t("role.list_roles") ], 'fa fa-lg fa-fw fa-list') -%>
+<%= table_tabs(t("role.list_roles"),
+[ t("role.list_roles"), roles_path, policy(:role).index? ],
+[ t("general.log"), index_upload_role_change_logs_path, policy(:change_log).index_upload_role? ]) %>
 <!-- end Breadcrumbs -->
 
-
 <!-- pannel -->
-  <section id="widget-grid" class="">
+  <section id="widget-grid">
+    <div class="row" style="margin:30px 0 10px 0;">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <span>
+          <span style="vertical-align: bottom;"><%= t('role.current_version') %>: <%= @current_version.version if @current_version %></span>
+          <span style="margin-left: 10px; vertical-align: bottom;"><%= t('role.last_upload_at') %>: <%= format_time(@current_version.upload_at) if @current_version %></span>
+          <% if policy(:role).upload? %>
+            <span style="margin-left: 10px;">
+              <button id="uploadRolePermissionBtn" class="btn btn-primary" type="button" data-toggle="modal" data-target="#uploadRoleModal"><%= t("general.upload") %></button>
+            </span>
+          <% end %>
+          <span style="margin-left: 10px;">
+            <a id="exportRolePermission" class="btn btn-primary"><%= t("general.export") %></a>
+          </span>
+        </span>
+      </article>
+    </div>
+
     <div class="row">
-      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-5">
 
         <% @roles_by_apps.each do |app_roles| %>
         <div id=<%= app_roles[:app].name %> class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
@@ -43,6 +54,7 @@
   </section>
 <!-- end pannel -->
 
+<%= render partial: "roles/upload_role_permission" %>
 <%= render partial: "shared/nav_setup", locals: { tab_to_activate: "list_roles" } %>
 <%= render partial: "shared/pop_up_panel" %>
 

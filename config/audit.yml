@@ -8,6 +8,9 @@ audit_target:
       create:
         action_type: "create"
         locale_key: "user.create_system_user"
+      inactive:
+        action_type: "inactive"
+        locale_key: "user.inactive_system_user"
   domain:
     locale_key: "domain.name"
     action_name:

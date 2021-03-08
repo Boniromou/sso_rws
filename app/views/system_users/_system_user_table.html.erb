@@ -5,6 +5,9 @@
       <th><%=t("user.status") %></th>
       <th><%=t("casino.title") %></th>
       <th class="col-md-3" id="updated_at"><%=t("general.updated_at")%></th>
+      <% if policy(:system_user).inactive? %>
+        <th class="col-md-1"><%= t("general.operation") %></th>
+      <% end %>
     </thead>
     <tbody>
       <% @system_users.each do |su| %>
@@ -19,6 +22,13 @@
           <td id="<%=su.id%>"><%= system_user_status_format(su.status) %></td>
           <td><%= casino_id_names_format(su.active_casino_id_names) %></td>
           <td><%= format_time(su.updated_at) %></td>
+          <% if policy(:system_user).inactive? %>
+          <td>
+            <% if su.status == 'pending' %>
+            <%= link_to t('general.inactive'), inactive_system_user_path(id: su.id), method: :post, remote: true, class: 'btn btn-primary' %>
+            <% end %>
+          </td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>

@@ -41,14 +41,9 @@ class CsvUserService
   def update_user(usernames, user)
     return if user.status == SystemUser::PENDING
     if usernames.include?(user.username)
-      return if user.status == SystemUser::ACTIVE
-      user.update_attributes!(status: SystemUser::ACTIVE) if user.roles.present?
+      user.update_attributes!(status: SystemUser::ACTIVE) if user.status == SystemUser::INACTIVE
     else
-      if user.status == SystemUser::INACTIVE
-        user.update_attributes!(status: SystemUser::ACTIVE) if user.roles.present?
-      else
-        user.update_attributes!(status: SystemUser::INACTIVE) if user.roles.blank?
-      end
+      user.update_attributes!(status: SystemUser::INACTIVE) if user.status == SystemUser::ACTIVE
     end
   end
 

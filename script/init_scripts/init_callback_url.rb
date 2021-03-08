@@ -4,11 +4,11 @@ require 'sequel'
 require 'logger'
 
 if ARGV.length != 2
-  puts "Usage: ruby script/init_callback_url.rb <env> <file_name>"
-  puts "Example: ruby script/init_callback_url.rb development config/callback_urls.yml"
+  puts "Usage: ruby script/init_scripts/init_callback_url.rb <env> <file_name>"
+  puts "Example: ruby script/init_scripts/init_callback_url.rb development config/callback_urls.yml"
   Process.exit
 end
-Dir[File.expand_path("utils/*.rb",File.dirname( __FILE__))].each { |file| require file }
+Dir[File.expand_path("../utils/*.rb",File.dirname( __FILE__))].each { |file| require file }
 db = Database.connect(ARGV[0])
 configs = YAML.load_file(ARGV[1])[ARGV[0]]
 
@@ -40,7 +40,8 @@ app_types = {
   'signature_verifier_portal' => 'vue',
   'signature_management' => 'vue',
   'tournament_portal' => 'vue',
-  'player_operations_portal' => 'vue'
+  'player_operations_portal' => 'vue',
+  'player_approval_operations_portal' => 'vue'
 }
 
 configs.each do |app_name, url|

@@ -5,11 +5,11 @@ require 'sequel'
 require 'logger'
 
 if ARGV.length != 2
-  puts "Usage: ruby script/init_adfs.rb <env> <file_name>"
-  puts "Example: ruby script/init_adfs.rb development config/adfs.yml"
+  puts "Usage: ruby script/init_scripts/init_adfs.rb <env> <file_name>"
+  puts "Example: ruby script/init_scripts/init_adfs.rb development config/adfs.yml"
   Process.exit
 end
-Dir[File.expand_path("utils/*.rb",File.dirname( __FILE__))].each { |file| require file }
+Dir[File.expand_path("../utils/*.rb",File.dirname( __FILE__))].each { |file| require file }
 db = Database.connect(ARGV[0])
 configs = YAML.load_file(ARGV[1])[ARGV[0]]
 

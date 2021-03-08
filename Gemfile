@@ -71,3 +71,5 @@ gem "pundit",  '0.3.0'
 gem 'whenever', :require => false
 gem 'spreadsheet', '1.1.2'
 gem 'jwt', '1.5.6'
+gem 'roo', '2.7.1'
+gem 'roo-xls', '1.1.0'

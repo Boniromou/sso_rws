@@ -90,6 +90,24 @@ class SystemUsersController < ApplicationController
     render :json => I18n.t("alert.create_system_user_confirm", :username => params[:username])
   end
 
+  def inactive
+    authorize :system_user, :inactive?
+    begin
+      system_user = SystemUser.find(params[:id])
+      auditing(audit_action: "inactive") do
+        raise Rigi::InvalidStatus.new("Invalid status") if system_user.status != 'pending'
+        system_user.update_status('inactive')
+        flash[:success] = I18n.t("success.inactive_system_user")
+      end
+      SystemUserChangeLog.inactive_system_user(:current_user => current_system_user, :target_user => system_user)
+    rescue ActiveRecord::RecordNotFound
+      flash[:alert] = I18n.t("alert.record_not_found")
+    rescue Rigi::PortalError => e
+      flash[:alert] = e.error_message
+    end
+    redirect_to system_users_path
+  end
+
   private
   def role_ids_param
     role_ids = App.all.map do |app|

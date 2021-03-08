@@ -4,18 +4,17 @@ require 'fileutils'
 require 'sequel'
 require 'logger'
 
-Dir[File.expand_path("utils/*.rb",File.dirname( __FILE__))].each { |file| require file }
-
 if ARGV.length < 1
-  puts "Usage: ruby script/setup.rb <env> <file_name>"
-  puts "Example: ruby script/setup.rb development config/setup.yml"
+  puts "Usage: ruby script/init_scripts/setup.rb <env> <file_name>"
+  puts "Example: ruby script/init_scripts/setup.rb development config/setup.yml"
   Process.exit
 end
 
 env = ARGV[0]
-file_name = ARGV[1] || File.expand_path(File.dirname(__FILE__)) + "/config_files/#{env}.yml"
+file_name = ARGV[1] || File.expand_path(File.dirname(__FILE__)) + "../config_files/#{env}.yml"
 config_data = YAML.load_file(file_name)
 
+Dir[File.expand_path("../utils/*.rb",File.dirname( __FILE__))].each { |file| require file }
 $db = Database.connect(env)
 
 def insert_db(db_name, data, key = 'id', time = true)

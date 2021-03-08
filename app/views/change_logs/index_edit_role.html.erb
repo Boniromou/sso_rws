@@ -1,7 +1,9 @@
-<%= breadcrumbs([ t("user.list_users"), "Log"], 'fa fa-lg fa-fw fa-list') -%>
-<%= table_tabs("Log",
+<%= breadcrumbs([ t("user.list_users"), t("change_log.index_edit_role")], 'fa fa-lg fa-fw fa-list') -%>
+<%= table_tabs(t("change_log.index_edit_role"),
 [ t("user.list_users"), system_users_path, policy(:system_user).index? ],
-[ "Log", index_edit_role_change_logs_path, policy(:change_log).index? ]) %>
+[ t("change_log.index_edit_role"), index_edit_role_change_logs_path, policy(:change_log).index? ],
+[ t("change_log.index_inactive_uesr"), inactive_system_user_change_logs_path, policy(:change_log).inactive_system_user? ])
+ %>
 
 <div class="tab-content padding-10">
   <div class="tab-pane fade in active" id="system_user_change_logs_content">

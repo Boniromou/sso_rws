@@ -53,20 +53,29 @@ SsoRws::Application.routes.draw do
   get '/system_users/export' => 'system_users#export'
   get '/roles/export' => 'roles#export'
   get '/system_users/create_system_user_message' => 'system_users#create_system_user_message', as: :create_system_user_message
-  resources :roles, :only => [:index, :show]
+  resources :roles, :only => [:index, :show] do
+    collection do
+      post 'upload'
+      post 'check_version'
+    end
+  end
+
   resources :system_users, :only => [:index, :show, :new, :create] do
     member do
       get 'edit_roles'
       post 'update_roles'
+      post 'inactive'
     end
   end
 
   resources :change_logs, :only => [:index] do
     collection do
       get 'create_system_user'
+      get 'inactive_system_user'
       get 'index_edit_role'
       get 'create_domain_licensee'
       get 'index_domain_ldap'
+      get 'index_upload_role'
     end
   end
 

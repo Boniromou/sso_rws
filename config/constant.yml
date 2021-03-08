@@ -24,7 +24,7 @@ test:
 
 development:
   <<: *default
-  url_base: 'http://192.168.56.101:3000'
+  url_base: 'http://10.10.5.158:3000'
 
 integration0:
   <<: *default

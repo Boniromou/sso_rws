@@ -1,4 +1,5 @@
 class SystemUserPolicy < ApplicationPolicy
+
   def edit_roles?
     permitted?(:system_user, :grant_roles) && system_user.id != record.id && !record.is_root? && has_mutual_casinos?
   end
@@ -25,6 +26,10 @@ class SystemUserPolicy < ApplicationPolicy
 
   def link?
     permitted?(:system_user, :show)
+  end
+
+  def inactive?
+    permitted?(:system_user, :inactive)
   end
 
   def has_mutual_casinos?

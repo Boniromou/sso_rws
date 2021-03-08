@@ -5,8 +5,8 @@ require 'sequel'
 require 'logger'
 
 if ARGV.length != 3
-        puts "Usage: ruby script/load_role_permission.rb <env> <file_name> <sheet_name>"
-        puts "Example: ruby script/load_role_permission.rb development role_permission_files/AdminPortal_Configuration_v0.31.xlsx AP"
+        puts "Usage: ruby script/role_scripts/load_role_permission.rb <env> <file_name> <sheet_name>"
+        puts "Example: ruby script/role_scripts/load_role_permission.rb development role_permission_files/AdminPortal_Configuration_v0.31.xlsx AP"
     Process.exit
 end
 
@@ -106,16 +106,8 @@ p role_permission_data
 p '---------------------------------------------------'
 =end
 
-mysql_configs = YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/../config/database.yml')
-mysqldb = mysql_configs[env]
-sso_db = Sequel.connect(sprintf('%s://%s:%s@%s:%s/%s',
-                           mysqldb['adapter'],
-                           mysqldb['username'],
-                           mysqldb['password'],
-                           mysqldb['host'],
-                           mysqldb['port'] || 3306,
-                           mysqldb['database']), :encoding => mysqldb['encoding'],
-                          :loggers => Logger.new($stdout))
+Dir[File.expand_path("../utils/*.rb",File.dirname( __FILE__))].each { |file| require file }
+sso_db = Database.connect(ARGV[0])
 
 print "Overwrite? (Y/n): "
 prompt = STDIN.gets.chomp

@@ -3,6 +3,7 @@ require 'net/ldap/dn'
 require 'timeout'
 class Ldap < AuthSource
   DISABLED_ACCOUNT_KEY = 'Disabled Accounts'
+  ADMIN_GROUP = 'PortalAdmins'
   MATCH_PATTERN_REGEXP = /CN=\d+casinoid/
 
   def get_url(app_name)
@@ -39,23 +40,26 @@ class Ldap < AuthSource
   def retrieve_user_profile(auth_source_detail, username_with_domain, casino_ids)
     ldap = initialize_ldap_con(auth_source_detail, nil, nil)
     search_filter = Net::LDAP::Filter.eq("userPrincipalName", "#{username_with_domain}")
-    ldap_entry = ldap.search(:base => auth_source_detail['data']['base_dn'], :filter => search_filter, :return_result => true, :scope => auth_source_detail['data']['search_scope'] || Net::LDAP::SearchScope_WholeSubtree).first
-    if ldap_entry.blank?
+    ldap_entry = ldap.search(:base => auth_source_detail['data']['base_dn'], :filter => search_filter, :return_result => true, :scope => auth_source_detail['data']['search_scope'] || Net::LDAP::SearchScope_WholeSubtree)
+    if ldap_entry.blank? || ldap_entry.first.blank?
       Rails.logger.info "[username=#{username_with_domain}][filter_groups=#{casino_ids}] account is not in Ldap server "
       return {}
     end
 
+    ldap_entry = ldap_entry.first
     dnames = ldap_entry[:distinguishedName]
     memberofs = ldap_entry[:memberOf]
-    is_disable_account, is_admin_group = false, false
-    groups = []
+    is_disable_account = false
     Rails.logger.info "Ldap server response: distinguishedName => #{dnames}, memberOf => #{memberofs}"
-
     is_disable_account = dnames.any? { |dn| dn.include?(DISABLED_ACCOUNT_KEY) }
-    memberofs.each do |memberof|
-      casino_ids.each do |filter|
-        groups << filter.to_i if memberof_has_key?(memberof, MATCH_PATTERN_REGEXP, filter.to_s)
-      end
+
+    groups = filter_memberofs(memberofs, casino_ids)
+    if groups.size == 0 && memberofs.join(',').include?(ADMIN_GROUP)
+      group_filter = Net::LDAP::Filter.eq("cn", ADMIN_GROUP)
+      group_entry = ldap.search(:base => auth_source_detail['data']['base_dn'], :filter => group_filter, :return_result => true, :scope => auth_source_detail['data']['search_scope'] || Net::LDAP::SearchScope_WholeSubtree)
+      group_memberofs = group_entry.first[:memberof] if group_entry && group_entry.first
+      Rails.logger.info "Ldap server response: group => #{ADMIN_GROUP}, memberOf => #{group_memberofs}"
+      groups = filter_memberofs(group_memberofs, casino_ids)
     end
 
     status = is_disable_account ? SystemUser::INACTIVE : SystemUser::ACTIVE
@@ -93,6 +97,17 @@ class Ldap < AuthSource
       Rails.logger.error "SystemUser[username=#{username}] Login failed. Authentication failed"
       raise Rigi::InvalidLogin.new("alert.invalid_login")
     end
+  end
+
+  def filter_memberofs(memberofs, casino_ids)
+    return [] unless memberofs
+    groups = []
+    memberofs.each do |memberof|
+      casino_ids.each do |filter|
+        groups << filter.to_i if memberof_has_key?(memberof, MATCH_PATTERN_REGEXP, filter.to_s)
+      end
+    end
+    groups
   end
 
   def memberof_has_key?(pair, regexp, key)

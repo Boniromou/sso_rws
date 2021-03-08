@@ -4,7 +4,7 @@ class SystemUser < ActiveRecord::Base
   PENDING = 'pending'
 
   devise :registerable
-  attr_accessible :id, :username, :status, :admin, :auth_source_id, :domain_id
+  attr_accessible :id, :username, :status, :admin, :auth_source_id, :domain_id, :verified
   has_many :role_assignments, :as => :user, :dependent => :destroy
   has_many :roles, :through => :role_assignments
   has_many :app_system_users
@@ -24,6 +24,10 @@ class SystemUser < ActiveRecord::Base
 
   def timezone_name
     @timezone_name ||= Rails.cache.fetch(id).try(:[], :timezone) || DEFAULT_TIMEZONE
+  end
+
+  def username_with_domain
+    "#{self.username}@#{self.domain.name}"
   end
 
   def active_casino_ids
@@ -65,7 +69,7 @@ class SystemUser < ActiveRecord::Base
 
   def self.register_without_check!(username, domain)
     domain = Domain.where(:name => domain).first
-    create!(:username => username, :domain_id => domain.id, :status => PENDING)
+    create!(:username => username, :domain_id => domain.id, :status => PENDING, :verified => false)
   end
 
   alias_method "is_root?", "is_admin?"
@@ -140,6 +144,11 @@ class SystemUser < ActiveRecord::Base
     save!
   end
 
+  def update_verified(verified)
+    self.verified = verified
+    save!
+  end
+
   def refresh_permission_cache
     all_app_ids = App.all
     assigned_app_ids = self.apps(true).map { |app| app.id }
@@ -163,7 +172,8 @@ class SystemUser < ActiveRecord::Base
           domain = system_user.domain
           auth_source_detail = domain.auth_source_detail
           raise "domain[#{domain.name}] auth_source_detail not exist" if auth_source_detail.blank?
-          profile = Ldap.new.retrieve_user_profile(auth_source_detail, "#{system_user.username}@#{domain.name}", domain.get_casino_ids)
+          user_type = domain.user_type || 'Ldap'
+          profile = user_type.constantize.new.retrieve_user_profile(auth_source_detail, "#{system_user.username}@#{domain.name}", domain.get_casino_ids)
           if profile
             if system_user.status != profile[:status]
               system_user.status = profile[:status]
@@ -225,8 +235,8 @@ class SystemUser < ActiveRecord::Base
   end
 
   def backfill_change_logs
-    return unless status == PENDING
-    change_logs = find_change_logs_by_action(['edit_role', 'create'])
+    return if verified
+    change_logs = find_change_logs_by_action(['edit_role', 'create', 'inactive'])
     change_logs.each do |change_log|
       change_log.backfill(self)
     end

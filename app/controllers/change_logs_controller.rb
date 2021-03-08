@@ -12,8 +12,19 @@ class ChangeLogsController < ApplicationController
     end
   end
 
+  def inactive_system_user
+    authorize :change_logs, :inactive_system_user?
+
+    if params[:commit].present?
+      start_time = parse_date(params[:start_time])
+      end_time = parse_date(params[:end_time], true)
+      @system_user_change_logs = policy_scope(SystemUserChangeLog.by_action('inactive').search_query('', start_time, end_time))
+    end
+  end
+
   def create_system_user
     authorize :change_logs, :create_system_user?
+
     if params[:commit].present?
       start_time = parse_date(params[:start_time])
       end_time = parse_date(params[:end_time], true)
@@ -34,5 +45,10 @@ class ChangeLogsController < ApplicationController
   def index_domain_ldap
     authorize :change_logs, :index_domain_ldap?
     @domain_ldap_change_logs = DomainChangeLog.all
+  end
+
+  def index_upload_role
+    authorize :change_logs, :index_upload_role?
+    @upload_logs = RolePermissionsVersion.all
   end
 end

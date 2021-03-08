@@ -5,7 +5,7 @@ require 'sequel'
 require 'logger'
 require 'active_support/core_ext/hash'
 
-Dir[File.expand_path("./utils/*.rb",File.dirname( __FILE__))].each { |file| require file }
+Dir[File.expand_path("../utils/*.rb",File.dirname( __FILE__))].each { |file| require file }
 
 class UserHelper
   def initialize(env)
@@ -143,8 +143,8 @@ class UserHelper
 end
 
 if ARGV.length != 2
-  puts "Usage: ruby script/load_user_roles.rb <env> <file_name>"
-  puts "Example: ruby script/load_user_roles.rb development script/config_files/system_user_list.xlsx"
+  puts "Usage: ruby script/role_scripts/load_user_roles.rb <env> <file_name>"
+  puts "Example: ruby script/role_scripts/load_user_roles.rb development script/config_files/system_user_list.xlsx"
   Process.exit
 end
 

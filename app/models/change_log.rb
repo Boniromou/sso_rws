@@ -33,4 +33,10 @@ class ChangeLog < ActiveRecord::Base
       target_casinos.create(:target_casino_id => casino_id, :target_casino_name => Casino.find(casino_id).name)
     end
   end
+
+  def set_action_by(current_user)
+    self.action_by[:username] = "#{current_user.username}@#{current_user.domain.name}"
+    self.action_by[:casino_ids] = current_user.active_casino_ids
+    self.action_by[:casino_id_names] = current_user.active_casino_id_names
+  end
 end

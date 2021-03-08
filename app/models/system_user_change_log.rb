@@ -7,16 +7,13 @@ class SystemUserChangeLog < ChangeLog
     match_target_username(target_username).since(start_time).until(end_time)
   end
 
-  def self.create_system_user(params) 
+  def self.create_system_user(params)
     raise 'Invalid current_user params' if params[:current_user].blank?
-    current_user = params[:current_user]
     cl = self.new
     cl.target_username = params[:username]
     cl.target_domain = params[:domain]
     cl.action = 'create'
-    cl.action_by[:username] = "#{current_user.username}@#{current_user.domain.name}"
-    cl.action_by[:casino_ids] = current_user.active_casino_ids
-    cl.action_by[:casino_id_names] = current_user.active_casino_id_names
+    cl.set_action_by(params[:current_user])
 
     domain = Domain.find_by_name(params[:domain])
     system_user = SystemUser.where(:username => params[:username], :domain_id => domain.id).first
@@ -29,7 +26,23 @@ class SystemUserChangeLog < ChangeLog
         cl.target_casinos.create!(:change_log_id => cl.id, :target_casino_id => target_casino_id, :target_casino_name => casino.name)
       end
     end
-    
   end
 
+  def self.inactive_system_user(params)
+    target_user = params[:target_user]
+    raise 'Invalid current_user params' if params[:current_user].blank?
+    cl = self.new
+    cl.target_username = target_user.username
+    cl.target_domain = target_user.domain.name
+    cl.action = 'inactive'
+    cl.set_action_by(params[:current_user])
+
+    transaction do
+      cl.save!
+      target_user.active_casino_ids.each do |target_casino_id|
+        casino = Casino.find(target_casino_id)
+        cl.target_casinos.create!(:change_log_id => cl.id, :target_casino_id => target_casino_id, :target_casino_name => casino.name)
+      end
+    end
+  end
 end

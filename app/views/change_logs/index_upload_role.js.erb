@@ -1,0 +1,9 @@
+$('div#content').css({ opacity: "0.0" }).html("<%= escape_javascript(render :file => "change_logs/index_upload_role", :formats => [ :html ]) %>").delay(50).animate({ opacity: "1.0" }, 300);
+$(document).ready(function() {
+  var index = $('#action-at').index();
+  $('.table').dataTable({
+    "order": [[ index, "desc"]],
+    "pageLength" : 50
+  });
+});
+<%= render :partial => "shared/flash_message", :formats => [ :js ] %>

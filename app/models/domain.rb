@@ -1,5 +1,5 @@
 class Domain < ActiveRecord::Base
-  attr_accessible :id, :name, :auth_source_detail_id
+  attr_accessible :id, :name, :auth_source_detail_id, :user_type
   has_many :domain_licensees
   has_many :system_users
   has_many :licensees, :through => :domain_licensees
@@ -21,7 +21,7 @@ class Domain < ActiveRecord::Base
   def self.insert(domain, auth_source_detail)
     transaction do
       auth_source_detail = AuthSourceDetail.insert(auth_source_detail)
-      create!(name: domain[:name].to_s.strip.downcase, auth_source_detail_id: auth_source_detail.id)
+      create!(name: domain[:name].to_s.strip.downcase, auth_source_detail_id: auth_source_detail.id, user_type: 'Ldap')
     end
   end
 

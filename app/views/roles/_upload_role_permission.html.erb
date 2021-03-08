@@ -1,0 +1,49 @@
+<!-- Modal -->
+<div id='uploadRoleModal' class='modal fade' role='dialog'>
+  <div class='modal-dialog'>
+    <!-- Modal content-->
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <button type='button' class='close' data-dismiss='modal'>&times;</button>
+        <h4 class='modal-title'><%= I18n.t('role.upload_title') %></h4>
+      </div>
+      <%= form_tag(upload_roles_path, method: 'post', multipart: true, id: 'upload_roles_form', :remote => true) do %>
+        <div class='modal-body'>
+          <div class='form-group'>
+            <p><%= file_field_tag 'role_file', class: 'btn btn-default', :accept => '.xlsx, .xls', style: 'width:100%'%></p>
+            <p><%= t('role.upload_tooltip', :env => Rails.env) %></p>
+            <p class='text-danger' id='upload_error_note'></p>
+          </div>
+        </div>
+        <div class='modal-footer'>
+          <%= button_tag t('general.confirm'), type: 'button', id: 'upload_btn', class: 'btn btn-primary'%>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script type='text/javascript'>
+  $(function(){
+    $('#upload_btn').click(function(event) {
+      var filename = $('#role_file').val().replace(/^.*[\\\/]/, '');
+      $.ajax({
+        url: "<%= check_version_roles_path %>",
+        type: 'POST',
+        dataType: 'json',
+        data: {filename: filename}
+      }).done(function(rst) {
+        if(rst.success){
+          $('#upload_roles_form').submit();
+        }else{
+          $('#upload_error_note').html(rst.error_note);
+        }
+      });
+    });
+
+    $('.modal').on('hidden.bs.modal', function(){
+      $('#upload_roles_form')[0].reset();
+      $('#upload_error_note').html('');
+    });
+  });
+</script>

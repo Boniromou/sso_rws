@@ -7,6 +7,14 @@ class ChangeLogPolicy < ApplicationPolicy
     permitted?(:system_user, :list_create_user_change_log)
   end
 
+  def inactive_system_user?
+    permitted?(:system_user, :list_inactive_user_change_log)
+  end
+
+  def index_upload_role?
+    permitted?(:role, :list_upload_change_log)
+  end
+
   def index_create_domain_licensee?
     permitted?(:domain_licensee_mapping, :list_log)
   end
@@ -20,7 +28,9 @@ class ChangeLogPolicy < ApplicationPolicy
       if system_user.is_admin? || system_user.has_admin_casino?
         scope.includes("target_casinos").all
       else
-        scope.includes("target_casinos").where("target_casinos.target_casino_id in (?)", system_user.active_casino_ids)
+        scope.includes("target_casinos")
+        .where("(change_logs.target_domain is null or change_logs.target_domain = ?)", system_user.domain.name)
+        .where("(target_casinos.target_casino_id is null or target_casinos.target_casino_id in (?))", system_user.active_casino_ids)
       end
     end
   end

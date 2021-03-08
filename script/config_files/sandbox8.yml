@@ -23,6 +23,7 @@ domain:
   id: 1
   name: 'gamesourcecloud.local'
   auth_source_detail_id: 1
+  user_type: 'Openldap'
 
 domain_licensee:
   id: 1

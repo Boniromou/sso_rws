@@ -4,8 +4,8 @@ require 'sequel'
 require 'logger'
 
 if ARGV.length != 2
-  puts "Usage: ruby script/remove_app.rb <env> <app_name>"
-  puts "Example: ruby script/remove_app.rb development game_recall"
+  puts "Usage: ruby script/role_scripts/remove_app.rb <env> <app_name>"
+  puts "Example: ruby script/role_scripts/remove_app.rb development game_recall"
   Process.exit
 end
 

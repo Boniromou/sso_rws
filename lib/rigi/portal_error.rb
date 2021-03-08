@@ -28,6 +28,7 @@ module Rigi
   class InvalidParameter < PortalError; end
   class InvalidUsername < PortalError; end
   class InvalidDomain < PortalError; end
+  class InvalidStatus < PortalError; end
   class InvalidAuthSource < PortalError; end
   class RegisteredAccount <  PortalError; end
   class AccountNotInLdap <  PortalError; end
@@ -39,5 +40,5 @@ module Rigi
   class DuplicateAuthorize < PortalError; end
   class InvalidToken < PortalError; end
   class InvalidPermission < PortalError; end
-
+  class UploadRolePermissionsFail < PortalError; end
 end
