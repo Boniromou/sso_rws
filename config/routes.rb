@@ -13,7 +13,17 @@ SsoRws::Application.routes.draw do
     get :logout
   end
 
+  namespace :gapi do
+    get :new
+    post :login
+  end
+
   namespace :ldap_auth do
+    get :new
+    post :create
+  end
+
+  namespace :gapi_auth do
     get :new
     post :create
   end

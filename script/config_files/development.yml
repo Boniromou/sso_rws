@@ -1,6 +1,7 @@
 app:
   name: 'user_management'
   callback_url: 'http://10.10.5.169:3000/home'
+  token_type: 'standard'
 
 auth_source:
   id: 1

@@ -1,0 +1,21 @@
+development:
+  laxino:
+    auth_source:
+      token: '10.0.2.2'
+      type: 'Gapi'
+    auth_source_detail:
+      name: 'laxino_gapi'
+      data:
+        client_id: "227547642277-tut96v2n6njm3op9gaqicbu7av8punhm.apps.googleusercontent.com"
+        casino_id: 1000
+
+staging1:
+  laxino:
+    auth_source:
+      token: '10.10.5.162'
+      type: 'Gapi'
+    auth_source_detail:
+      name: 'laxino_gapi'
+      data:
+        config_url: "227547642277-tut96v2n6njm3op9gaqicbu7av8punhm.apps.googleusercontent.com"
+        casino_id: 30060
