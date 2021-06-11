@@ -17,5 +17,5 @@ staging1:
     auth_source_detail:
       name: 'laxino_gapi'
       data:
-        config_url: "227547642277-tut96v2n6njm3op9gaqicbu7av8punhm.apps.googleusercontent.com"
+        client_id: "227547642277-589vgpcc60e8l0u9bgqu391vla28ue38.apps.googleusercontent.com"
         casino_id: 30060

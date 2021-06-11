@@ -13,7 +13,7 @@ class GapiController < ApplicationController
   def login
     auth_source = AuthSource.find_by_token(get_client_ip)
     casino_id = auth_source.auth_source_detail['data']['casino_id']
-    system_user = auth_source.login!(params[:username], params[:app_name], [casino_id])
+    system_user = auth_source.authenticate!(params[:username], params[:app_name], [casino_id])
     write_authenticate(system_user, params[:app_name])
     callback_url = App.find_by_name(params[:app_name]).callback_url
     render :json => {error_code: 'OK', error_msg: 'Request is now completed', callback_url: callback_url}
