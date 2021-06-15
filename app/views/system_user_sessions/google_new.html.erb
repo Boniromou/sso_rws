@@ -21,7 +21,7 @@
           // Request scopes in addition to 'profile' and 'email'
           // scope: 'custom'
         });
-        attachSignin(document.getElementById('customBtn'));
+        attachSignin(document.getElementById('customBtn'))
       });
     };
 
@@ -33,7 +33,7 @@
           console.log(profile)
           signOutGoogle();
         }, function(error) {
-          console.log(JSON.stringify(error, undefined, 2));
+          console.log(JSON.stringify(error, undefined, 2))
         }
       );
     }

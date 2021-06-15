@@ -10,6 +10,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     var googleUser = {};
+    var username = '';
     var startApp = function() {
       gapi.load('auth2', function(){
         // Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -28,29 +29,40 @@
       auth2.attachClickHandler(element, {},
         function(googleUser) {
           var profile = googleUser.getBasicProfile();
+          username = profile.getEmail()
           console.log(profile)
-          signOutGoogle(profile);
+          signOutGoogle()
         }, function(error) {
-          console.log(JSON.stringify(error, undefined, 2));
+          console.log(JSON.stringify(error, undefined, 2))
         }
       );
     }
 
-    function signOutGoogle(profile) {
-      var auth2 = gapi.auth2.getAuthInstance();
-      auth2.signOut().then(function () {
-        console.log('User signed out.');
-      });
-      auth2.disconnect();
-      loginSSO(profile);
+    function signOutGoogle() {
+      win = window.open("http://accounts.google.com/logout", "something", "width=550,height=570");
+      signOutTimer(win)
     }
 
-    function loginSSO(profile) {
+    function signOutTimer(win) {
+      t = setTimeout(function(){
+        console.log(gapi.auth2.getAuthInstance().isSignedIn.get())
+        if(gapi.auth2.getAuthInstance().isSignedIn.get()){
+          signOutTimer(win)
+        } else {
+          console.log('User signed out.')
+          clearTimeout(t);
+          win.close()
+          authSSO()
+        }
+      }, 300);
+    }
+
+    function authSSO() {
       $.ajax({
         url: "/gapi_auth/create",
         type: 'POST',
         dataType: 'json',
-        data: {username: profile.getEmail(), app_name: '<%= @app_name %>'}
+        data: {username: username, app_name: '<%= @app_name %>'}
       }).done(function(rst) {
         console.log(rst)
         if(rst.error_code == 'OK'){
