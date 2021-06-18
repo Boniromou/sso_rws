@@ -31,9 +31,9 @@ class GapiAuthController < ApplicationController
     uri = 'https://oauth2.googleapis.com/tokeninfo'
     response = HTTParty.post(uri, :body => {id_token: params[:id_token]} )
     response = JSON.parse(response.body)
-    Rails.logger.info("Varify google id_token response: #{response}")
+    Rails.logger.info("Verify google id_token response: #{response}")
     if response['error'] || response['aud'] != client_id || response['email'] != params[:username]
-      Rails.logger.info('Varify google id_token failed.')
+      Rails.logger.info('Verify google id_token failed.')
       raise Rigi::InvalidLogin.new('alert.invalid_google_token')
     end
   end
