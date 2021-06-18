@@ -36,6 +36,7 @@ en:
     unknown_token: ! 'Status : Unknown Token.'
     registered_account: The account has been registered
     record_not_found: This record is not found.
+    invalid_google_token: Invalid token; Please try again or contact technical support
   title:
     title: User Management
     login_title: Login

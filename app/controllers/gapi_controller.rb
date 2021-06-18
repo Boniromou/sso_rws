@@ -1,3 +1,5 @@
+require 'httparty'
+
 class GapiController < ApplicationController
   layout "login"
   skip_before_filter :authenticate_system_user!, :check_activation_status
@@ -13,6 +15,7 @@ class GapiController < ApplicationController
   def login
     auth_source = AuthSource.find_by_token(get_client_ip)
     casino_id = auth_source.auth_source_detail['data']['casino_id']
+    verify_id_token(auth_source.auth_source_detail['data']['client_id'])
     system_user = auth_source.authenticate!(params[:username], params[:app_name], [casino_id])
     write_authenticate(system_user, params[:app_name])
     callback_url = App.find_by_name(params[:app_name]).callback_url
@@ -20,5 +23,18 @@ class GapiController < ApplicationController
    rescue Rigi::InvalidLogin => e
     @app_name = params[:app_name]
     render :json => {error_code: 'InvalidLogin', error_msg: I18n.t(e.error_message)}
+  end
+
+  protected
+
+  def verify_id_token(client_id)
+    uri = 'https://oauth2.googleapis.com/tokeninfo'
+    response = HTTParty.post(uri, :body => {id_token: params[:id_token]} )
+    response = JSON.parse(response.body)
+    Rails.logger.info("Varify google id_token response: #{response}")
+    if response['error'] || response['aud'] != client_id || response['email'] != params[:username]
+      Rails.logger.info('Varify google id_token failed.')
+      raise Rigi::InvalidLogin.new('alert.invalid_google_token')
+    end
   end
 end

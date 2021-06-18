@@ -11,6 +11,7 @@
   $(document).ready(function() {
     var googleUser = {};
     var username = '';
+    var id_token = '';
     var startApp = function() {
       gapi.load('auth2', function(){
         // Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -30,6 +31,7 @@
         function(googleUser) {
           var profile = googleUser.getBasicProfile();
           username = profile.getEmail()
+          id_token = googleUser.getAuthResponse().id_token
           console.log(profile)
           signOutGoogle();
         }, function(error) {
@@ -62,11 +64,12 @@
         url: "/gapi/login",
         type: 'POST',
         dataType: 'json',
-        data: {username: username, app_name: '<%= @app_name %>'}
+        data: {username: username, app_name: '<%= @app_name %>', id_token: id_token}
       }).done(function(rst) {
         console.log(rst)
         if(rst.error_code == 'OK'){
           window.location.href = rst.callback_url;
+          console.log('login success')
         }else{
           $('#error_msg').html(rst.error_msg)
         }

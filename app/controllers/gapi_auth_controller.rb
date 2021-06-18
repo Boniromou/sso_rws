@@ -11,6 +11,7 @@ class GapiAuthController < ApplicationController
 
   def create
     auth_source = AuthSource.find_by_token(get_client_ip)
+    verify_id_token(auth_source.auth_source_detail['data']['client_id'])
     system_user = auth_source.authorize!(params[:username], params[:app_name], auth_info['casino_id'], auth_info['permission'])
     Rails.logger.info 'Authorize successfully.'
     write_authorize_cookie({error_code: 'OK', error_message: 'Authorize successfully.', authorized_by: params[:username], authorized_at: Time.now})
@@ -22,5 +23,18 @@ class GapiAuthController < ApplicationController
     Rails.logger.error "Authorize failed: #{e.error_message}"
     write_authorize_cookie({error_code: e.class.name.demodulize, error_message: e.error_message})
     render :json => {error_code: 'InvalidAuthorize', error_msg: 'Authorize failed.', callback_url: auth_info['callback_url']}
+  end
+
+  protected
+
+  def verify_id_token(client_id)
+    uri = 'https://oauth2.googleapis.com/tokeninfo'
+    response = HTTParty.post(uri, :body => {id_token: params[:id_token]} )
+    response = JSON.parse(response.body)
+    Rails.logger.info("Varify google id_token response: #{response}")
+    if response['error'] || response['aud'] != client_id || response['email'] != params[:username]
+      Rails.logger.info('Varify google id_token failed.')
+      raise Rigi::InvalidLogin.new('alert.invalid_google_token')
+    end
   end
 end
