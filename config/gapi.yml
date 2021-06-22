@@ -1,13 +1,14 @@
 development:
   laxino:
     auth_source:
-      token: '10.0.2.2'
+      token: '10.10.10.10'
       type: 'Gapi'
     auth_source_detail:
       name: 'laxino_gapi'
       data:
         client_id: "227547642277-tut96v2n6njm3op9gaqicbu7av8punhm.apps.googleusercontent.com"
         casino_id: 1000
+        public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0YudnviuwNdcCoXEMwMl\nJWhxWYpmAeRXQ8Df5bCVf5xFVEmL5am/2TTWRwRf34vqJuoGpyf3S7zJeJv8I2Ly\nvmpw33LReREkObCt1up17JGw5/d9K2Mf59EnnPkd7YUGklUxje8rxILiThiPdEaF\n8P5pRee+WD2mmQSug0rqNlMpadYVaMv3Y/HLr97Heh1ACRofYfv2hmGSmC6oo0SN\n4d5gP+/ggAzg9Ko7LDVcBg6TWAfJLh33GpMtAI2MPjd6XFJju+R9d68IDCIUo+CE\n8K0pAZnXGS8aWln/dpjZhlMjXrgY423Qa4YNsloPcwkQ20rk8XGYFr0H/9GuWIaW\nWQIDAQAB\n-----END PUBLIC KEY-----"
 
 staging1:
   laxino:
@@ -19,3 +20,16 @@ staging1:
       data:
         client_id: "227547642277-589vgpcc60e8l0u9bgqu391vla28ue38.apps.googleusercontent.com"
         casino_id: 30060
+        public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0YudnviuwNdcCoXEMwMl\nJWhxWYpmAeRXQ8Df5bCVf5xFVEmL5am/2TTWRwRf34vqJuoGpyf3S7zJeJv8I2Ly\nvmpw33LReREkObCt1up17JGw5/d9K2Mf59EnnPkd7YUGklUxje8rxILiThiPdEaF\n8P5pRee+WD2mmQSug0rqNlMpadYVaMv3Y/HLr97Heh1ACRofYfv2hmGSmC6oo0SN\n4d5gP+/ggAzg9Ko7LDVcBg6TWAfJLh33GpMtAI2MPjd6XFJju+R9d68IDCIUo+CE\n8K0pAZnXGS8aWln/dpjZhlMjXrgY423Qa4YNsloPcwkQ20rk8XGYFr0H/9GuWIaW\nWQIDAQAB\n-----END PUBLIC KEY-----"
+
+sandbox10:
+  laxino:
+    auth_source:
+      token: '10.10.5.162'
+      type: 'Gapi'
+    auth_source_detail:
+      name: 'rwm_gapi'
+      data:
+        client_id: "803369587114-ofbbht9e2kfcdheb5t5qbmat6brqr3io.apps.googleusercontent.com"
+        casino_id: 52000
+        public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0YudnviuwNdcCoXEMwMl\nJWhxWYpmAeRXQ8Df5bCVf5xFVEmL5am/2TTWRwRf34vqJuoGpyf3S7zJeJv8I2Ly\nvmpw33LReREkObCt1up17JGw5/d9K2Mf59EnnPkd7YUGklUxje8rxILiThiPdEaF\n8P5pRee+WD2mmQSug0rqNlMpadYVaMv3Y/HLr97Heh1ACRofYfv2hmGSmC6oo0SN\n4d5gP+/ggAzg9Ko7LDVcBg6TWAfJLh33GpMtAI2MPjd6XFJju+R9d68IDCIUo+CE\n8K0pAZnXGS8aWln/dpjZhlMjXrgY423Qa4YNsloPcwkQ20rk8XGYFr0H/9GuWIaW\nWQIDAQAB\n-----END PUBLIC KEY-----"

@@ -3,10 +3,7 @@
 <%= stylesheet_link_tag "bootstrap.min", :media => "screen" %>
 <%= stylesheet_link_tag "font-awesome.min", :media => "screen" %>
 <%= stylesheet_link_tag "smartadmin-production.min", :media => "screen" %>
-<%# <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css"> %>
 
 <%= javascript_include_tag "login" %>
-<script src="https://apis.google.com/js/api:client.js"></script>
-
-<%# <script src="https://apis.google.com/js/platform.js" async defer></script>
-<meta name="google-signin-client_id" content="168901164445-k1e8vrliq1o8cm8hfe60hda1trrm98q9.apps.googleusercontent.com"> %>
+<%# <script src="https://apis.google.com/js/api:client.js"></script> %>
+<%= javascript_include_tag "api_client" %>

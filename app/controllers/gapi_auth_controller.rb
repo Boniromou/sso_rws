@@ -11,7 +11,7 @@ class GapiAuthController < ApplicationController
 
   def create
     auth_source = AuthSource.find_by_token(get_client_ip)
-    verify_id_token(auth_source.auth_source_detail['data']['client_id'])
+    verify_id_token(auth_source.auth_source_detail['data'])
     system_user = auth_source.authorize!(params[:username], params[:app_name], auth_info['casino_id'], auth_info['permission'])
     Rails.logger.info 'Authorize successfully.'
     write_authorize_cookie({error_code: 'OK', error_message: 'Authorize successfully.', authorized_by: params[:username], authorized_at: Time.now})
@@ -27,14 +27,17 @@ class GapiAuthController < ApplicationController
 
   protected
 
-  def verify_id_token(client_id)
-    uri = 'https://oauth2.googleapis.com/tokeninfo'
-    response = HTTParty.post(uri, :body => {id_token: params[:id_token]} )
-    response = JSON.parse(response.body)
-    Rails.logger.info("Verify google id_token response: #{response}")
-    if response['error'] || response['aud'] != client_id || response['email'] != params[:username]
+  def verify_id_token(data)
+    public_key = OpenSSL::PKey::RSA.new(data['public_key'])
+    token_info = JWT.decode(params[:id_token], public_key, true, { algorithm: 'RS256' })[0]
+    Rails.logger.info("Verify google id_token: #{token_info}")
+    if token_info['aud'] != data['client_id'] || token_info['email'] != params[:username]
       Rails.logger.info('Verify google id_token failed.')
       raise Rigi::InvalidLogin.new('alert.invalid_google_token')
     end
+  rescue StandardError => e
+    Rails.logger.error e.message
+    Rails.logger.error e.backtrace
+    raise Rigi::InvalidLogin.new('alert.invalid_google_token')
   end
 end

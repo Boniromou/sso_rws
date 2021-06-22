@@ -33,3 +33,4 @@
 //=require "app"
 //=require "app-extend"
 //=require "pagination"
+//=require "api_client"
