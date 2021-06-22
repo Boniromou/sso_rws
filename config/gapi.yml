@@ -1,3 +1,7 @@
+public_keys: &public_keys
+  "19fe2a7b6795239606ca0a750794a7bd9fd95961": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0YudnviuwNdcCoXEMwMl\nJWhxWYpmAeRXQ8Df5bCVf5xFVEmL5am/2TTWRwRf34vqJuoGpyf3S7zJeJv8I2Ly\nvmpw33LReREkObCt1up17JGw5/d9K2Mf59EnnPkd7YUGklUxje8rxILiThiPdEaF\n8P5pRee+WD2mmQSug0rqNlMpadYVaMv3Y/HLr97Heh1ACRofYfv2hmGSmC6oo0SN\n4d5gP+/ggAzg9Ko7LDVcBg6TWAfJLh33GpMtAI2MPjd6XFJju+R9d68IDCIUo+CE\n8K0pAZnXGS8aWln/dpjZhlMjXrgY423Qa4YNsloPcwkQ20rk8XGYFr0H/9GuWIaW\nWQIDAQAB\n-----END PUBLIC KEY-----\n"
+  "112e4b52ab833017d385ce0d0b4c60587ed25842": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArH9e4LpeORtRkQuo5vKL\n+csLPnJmyWU/qHiOqWyXVsoPymUKImNsPlabOcvkYYlPflWE+qmtQCH+ACDjxzCh\nyIktr+5zeCEZidln8pWEmDq+R+aXi/sQgJUr+7H/Y69hD8cR0K3LyC86QRbpigxW\n8F6hUU9aj/9VWuVwsMvLiQnbbzS4CWvi/WzIW9iG0gOthsslffa/6rqoQpHc0Gfs\nEu3e971QZcJyMxr6ptY/bvTwIYqwRv9ptxtKTMqovV6YBN5n/LhCDmk1gBLmSej6\nmfHSW2io6TXZaV3PayL2UTte6qrvAkF/RXUtVeuDxm4scUe1Rdf+TdsAXFm1KPNq\n4wIDAQAB\n-----END PUBLIC KEY-----\n"
+
 development:
   laxino:
     auth_source:
@@ -8,7 +12,8 @@ development:
       data:
         client_id: "227547642277-tut96v2n6njm3op9gaqicbu7av8punhm.apps.googleusercontent.com"
         casino_id: 1000
-        public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0YudnviuwNdcCoXEMwMl\nJWhxWYpmAeRXQ8Df5bCVf5xFVEmL5am/2TTWRwRf34vqJuoGpyf3S7zJeJv8I2Ly\nvmpw33LReREkObCt1up17JGw5/d9K2Mf59EnnPkd7YUGklUxje8rxILiThiPdEaF\n8P5pRee+WD2mmQSug0rqNlMpadYVaMv3Y/HLr97Heh1ACRofYfv2hmGSmC6oo0SN\n4d5gP+/ggAzg9Ko7LDVcBg6TWAfJLh33GpMtAI2MPjd6XFJju+R9d68IDCIUo+CE\n8K0pAZnXGS8aWln/dpjZhlMjXrgY423Qa4YNsloPcwkQ20rk8XGYFr0H/9GuWIaW\nWQIDAQAB\n-----END PUBLIC KEY-----"
+        public_keys:
+          <<: *public_keys
 
 staging1:
   laxino:
@@ -20,7 +25,8 @@ staging1:
       data:
         client_id: "227547642277-589vgpcc60e8l0u9bgqu391vla28ue38.apps.googleusercontent.com"
         casino_id: 30060
-        public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0YudnviuwNdcCoXEMwMl\nJWhxWYpmAeRXQ8Df5bCVf5xFVEmL5am/2TTWRwRf34vqJuoGpyf3S7zJeJv8I2Ly\nvmpw33LReREkObCt1up17JGw5/d9K2Mf59EnnPkd7YUGklUxje8rxILiThiPdEaF\n8P5pRee+WD2mmQSug0rqNlMpadYVaMv3Y/HLr97Heh1ACRofYfv2hmGSmC6oo0SN\n4d5gP+/ggAzg9Ko7LDVcBg6TWAfJLh33GpMtAI2MPjd6XFJju+R9d68IDCIUo+CE\n8K0pAZnXGS8aWln/dpjZhlMjXrgY423Qa4YNsloPcwkQ20rk8XGYFr0H/9GuWIaW\nWQIDAQAB\n-----END PUBLIC KEY-----"
+        public_keys:
+          <<: *public_keys
 
 sandbox10:
   laxino:
@@ -32,4 +38,5 @@ sandbox10:
       data:
         client_id: "803369587114-ofbbht9e2kfcdheb5t5qbmat6brqr3io.apps.googleusercontent.com"
         casino_id: 52000
-        public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0YudnviuwNdcCoXEMwMl\nJWhxWYpmAeRXQ8Df5bCVf5xFVEmL5am/2TTWRwRf34vqJuoGpyf3S7zJeJv8I2Ly\nvmpw33LReREkObCt1up17JGw5/d9K2Mf59EnnPkd7YUGklUxje8rxILiThiPdEaF\n8P5pRee+WD2mmQSug0rqNlMpadYVaMv3Y/HLr97Heh1ACRofYfv2hmGSmC6oo0SN\n4d5gP+/ggAzg9Ko7LDVcBg6TWAfJLh33GpMtAI2MPjd6XFJju+R9d68IDCIUo+CE\n8K0pAZnXGS8aWln/dpjZhlMjXrgY423Qa4YNsloPcwkQ20rk8XGYFr0H/9GuWIaW\nWQIDAQAB\n-----END PUBLIC KEY-----"
+        public_keys:
+          <<: *public_keys
