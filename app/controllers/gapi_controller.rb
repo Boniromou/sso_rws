@@ -30,6 +30,7 @@ class GapiController < ApplicationController
     Rails.logger.info("Decode google id_token: #{token_info}")
     # public_key = OpenSSL::PKey::RSA.new(data['public_keys'][token_info[1]['kid']])
     # token_info = JWT.decode(params[:id_token], public_key, true, { algorithm: 'RS256' })[0]
+    token_info = token_info[0]
     Rails.logger.info("Verify google id_token success")
     if token_info['aud'] != data['client_id'] || token_info['email'] != params[:username]
       Rails.logger.info('Verify google id_token failed.')
