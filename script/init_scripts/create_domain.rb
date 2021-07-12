@@ -21,5 +21,5 @@ prompt = STDIN.gets.chomp
 exit unless prompt.casecmp('Y') == 0
 
 if db[:domains].where({name: domain_name}).count == 0
-  domain_table.insert({name: domain_name, user_type: user_type, created_at: Time.now.utc, updated_at: Time.now.utc}))
+  db[:domains].insert({name: domain_name, user_type: user_type, created_at: Time.now.utc, updated_at: Time.now.utc})
 end

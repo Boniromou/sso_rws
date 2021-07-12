@@ -1,0 +1,38 @@
+app:
+  name: 'user_management'
+  callback_url: 'https://int1-sso.laxino.com/home'
+
+auth_source:
+  id: 1
+  token: '*'
+  type: 'Ldap'
+
+auth_source_detail:
+  id: 1
+  name: 'laxino_ldap'
+  data:
+    host: 'vdc01'
+    port: 3268
+    account: 'svc_idc_ldap@ias.local'
+    password: 'I@s.1daP'
+    admin_account: 'svc_idc_ldap@ias.local'
+    admin_password: 'I@s.1daP'
+    base_dn: 'dc=ias, dc=local'
+
+domain:
+  id: 1
+  name: 'ias.local'
+  auth_source_detail_id: 1
+  user_type: 'Ldap'
+
+domain_licensee:
+  id: 1
+  domain_id: 1
+  licensee_id: 1000
+
+user:
+  id: 1
+  username: 'portal.admin'
+  status: 'active'
+  admin: true
+  domain_id: 1

@@ -28,6 +28,16 @@ integration0:
   host: hq-int-sso-vdb01.laxino.local
   port: 3306
 
+integration1:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: rigi_sso_integration
+  username: rigi
+  password: rigi
+  host: sso-vdb01.int1.ias.local
+  port: 3306
+
 staging0:
   adapter: mysql2
   encoding: utf8

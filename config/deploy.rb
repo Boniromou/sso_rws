@@ -4,6 +4,8 @@ require 'capistrano/ext/multistage'
 require 'lax-capistrano-recipes/rws'
 require 'bundler/capistrano'
 require 'whenever/capistrano'
+require 'capistrano/server_definition'
+require 'capistrano/role'
 
 set :app_server, "thin"
 set :application, "sso_rws"
@@ -47,3 +49,9 @@ set(:deploy_to) { "#{env_path}/app_#{stage}" }
 set(:repository) { "ssh://laxino@#{repo_host}/opt/laxino/stash_repos/#{project.sub('.', '/')}/#{application}.git" }
 
 # Define your cron jobs here
+
+class Capistrano::Configuration
+  def role_names_for_host(host)
+    roles.map {|role_name, role| role_name if role.include?(host) }.compact || []
+  end
+end

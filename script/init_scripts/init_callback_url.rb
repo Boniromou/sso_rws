@@ -41,7 +41,10 @@ app_types = {
   'signature_management' => 'vue',
   'tournament_portal' => 'vue',
   'player_operations_portal' => 'vue',
-  'player_approval_operations_portal' => 'vue'
+  'player_approval_operations_portal' => 'vue',
+  'supervisor_dashboard' => 'vue',
+  'game_feeds_portal' => 'vue'
+
 }
 
 configs.each do |app_name, url|

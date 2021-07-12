@@ -31,7 +31,7 @@ staging1:
 sandbox10:
   laxino:
     auth_source:
-      token: '10.10.5.162'
+      token: '172.80.5.1'
       type: 'Gapi'
     auth_source_detail:
       name: 'rwm_gapi'

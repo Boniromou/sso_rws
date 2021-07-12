@@ -24,11 +24,15 @@ test:
 
 development:
   <<: *default
-  url_base: 'http://10.10.5.158:3000'
+  url_base: 'http://localhost:3000'
 
 integration0:
   <<: *default
   url_base: 'https://int-sso.laxino.com'
+
+integration1:
+  <<: *default
+  url_base: 'https://int1-sso.laxino.com'
 
 staging0:
   <<: *default

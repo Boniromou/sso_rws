@@ -209,7 +209,7 @@ sandbox10:
   spindle: 'https://snd10-lmp.gogamesource.com.ph'
   player_approval_operations_portal: 'https://snd10-paop.gogamesource.com.ph'
 
-production10:
+ production10:
   user_management: 'https://prd10-sso.gogamesource.com.ph/home'
   cage: 'https://prd10-cms.gogamesource.com.ph/home'
   station_management: 'https://prd10-mtm.gogamesource.com.ph/index'
@@ -221,6 +221,9 @@ production10:
   signature_verifier_portal: 'https://prd10-sv.gogamesource.com.ph'
   kiosk_management: 'https://prd10-kosp.gogamesource.com.ph'
   spindle: 'https://prd10-lmp.gogamesource.com.ph'
+  supervisor_dashboard: 'https://prd10-supd.gogamesource.com.ph'
+  game_feeds_portal: 'https://prd10-gfd.gogamesource.com.ph'
+
 
 sandbox9:
   user_management: 'https://snd9-sso.grac381.com/home'
