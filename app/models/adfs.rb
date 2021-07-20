@@ -26,20 +26,20 @@ class Adfs < AuthSource
     settings
   end
 
-  def authenticate!(username, app_name, casino_ids)
+  def authenticate!(username, app_name, casino_ids, session_token)
     system_user = SystemUser.find_by_username_with_domain(username)
     if system_user.nil?
       Rails.logger.error "SystemUser[username=#{username}] Login failed. Not a registered account"
       raise Rigi::InvalidLogin.new("alert.invalid_login")
     end
     casino_ids = system_user.domain.get_casino_ids & casino_ids
-    super(username, app_name, SystemUser::ACTIVE, casino_ids)
+    super(username, app_name, SystemUser::ACTIVE, casino_ids, session_token)
   end
 
   def authorize!(username, app_name, casino_ids, target_casino, permission)
     system_user = SystemUser.find_by_username_with_domain(username)
     if system_user.nil?
-      Rails.logger.error "SystemUser[username=#{username}] Login failed. Not a registered account"
+      Rails.logger.error "SystemUser[username=#{username}] authorize failed. Not a registered account"
       raise Rigi::InvalidLogin.new("alert.invalid_login")
     end
     casino_ids = system_user.domain.get_casino_ids & casino_ids

@@ -14,12 +14,12 @@ class Ldap < AuthSource
     "/ldap_auth/new?app_name=#{app_name}"
   end
 
-  def login!(username, password, app_name)
+  def login!(username, password, app_name, session_token)
     valid_before_login!(username)
     system_user = SystemUser.find_by_username_with_domain(username)
     ldap_login!(system_user.domain.auth_source_detail, username, password)
     user_profile = retrieve_user_profile(system_user.domain.auth_source_detail, username, system_user.domain.get_casino_ids)
-    authenticate!(username, app_name, user_profile[:status], user_profile[:casino_ids])
+    authenticate!(username, app_name, user_profile[:status], user_profile[:casino_ids], session_token)
   end
 
   def authorize!(username, password, app_name, casino_id, permission)

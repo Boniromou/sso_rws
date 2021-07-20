@@ -79,8 +79,9 @@ class SamlController < ApplicationController
   end
 
   def authenticate!(username, app_name, casino_ids)
-    system_user = AuthSource.find_by_token(get_client_ip).authenticate!(username, app_name, casino_ids)
-    write_authenticate(system_user, app_name)
+    session_token = SecureRandom.uuid
+    system_user = AuthSource.find_by_token(get_client_ip).authenticate!(username, app_name, casino_ids, session_token)
+    write_authenticate(system_user, app_name, session_token)
     Rails.logger.info("Login in success")
     handle_redirect(app_name)
   end

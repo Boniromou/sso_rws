@@ -2,7 +2,7 @@ class LoginHistory < ActiveRecord::Base
   belongs_to :system_user
 	belongs_to :domain
 	belongs_to :app
-  attr_accessible :system_user_id, :domain_id, :app_id, :detail, :sign_in_at
+  attr_accessible :system_user_id, :domain_id, :app_id, :detail, :sign_in_at, :session_token, :sing_out_at
   serialize :detail, JSON
   validates_presence_of :system_user_id, :domain_id, :app_id, :sign_in_at
 
@@ -21,7 +21,14 @@ class LoginHistory < ActiveRecord::Base
   def self.insert(params)
   	params[:sign_in_at] = Time.now.utc
   	create!(params)
-	end
+  end
+
+  def self.update_sign_out(user_id, session_token)
+    history = self.where(system_user_id: user_id, session_token: session_token).first
+    return unless history
+    history.sign_out_at = Time.now.utc
+    history.save!
+  end
 
   def self.clean_login_history
     last_time = Time.now - (REMAIN_LOGIN_HISTORY_DAYS - 1).days

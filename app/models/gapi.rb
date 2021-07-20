@@ -7,10 +7,10 @@ class Gapi < AuthSource
     "#{URL_BASE}/gapi_auth/new?app_name=#{app_name}&second_authorize=true"
   end
 
-  def authenticate!(username, app_name, casino_ids)
+  def authenticate!(username, app_name, casino_ids, session_token)
     system_user = valid_before_login!(username)
     casino_ids = system_user.domain.get_casino_ids & casino_ids
-    super(username, app_name, SystemUser::ACTIVE, casino_ids)
+    super(username, app_name, SystemUser::ACTIVE, casino_ids, session_token)
   end
 
   def create_user!(username, domain)

@@ -41,22 +41,12 @@
     }
 
     function signOutGoogle() {
-      win = window.open("http://accounts.google.com/logout", "something", "width=550,height=570");
-      signOutTimer(win)
-    }
-
-    function signOutTimer(win) {
-      t = setTimeout(function(){
-        console.log(gapi.auth2.getAuthInstance().isSignedIn.get())
-        if(gapi.auth2.getAuthInstance().isSignedIn.get()){
-          signOutTimer(win)
-        } else {
-          console.log('User signed out.')
-          clearTimeout(t);
-          win.close()
-          loginSSO()
-        }
-      }, 300);
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+      });
+      auth2.disconnect();
+      loginSSO()
     }
 
     function loginSSO() {

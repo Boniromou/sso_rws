@@ -10,8 +10,9 @@ class LdapController < ApplicationController
 
   def login
     auth_source = AuthSource.find_by_token(get_client_ip)
-    system_user = auth_source.login!(params[:system_user][:username], params[:system_user][:password], params[:app_name])
-	  write_authenticate(system_user, params[:app_name])
+    session_token = SecureRandom.uuid
+    system_user = auth_source.login!(params[:system_user][:username], params[:system_user][:password], params[:app_name], session_token)
+    write_authenticate(system_user, params[:app_name], session_token)
     redirect_to App.find_by_name(params[:app_name]).callback_url
   rescue Rigi::InvalidLogin => e
     @app_name = params[:app_name]

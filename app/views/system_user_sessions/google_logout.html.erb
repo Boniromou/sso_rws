@@ -1,0 +1,36 @@
+<%= hidden_field_tag 'app_name', @app_name %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    function signOutGoogle() {
+      gapi.load('auth2', function(){
+        // Retrieve the singleton for the GoogleAuth library and set up the client.
+        auth2 = gapi.auth2.init({
+          client_id: '<%= @g_clien_id %>',
+          // cookiepolicy: 'single_host_origin',
+          cookiepolicy: 'none'
+          // Request scopes in addition to 'profile' and 'email'
+          // scope: 'custom'
+        });
+      });
+      win = window.open("http://accounts.google.com/logout", "something", "width=550,height=570");
+      signOutTimer(win)
+    }
+
+    function signOutTimer(win) {
+      t = setTimeout(function(){
+        console.log(gapi.auth2.getAuthInstance().isSignedIn.get())
+        if(gapi.auth2.getAuthInstance().isSignedIn.get()){
+          signOutTimer(win)
+        } else {
+          console.log('User signed out.')
+          clearTimeout(t);
+          win.close()
+          window.location = "<%=URL_BASE%>/app_login?app_name=<%=@app_name%>"
+        }
+      }, 300);
+    }
+
+    signOutGoogle();
+  });
+</script>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20190611023429) do
+ActiveRecord::Schema.define(:version => 20210720070818) do
 
   create_table "app_system_users", :force => true do |t|
     t.integer  "system_user_id", :null => false
@@ -24,10 +24,11 @@ ActiveRecord::Schema.define(:version => 20190611023429) do
   add_index "app_system_users", ["system_user_id"], :name => "system_user_id"
 
   create_table "apps", :force => true do |t|
-    t.string   "name",         :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.string   "name",                       :null => false
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
     t.string   "callback_url"
+    t.string   "token_type",   :limit => 45
   end
 
   create_table "audit_logs", :force => true do |t|
@@ -109,53 +110,6 @@ ActiveRecord::Schema.define(:version => 20190611023429) do
   add_index "change_logs", ["target_username", "target_domain"], :name => "index_change_logs_on_target_username_and_target_domain"
   add_index "change_logs", ["updated_at"], :name => "idx_updated_at"
 
-  create_table "chronos_archive_transaction_logs", :force => true do |t|
-    t.string   "archive_job_id",              :null => false
-    t.string   "target_uuid"
-    t.integer  "target_id",      :limit => 8
-    t.datetime "traced_at",                   :null => false
-    t.datetime "opened_at",                   :null => false
-    t.datetime "closed_at",                   :null => false
-  end
-
-  add_index "chronos_archive_transaction_logs", ["archive_job_id", "closed_at"], :name => "chronos_archive_transaction_logs_archive_job_id_closed_at_index"
-  add_index "chronos_archive_transaction_logs", ["archive_job_id", "traced_at"], :name => "chronos_archive_transaction_logs_archive_job_id_traced_at_index"
-  add_index "chronos_archive_transaction_logs", ["closed_at"], :name => "chronos_archive_transaction_logs_closed_at_index"
-  add_index "chronos_archive_transaction_logs", ["target_id", "archive_job_id"], :name => "chronos_atxs_tid_ajid", :unique => true
-  add_index "chronos_archive_transaction_logs", ["target_uuid", "archive_job_id"], :name => "chronos_atxs_tuuid_ajid", :unique => true
-
-  create_table "chronos_archive_transactions", :force => true do |t|
-    t.string   "archive_job_id",              :null => false
-    t.string   "target_uuid"
-    t.integer  "target_id",      :limit => 8
-    t.datetime "traced_at",                   :null => false
-    t.datetime "opened_at",                   :null => false
-    t.datetime "closed_at"
-  end
-
-  add_index "chronos_archive_transactions", ["archive_job_id", "closed_at"], :name => "chronos_archive_transactions_archive_job_id_closed_at_index"
-  add_index "chronos_archive_transactions", ["archive_job_id", "traced_at"], :name => "chronos_archive_transactions_archive_job_id_traced_at_index"
-  add_index "chronos_archive_transactions", ["target_id", "archive_job_id"], :name => "chronos_atxs_tid_ajid", :unique => true
-  add_index "chronos_archive_transactions", ["target_uuid", "archive_job_id"], :name => "chronos_atxs_tuuid_ajid", :unique => true
-
-  create_table "chronos_schema_info", :id => false, :force => true do |t|
-    t.integer "version", :default => 0, :null => false
-  end
-
-  create_table "chronos_trace_logs", :force => true do |t|
-    t.string   "job_id",     :null => false
-    t.string   "target",     :null => false
-    t.string   "type",       :null => false
-    t.datetime "synced_at",  :null => false
-    t.datetime "traced_at",  :null => false
-    t.datetime "created_at", :null => false
-  end
-
-  add_index "chronos_trace_logs", ["created_at"], :name => "chronos_trace_logs_created_at_index"
-  add_index "chronos_trace_logs", ["job_id", "created_at"], :name => "chronos_trace_logs_job_id_created_at_index"
-  add_index "chronos_trace_logs", ["target", "job_id", "synced_at"], :name => "chronos_trace_logs_target_job_id_synced_at_index"
-  add_index "chronos_trace_logs", ["type", "job_id", "target"], :name => "chronos_trace_logs_type_job_id_target_id"
-
   create_table "domain_licensees", :force => true do |t|
     t.integer  "domain_id",   :null => false
     t.integer  "licensee_id", :null => false
@@ -173,6 +127,7 @@ ActiveRecord::Schema.define(:version => 20190611023429) do
     t.datetime "created_at",                          :null => false
     t.datetime "updated_at",                          :null => false
     t.integer  "auth_source_detail_id"
+    t.string   "user_type",             :limit => 45
   end
 
   add_index "domains", ["auth_source_detail_id"], :name => "fk_Domains_AuthSourceDetailId"
@@ -201,11 +156,14 @@ ActiveRecord::Schema.define(:version => 20190611023429) do
     t.datetime "sign_in_at",                                       :null => false
     t.datetime "created_at",                                       :null => false
     t.datetime "updated_at",                                       :null => false
+    t.datetime "sign_out_at"
+    t.string   "session_token",  :limit => 45
   end
 
   add_index "login_histories", ["app_id"], :name => "index_login_histories_on_app_id"
   add_index "login_histories", ["domain_id"], :name => "index_login_histories_on_domain_id"
   add_index "login_histories", ["sign_in_at"], :name => "index_login_histories_on_sign_in_at"
+  add_index "login_histories", ["system_user_id", "session_token"], :name => "idx_user_session_token"
   add_index "login_histories", ["system_user_id"], :name => "index_login_histories_on_system_user_id"
 
   create_table "permissions", :force => true do |t|
@@ -248,6 +206,18 @@ ActiveRecord::Schema.define(:version => 20190611023429) do
   add_index "role_permissions", ["permission_id"], :name => "permission_id"
   add_index "role_permissions", ["role_id"], :name => "role_id"
 
+  create_table "role_permissions_versions", :force => true do |t|
+    t.string   "before_version"
+    t.string   "version",        :null => false
+    t.string   "upload_apps"
+    t.string   "upload_by",      :null => false
+    t.datetime "upload_at",      :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "role_permissions_versions", ["version"], :name => "index_role_permissions_versions_on_version", :unique => true
+
   create_table "role_types", :force => true do |t|
     t.string   "name",        :null => false
     t.string   "description"
@@ -281,6 +251,7 @@ ActiveRecord::Schema.define(:version => 20190611023429) do
     t.boolean  "admin",                            :default => false,      :null => false
     t.integer  "domain_id"
     t.datetime "purge_at"
+    t.boolean  "verified",                         :default => true,       :null => false
   end
 
   add_index "system_users", ["created_at"], :name => "idx_created_at"

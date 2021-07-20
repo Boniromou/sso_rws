@@ -218,12 +218,13 @@ class SystemUser < ActiveRecord::Base
     SystemUser.includes(:roles).joins(:domain).select("system_users.*, domains.name as domain_name").order("system_users.updated_at desc")
   end
 
-  def insert_login_history(app_name)
+  def insert_login_history(app_name, session_token)
     app = App.find_by_name(app_name || APP_NAME)
     params = {}
     params[:system_user_id] = self.id
     params[:domain_id] = self.domain_id
     params[:app_id] = app.id
+    params[:session_token] = session_token
     params[:detail] = {:casino_ids => self.active_casino_ids, :casino_id_names => self.active_casino_id_names}
     LoginHistory.insert(params)
   end

@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    app_root_path
+    logout_sso_path
   end
 
   def check_activation_status
@@ -47,23 +47,24 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def write_authenticate(system_user, app_name)
+  def write_authenticate(system_user, app_name, session_token)
     app_type = App.where(name: app_name).first.token_type || 'standard'
-    send("#{app_type}_token", system_user, app_name)
+    send("#{app_type}_token", system_user, app_name, session_token)
   end
 
-  def standard_token(system_user, app_name)
-    uuid = SecureRandom.uuid
+  def standard_token(system_user, app_name, session_token)
     name = app_name == 'report_portal' ? 'report_portal_auth_token' : 'auth_token'
-    write_cookie(name.to_sym, uuid)
-    add_cache(uuid, {:system_user => {:id => system_user.id, :username => system_user.username}})
+    write_cookie(name.to_sym, session_token)
+    add_cache(session_token, {:system_user => {:id => system_user.id, :username => system_user.username}})
   end
 
-  def vue_token(system_user, app_name)
+  def vue_token(system_user, app_name, session_token)
     name = "#{app_name}_auth_token"
     result = {
       id: system_user.id,
+      username: system_user.username,
       app_name: app_name,
+      session_token: session_token,
       sign_at: Time.now
     }
     write_cookie(name.to_sym, JWT.encode(result, 'test_key', 'HS256'))

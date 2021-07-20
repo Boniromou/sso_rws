@@ -8,10 +8,10 @@ class AuthSource < ActiveRecord::Base
     auth_source
   end
 
-  def authenticate!(username, app_name, status, casino_ids)
+  def authenticate!(username, app_name, status, casino_ids, session_token)
     system_user = authenticate_without_cache!(username, app_name, status, casino_ids)
     system_user.cache_info(app_name)
-    system_user.insert_login_history(app_name)
+    system_user.insert_login_history(app_name, session_token)
     system_user
   end
 

@@ -10,22 +10,27 @@ module Devise
       end
 
       def authenticate!
-        system_user = SystemUser.find(user_info[:system_user][:id])
+        user = user_info
+        Rails.logger.info "token info: #{user}"
+        system_user = SystemUser.find(user['id'])
         success!(system_user)
-        clear_cookie_and_cache
+        rewrite_cookie
       end
 
       def auth_token
-        cookies[:auth_token]
+        cookies[:user_management_auth_token]
       end
 
       def user_info
-        result = Rails.cache.read(auth_token)
+        JWT.decode(auth_token, 'test_key', true)[0] if auth_token
+      rescue
+        nil
       end
 
-      def clear_cookie_and_cache
-        Rails.cache.delete(auth_token)
-        cookies.delete(:auth_token, domain: :all)
+      def rewrite_cookie
+        cookies.delete(:user_management_token_info, domain: :all)
+        cookies[:user_management_token_info] = { value: auth_token, domain: :all }
+        cookies.delete(:user_management_auth_token, domain: :all)
       end
     end
   end
