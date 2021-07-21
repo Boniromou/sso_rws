@@ -34,7 +34,6 @@ SsoRws::Application.routes.draw do
     get "/login" => "system_user_sessions#new", :as => :login
     post '/login' => 'system_user_sessions#create'
     get "/logout" => "system_user_sessions#destroy", :as => :logout
-    get "/logout_sso" => "system_user_sessions#logout_sso", :as => :logout_sso
     post "/passwords" => "system_user_registrations#update"
     get "/register" => "system_user_registrations#new", :as => :new_system_user_registration
     post "/register" => "system_user_registrations#create"

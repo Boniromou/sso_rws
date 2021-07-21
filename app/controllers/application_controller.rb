@@ -21,10 +21,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def after_sign_out_path_for(resource)
-    logout_sso_path
-  end
-
   def check_activation_status
     if current_system_user && current_system_user.inactived?
       Rails.logger.info "[SystemUser id=#{current_system_user.id}] to be forced to logout due to de-activated status"

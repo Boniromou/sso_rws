@@ -18,9 +18,9 @@ class SystemUserSessionsController < Devise::SessionsController
     super
   end
 
-  def logout_sso
+  def after_sign_out_path_for(resource)
     auth_token = cookies[:user_management_token_info]
     cookies.delete(:user_management_token_info, domain: :all)
-    redirect_to "#{URL_BASE}/app_logout?app_name=#{APP_NAME}&auth_token=#{auth_token}"
+    "#{URL_BASE}/app_logout?app_name=#{APP_NAME}&auth_token=#{auth_token}"
   end
 end

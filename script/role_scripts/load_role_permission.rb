@@ -131,7 +131,7 @@ if prompt == 'Y'
     app_id = apps_table.where(:name => app_name).first[:id]
 
     role_type_info.each do |role_type_id, role_type_name|
-      role_type = role_types_table.where("id = ? and name = ?", role_type_id, role_type_name).first
+      role_type = role_types_table.where(id: role_type_id, name: role_type_name).first
 
       if role_type.nil?
         role_types_table.insert(:id => role_type_id, :name => role_type_name, :created_at => Time.now.utc, :updated_at => Time.now.utc)
@@ -140,7 +140,7 @@ if prompt == 'Y'
 
     # TODO: truncate role_permissions_table and permissions_table before insert
     permission_data.each do |permission_h|
-      permission = permissions_table.where("name = ? and target = ? and app_id = ?", permission_h[:action], permission_h[:target], app_id).first
+      permission = permissions_table.where(name: permission_h[:action], target: permission_h[:target], app_id: app_id).first
 
       if permission.nil?
         permissions_table.insert(:name => permission_h[:action], :action => permission_h[:action], :target => permission_h[:target], :app_id => app_id, :created_at => Time.now.utc, :updated_at => Time.now.utc)
@@ -148,19 +148,19 @@ if prompt == 'Y'
     end
 
     role_permission_data.each do |role_name, permissions|
-      role = roles_table.where("name = ? and app_id = ?", role_name, app_id).first
+      role = roles_table.where(name: role_name, app_id: app_id).first
 
       if role.nil?
         role = {}
         role[:id] = roles_table.insert(:name => role_name, :app_id => app_id, :role_type_id => role_types_data[role_name.to_s], :created_at => Time.now.utc, :updated_at => Time.now.utc)
       else
-        roles_table.where("id = ?", role[:id]).update(:role_type_id => role_types_data[role_name.to_s], :updated_at => Time.now.utc)
+        roles_table.where(id: role[:id]).update(:role_type_id => role_types_data[role_name.to_s], :updated_at => Time.now.utc)
       end
 
       if permissions[:grant]
         permissions[:grant].each do |permission_h|
-          permission = permissions_table.where("name = ? and target = ? and app_id = ?", permission_h[:action], permission_h[:target], app_id).first
-          role_permission_obj = role_permissions_table.where("role_id = ? and permission_id = ?", role[:id], permission[:id])
+          permission = permissions_table.where(name: permission_h[:action], target: permission_h[:target], app_id: app_id).first
+          role_permission_obj = role_permissions_table.where(role_id: role[:id], permission_id: permission[:id])
           role_permission = role_permission_obj.first
 
           if role_permission.nil?
@@ -173,11 +173,11 @@ if prompt == 'Y'
 
       if permissions[:revoke]
         permissions[:revoke].each do |permission_h|
-          permission = permissions_table.where("name = ? and target = ? and app_id = ?", permission_h[:action], permission_h[:target], app_id).first
-          role_permission = role_permissions_table.where("role_id = ? and permission_id = ?", role[:id], permission[:id]).first
+          permission = permissions_table.where(name: permission_h[:action], target: permission_h[:target], app_id: app_id).first
+          role_permission = role_permissions_table.where(role_id: role[:id], permission_id: permission[:id]).first
 
           if role_permission
-            role_permissions_table.where("role_id = ? and permission_id = ?", role[:id], permission[:id]).delete
+            role_permissions_table.where(role_id: role[:id], permission_id: permission[:id]).delete
           end
         end
       end
