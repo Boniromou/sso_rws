@@ -13,7 +13,7 @@ set :repo_host, 'ph01-cbms-app01.gamesource.local'
 #   int - Integration
 #   stg - Staging
 #   prd - Production
-role :app, 'sso-app01.prd10.gamesource.local'
+role :app, 'sso-app01.prd10.gamesource.local', 'sso-app02.prd10.gamesource.local'
 
 role :cronjob_app, 'sso-app01.prd10.gamesource.local'
 
