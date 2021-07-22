@@ -260,6 +260,7 @@ en:
   login_history:
     list: Login History
     login_time: Login Time
+    logout_time: Logout Time
     search_range_remark: The search range is limited to [%{config_value}] days
     search_range_error: The search range cannot be empty and limited to [%{config_value}]
       days
