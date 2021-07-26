@@ -13,7 +13,7 @@ set :group, "swe"
 #   int - Integration
 #   stg - Staging
 #   prd - Production
-role :app, 'sso-app01.int1.ias.local'
+role :app, 'generic-app01.int1.ias.local'
 
 #role :cronjob_app, 'int-cons-vapp03.rnd.laxino.com'
 
