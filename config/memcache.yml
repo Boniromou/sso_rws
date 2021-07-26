@@ -26,6 +26,15 @@ integration0:
   no_block: true
   timeout: 30
 
+integration1:
+  servers:
+    - s3-vapp01.int1.ias.local:11211
+    - s3-vapp01.int1.ias.local:11212
+  expires: 86400
+  namespace: s3_int
+  no_block: false
+  timeout: 30
+
 staging0:
   servers:
     # - stg-cons-vapp01.rnd.laxino.com:11211
