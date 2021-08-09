@@ -27,7 +27,7 @@ class CsvUserService
   private
   def process_users(records)
     records.each do |domain_id, usernames|
-      users = SystemUser.includes(:roles).where(domain_id: domain_id)
+      users = SystemUser.where(domain_id: domain_id)
       error_data = usernames - users.map(&:username)
       Rails.logger.error "users not exist: #{error_data}" if error_data.size > 0
       SystemUser.transaction do
@@ -59,13 +59,15 @@ class CsvUserService
     error_data = []
     domains = Hash[@licensee.domains.map{|d| [d.name, d.id]}]
     data.each do |row|
-      row[1] = row[1].strip
+      row[1] = row[1].split('@')[1] if row[1].include?('@')
+      row[1] = row[1].delete("\"").strip
+      row[0] = row[0].delete("\"").strip
       if !domains.keys.include?(row[1])
         error_data << row
         next
       end
       records[domains[row[1]]] ||= []
-      records[domains[row[1]]] << row[0].strip
+      records[domains[row[1]]] << row[0]
     end
     Rails.logger.error "wrong domain data: #{error_data}" if error_data.size > 0
     Rails.logger.info "get csv records size: #{data.size}"
