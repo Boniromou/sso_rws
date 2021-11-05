@@ -1,5 +1,6 @@
-class SystemUserRegistrationsController < ActionController::Base
+class SystemUserRegistrationsController < ApplicationController
   layout "login"
+  skip_before_filter :authenticate_system_user!, :check_activation_status
   rescue_from Exception, :with => :handle_fatal_error
 
   def new
@@ -8,45 +9,45 @@ class SystemUserRegistrationsController < ActionController::Base
   end
 
   def create
-    begin
-      [:success, :alert].each do |key|
-        flash.delete(key)
-      end
-      @nav_app_link = params[:app]
-      username_with_domain = params[:system_user][:username].downcase
-      login = Rigi::Login.extract_login_name(username_with_domain)
-      raise Rigi::InvalidLogin.new("alert.invalid_login") if login.nil?
+    # begin
+    #   [:success, :alert].each do |key|
+    #     flash.delete(key)
+    #   end
+    #   @nav_app_link = params[:app]
+    #   username_with_domain = params[:system_user][:username].downcase
+    #   login = Rigi::Login.extract_login_name(username_with_domain)
+    #   raise Rigi::InvalidLogin.new("alert.invalid_login") if login.nil?
 
-      username = login[:username]
-      domain = login[:domain]
-      password = params[:system_user][:password]
-      
-      auth_source = SystemUser.validate_account!(username, domain)
-      auth_source = auth_source.becomes(auth_source.auth_type.constantize)
-      if auth_source.authenticate(username_with_domain, password)
-        SystemUser.register_account!(username, domain)
-        flash.now[:success] = "alert.signup_completed"     
-      else 
-        raise Rigi::InvalidLogin.new("alert.invalid_login")
-      end
-    rescue Rigi::InvalidLogin, Rigi::InvalidUsername, Rigi::InvalidDomain
-      Rails.logger.error "SystemUser[username=#{username_with_domain}] illegal login name format"
-      flash.now[:alert] = "alert.invalid_login"
-    rescue Rigi::InvalidAuthSource => e
-      Rails.logger.error "SystemUser[username=#{username_with_domain}] invalid domain - auth_source mapping"
-      flash.now[:alert] = e.error_message
-    rescue Rigi::RegisteredAccount
-      Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {The account has been registered}"
-      flash.now[:alert] = "alert.registered_account"
-    rescue Rigi::AccountNotInLdap
-      Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {Account is not in ldap server}"
-      flash.now[:alert] = "alert.account_not_in_ldap"
-    rescue Rigi::AccountNoCasino
-      Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {Account no casino}"
-      flash.now[:alert] = "alert.account_no_casino"
-    end
+    #   username = login[:username]
+    #   domain = login[:domain]
+    #   password = params[:system_user][:password]
 
-    render :new
+    #   auth_source = SystemUser.validate_account!(username, domain)
+    #   auth_source = auth_source.becomes(auth_source.auth_type.constantize)
+    #   if auth_source.authenticate(username_with_domain, password)
+    #     SystemUser.register_account!(username, domain)
+    #     flash.now[:success] = "alert.signup_completed"
+    #   else
+    #     raise Rigi::InvalidLogin.new("alert.invalid_login")
+    #   end
+    # rescue Rigi::InvalidLogin, Rigi::InvalidUsername, Rigi::InvalidDomain
+    #   Rails.logger.error "SystemUser[username=#{username_with_domain}] illegal login name format"
+    #   flash.now[:alert] = "alert.invalid_login"
+    # rescue Rigi::InvalidAuthSource => e
+    #   Rails.logger.error "SystemUser[username=#{username_with_domain}] invalid domain - auth_source mapping"
+    #   flash.now[:alert] = e.error_message
+    # rescue Rigi::RegisteredAccount
+    #   Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {The account has been registered}"
+    #   flash.now[:alert] = "alert.registered_account"
+    # rescue Rigi::AccountNotInLdap
+    #   Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {Account is not in ldap server}"
+    #   flash.now[:alert] = "alert.account_not_in_ldap"
+    # rescue Rigi::AccountNoCasino
+    #   Rails.logger.error "SystemUser[username=#{username_with_domain}] register failed: {Account no casino}"
+    #   flash.now[:alert] = "alert.account_no_casino"
+    # end
+
+    # render :new
   end
 
   def edit
@@ -55,26 +56,36 @@ class SystemUserRegistrationsController < ActionController::Base
   end
 
   def update
+    @nav_app_link = params[:app]
+    @app_name = params[:app_name]
     begin
-      [:success, :alert].each do |key|
-        flash.delete(key)
-      end
-      @nav_app_link = params[:app]
-      @app_name = params[:app_name]
-      username_with_domain = params[:system_user][:username].downcase
-      Rigi::Login.reset_password!(params[:system_user], @app_name)
+      auth_source = AuthSource.find_by_token(get_client_ip)
+      check_domain_type(auth_source.type)
+      check_new_password
+      system_user = auth_source.change_password!(params[:system_user][:username], params[:system_user][:old_password], params[:system_user][:new_password])
       flash.now[:success] = I18n.t("success.reset_password")
-    rescue Rigi::InvalidLogin => e
-      Rails.logger.error "SystemUser[username=#{username_with_domain}] invalid login: #{e.error_message}"
-      flash.now[:alert] = e.error_message
-    rescue Rigi::InvalidResetPassword => e
-      Rails.logger.error "SystemUser[username=#{username_with_domain}] invalid reset password: #{e.error_message}"
+    rescue Rigi::InvalidLogin, Rigi::InvalidDomainType, Rigi::RemoteError => e
+      Rails.logger.error "SystemUser[username=#{params[:system_user][:username]}] reset password failed: #{e.error_message}"
       flash.now[:alert] = e.error_message
     end
     render :edit
   end
 
   protected
+  def check_new_password
+    raise Rigi::InvalidLogin.new("password_page.new_password_tooltip") if params[:system_user][:new_password].blank?
+    raise Rigi::InvalidLogin.new("password_page.confirm_password_fail") if params[:system_user][:new_password] != params[:system_user][:password_confirmation]
+  end
+
+  def check_domain_type(token_type)
+    domain = Domain.find_by_name(params[:system_user][:username].split('@')[1])
+    if !domain || domain.user_type != token_type
+      domain_type = domain.user_type if domain
+      Rails.logger.error "Invalid domain type: token type [#{token_type}], domain type [#{domain_type}]"
+      raise Rigi::InvalidDomainType.new('invalid_domain')
+    end
+  end
+
   def handle_fatal_error(e)
     @from = params[:from]
     Rails.logger.error "#{e.message}"

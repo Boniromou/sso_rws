@@ -4,6 +4,7 @@ en:
     locale_key: English
   alert:
     invalid_login: Invalid user name or password
+    must_change_password: Please change the default password before login
     inactive_account: The account is inactive, please contact System Administrator
       for account activation.
     registered_account: The account has been registered
@@ -171,6 +172,7 @@ en:
       new password does not meet the length, complexity, or history requirements of
       the domain configuration.
     confirm_password_fail: The New Password entered does not match
+    change_password_fail: Change password failed, please contact System Administrator
   propagation:
     title: Propagation
     error: Error

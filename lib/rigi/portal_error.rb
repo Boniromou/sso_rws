@@ -25,9 +25,12 @@ module Rigi
     end
   end
 
+  class RemoteError < PortalError; end
+
   class InvalidParameter < PortalError; end
   class InvalidUsername < PortalError; end
   class InvalidDomain < PortalError; end
+  class InvalidDomainType < PortalError; end
   class InvalidStatus < PortalError; end
   class InvalidAuthSource < PortalError; end
   class RegisteredAccount <  PortalError; end
@@ -35,10 +38,15 @@ module Rigi
   class AccountNoCasino < PortalError; end
   class CreateDomainLicenseeFail < PortalError; end
   class DeleteDomainLicenseeFail < PortalError; end
-  class InvalidResetPassword < PortalError; end
   class InvalidAuthorize < PortalError; end
   class DuplicateAuthorize < PortalError; end
   class InvalidToken < PortalError; end
   class InvalidPermission < PortalError; end
   class UploadRolePermissionsFail < PortalError; end
+
+  class InvalidAccount < RemoteError; end
+  class InvalidPassword < RemoteError; end
+  class InvalidPasswordFormat < RemoteError; end
+  class InvalidResetPassword < RemoteError; end
+  class MustChangePassword < RemoteError; end
 end

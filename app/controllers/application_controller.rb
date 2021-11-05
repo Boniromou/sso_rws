@@ -91,8 +91,9 @@ class ApplicationController < ActionController::Base
   end
 
   def check_login_type!(type)
+    type = [type] if type.class == String
     auth_source = AuthSource.find_by_token(get_client_ip)
-    raise 'Invalid login type' unless auth_source.type.downcase.include?(type)
+    raise 'Invalid login type' unless type.include?(auth_source.type.downcase)
   end
 
   protected

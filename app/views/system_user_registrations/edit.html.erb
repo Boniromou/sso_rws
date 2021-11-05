@@ -3,7 +3,7 @@
 <% end %>
 
 <!-- ap_reset_password_panel -->
-<%= form_for(:system_user, url: edit_system_user_passwords_path, html: {:class => "smart-form client-form"}) do |f| %>
+<%= form_for(:system_user, url: edit_system_user_passwords_path, html: {:id => "password_form", :class => "smart-form client-form"}) do |f| %>
   <header><%= t("title.reset_password_title") %></header>
   <fieldset>
     <section>
@@ -42,3 +42,11 @@
      <%= f.submit(t("password_page.update_password"), :class => "btn btn-primary") %>
   </footer>
 <% end %>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#password_form').one('submit', function() {
+      $(this).find('input[type="submit"]').attr('disabled','disabled');
+  });
+})
+</script>
