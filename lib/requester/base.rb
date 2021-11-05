@@ -5,6 +5,7 @@ module Requester
   class Base
 
     def initialize(base_path)
+      @timeout = 5
       @path = base_path
     end
 
