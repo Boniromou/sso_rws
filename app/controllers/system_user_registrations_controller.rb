@@ -59,12 +59,11 @@ class SystemUserRegistrationsController < ApplicationController
     @nav_app_link = params[:app]
     @app_name = params[:app_name]
     begin
-      auth_source = AuthSource.find_by_token(get_client_ip)
-      check_domain_type(auth_source.type)
+      auth_source = find_auth_source
       check_new_password
       system_user = auth_source.change_password!(params[:system_user][:username], params[:system_user][:old_password], params[:system_user][:new_password])
       flash.now[:success] = I18n.t("success.reset_password")
-    rescue Rigi::InvalidLogin, Rigi::InvalidDomainType, Rigi::RemoteError => e
+    rescue Rigi::InvalidLogin, Rigi::InvalidDomain, Rigi::RemoteError => e
       Rails.logger.error "SystemUser[username=#{params[:system_user][:username]}] reset password failed: #{e.error_message}"
       flash.now[:alert] = e.error_message
     end
@@ -77,13 +76,11 @@ class SystemUserRegistrationsController < ApplicationController
     raise Rigi::InvalidLogin.new("password_page.confirm_password_fail") if params[:system_user][:new_password] != params[:system_user][:password_confirmation]
   end
 
-  def check_domain_type(token_type)
+  def find_auth_source
     domain = Domain.find_by_name(params[:system_user][:username].split('@')[1])
-    if !domain || domain.user_type != token_type
-      domain_type = domain.user_type if domain
-      Rails.logger.error "Invalid domain type: token type [#{token_type}], domain type [#{domain_type}]"
-      raise Rigi::InvalidDomainType.new('invalid_domain')
-    end
+    raise Rigi::InvalidDomain.new('alert.invalid_domain') if !domain
+    raise Rigi::InvalidDomain.new('alert.cannot_change_password') if domain.user_type != 'Usdm'
+    domain.user_type.constantize.new
   end
 
   def handle_fatal_error(e)

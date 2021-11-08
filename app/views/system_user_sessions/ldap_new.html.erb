@@ -1,8 +1,6 @@
 <% content_for :header do %>
   <%#= link_to(t("general.sign_up"), new_system_user_registration_path, :class => "btn btn-danger") %>
-  <% if @login_type == 'usdm' %>
-    <%= link_to(t("general.reset_password"), edit_system_user_passwords_path(app_name: APP_NAME), :class => "btn btn-danger") %>
-  <% end %>
+  <%= link_to(t("general.reset_password"), edit_system_user_passwords_path(app_name: APP_NAME), :class => "btn btn-danger") %>
 <% end %>
 
 <!-- ap_login_panel -->

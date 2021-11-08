@@ -30,7 +30,6 @@ module Rigi
   class InvalidParameter < PortalError; end
   class InvalidUsername < PortalError; end
   class InvalidDomain < PortalError; end
-  class InvalidDomainType < PortalError; end
   class InvalidStatus < PortalError; end
   class InvalidAuthSource < PortalError; end
   class RegisteredAccount <  PortalError; end

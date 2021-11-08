@@ -21,7 +21,7 @@ en:
     invalid_username: Invalid username format. Space and Special Character is not
       allowed.
     account_not_in_ldap: User not found in database
-    invalid_domain: Invalid domain format
+    invalid_domain: Invalid domain
     duplicate_domain: Duplicate Domain
     duplicate_domain_licensee: Duplicate Domain-Licensee Mapping
     domain_duplicated: Create Domain failed; Domain duplicated.
@@ -38,6 +38,7 @@ en:
     registered_account: The account has been registered
     record_not_found: This record is not found.
     invalid_google_token: Invalid token; Please try again or contact technical support
+    cannot_change_password: This domain is not allowed to change password
   title:
     title: User Management
     login_title: Login
