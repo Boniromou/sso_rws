@@ -18,13 +18,14 @@ default: &default
   admin_role_type_name: 'internal'
   remain_login_history_days: 100
   url_base: 'https://test-sso.laxino.com'
+  can_reset_password: 'false'
 
 test:
   <<: *default
 
 development:
   <<: *default
-  url_base: 'http://localhost:3000'
+  url_base: 'http://10.10.5.162:3000'
 
 integration0:
   <<: *default
@@ -42,6 +43,7 @@ staging0:
 staging1:
   <<: *default
   url_base: 'https://stg1-sso.laxino.com'
+  can_reset_password: 'true'
 
 sandbox0:
   <<: *default

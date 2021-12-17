@@ -27,6 +27,24 @@ integration0:
   asset_management: 'https://int-dam.laxino.com/index'
   trade_promotion: 'https://int-tp.laxino.com/index'
 
+integration1:
+  user_management: 'https://int1-sso.laxino.com/home'
+  cage: 'https://int1-cms.laxino.com/home'
+  station_management: 'https://int1-sm.laxino.com/index'
+  audit_portal: 'https://int1-audp.laxino.com/index'
+  platform_game_recall: 'https://int1-ogr.laxino.com/index'
+  spindle: 'https://int1-lmp.laxino.com/index'
+  platform_gaming_operation: 'https://int1-go.laxino.com/index'
+  kiosk_management: 'https://int1-kosp.laxino.com/index'
+  signature_verifier_portal: 'https://int1-sv.laxino.com/index'
+  signature_management: 'https://int1-spp.laxino.com/index'
+  report_portal: 'https://int1-report.laxino.com/index'
+  player_operations_portal: 'https://int1-pop.laxino.com/index'
+  inspection_and_audit_portal: 'https://int1-adp.laxino.com/index'
+  player_approval_portal: 'https://int1-paop.laxino.com/index'
+  supervisor_dashboard: 'https://int1-supd.laxino.com/index'
+  game_feeds_portal: 'https://int1-gfp.laxino.com/index'
+
 staging0:
   user_management: 'https://stg-sso.laxino.com/home'
   gaming_operation: 'https://stg-ap.laxino.com/home'
@@ -209,7 +227,7 @@ sandbox10:
   spindle: 'https://snd10-lmp.gogamesource.com.ph'
   player_approval_operations_portal: 'https://snd10-paop.gogamesource.com.ph'
 
- production10:
+production10:
   user_management: 'https://prd10-sso.gogamesource.com.ph/home'
   cage: 'https://prd10-cms.gogamesource.com.ph/home'
   station_management: 'https://prd10-mtm.gogamesource.com.ph/index'

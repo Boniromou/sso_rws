@@ -1,5 +1,5 @@
 <% content_for :header do %>
-  <%= link_to(t("general.login"), @nav_app_link || login_path, :class => "btn btn-danger") %>
+  <%= link_to(t("general.login"), @nav_app_link || app_login_path(app_name: @app_name), :class => "btn btn-danger") %>
 <% end %>
 
 <!-- ap_reset_password_panel -->
