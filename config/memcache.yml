@@ -225,6 +225,15 @@ sandbox10:
   no_block: true
   timeout: 30
 
+esbsandbox:
+  servers:
+    - esb-s3-vapp01.snd10.gamesource.local:11211
+    - esb-s3-vapp01.snd10.gamesource.local:11212
+  expires: 86400
+  namespace: s3_snd
+  no_block: true
+  timeout: 30
+
 production10:
   servers:
     - s3-vapp01.prd10.gamesource.local:7000

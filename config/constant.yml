@@ -125,6 +125,11 @@ sandbox10:
   url_base: 'https://snd10-sso.gogamesource.com.ph'
   remain_login_history_days: 455
 
+esbsandbox:
+  <<: *default
+  url_base: 'https://snd10-sso.bagwisanlive.com'
+  remain_login_history_days: 455
+
 production10:
   <<: *default
   url_base: 'https://prd10-sso.gogamesource.com.ph'

@@ -227,6 +227,21 @@ sandbox10:
   spindle: 'https://snd10-lmp.gogamesource.com.ph'
   player_approval_operations_portal: 'https://snd10-paop.gogamesource.com.ph'
 
+esbsandbox:
+  user_management: 'https://snd10-sso.bagwisanlive.com/home'
+  cage: 'https://snd10-cms.bagwisanlive.com/home'
+  station_management: 'https://snd10-mtm.bagwisanlive.com/index'
+  audit_portal: 'https://snd10-audp.bagwisanlive.com/index'
+  marketing_portal: 'https://snd10-mp.bagwisanlive.com/home'
+  platform_game_recall: 'https://snd10-ogr.bagwisanlive.com'
+  report_portal: 'https://snd10-report.bagwisanlive.com/Reports/Pages/Folder.aspx'
+  platform_gaming_operation: 'https://snd10-go.bagwisanlive.com'
+  signature_verifier_portal: 'https://snd10-sv.bagwisanlive.com'
+  signature_management: 'https://snd10-spp.bagwisanlive.com'
+  kiosk_management: 'https://snd10-kosp.bagwisanlive.com'
+  spindle: 'https://snd10-lmp.bagwisanlive.com'
+  player_approval_operations_portal: 'https://snd10-paop.bagwisanlive.com'
+
 production10:
   user_management: 'https://prd10-sso.gogamesource.com.ph/home'
   cage: 'https://prd10-cms.gogamesource.com.ph/home'

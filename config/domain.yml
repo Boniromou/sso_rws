@@ -106,5 +106,8 @@ cert1:
 sandbox10:
   <<: *moidc_domain
 
+esbsandbox:
+  <<: *moidc_domain
+
 sandbox9:
   <<: *moidc_domain

@@ -1,4 +1,4 @@
-set :stages, %w(integration0 integration1 staging0 staging1 sandbox3 production3 production4 sandbox production ias_prd sandbox5 sandbox6 cert1 ga0 production6 sandbox8 sandbox10 production10 sandbox9)
+set :stages, %w(integration0 integration1 staging0 staging1 sandbox3 production3 production4 sandbox production ias_prd sandbox5 sandbox6 cert1 ga0 production6 sandbox8 sandbox10 esbsandbox production10 sandbox9)
 set :default_stage, 'integration0'
 require 'capistrano/ext/multistage'
 require 'lax-capistrano-recipes/rws'
