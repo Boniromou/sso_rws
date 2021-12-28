@@ -1,0 +1,38 @@
+app:
+  name: 'user_management'
+  callback_url: 'https://snd10-sso.bagwisanlive.com/home'
+
+auth_source:
+  id: 1
+  token: '*'
+  type: 'Ldap'
+
+auth_source_detail:
+  id: 1
+  name: 'laxino_ldap'
+  data:
+    host: 'snd10-vdc01.gamesourcecloud.local'
+    port: 3268
+    account: 'svc_idc_ldap@gamesourcecloud.local'
+    password: 'Svc_1dc_1daP'
+    admin_account: 'svc_idc_ldap@gamesourcecloud.local'
+    admin_password: 'Svc_1dc_1daP'
+    base_dn: 'dc=gamesourcecloud, dc=local'
+
+domain:
+  id: 1
+  name: 'gamesourcecloud.local'
+  auth_source_detail_id: 1
+  user_type: 'Ldap'
+
+domain_licensee:
+  id: 1
+  domain_id: 1
+  licensee_id: 1000
+
+user:
+  id: 1
+  username: 'portal.admin'
+  status: 'active'
+  admin: true
+  domain_id: 1
