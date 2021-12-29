@@ -243,9 +243,9 @@ esbsandbox:
   adapter: mysql2
   encoding: utf8
   collation: utf8_bin
-  database: rigi_sso_sandbox
-  username: rigi
-  password: rigi.pa$$w0rd123
+  database: esbrigi_sso_sandbox
+  username: esbrigi
+  password: esbrigi.pa$$w0rd123
   host: esb-sso-app01.snd10.gamesource.local
   port: 6034
 
