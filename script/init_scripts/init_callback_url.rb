@@ -43,7 +43,8 @@ app_types = {
   'player_operations_portal' => 'vue',
   'player_approval_operations_portal' => 'vue',
   'supervisor_dashboard' => 'vue',
-  'game_feeds_portal' => 'vue'
+  'game_feeds_portal' => 'vue',
+  'user_directory_protal' => 'vue'
 
 }
 
