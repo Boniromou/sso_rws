@@ -11,7 +11,7 @@ if ARGV.length < 1
 end
 
 env = ARGV[0]
-file_name = ARGV[1] || File.expand_path(File.dirname(__FILE__)) + "../config_files/#{env}.yml"
+file_name = ARGV[1] || File.expand_path(File.dirname(__FILE__)) + "/../config_files/#{env}.yml"
 config_data = YAML.load_file(file_name)
 
 Dir[File.expand_path("../utils/*.rb",File.dirname( __FILE__))].each { |file| require file }

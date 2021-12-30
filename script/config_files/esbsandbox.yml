@@ -11,7 +11,7 @@ auth_source_detail:
   id: 1
   name: 'laxino_ldap'
   data:
-    host: 'snd10-vdc01.gamesourcecloud.local'
+    host: 'esb-vdc01.gamesourcecloud.local'
     port: 3268
     account: 'svc_idc_ldap@gamesourcecloud.local'
     password: 'Svc_1dc_1daP'

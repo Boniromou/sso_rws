@@ -246,7 +246,7 @@ esbsandbox:
   database: esbrigi_sso_sandbox
   username: esbrigi
   password: esbrigi.pa$$w0rd123
-  host: esb-sso-app01.snd10.gamesource.local
+  host: esb-sso-vdb01.snd10.gamesource.local
   port: 6034
 
 production10:
