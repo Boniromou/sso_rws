@@ -20,9 +20,9 @@ prompt = STDIN.gets.chomp
 exit unless prompt.casecmp('Y') == 0
 
 app_types = {
-  'user_management' => 'standard',
+  'user_management' => 'vue',
   'gaming_operation' => 'standard',
-  'cage' => 'standard',
+  'cage' => 'vue',
   'station_management' => 'standard',
   'game_recall' => 'standard',
   'signature_verifier' => 'standard',
