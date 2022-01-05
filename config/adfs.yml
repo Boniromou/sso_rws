@@ -187,14 +187,14 @@ Xg==
         signature_method: "XMLSecurity::Document::RSA_SHA256"
 
 staging1:
-  laxino:
+  adfs_demo:
     auth_source:
       token: '10.10.5.162'
       type: 'Adfs'
     auth_source_detail:
-      name: 'laxino_adfs_4'
+      name: 'laxino_adfs_demo_4'
       data:
-        config_url: "https://adfs.ias.local/federationmetadata/2007-06/federationmetadata.xml"
+        config_url: "https://adfs01.gamesourcecloud.local/FederationMetadata/2007-06/FederationMetadata.xml"
         comparison: "minimum"
         private_key: "-----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDX7h4hXJSMey7R

@@ -129,6 +129,7 @@ esbsandbox:
   <<: *default
   url_base: 'https://snd10-sso.bagwisanlive.com'
   remain_login_history_days: 455
+  can_reset_password: 'true'
 
 production10:
   <<: *default
