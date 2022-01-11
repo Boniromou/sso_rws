@@ -46,6 +46,10 @@ SsoRws::Application.routes.draw do
   get "/second_authorize" => "internal/authorization#second_authorize"
   post "/user/get_info" => "internal/system_users#get_info"
   post "/user/validate_permission" => "internal/system_users#validate_permission"
+  post "/usdm/login" => "internal/usdm_users#login"
+  post "/usdm/get_info" => "internal/usdm_users#get_info"
+  post "/usdm/validate_permission" => "internal/usdm_users#validate_permission"
+  post "/usdm/change_password" => "internal/usdm_users#change_password"
 
   root :to => 'dashboard#home', :as => :root
   get 'home' => 'dashboard#home', :as => :home_root

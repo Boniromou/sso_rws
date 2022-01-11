@@ -68,6 +68,6 @@ class Usdm < AuthSource
   end
 
   def filter_casino_ids(casino_ids, domain_casino_ids)
-    casino_ids && domain_casino_ids
+    casino_ids & domain_casino_ids
   end
 end

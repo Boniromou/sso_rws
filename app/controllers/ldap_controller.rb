@@ -16,7 +16,6 @@ class LdapController < ApplicationController
     redirect_to App.find_by_name(params[:app_name]).callback_url
   rescue Rigi::InvalidLogin, Rigi::InvalidDomain, Rigi::RemoteError => e
     @app_name = params[:app_name]
-    @login_type = auth_source.type.downcase
     flash[:alert] = I18n.t(e.error_message)
     render :template => "system_user_sessions/ldap_new"
   end
