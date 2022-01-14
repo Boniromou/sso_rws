@@ -31,7 +31,7 @@ class Internal::UsdmUsersController < ApplicationController
     user = SystemUser.find_by_username_with_domain(params[:username])
     raise Rigi::InvalidUsername.new unless user
     if !user.admin && params[:permission] != 'nopermission'
-      permission_info = Rails.cache.read("#{auth_info['app_name']}:permissions:#{user.id}")
+      permission_info = Rails.cache.read("#{params['app_name']}:permissions:#{user.id}")
       raise Rigi::InvalidPermission.new('Permission info not found') if permission_info.blank?
       target, action = params[:permission].split('-')
       permissions = permission_info[:permissions][:permissions][target.to_sym]
