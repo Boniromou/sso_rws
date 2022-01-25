@@ -256,6 +256,19 @@ production10:
   supervisor_dashboard: 'https://prd10-supd.gogamesource.com.ph'
   game_feeds_portal: 'https://prd10-gfd.gogamesource.com.ph'
 
+production11:
+  user_management: 'https://prd11-sso.bagwisanlive.com/home'
+  cage: 'https://prd11-cms.bagwisanlive.com/home'
+  station_management: 'https://prd11-mtm.bagwisanlive.com/index'
+  audit_portal: 'https://prd11-audp.bagwisanlive.com/index'
+  platform_game_recall: 'https://prd11-ogr.bagwisanlive.com'
+  report_portal: 'https://prd11-report.bagwisanlive.com/Reports/Pages/Folder.aspx'
+  platform_gaming_operation: 'https://prd11-go.bagwisanlive.com'
+  signature_verifier_portal: 'https://prd11-sv.bagwisanlive.com'
+  signature_management: 'https://prd11-spp.bagwisanlive.com'
+  spindle: 'https://prd11-lmp.bagwisanlive.com'
+  player_approval_operations_portal: 'https://prd11-paop.bagwisanlive.com'
+  user_directory_protal: 'https://prd11-usdmp.bagwisanlive.com'
 
 sandbox9:
   user_management: 'https://snd9-sso.grac381.com/home'

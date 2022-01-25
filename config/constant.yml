@@ -136,6 +136,12 @@ production10:
   url_base: 'https://prd10-sso.gogamesource.com.ph'
   remain_login_history_days: 455
 
+production11:
+  <<: *default
+  url_base: 'https://prd11-sso.bagwisanlive.com'
+  remain_login_history_days: 455
+  can_reset_password: 'true'
+
 sandbox9:
   <<: *default
   url_base: 'https://snd9-sso.grac381.com'

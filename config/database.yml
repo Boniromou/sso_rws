@@ -259,6 +259,17 @@ production10:
   host: sso-vdb01.prd10.gamesource.local
   port: 6033
 
+production11:
+  adapter: mysql2
+  encoding: utf8
+  collation: utf8_bin
+  database: esbrigi_sso_production
+  username: esbrigi
+  password: esbrigi.pa$$w0rd123
+  host: esb-so-vdb01.prd11.gamesource.local
+  port: 6033
+
+
 sandbox9:
   adapter: mysql2
   encoding: utf8

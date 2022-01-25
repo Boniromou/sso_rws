@@ -245,6 +245,17 @@ production10:
   no_block: true
   timeout: 30
 
+production11:
+  servers:
+    - esb-s3-vapp01.prd11.gamesource.local:7000
+    - esb-s3-vapp01.prd11.gamesource.local:7001
+    - esb-s3-vapp02.prd11.gamesource.local:7000
+    - esb-s3-vapp02.prd11.gamesource.local:7001
+  expires: 86400
+  namespace: s3_prd
+  no_block: true
+  timeout: 30
+
 sandbox9:
   servers:
     - s3-vapp01.snd9.gamesource.local:7000

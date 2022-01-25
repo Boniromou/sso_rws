@@ -290,6 +290,25 @@ esbsandbox:
         admin_password: 'Svc_1dc_1daP'
         base_dn: 'dc=gamesourcecloud, dc=local'
 
+prdouction11:
+  laxino:
+    domain:
+      name: 'gamesourcecloud.local'
+    auth_source:
+      token: '*'
+      type: 'Ldap'
+    auth_source_detail:
+      name: 'laxino_ldap'
+      data:
+        name: 'laxino_ldap'
+        host: 'prd11-vdc01.gamesourcecloud.local'
+        port: 3268
+        account: 'svc_idc_ldap@gamesourcecloud.local'
+        password: 'Svc_1dc_1daP'
+        admin_account: 'svc_idc_ldap@gamesourcecloud.local'
+        admin_password: 'Svc_1dc_1daP'
+        base_dn: 'dc=gamesourcecloud, dc=local'
+
 sandbox9:
   laxino:
     domain:
