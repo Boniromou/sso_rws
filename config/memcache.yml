@@ -247,10 +247,10 @@ production10:
 
 production11:
   servers:
-    - esb-s3-vapp01.prd11.gamesource.local:7000
-    - esb-s3-vapp01.prd11.gamesource.local:7001
-    - esb-s3-vapp02.prd11.gamesource.local:7000
-    - esb-s3-vapp02.prd11.gamesource.local:7001
+    - esb-s3-vapp01.prd11.gs.local:7000
+    - esb-s3-vapp01.prd11.gs.local:7001
+    - esb-s3-vapp02.prd11.gs.local:7000
+    - esb-s3-vapp02.prd11.gs.local:7001
   expires: 86400
   namespace: s3_prd
   no_block: true
