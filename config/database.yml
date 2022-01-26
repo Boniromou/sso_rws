@@ -266,8 +266,8 @@ production11:
   database: esbrigi_sso_production
   username: esbrigi
   password: esbrigi.pa$$w0rd123
-  host: esb-so-vdb01.prd11.gamesource.local
-  port: 6033
+  host: esb-sso-vdb01.prd11.gamesource.local
+  port: 3306
 
 
 sandbox9:
