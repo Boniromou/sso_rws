@@ -227,6 +227,3 @@ DEPENDENCIES
   thin (= 1.6.2)
   uglifier (>= 1.0.3)
   whenever
-
-BUNDLED WITH
-   1.16.6
